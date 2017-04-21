@@ -1,5 +1,6 @@
 import React from "react";
 import {render} from "react-dom";
+import PropTypes from 'prop-types'; 
 
 class Slidebar extends React.Component {
 	constructor(props) {
@@ -24,7 +25,7 @@ class Slidebar extends React.Component {
 					<div className="sidebar-user">
 						<div className="category-content">
 							<div className="media">
-								<a href="#" className="media-left"><img src="assets/images/placeholder.jpg" className="img-circle img-sm" alt=""/></a>
+								<a className="media-left"><img src="assets/images/placeholder.jpg" className="img-circle img-sm" alt=""/></a>
 								<div className="media-body">
 									<span className="media-heading text-semibold">Lê Minh Thiện</span>
 									<div className="text-size-mini text-muted">
@@ -35,7 +36,7 @@ class Slidebar extends React.Component {
 								<div className="media-right media-middle">
 									<ul className="icons-list">
 										<li>
-											<a href="#"><i className="icon-cog3"></i></a>
+											<a><i className="icon-cog3"></i></a>
 										</li>
 									</ul>
 								</div>
@@ -51,16 +52,16 @@ class Slidebar extends React.Component {
 
 								{/* Main */}
 								<li className="navigation-header"><span>Main</span> <i className="icon-menu" title="Main pages"></i></li>
-								<li className="active"><a href="#" ><i className="icon-home4"></i> <span>Trang chủ</span></a></li>
+								<li className="active"><a ><i className="icon-home4"></i> <span>Trang chủ</span></a></li>
 								<li>
 									<a><i className="icon-stack2"></i> <span>Lịch sử</span></a>
 									<ul>
 										<li>
 											<a><span>Lớp 6</span></a>
 											<ul> 
-												<li><a href="Lichsu_lop6_baihoc" className="active" >Bài học</a></li>
-												<li><a href="Lichsu_lop6_baitapnangcao" >Bài tập nâng cao</a></li>
-												<li><a href="Lichsu_lop6_thaoluan" >Thảo luận</a></li>
+												<li><a href="#Lichsu_lop6_baihoc" className="active" >Bài học</a></li>
+												<li><a href="#Lichsu_lop6_baitapnangcao" >Bài tập nâng cao</a></li>
+												<li><a href="#Lichsu_lop6_thaoluan" >Thảo luận</a></li>
 											</ul>
 										</li>
 										<li>
@@ -76,10 +77,10 @@ class Slidebar extends React.Component {
 									</ul>
 								</li>
 								<li>
-									<a href="#"><i className="icon-stack2"></i> <span>Địa lý</span></a>
+									<a><i className="icon-stack2"></i> <span>Địa lý</span></a>
 									<ul>
 										<li>
-											<a href="#"><span>Lớp 6</span></a>
+											<a><span>Lớp 6</span></a>
 											<ul>
 												<li><a href="../../../layout_1/LTR/index.html" id="layout1">Bài học</a></li>
 												<li><a href="../../../layout_2/LTR/index.html" id="layout3">Bài tập nâng cao</a></li>
@@ -87,7 +88,7 @@ class Slidebar extends React.Component {
 											</ul>
 										</li>
 										<li>
-											<a href="#"><span>Lớp 7</span></a>
+											<a><span>Lớp 7</span></a>
 											<ul>
 												<li><a href="../../../layout_1/LTR/index.html" id="layout1">Bài học</a></li>
 												<li><a href="../../../layout_2/LTR/index.html" id="layout3">Bài tập nâng cao</a></li>
@@ -95,7 +96,7 @@ class Slidebar extends React.Component {
 											</ul>
 										</li>
 										<li>
-											<a href="#"><span>Lớp 8</span></a>
+											<a><span>Lớp 8</span></a>
 											<ul>
 												<li><a href="../../../layout_1/LTR/index.html" id="layout1">Bài học</a></li>
 												<li><a href="../../../layout_2/LTR/index.html" id="layout3">Bài tập nâng cao</a></li>
@@ -103,7 +104,7 @@ class Slidebar extends React.Component {
 											</ul>
 										</li>
 										<li>
-											<a href="#"><span>Lớp 9</span></a>
+											<a><span>Lớp 9</span></a>
 											<ul>
 												<li><a href="../../../layout_1/LTR/index.html" id="layout1">Bài học</a></li>
 												<li><a href="../../../layout_2/LTR/index.html" id="layout3">Bài tập nâng cao</a></li>
@@ -113,7 +114,7 @@ class Slidebar extends React.Component {
 									</ul>
 								</li>
 								<li>
-									<a href="#"><i className="icon-droplet2"></i> <span>Hỏi & đáp</span></a>
+									<a><i className="icon-droplet2"></i> <span>Hỏi & đáp</span></a>
 									<ul>
 										<li><a href="../../../layout_1/LTR/index.html" id="layout1">Lịch Sử</a></li>
 										<li><a href="../../../layout_2/LTR/index.html" id="layout3">Địa Lý</a></li>

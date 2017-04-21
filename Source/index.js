@@ -92,7 +92,7 @@ app.get("/trangchu", function(req,res){
 	//     });
 	    
 	// }
-	res.render("trangchu");
+	res.render("home1");
 });
 
 app.post("/Lichsu_lop6_baihoc", function(req,res){
