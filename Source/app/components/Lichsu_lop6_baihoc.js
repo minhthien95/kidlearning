@@ -28,9 +28,9 @@ export class Lichsu_lop6_baihoc extends React.Component{
 								</a>
 
 								<ul className="dropdown-menu dropdown-menu-right">
-									<li><a href="#"><i className="icon-user-lock"></i> Sách giáo khoa</a></li>
-									<li><a href="#"><i className="icon-statistics"></i> Video </a></li>
-									<li><a href="#"><i className="icon-accessibility"></i> Tương tác</a></li>
+									<li><a href="#Lichsu_lop6_sachgiaokhoa" ><i className="icon-book"></i> Sách giáo khoa</a></li>
+									<li><a href="#Lichsu_lop6_video"><i className="icon-book-play"></i> Video </a></li>
+									<li><a href="#Lichsu_lop6_tuongtac"><i className="icon-reading"></i> Tương tác</a></li>
 								</ul>
 							</li>
 						</ul>
@@ -112,6 +112,6 @@ export class Lichsu_lop6_baihoc extends React.Component{
 			//that.setState({noidung: data})
 			that.setState({listbaihoc: data});
 			console.log(data);
-		})
+		});
 	}
 }

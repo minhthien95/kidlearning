@@ -1,5 +1,5 @@
 module.exports = {
-  entry: ['./app/noidungchinhes6.js','./app/slidebar.js','./app/statusbar.js'],
+  entry: ['./app/maincontent.js','./app/slidebar.js','./app/statusbar.js'],
   output: {
     path: __dirname,
     filename: './public/bundle.js'

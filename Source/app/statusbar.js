@@ -1,5 +1,10 @@
 import React from "react";
 import {render} from "react-dom";
+import PropTypes from 'prop-types'; 
+
+var data = document.querySelector('#statusbar');
+
+var root = window.document.getElementById("statusbar");
 
 class Statusbar extends React.Component {
  	render() {
@@ -127,17 +132,17 @@ class Statusbar extends React.Component {
 						<li className="dropdown dropdown-user">
 							<a className="dropdown-toggle" data-toggle="dropdown">
 								<img src="assets/images/placeholder.jpg" alt=""/>
-								<span>Lê Minh Thiện</span>
+								<span>{data.dataset.username}</span>
 								<i className="caret"></i>
 							</a>
 
 							<ul className="dropdown-menu dropdown-menu-right">
-								<li><a href="#trangcanhan"><i className="icon-user-plus"></i> My profile</a></li>
+								<li><a href="#trangcanhan"><i className="icon-user-plus"></i> Trang cá nhân</a></li>
 								<li><a href="#"><i className="icon-coins"></i> My balance</a></li>
 								<li><a href="#"><span className="badge bg-teal-400 pull-right">58</span> <i className="icon-comment-discussion"></i> Messages</a></li>
 								<li className="divider"></li>
-								<li><a href="#"><i className="icon-cog5"></i> Account settings</a></li>
-								<li><a href="#"><i className="icon-switch2"></i> Logout</a></li>
+								<li><a href="#"><i className="icon-cog5"></i> Cài đặt tài khoản</a></li>
+								<li><a href="/dangxuat"><i className="icon-switch2"></i> Đăng xuất</a></li>
 							</ul>
 						</li>
 					</ul>
@@ -146,4 +151,4 @@ class Statusbar extends React.Component {
     	);
   }
 }
-render(<Statusbar/>, window.document.getElementById("statusbar"));
+render(<Statusbar/>, root);
