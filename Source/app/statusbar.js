@@ -7,6 +7,12 @@ var data = document.querySelector('#statusbar');
 var root = window.document.getElementById("statusbar");
 
 class Statusbar extends React.Component {
+	constructor(props) {
+    super(props);
+      this.state = {
+        id_user: "assets/images/user_"+data.dataset.id+".jpg"
+      };
+    }
  	render() {
 	    return (
 		    <div>
@@ -131,7 +137,7 @@ class Statusbar extends React.Component {
 
 						<li className="dropdown dropdown-user">
 							<a className="dropdown-toggle" data-toggle="dropdown">
-								<img src="assets/images/placeholder.jpg" alt=""/>
+								<img src={this.state.id_user} onError={() => {this.setState({id_user : "assets/images/placeholder.jpg"}) }} alt=""/>
 								<span>{data.dataset.username}</span>
 								<i className="caret"></i>
 							</a>

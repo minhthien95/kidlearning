@@ -1,6 +1,6 @@
 import React from 'react';
 
-export class Lichsu_lop6_baihoc extends React.Component{
+export class Lichsu_baihoc extends React.Component{
 	constructor(props) {
     super(props);
       this.state = {
@@ -15,7 +15,7 @@ export class Lichsu_lop6_baihoc extends React.Component{
 					<div className="breadcrumb-line">
 						<ul className="breadcrumb">
 							<li><a href="#"><i className="icon-home2 position-left"></i> Trang chủ</a></li>
-							<li className="active">Bài học lịch sử Lớp 6</li>
+							<li className="active">Bài học lịch sử Lớp {this.props.params.lop}</li>
 						</ul>
 
 						<ul className="breadcrumb-elements">
@@ -106,12 +106,33 @@ export class Lichsu_lop6_baihoc extends React.Component{
 			</div>
 		)
 	}
+	// componentWillUpdate(){
+	// 	console.log("lay du lieu bai hoc 0");
+	// 	var that=this;
+
+	// 	$.post("/Lichsu_baihoc/lop"+this.props.params.lop, function(data){
+	// 		//that.setState({noidung: data})
+	// 		console.log("lay du lieu bai hoc 1");
+	// 		that.setState({listbaihoc: data});
+	// 	});
+	// }
 	componentWillMount(){
 		var that=this;
-		$.post("/Lichsu_lop6_baihoc", function(data){
+
+		$.post("/Lichsu_baihoc/lop"+this.props.params.lop, function(data){
 			//that.setState({noidung: data})
+			console.log("lay du lieu bai hoc 1");
 			that.setState({listbaihoc: data});
-			console.log(data);
+		});
+	}
+	componentWillReceiveProps(newProps)
+	{
+		var that=this;
+
+		$.post("/Lichsu_baihoc/lop"+newProps.params.lop, function(data){
+			//that.setState({noidung: data})
+			console.log("lay du lieu bai hoc 2");
+			that.setState({listbaihoc: data});
 		});
 	}
 }

@@ -2,7 +2,7 @@ import React from 'react';
 
 var data = document.querySelector('#maincontent');
 
-export class Hoidap_lichsu extends React.Component{
+export class Lichsu_thaoluan extends React.Component{
 	constructor(props) {
     	super(props);
   		this.state = {
@@ -17,7 +17,7 @@ export class Hoidap_lichsu extends React.Component{
 					<div className="breadcrumb-line">
 						<ul className="breadcrumb">
 							<li><a href="#"><i className="icon-home2 position-left"></i> Trang chủ</a></li>
-							<li className="active">Thảo luận lịch sử Lớp {this.props.params.lop}</li>
+							<li className="active">Thảo luận lịch sử Lớp {data.LOP}</li>
 						</ul>
 
 						<ul className="breadcrumb-elements">
@@ -52,7 +52,7 @@ export class Hoidap_lichsu extends React.Component{
 										<div className="blog-preview">
 											<div className="content-group-sm media blog-title stack-media-on-mobile text-left">
 												<div className="media-body">
-													<h5 className="text-semibold no-margin"><a href={"#Hoidap_lichsu_chitiet/lop"+data.PHANLOP+"/id"+data.ID} className="text-default">{data.TIEUDE}</a></h5>
+													<h5 className="text-semibold no-margin"><a href={"#Hoidap_lichsu/lop"+data.PHANLOP+"/id"+data.ID} className="text-default">{data.TIEUDE}</a></h5>
 
 													<ul className="list-inline list-inline-separate no-margin text-muted">
 														<li>Đăng bởi <a href="#">{data.USERNAME}</a></li>
@@ -62,7 +62,7 @@ export class Hoidap_lichsu extends React.Component{
 											</div>
 
 											<p>{data.NOIDUNG}</p>
-											<a href={"#Hoidap_lichsu_chitiet/lop"+data.PHANLOP+"/id"+data.ID} >[...]</a>
+											<a href={"#Hoidap_lichsu/lop"+data.PHANLOP+"/id"+data.ID} >[...]</a>
 										</div>
 									</div>
 
@@ -81,7 +81,7 @@ export class Hoidap_lichsu extends React.Component{
 												</li>
 											</ul>
 
-											<a href={"#Hoidap_lichsu_chitiet/lop"+data.PHANLOP+"/id"+data.ID} className="heading-text pull-right">Chi tiết <i className="icon-arrow-right14 position-right"></i></a>
+											<a href={"#Hoidap_lichsu/lop"+data.PHANLOP+"/id"+data.ID} className="heading-text pull-right">Chi tiết <i className="icon-arrow-right14 position-right"></i></a>
 										</div>
 									</div>
 								</div>
@@ -96,19 +96,11 @@ export class Hoidap_lichsu extends React.Component{
 	componentWillMount()
 	{
 		var that=this;
-		$.post("Hoidap_lichsu/lop"+this.props.params.lop+"/idall",function( data ){
-			console.log("lay data");
-			console.log(data);
+		$.post("Hoidap_lichsu/lopall/idall",function( data ){
+			// console.log("lay data");
+			// console.log(data);
 			that.setState({listCauhoi: data});
 		})
 	}
-	componentWillReceiveProps(newProps)
-	{
-		var that=this;
 
-		$.post("Hoidap_lichsu/lop"+newProps.params.lop+"/idall", function(data){
-			//that.setState({noidung: data})
-			that.setState({listCauhoi: data});
-		});
-	}
 }

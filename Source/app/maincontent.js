@@ -7,6 +7,10 @@ import {Trangchu} from "./components/Trangchu";
 
 import {Trangcanhan} from "./components/Trangcanhan";
 
+import {Lichsu_baihoc} from "./components/Lichsu_baihoc";
+import {Lichsu_baitapnangcao} from './components/Lichsu_baitapnangcao';
+import {Lichsu_thaoluan} from './components/Lichsu_thaoluan';
+
 import {Lichsu_lop6_baihoc} from "./components/Lichsu_lop6_baihoc";
 import {Lichsu_lop6_baitapnangcao} from './components/Lichsu_lop6_baitapnangcao';
 import {Lichsu_lop6_thaoluan} from './components/Lichsu_lop6_thaoluan';
@@ -27,46 +31,52 @@ import {Lichsu_lop9_baihoc} from "./components/Lichsu_lop9_baihoc";
 import {Lichsu_lop9_baitapnangcao} from './components/Lichsu_lop9_baitapnangcao';
 import {Lichsu_lop9_thaoluan} from './components/Lichsu_lop9_thaoluan';
 
+import {Hoidap_lichsu_chitiet} from './components/Hoidap_lichsu_chitiet';
 import {Hoidap_lichsu} from './components/Hoidap_lichsu';
 import {Hoidap_dialy} from './components/Hoidap_dialy';
 
 class MainContent extends React.Component {
-  render(){
-    return (
-    	<Router history={hashHistory}>
-	    	<div>
-			  	<Route path="/" component={Trangchu}/>
-			  	<Route path="Trangcanhan" component={Trangcanhan}/>
+  	render(){
+	    return (
+	    	<Router history={hashHistory}>
+		    	<div>
+				  	<Route path="/" component={Trangchu}/>
+				  	<Route path="Trangcanhan" component={Trangcanhan}/>
 
+				  	<Route path="Lichsu_baihoc/lop:lop" component={Lichsu_baihoc} />
+				 	<Route path="Lichsu_baitapnangcao/lop:lop" component={Lichsu_baitapnangcao} />
+				 	<Route path="Lichsu_thaoluan/lop:lop" component={Hoidap_lichsu} />
 
-			  	<Route path="Lichsu_lop6_baihoc" component={Lichsu_lop6_baihoc}/>
-			 	<Route path="Lichsu_lop6_baitapnangcao" component={Lichsu_lop6_baitapnangcao} />
-			 	<Route path="Lichsu_lop6_thaoluan" component={Lichsu_lop6_thaoluan} />
+				 	<Route path="Hoidap_lichsu_chitiet/lop:lop/id:id" component={Hoidap_lichsu_chitiet} />
 
-			 	<Route path="Lichsu_lop6_sachgiaokhoa" component={Lichsu_lop6_sachgiaokhoa}/>
-			 	<Route path="Lichsu_lop6_video" component={Lichsu_lop6_video} />
-			 	<Route path="Lichsu_lop6_tuongtac" component={Lichsu_lop6_tuongtac} />
+				  	<Route path="Lichsu_lop6_baihoc" component={Lichsu_lop6_baihoc}/>
+				 	<Route path="Lichsu_lop6_baitapnangcao" component={Lichsu_lop6_baitapnangcao} />
+				 	<Route path="Lichsu_lop6_thaoluan" component={Lichsu_lop6_thaoluan} />
 
-			 	<Route path="Lichsu_lop7_baihoc" component={Lichsu_lop7_baihoc}/>
-			 	<Route path="Lichsu_lop7_baitapnangcao" component={Lichsu_lop7_baitapnangcao} />
-			 	<Route path="Lichsu_lop7_thaoluan" component={Lichsu_lop7_thaoluan} />
+				 	<Route path="Lichsu_lop6_sachgiaokhoa" component={Lichsu_lop6_sachgiaokhoa}/>
+				 	<Route path="Lichsu_lop6_video" component={Lichsu_lop6_video} />
+				 	<Route path="Lichsu_lop6_tuongtac" component={Lichsu_lop6_tuongtac} />
 
-			 	<Route path="Lichsu_lop8_baihoc" component={Lichsu_lop8_baihoc}/>
-			 	<Route path="Lichsu_lop8_baitapnangcao" component={Lichsu_lop8_baitapnangcao} />
-			 	<Route path="Lichsu_lop8_thaoluan" component={Lichsu_lop8_thaoluan} />
+				 	<Route path="Lichsu_lop7_baihoc" component={Lichsu_lop7_baihoc}/>
+				 	<Route path="Lichsu_lop7_baitapnangcao" component={Lichsu_lop7_baitapnangcao} />
+				 	<Route path="Lichsu_lop7_thaoluan" component={Lichsu_lop7_thaoluan} />
 
-			 	<Route path="Lichsu_lop9_baihoc" component={Lichsu_lop9_baihoc}/>
-			 	<Route path="Lichsu_lop9_baitapnangcao" component={Lichsu_lop9_baitapnangcao} />
-			 	<Route path="Lichsu_lop9_thaoluan" component={Lichsu_lop9_thaoluan} />
+				 	<Route path="Lichsu_lop8_baihoc" component={Lichsu_lop8_baihoc}/>
+				 	<Route path="Lichsu_lop8_baitapnangcao" component={Lichsu_lop8_baitapnangcao} />
+				 	<Route path="Lichsu_lop8_thaoluan" component={Lichsu_lop8_thaoluan} />
 
-			 	<Route path="Hoidap_lichsu" component={Hoidap_lichsu} />
-			 	<Route path="Hoidap_dialy" component={Hoidap_dialy} />
-			 	
-		 	</div>
-	 	</Router>
+				 	<Route path="Lichsu_lop9_baihoc" component={Lichsu_lop9_baihoc}/>
+				 	<Route path="Lichsu_lop9_baitapnangcao" component={Lichsu_lop9_baitapnangcao} />
+				 	<Route path="Lichsu_lop9_thaoluan" component={Lichsu_lop9_thaoluan} />
 
-    );
-  }
+				 	<Route path="Hoidap_lichsu/lop:lop/id:id" component={Hoidap_lichsu} />
+				 	<Route path="Hoidap_dialy/lop:lop/id:id" component={Hoidap_dialy} />
+				 	
+			 	</div>
+		 	</Router>
+
+	    );
+  	}
 }
 
 render(<MainContent/>, window.document.getElementById("maincontent"));

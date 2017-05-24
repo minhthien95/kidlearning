@@ -27,7 +27,8 @@ export class Trangchu extends React.Component{
 					</div>
 					{/* Nội dung */}
 					<div className="content">
-
+						<iframe width="800" height="600" src="https://docs.google.com/gview?url=http://ieee802.org/secmail/docIZSEwEqHFr.doc&embedded=true" frameborder="0">
+						</iframe>
 					</div>
 					
 					{/* /Nội dung */}

@@ -1,5 +1,7 @@
 import React from 'react';
 
+var data = document.querySelector('#maincontent');
+
 export class Lichsu_lop6_video extends React.Component{
 	constructor(props) {
     super(props);
@@ -30,6 +32,7 @@ export class Lichsu_lop6_video extends React.Component{
 					<div className="panel panel-flat">
 						<div className="panel-heading">
 							<h6 className="panel-title">Videos</h6>
+							<div id="addVideo"/>
 							<hr/>
 						</div>
 						{/* Nội dung */}
@@ -78,6 +81,14 @@ export class Lichsu_lop6_video extends React.Component{
 				{/* /content area */}
 			</div>
 		)
+	}
+	componentDidMount()
+	{
+		console.log("hihi video");
+		console.log(data.dataset.type);
+		if(data.dataset.type=="trogiang" || data.dataset.type=="admin" )
+			$("#addVideo").append("<a href='#' class='btn border-teal text-teal btn-flat btn-rounded btn-icon btn-xs valign-text-bottom'><i class='icon-plus3'></i></a>");
+
 	}
 	componentWillMount(){
 		var that=this;

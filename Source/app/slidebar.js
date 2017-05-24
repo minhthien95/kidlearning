@@ -26,6 +26,12 @@ class Slidebar extends React.Component {
 	// 	//if(data.dataset.username==8)
 	// 		$("#Lichsu_lop8").addClass("disabled");
 	// }
+	constructor(props) {
+    super(props);
+      this.state = {
+        id_user: "assets/images/user_"+data.dataset.id+".jpg"
+      };
+    }
 	componentDidMount()
 	{
 		console.log("hihi slidebar");
@@ -54,7 +60,7 @@ class Slidebar extends React.Component {
 					<div className="sidebar-user">
 						<div className="category-content">
 							<div className="media">
-								<a className="media-left"><img src="assets/images/placeholder.jpg" className="img-circle img-sm" alt=""/></a>
+								<a href="#trangcanhan" className="media-left"><img src={this.state.id_user} onError={() => {this.setState({id_user : "assets/images/placeholder.jpg"}) }} className="img-circle img-sm" alt=""/></a>
 								<div className="media-body">
 									<span className="media-heading text-semibold">{data.dataset.username}</span>
 									<div className="text-size-mini text-muted">
@@ -65,7 +71,7 @@ class Slidebar extends React.Component {
 								<div className="media-right media-middle">
 									<ul className="icons-list">
 										<li>
-											<a><i className="icon-cog3"></i></a>
+											<a href="#trangcanhan"><i className="icon-cog3"></i></a>
 										</li>
 									</ul>
 								</div>
@@ -88,33 +94,33 @@ class Slidebar extends React.Component {
 										<li id="Lichsu_lop6">
 											<a><span>Lớp 6</span></a>
 											<ul> 
-												<li><a href="#Lichsu_lop6_baihoc" className="active" >Bài học</a></li>
-												<li><a href="#Lichsu_lop6_baitapnangcao" >Bài tập nâng cao</a></li>
-												<li><a href="#Lichsu_lop6_thaoluan" >Thảo luận</a></li>
+												<li><a href="#Lichsu_baihoc/lop6" className="active" >Bài học</a></li>
+												<li><a href="#Lichsu_baitapnangcao/lop6" >Bài tập nâng cao</a></li>
+												<li><a href="#Lichsu_thaoluan/lop6" >Thảo luận</a></li>
 											</ul>
 										</li>
 										<li id="Lichsu_lop7">
 											<a><span>Lớp 7</span></a>
 											<ul>
-												<li><a href="#Lichsu_lop7_baihoc" className="active" >Bài học</a></li>
-												<li><a href="#Lichsu_lop7_baitapnangcao" >Bài tập nâng cao</a></li>
-												<li><a href="#Lichsu_lop7_thaoluan" >Thảo luận</a></li>
+												<li><a href="#Lichsu_baihoc/lop7" className="active" >Bài học</a></li>
+												<li><a href="#Lichsu_baitapnangcao/lop7" >Bài tập nâng cao</a></li>
+												<li><a href="#Lichsu_thaoluan/lop7" >Thảo luận</a></li>
 											</ul>
 										</li>
 										<li id="Lichsu_lop8">
 											<a><span>Lớp 8</span></a>
 											<ul>
-												<li><a href="#Lichsu_lop8_baihoc" className="active" >Bài học</a></li>
-												<li><a href="#Lichsu_lop8_baitapnangcao" >Bài tập nâng cao</a></li>
-												<li><a href="#Lichsu_lop8_thaoluan" >Thảo luận</a></li>
+												<li><a href="#Lichsu_baihoc/lop8" className="active" >Bài học</a></li>
+												<li><a href="#Lichsu_baitapnangcao/lop8" >Bài tập nâng cao</a></li>
+												<li><a href="#Lichsu_thaoluan/lop8" >Thảo luận</a></li>
 											</ul>
 										</li>
 										<li id="Lichsu_lop9">
 											<a><span>Lớp 9</span></a>
 											<ul>
-												<li><a href="#Lichsu_lop9_baihoc" className="active" >Bài học</a></li>
-												<li><a href="#Lichsu_lop9_baitapnangcao" >Bài tập nâng cao</a></li>
-												<li><a href="#Lichsu_lop9_thaoluan" >Thảo luận</a></li>
+												<li><a href="#Lichsu_baihoc/lop9" className="active" >Bài học</a></li>
+												<li><a href="#Lichsu_baitapnangcao/lop9" >Bài tập nâng cao</a></li>
+												<li><a href="#Lichsu_thaoluan/lop9" >Thảo luận</a></li>
 											</ul>
 										</li>
 									</ul>
