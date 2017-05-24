@@ -1,4 +1,4 @@
-# redux-kpt
+# KidLearning
 Clone it to your machine. run
 
 npm install
