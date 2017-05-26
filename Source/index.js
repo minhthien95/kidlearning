@@ -411,9 +411,6 @@ app.post("/Lichsu_baihoc/lop:id", function(req,res){
 		if(err) {
 		    return console.error('error fetching client from pool', err);
 		}
-		client.on('notification', function(msg) {
-		    console.log(msg);
-		});
 		client.query('select * from "BAIHOC" where "PHANLOP"='+id, function(err, result) {
 		    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
 		    done(err);
@@ -422,13 +419,8 @@ app.post("/Lichsu_baihoc/lop:id", function(req,res){
 		      return console.error('error running query', err);
 		    }
 		    var data = result.rows;
-		    //console.log(result.rows);
-		    // //output: 1
-		    // //res.render("trangchu",{name:result.rows[0].name})
-		    // var name = result.rows[0].HOTEN;
 		   	res.send(data);
 		 })
-		
 	});
 
 });
@@ -477,16 +469,17 @@ app.get("/Lichsu_lop6_sachgiaokhoa", function(req,res){
 // });
 app.post("/Hoidap_lichsu/lop:lop/id:id", function(req,res){
 
-	var tempDate="'"+"YYYY-MM-DD"+"'";
+	var tempDate="'"+"HH24:MI DD-MM-YYYY"+"'";
 	var lop=req.params.lop;
 	var id=req.params.id;
-	var query="select *,to_char("+'"'+"THOIGIAN"+'"'+","+ tempDate+") from "+'"'+"CAUHOI"+'"'+","+'"'+"USER"+'"'+
+	var query="select *,"+'"'+"CAUHOI"+'"'+'.'+'"'+"ID"+'" as '+'"'+"ID_CAUHOI"+'"'+",to_char("+'"'+"THOIGIAN"+'"'+","+ tempDate+") from "+'"'+"CAUHOI"+'"'+","+'"'+"USER"+'"'+
 	 " where "+'"'+"CAUHOI"+'"'+'.'+'"'+"ID_TACGIA"+'"'+" = "+'"'+"USER"+'"'+'.'+'"'+"ID"+'"';
 	if(lop!="all")
 		query+=" and "+'"'+"PHANLOP"+'"'+"= '"+lop+"' ";
 	if(id!="all")
 		query+=" and "+'"'+"CAUHOI"+'"'+'.'+'"'+"ID"+'"'+"= '"+id+"' ";
 	query+=" order by "+'"'+"THOIGIAN"+'"'+" desc ";
+
 	pool.connect(function(err, client, done) {
 	  if(err) {
 	    return console.error('error fetching client from pool', err);
@@ -507,11 +500,188 @@ app.post("/Hoidap_lichsu/lop:lop/id:id", function(req,res){
 
 app.post("/Binhluan/id:id", function(req,res){
 	var id = "'"+req.params.id+"'";
+	var tempDate="'"+"HH24:MI DD-MM-YYYY"+"'";
 	pool.connect(function(err, client, done) {
 	  if(err) {
 	    return console.error('error fetching client from pool', err);
 	  }
-	  client.query('select * from "BINHLUAN","USER" where "BINHLUAN"."ID_NGUOITRALOI"="USER"."ID" and "ID_CAUHOI"='+id, function(err, result) {
+	  client.query('select *,to_char("THOIGIAN",'+ tempDate +'),"BINHLUAN"."ID" as "ID_BINHLUAN" from "BINHLUAN","USER" where "BINHLUAN"."ID_NGUOITRALOI"="USER"."ID" and "ID_CAUHOI"='+id+'order by "BINHLUAN"."THOIGIAN" desc', function(err, result) {
+	    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+	    done(err);
+
+	    if(err) {
+	      return console.error('error running query', err);
+	    }
+	    var data = result.rows;
+	   	res.send(data);
+	   	res.end();
+	  });
+	});
+});
+app.post('/themBinhluan', function(req, res){	
+
+	var id_cauhoi ="'"+JSON.parse(JSON.stringify(req.body.id_cauhoi))+"'";
+	var maxid;
+	var id_user="'"+JSON.parse(JSON.stringify(req.body.id))+"'";
+	var noidung="'"+JSON.parse(JSON.stringify(req.body.noidung))+"'";
+	var thoigian="'"+JSON.parse(JSON.stringify(req.body.thoigian))+"'";
+
+	pool.connect(function(err, client, donedb) {
+		if(err) {
+	    	return console.error('error fetching client from pool', err);
+		}	
+	  	client.query('SELECT * FROM "BINHLUAN" order by cast("ID" as int) desc limit 1',
+	  		function(err, result) {
+	  			donedb(err);
+			    if(err) {
+			      return console.error('error running query', err);
+			    }
+
+			    maxid=parseInt(result.rows[0].ID);
+			    id=maxid+1;
+
+			    maxid="'"+id+"'";
+		    	pool.connect(function(err, client, donedb) {
+					if(err) {
+				    	return console.error('error fetching client from pool', err);
+					}	
+				  	client.query('INSERT INTO "BINHLUAN" VALUES ('+maxid+','+
+				  												id_cauhoi+','+
+				  												id_user+','+
+				  												noidung+','+
+				  												0+','+
+				  												thoigian+')',
+				  		function(err, result) {
+				  			donedb(err);
+						    if(err) {
+						      return console.error('error running query', err);
+						    }
+						    else{
+						    	console.log("them xong");
+						    	pool.connect(function(err, client, donedb) {
+									if(err) {
+								    	return console.error('error fetching client from pool', err);
+									}	
+								  	client.query('UPDATE "CAUHOI" SET "SOTRALOI" = ((Select "SOTRALOI" FROM "CAUHOI" where "ID"='+id_cauhoi+')+1) WHERE "ID" = '+id_cauhoi,
+								  		function(err, result) {
+								  			donedb(err);
+										    if(err) {
+										      return console.error('error running query', err);
+										    }
+										    else{
+										    	console.log("them xong");
+										    	// console.log(result);
+										    	//res.setHeader("Content-Type", "text/html");
+										    	res.redirect('/');
+										    	//res.send(result);
+										    	return;
+										    }
+								  });
+								});
+
+						    }
+				  	});
+				});
+	  		}
+	  	);
+	});
+
+});
+app.post('/themCauhoi', function(req, res){	
+
+	var maxid;
+	var id_user="'"+JSON.parse(JSON.stringify(req.body.id))+"'";
+	var tieude="'"+JSON.parse(JSON.stringify(req.body.tieude))+"'";
+	var noidung="'"+JSON.parse(JSON.stringify(req.body.noidung))+"'";
+	var lop="'"+JSON.parse(JSON.stringify(req.body.lop))+"'";
+	var thoigian="'"+JSON.parse(JSON.stringify(req.body.thoigian))+"'";
+
+	pool.connect(function(err, client, donedb) {
+		if(err) {
+	    	return console.error('error fetching client from pool', err);
+		}	
+	  	client.query('SELECT * FROM "CAUHOI" order by cast("ID" as int) desc limit 1',
+	  		function(err, result) {
+	  			donedb(err);
+			    if(err) {
+			      return console.error('error running query', err);
+			    }
+
+			    maxid=parseInt(result.rows[0].ID);
+			    id=maxid+1;
+
+			    maxid="'"+id+"'";
+		    	pool.connect(function(err, client, donedb) {
+					if(err) {
+				    	return console.error('error fetching client from pool', err);
+					}	
+				  	client.query('INSERT INTO "CAUHOI" VALUES ('+maxid+','+
+				  												tieude+','+
+				  												id_user+','+
+				  												lop+','+
+				  												noidung+','+
+				  												0+','+
+				  												0+','+
+				  												thoigian+')',
+				  		function(err, result) {
+				  			donedb(err);
+						    if(err) {
+						      return console.error('error running query', err);
+						    }
+						    else{
+				    		   	res.end();
+				    		   	return;
+						    }
+				  	});
+				});
+	  		}
+	  	);
+	});
+});
+app.post("/rate_cauhoi", function(req,res){
+
+	var id="'"+JSON.parse(JSON.stringify(req.body.id_cauhoi))+"'";
+	var checkType=JSON.parse(JSON.stringify(req.body.type));
+	if(checkType=="up_cauhoi"){
+		type="+1";
+	}
+	else{
+		type="-1";
+	}
+	pool.connect(function(err, client, done) {
+	  if(err) {
+	    return console.error('error fetching client from pool', err);
+	  }
+	  client.query('UPDATE "CAUHOI" set "DANHGIA"=((Select "DANHGIA" FROM "CAUHOI" where "ID"='+id+')'+type+') WHERE "ID"='+id
+  		, function(err, result) {
+	    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+	    done(err);
+
+	    if(err) {
+	      return console.error('error running query', err);
+	    }
+	    var data = result.rows;
+	   	res.send(data);
+	   	res.end();
+	  });
+	});
+});
+app.post("/rate_binhluan", function(req,res){
+
+	var id="'"+JSON.parse(JSON.stringify(req.body.id_binhluan))+"'";
+	var checkType=JSON.parse(JSON.stringify(req.body.type));
+	if(checkType=="icon-arrow-up22 text-success"){
+		type="+1";
+	}
+	else{
+		type="-1";
+	}
+	pool.connect(function(err, client, done) {
+	  if(err) {
+	    return console.error('error fetching client from pool', err);
+	  }
+	  client.query('UPDATE "BINHLUAN" set "MUCDANHGIA"=((Select "MUCDANHGIA" FROM "BINHLUAN" where "ID"='+id+')'+type+') WHERE "ID"='+id
+  		, function(err, result) {
 	    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
 	    done(err);
 

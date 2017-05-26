@@ -52,7 +52,7 @@ export class Hoidap_lichsu extends React.Component{
 										<div className="blog-preview">
 											<div className="content-group-sm media blog-title stack-media-on-mobile text-left">
 												<div className="media-body">
-													<h5 className="text-semibold no-margin"><a href={"#Hoidap_lichsu_chitiet/lop"+data.PHANLOP+"/id"+data.ID} className="text-default">{data.TIEUDE}</a></h5>
+													<h5 className="text-semibold no-margin"><a href={"#Hoidap_lichsu_chitiet/lop"+data.PHANLOP+"/id"+data.ID_CAUHOI} className="text-default">{data.TIEUDE}</a></h5>
 
 													<ul className="list-inline list-inline-separate no-margin text-muted">
 														<li>Đăng bởi <a href="#">{data.USERNAME}</a></li>

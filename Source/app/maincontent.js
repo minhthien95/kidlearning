@@ -45,7 +45,7 @@ class MainContent extends React.Component {
 
 				  	<Route path="Lichsu_baihoc/lop:lop" component={Lichsu_baihoc} />
 				 	<Route path="Lichsu_baitapnangcao/lop:lop" component={Lichsu_baitapnangcao} />
-				 	<Route path="Lichsu_thaoluan/lop:lop" component={Hoidap_lichsu} />
+				 	<Route path="Lichsu_thaoluan/lop:lop" component={Lichsu_thaoluan} />
 
 				 	<Route path="Hoidap_lichsu_chitiet/lop:lop/id:id" component={Hoidap_lichsu_chitiet} />
 

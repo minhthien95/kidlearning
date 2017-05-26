@@ -372,7 +372,7 @@ export class Trangcanhan extends React.Component{
 										'</div>'+
 
 										'<div class="col-md-6 form-group">'+
-											'<label>Nhập lại mật khẩu:</label>'+
+											'<label>Xác nhận lại mật khẩu:</label>'+
 											'<input id="password2" name="password2" type="password" placeholder="Xác nhận lại mật khẩu" class="form-control"/>'+
 										'</div>'+
 									'</div>'+
