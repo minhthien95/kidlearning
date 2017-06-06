@@ -1,12 +1,22 @@
 import React from 'react';
+import io from 'socket.io-client';
+let socket = io('http://localhost:3000');
 
 var data = document.querySelector('#maincontent');
+var url1,url2;
+var id_cauhoi;
+var urllop,urlmon,urlid;
+var phanlop,mon,cauhoi;
+var id_user=data.dataset.id;
+var temp_username=data.dataset.username;
+var type_user=data.dataset.type;
 
 export class Trangcanhan extends React.Component{
 	constructor(props) {
     	super(props);
       	this.state = {
-        	id_user: "assets/images/user_"+data.dataset.id+".jpg"
+        	id_user: "assets/images/user_"+data.dataset.id+".jpg",
+        	listCauhoi: []
       	};
     }
   	render(){
@@ -37,26 +47,10 @@ export class Trangcanhan extends React.Component{
 								<li className="active"><a href="#activity" data-toggle="tab"><i className="icon-menu7 position-left"></i> Hoạt động</a></li>
 								<li><a href="#schedule" data-toggle="tab"><i className="icon-calendar3 position-left"></i> Quá trình <span className="badge badge-success badge-inline position-right">32</span></a></li>
 								<li><a href="#settings" data-toggle="tab"><i className="icon-cog3 position-left"></i> Cài đặt</a></li>
+								<li><a id="tag_listuser" href="#listuser" data-toggle="tab"><i className="icon-users4 position-left"></i> Quản lý học sinh</a></li>
+								<li><a id="tag_listsup" href="#listsup" data-toggle="tab"><i className=" icon-users2 position-left"></i> Quản lý trợ giảng</a></li>
+								<li><a id="tag_listadmin" href="#listadmin" data-toggle="tab"><i className="icon-user-tie position-left"></i>Admin</a></li>
 							</ul>
-
-							<div className="navbar-right">
-								<ul className="nav navbar-nav">
-									<li><a href="#"><i className="icon-stack-text position-left"></i> Notes</a></li>
-									<li><a href="#"><i className="icon-collaboration position-left"></i> Friends</a></li>
-									<li><a href="#"><i className="icon-images3 position-left"></i> Photos</a></li>
-									<li className="dropdown">
-										<a href="#" className="dropdown-toggle" data-toggle="dropdown"><i className="icon-gear"></i> <span className="visible-xs-inline-block position-right"> Options</span> <span className="caret"></span></a>
-										<ul className="dropdown-menu dropdown-menu-right">
-											<li><a href="#"><i className="icon-image2"></i> Update cover</a></li>
-											<li><a href="#"><i className="icon-clippy"></i> Update info</a></li>
-											<li><a href="#"><i className="icon-make-group"></i> Manage sections</a></li>
-											<li className="divider"></li>
-											<li><a href="#"><i className="icon-three-bars"></i> Activity log</a></li>
-											<li><a href="#"><i className="icon-cog5"></i> Profile settings</a></li>
-										</ul>
-									</li>
-								</ul>
-							</div>
 						</div>
 					</div>
 					{/* /toolbar */}
@@ -69,94 +63,79 @@ export class Trangcanhan extends React.Component{
 
 					{/* User profile */}
 					<div className="row">
-						<div className="col-lg-9">
+						<div className="col-lg-12">
 							<div className="tabbable">
 								<div className="tab-content">
 									<div className="tab-pane fade in active" id="activity">
 
 										{/* Timeline */}
-										<div className="timeline timeline-left content-group">
+										<div id="formCauhoi" className="timeline timeline-left content-group">
 											<div className="timeline-container">
 
 												{/* Blog post */}
-												<div className="timeline-row">
-													<div className="timeline-icon">
-														<img src="assets/images/placeholder.jpg" alt=""/>
-													</div>
+												{this.state.listCauhoi.map(function(data1,index){
+													return (
+														<div key={index} className="timeline-row">
+															<div className="timeline-icon">
+																<div className="bg-info-400">
+																	<i className="icon-question7"></i>
+																</div>
+															</div>
 
-													<div className="panel panel-flat timeline-content">
-														<div className="panel-heading">
-															<h6 className="panel-title">Himalayan sunset</h6>
-															<div className="heading-elements">
-																<span className="heading-text"><i className="icon-checkmark-circle position-left text-success"></i> 49 minutes ago</span>
-																<ul className="icons-list">
-																	<li className="dropdown">
-																		<a href="#" className="dropdown-toggle" data-toggle="dropdown">
-																			<i className="icon-arrow-down12"></i>
-																		</a>
-
-																		<ul className="dropdown-menu dropdown-menu-right">
-																			<li><a href="#"><i className="icon-user-lock"></i> Hide user posts</a></li>
-																			<li><a href="#"><i className="icon-user-block"></i> Block user</a></li>
-																			<li><a href="#"><i className="icon-user-minus"></i> Unfollow user</a></li>
-																			<li className="divider"></li>
-																			<li><a href="#"><i className="icon-embed"></i> Embed post</a></li>
-																			<li><a href="#"><i className="icon-blocked"></i> Report this post</a></li>
+															<div className="panel panel-flat timeline-content">
+																<div className="panel-heading">
+																	<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/cauhoi"+data1.ID_CAUHOI} className="text-default"><a>{data1.MON=="lichsu" ? (
+																																																					        <a className="text-success">Lịch sử {data1.PHANLOP} - </a>) : (
+																																																					        <a>Địa lí {data1.PHANLOP} - </a>
+																																																				      	)}</a>{data1.TIEUDE}</a></h6>
+																	<div className="heading-elements">
+																		<span className="heading-text">{data1.to_char}</span>
+																		<ul className="list-inline list-inline-separate heading-text pull-right">
+																			<li><a id={data1.USERNAME} name={data1.ID_CAUHOI} className="text-danger-400" data-popup="tooltip" data-toggle="modal" data-target="#confirm1"><i className="icon-cross2 position-right"/></a></li>
 																		</ul>
-																	</li>
-											                	</ul>
-										                	</div>
-														</div>
+												                	</div>
+																</div>
 
-														<div className="panel-body">
-															<a href="#" className="display-block content-group">
-																<img src="assets/images/cover.jpg" className="img-responsive content-group" alt=""/>
-															</a>
+																<div className="panel-body">
+																	<blockquote>
+																		<p>{data1.NOIDUNG}</p>
+																	</blockquote>
+																</div>
 
-															<h6 className="content-group">
-																<i className="icon-comment-discussion position-left"></i>
-																Comment from <a href="#">Jason Ansley</a>:
-															</h6>
+																<div className="panel-footer panel-footer-transparent">
+																	<div className="heading-elements">
+																		<ul className="list-inline list-inline-condensed heading-text">
+																			<li><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/cauhoi"+data1.ID_CAUHOI} className="text-default"><i className="icon-comment-discussion position-left"></i> {data1.SOTRALOI}</a></li>
+																			<li><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/cauhoi"+data1.ID_CAUHOI} className="text-default"><i className="icon-star-full2 text-warning-300 position-left"></i> {data1.DANHGIA}</a></li>
+																		</ul>
 
-															<blockquote>
-																<p>When suspiciously goodness labrador understood rethought yawned grew piously endearingly inarticulate oh goodness jeez trout distinct hence cobra despite taped laughed the much audacious less inside tiger groaned darn stuffily metaphoric unihibitedly inside cobra.</p>
-																<footer>Jason, <cite title="Source Title">10:39 am</cite></footer>
-															</blockquote>
-														</div>
-
-														<div className="panel-footer panel-footer-transparent">
-															<div className="heading-elements">
-																<ul className="list-inline list-inline-condensed heading-text">
-																	<li><a href="#" className="text-default"><i className="icon-eye4 position-left"></i> 438</a></li>
-																	<li><a href="#" className="text-default"><i className="icon-comment-discussion position-left"></i> 71</a></li>
-																</ul>
-
-																<span className="heading-btn pull-right">
-																	<a href="#" className="btn btn-link">Read post <i className="icon-arrow-right14 position-right"></i></a>
-																</span>
+																		<span className="heading-btn pull-right">
+																			<a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/cauhoi"+data1.ID_CAUHOI} className="btn btn-link">Chi tiết <i className="icon-arrow-right14 position-right"></i></a>
+																		</span>
+																	</div>
+																</div>
 															</div>
 														</div>
-													</div>
-												</div>
+													)
+												})}
 												{/* /blog post */}
+
 											</div>
 									    </div>
 									    {/* /timeline */}
 
 									</div>
 
-
 									<div className="tab-pane fade" id="schedule">
 
 										{/* Available hours */}
 										<div className="panel panel-flat">
 											<div className="panel-heading">
-												<h6 className="panel-title">Available hours</h6>
+												<h5 className="panel-title">Available hours</h5>
 												<div className="heading-elements">
 													<ul className="icons-list">
 								                		<li><a data-action="collapse"></a></li>
 								                		<li><a data-action="reload"></a></li>
-								                		<li><a data-action="close"></a></li>
 								                	</ul>
 							                	</div>
 											</div>
@@ -187,148 +166,260 @@ export class Trangcanhan extends React.Component{
 											</div>
 										</div>
 										{/* /calendar */}
-
 									</div>
-
 
 									<div className="tab-pane fade" id="settings">
 
 										{/* Account settings */}
-										<div className="panel panel-flat">
-											<div className="panel-heading">
-												<h6 className="panel-title">Cài đặt</h6>
-												<div className="heading-elements">
-													<ul className="icons-list">
-								                		<li><a data-action="collapse"></a></li>
-								                		<li><a data-action="reload"></a></li>
-								                		{/*<li><a data-action="close"></a></li>*/}
-								                	</ul>
-							                	</div>
-											</div>
+										<div className="col-lg-9" style={{paddingLeft: 0}} >
+											<div className="panel panel-flat">
+												<div className="panel-heading">
+													<h5 className="panel-title">Cài đặt tài khoản</h5>
+													<div className="heading-elements">
+														<ul className="icons-list">
+									                		<li><a data-action="collapse"></a></li>
+									                		<li><a data-action="reload"></a></li>
+									                		{/*<li><a data-action="close"></a></li>*/}
+									                	</ul>
+								                	</div>
+												</div>
 
-											<div className="panel-body">
-												<form action="#" id="editInfo_form">
-													<div className="form-group  has-feedback">
-														<div className="row">
-															<div className="col-md-6 form-group">
-																<label>Tên đăng nhập:</label>
-																<input id="username" name="username" type="text" placeholder="Tên đăng nhập của bạn" className="form-control"/>
-															</div>
+												<div className="panel-body">
+													<form action="#" id="editInfo_form">
+														<div className="form-group  has-feedback">
+															<div className="row">
+																<div className="col-md-6 form-group">
+																	<label>Tên đăng nhập:</label>
+																	<input id="username" name="username" type="text" placeholder="Tên đăng nhập của bạn" className="form-control"/>
+																</div>
 
-															<div className="col-md-6 form-group">
-																<label>Mật khẩu hiện tại:</label>
-																<input id="password" name="password" type="password"  placeholder="Nhập lại mật khẩu cũ" className="form-control"/>
+																<div className="col-md-6 form-group">
+																	<label>Mật khẩu hiện tại:</label>
+																	<input id="password" name="password" type="password"  placeholder="Nhập lại mật khẩu cũ" className="form-control"/>
+																</div>
 															</div>
 														</div>
-													</div>
-													<div className="form-group">
-														<div className="checkbox">
-															<label>
-																<input id="check_changePassword" type="checkbox" className="styled"/>
-																Đổi mật khẩu
-															</label>
-														</div>
-													</div>
-													<div id="password_new"></div>
-													<div className="form-group">
-														<div className="row">
-															<div className="col-md-12">
-																<label>Họ và Tên:</label>
-																<input id="fullname" name="fullname" type="text" placeholder="Họ và tên của bạn" className="form-control"/>
+														<div className="form-group">
+															<div className="checkbox">
+																<label>
+																	<input id="check_changePassword" type="checkbox" className="styled"/>
+																	Đổi mật khẩu
+																</label>
 															</div>
 														</div>
-													</div>
-													<div className="form-group">
-														<div className="row">
-															<div className="col-md-6 form-group">
-																<label>Ngày sinh:</label>
-																<input id="birthday" name="birthday" type="date"  className="form-control"/>
+														<div id="password_new"></div>
+														<div className="form-group">
+															<div className="row">
+																<div className="col-md-12">
+																	<label>Họ và Tên:</label>
+																	<input id="fullname" name="fullname" type="text" placeholder="Họ và tên của bạn" className="form-control"/>
+																</div>
 															</div>
+														</div>
+														<div className="form-group">
+															<div className="row">
+																<div className="col-md-6 form-group">
+																	<label>Ngày sinh:</label>
+																	<input id="birthday" name="birthday" type="date"  className="form-control"/>
+																</div>
 
-															<div className="col-md-6 form-group">
-																<label>Địa chỉ Email:</label>
-																<input id="email" name="email" type="email" placeholder="Địa chỉ Email của bạn"  className="form-control"/>
+																<div className="col-md-6 form-group">
+																	<label>Địa chỉ Email:</label>
+																	<input id="email" name="email" type="email" placeholder="Địa chỉ Email của bạn"  className="form-control"/>
+																</div>
 															</div>
 														</div>
-													</div>
-													<div className="form-group">
-														<div className="row">
-															<div className="col-md-6 form-group">
-																<label>Trường:</label>
-																<input id="truong" name="truong" type="text" placeholder="Tên trường của bạn"  className="form-control"/>
-															</div>
+														<div className="form-group">
+															<div className="row">
+																<div className="col-md-6 form-group">
+																	<label>Trường:</label>
+																	<input id="truong" name="truong" type="text" placeholder="Tên trường của bạn"  className="form-control"/>
+																</div>
 
-															<div className="col-md-6 form-group">
-																<label>Lớp:</label>
-																<input id="lop" name="lop" type="text" placeholder="Cấp lớp hiện tại của bạn"  className="form-control" disabled/>
+																<div className="col-md-6 form-group">
+																	<label>Lớp:</label>
+																	<input id="lop" name="lop" type="text" placeholder="Cấp lớp hiện tại của bạn"  className="form-control" disabled/>
+																</div>
 															</div>
 														</div>
-													</div>
-							                        <div className="text-right">
-							                        	<button type="submit" className="btn btn-primary">Lưu lại <i className="icon-arrow-right14 position-right"></i></button>
-							                        </div>
-						                        </form>
+								                        <div className="text-right">
+								                        	<button type="submit" className="btn btn-primary">Lưu lại <i className="icon-arrow-right14 position-right"></i></button>
+								                        </div>
+							                        </form>
+												</div>
 											</div>
 										</div>
 										{/* /account settings */}
+										<div className="col-lg-3" style={{paddingRight: 0}}>
+											{/* User thumbnail */}
+											<div className="thumbnail">
+												<div className="thumb thumb-rounded thumb-slide">
+													<img src={this.state.id_user} onError={() => {this.setState({id_user : "assets/images/placeholder.jpg"}) }} alt=""/>
+													<div className="caption">
+														<span>
+															<a href="#" className="btn bg-success-400 btn-icon btn-xs" data-popup="lightbox"><i className="icon-plus2"></i></a>
+															<a href="user_pages_profile.html" className="btn bg-success-400 btn-icon btn-xs"><i className="icon-link"></i></a>
+														</span>
+													</div>
+												</div>
+											
+										    	<div className="caption text-center">
+										    		<h6 className="text-semibold no-margin">{data.dataset.username} <small className="display-block">Lớp {data.dataset.lop}</small></h6>
+									    			<ul className="icons-list mt-15">
+								                    	<li><a href="#" data-popup="tooltip" title="Google Drive"><i className="icon-google-drive"></i></a></li>
+								                    	<li><a href="#" data-popup="tooltip" title="Twitter"><i className="icon-twitter"></i></a></li>
+								                    	<li><a href="#" data-popup="tooltip" title="Github"><i className="icon-github"></i></a></li>
+							                    	</ul>
+										    	</div>
+									    	</div>
+									    	{/* /user thumbnail */}
 
+
+											{/* Navigation */}
+									    	<div className="panel panel-flat">
+												<div className="panel-heading">
+													<h6 className="panel-title">Navigation</h6>
+													<div className="heading-elements">
+														<a href="#" className="heading-text">See all &rarr;</a>
+								                	</div>
+												</div>
+
+												<div className="list-group no-border no-padding-top">
+													<a href="#" className="list-group-item"><i className="icon-user"></i> My profile</a>
+													<a href="#" className="list-group-item"><i className="icon-cash3"></i> Balance</a>
+													<a href="#" className="list-group-item"><i className="icon-tree7"></i> Connections <span className="badge bg-danger pull-right">29</span></a>
+													<a href="#" className="list-group-item"><i className="icon-users"></i> Friends</a>
+													<div className="list-group-divider"></div>
+													<a href="#" className="list-group-item"><i className="icon-calendar3"></i> Events <span className="badge bg-teal-400 pull-right">48</span></a>
+													<a href="#" className="list-group-item"><i className="icon-cog3"></i> Account settings</a>
+												</div>
+											</div>
+											{/* /navigation */}
+										</div>
+									</div>
+
+									<div className="tab-pane fade" id="listuser">
+
+										{/* List user */}
+										{/* Basic datatable */}
+										<div className="panel panel-flat">
+											<div className="panel-heading">
+												<h5 className="panel-title">Danh sách học sinh</h5>
+											</div>
+
+											<table id="table_user" className="table datatable-basic">
+												<thead>
+													<tr>
+														<th>ID</th>
+														<th>Username</th>
+														<th>Họ tên</th>
+														<th>Ngày sinh</th>
+														<th>Email</th>
+														<th>Lớp</th>
+														<th>Xoá</th>
+													</tr>
+												</thead>
+												<tbody>
+												</tbody>
+											</table>
+										</div>
+										{/* /basic datatable */}
+										{/* /list user */}
+									</div>
+									<div className="tab-pane fade" id="listsup">
+
+										{/* List user */}
+										{/* Basic datatable */}
+										<div className="panel panel-flat">
+											<div className="panel-heading">
+												<h5 className="panel-title">Danh sách trợ giảng</h5>
+											</div>
+
+											<table id="table_user" className="table datatable-sup">
+												<thead>
+													<tr>
+														<th>ID</th>
+														<th>Username</th>
+														<th>Họ tên</th>
+														<th>Ngày sinh</th>
+														<th>Email</th>
+														<th>Lớp</th>
+														<th>Xoá</th>
+													</tr>
+												</thead>
+												<tbody>
+												</tbody>
+											</table>
+										</div>
+										{/* /basic datatable */}
+										{/* /list user */}
+									</div>
+									<div className="tab-pane fade" id="listadmin">
+
+										{/* List user */}
+										{/* Basic datatable */}
+										<div className="panel panel-flat">
+											<div className="panel-heading">
+												<h5 className="panel-title">Danh sách Admin</h5>
+											</div>
+
+											<table id="table_user" className="table datatable-admin">
+												<thead>
+													<tr>
+														<th>ID</th>
+														<th>Username</th>
+														<th>Họ tên</th>
+														<th>Ngày sinh</th>
+														<th>Email</th>
+													</tr>
+												</thead>
+												<tbody>
+												</tbody>
+											</table>
+										</div>
+										{/* /basic datatable */}
+										{/* /list user */}
 									</div>
 								</div>
 							</div>
-						</div>
-
-						<div className="col-lg-3">
-
-							{/* User thumbnail */}
-							<div className="thumbnail">
-								<div className="thumb thumb-rounded thumb-slide">
-									<img src={this.state.id_user} onError={() => {this.setState({id_user : "assets/images/placeholder.jpg"}) }} alt=""/>
-									<div className="caption">
-										<span>
-											<a href="#" className="btn bg-success-400 btn-icon btn-xs" data-popup="lightbox"><i className="icon-plus2"></i></a>
-											<a href="user_pages_profile.html" className="btn bg-success-400 btn-icon btn-xs"><i className="icon-link"></i></a>
-										</span>
-									</div>
-								</div>
-							
-						    	<div className="caption text-center">
-						    		<h6 className="text-semibold no-margin">{data.dataset.username} <small className="display-block">Lớp {data.dataset.lop}</small></h6>
-					    			<ul className="icons-list mt-15">
-				                    	<li><a href="#" data-popup="tooltip" title="Google Drive"><i className="icon-google-drive"></i></a></li>
-				                    	<li><a href="#" data-popup="tooltip" title="Twitter"><i className="icon-twitter"></i></a></li>
-				                    	<li><a href="#" data-popup="tooltip" title="Github"><i className="icon-github"></i></a></li>
-			                    	</ul>
-						    	</div>
-					    	</div>
-					    	{/* /user thumbnail */}
-
-
-							{/* Navigation */}
-					    	<div className="panel panel-flat">
-								<div className="panel-heading">
-									<h6 className="panel-title">Navigation</h6>
-									<div className="heading-elements">
-										<a href="#" className="heading-text">See all &rarr;</a>
-				                	</div>
-								</div>
-
-								<div className="list-group no-border no-padding-top">
-									<a href="#" className="list-group-item"><i className="icon-user"></i> My profile</a>
-									<a href="#" className="list-group-item"><i className="icon-cash3"></i> Balance</a>
-									<a href="#" className="list-group-item"><i className="icon-tree7"></i> Connections <span className="badge bg-danger pull-right">29</span></a>
-									<a href="#" className="list-group-item"><i className="icon-users"></i> Friends</a>
-									<div className="list-group-divider"></div>
-									<a href="#" className="list-group-item"><i className="icon-calendar3"></i> Events <span className="badge bg-teal-400 pull-right">48</span></a>
-									<a href="#" className="list-group-item"><i className="icon-cog3"></i> Account settings</a>
-								</div>
-							</div>
-							{/* /navigation */}
-
 						</div>
 					</div>
 					{/* /user profile */}
 
-
+		            {/* confirm */}
+					<div id="confirm" className="modal fade">
+						<div className="modal-dialog modal-xs">
+							<div className="modal-content">
+								<div className="thumbnail no-border no-margin">								
+							    	<div className="caption text-center">
+							    		<h6 className="text-semibold no-margin-top content-group">Bạn có chắc muốn xoá người dùng này! Dữ liệu sẽ không thể khôi phục. </h6>
+							    		<ul className="list-inline list-inline-condensed no-margin">
+					                    	<li><a className="btn btn-success btn-float" data-dismiss="modal">Xoá</a></li>
+					                    	<li><a className="btn btn-danger btn-float" data-dismiss="modal">Huỷ</a></li>
+				                    	</ul>
+							    	</div>
+						    	</div>
+							</div>
+						</div>
+					</div>
+					{/* /confirm */}
+					{/* confirm */}
+					<div id="confirm1" className="modal fade">
+						<div className="modal-dialog modal-xs">
+							<div className="modal-content">
+								<div className="thumbnail no-border no-margin">								
+							    	<div className="caption text-center">
+							    		<h6 className="text-semibold no-margin-top content-group">Bạn có chắc muốn xoá câu hỏi này! Dữ liệu sẽ không thể khôi phục. </h6>
+							    		<ul className="list-inline list-inline-condensed no-margin">
+					                    	<li><a className="btn btn-success btn-float" data-dismiss="modal">Xoá</a></li>
+					                    	<li><a className="btn btn-danger btn-float" data-dismiss="modal">Huỷ</a></li>
+				                    	</ul>
+							    	</div>
+						    	</div>
+							</div>
+						</div>
+					</div>
+					{/* /confirm */}
 				</div>
 				{/* /content area */}
 			</div>
@@ -339,6 +430,16 @@ export class Trangcanhan extends React.Component{
 
 		var id_user=data.dataset.id;
 		var check=false;
+
+		$('#tag_listuser').hide();
+		$('#tag_listsup').hide();
+		$('#tag_listadmin').hide();
+		if(type_user=="admin"){
+			$('#tag_listuser').show();
+			$('#tag_listsup').show();
+			$('#tag_listadmin').show();
+		}
+
 		console.log("validate edit info form");
 		if(this.state.id_user)
 		{
@@ -566,5 +667,231 @@ export class Trangcanhan extends React.Component{
 
 	        }
 	    });
+	    $('#formCauhoi').on('click', '.text-danger-400', function (e) {
+	        var usernameClick = $(this).attr('id');
+	        var type = $(this).parent().attr('id');
+	        var idCauhoi=$(this).attr('name');
+	        $('#confirm1 li').on('click', '.btn-success', function (e) {
+	        	console.log("xac nhan xoa user");
+	        	$.post("delete_cauhoi",{id_cauhoi:idCauhoi });
+	        	return;
+	    	});
+			
+	    });
+
+	    // Table setup
+	    // ------------------------------
+
+	    // Setting datatable defaults
+	    $.extend( $.fn.dataTable.defaults, {
+	        autoWidth: false,
+	        columnDefs: [{ 
+	            orderable: false,
+	            width: '100px',
+	            targets: [ 5 ]
+	        }],
+	        dom: '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
+	        language: {
+	            search: '<span>Tìm kiếm:</span> _INPUT_',
+	            lengthMenu: 'Hiển thị: _MENU_',
+	            info: "<span>Hiển thị:</span> _START_ đến _END_ trong tổng _TOTAL_ người dùng",
+	            paginate: { 'first': 'First', 'last': 'Last', 'next': '&rarr;', 'previous': '&larr;' }
+	        },
+	        drawCallback: function () {
+	            $(this).find('tbody tr').slice(-3).find('.dropdown, .btn-group').addClass('dropup');
+	        },
+	        preDrawCallback: function() {
+	            $(this).find('tbody tr').slice(-3).find('.dropdown, .btn-group').removeClass('dropup');
+	        }
+	    });
+
+	    var userTable;
+		$.post( "/list_user/typehocsinh", function( data ) {
+			// Basic datatable
+		    userTable=$('.datatable-basic').DataTable({
+		    	bAutoWidth: false,
+		    	"aaData": data,
+		    	"aoColumnDefs": [
+                    {"aTargets": [ 0 ], "bSortable": true },
+                    {"aTargets": [ 1 ], "bSortable": true },
+                    {"aTargets": [ 2 ], "bSortable": true },
+                    {"aTargets": [ 3 ], "bSortable": true },    
+                    {"aTargets": [ 4 ], "bSortable": true },
+                    {"aTargets": [ 5 ], "bSortable": true },
+                    {"aTargets": [ 6 ], "bSortable": false }
+                ],
+		        "aoColumns": [
+			        { "mDataProp": "ID" },
+			        { "mDataProp": "USERNAME" },
+			        { "mDataProp": "HOTEN" },
+			        { "mDataProp": "to_char" },
+			        { "mDataProp": "EMAIL" },
+			        { "mDataProp": "LOP" },
+			        { "render": function(data, type, full, meta){
+                        var tool_bar = '<div class="hidden-sm hidden-xs action-buttons">'+
+                                        '<a class="text-danger-400" data-popup="tooltip" data-toggle="modal" data-target="#confirm">'+
+                                            '<i class="icon-x"></i>'+
+                                        '</a>'+
+                                    '</div>'
+                        return tool_bar;
+                        }
+                    }
+		    	]
+
+		    });
+		    return;
+		});
+		$.post( "/list_user/typetrogiang", function( data ) {
+			// Basic datatable
+		    $('.datatable-sup').DataTable({
+		    	bAutoWidth: false,
+		    	"aaData": data,
+		    	"aoColumnDefs": [
+                    {"aTargets": [ 0 ], "bSortable": true },
+                    {"aTargets": [ 1 ], "bSortable": true },
+                    {"aTargets": [ 2 ], "bSortable": true },
+                    {"aTargets": [ 3 ], "bSortable": true },    
+                    {"aTargets": [ 4 ], "bSortable": true },
+                    {"aTargets": [ 5 ], "bSortable": true },
+                    {"aTargets": [ 6 ], "bSortable": false }
+                ],
+		        "aoColumns": [
+			        { "mDataProp": "ID" },
+			        { "mDataProp": "USERNAME" },
+			        { "mDataProp": "HOTEN" },
+			        { "mDataProp": "to_char" },
+			        { "mDataProp": "EMAIL" },
+			        { "mDataProp": "LOP" },
+			        { "render": function(data, type, full, meta){
+                        var tool_bar = '<div class="hidden-sm hidden-xs action-buttons">'+
+                                        '<a class="text-danger-400" data-popup="tooltip" data-toggle="modal" data-target="#call">'+
+                                            '<i class="icon-x"></i>'+
+                                        '</a>'+
+                                    '</div>'
+                        return tool_bar;
+                        }
+                    }
+		    	]
+
+		    });
+		    return;
+		});
+		$.post( "/list_user/typeadmin", function( data ) {
+			// Basic datatable
+		    $('.datatable-admin').DataTable({
+		    	bAutoWidth: false,
+		    	"aaData": data,
+		    	"aoColumnDefs": [
+                    {"aTargets": [ 0 ], "bSortable": true },
+                    {"aTargets": [ 1 ], "bSortable": true },
+                    {"aTargets": [ 2 ], "bSortable": true },
+                    {"aTargets": [ 3 ], "bSortable": true },    
+                    {"aTargets": [ 4 ], "bSortable": true }
+                ],
+		        "aoColumns": [
+			        { "mDataProp": "ID" },
+			        { "mDataProp": "USERNAME" },
+			        { "mDataProp": "HOTEN" },
+			        { "mDataProp": "to_char" },
+			        { "mDataProp": "EMAIL" }
+		    	]
+
+		    });
+		    return;
+		});
+
+	    // Alternative pagination
+	    $('.datatable-pagination').DataTable({
+	        pagingType: "simple",
+	        language: {
+	            paginate: {'next': 'Next &rarr;', 'previous': '&larr; Prev'}
+	        }
+	    });
+
+
+	    // Datatable with saving state
+	    $('.datatable-save-state').DataTable({
+	        stateSave: true
+	    });
+
+
+	    // Scrollable datatable
+	    $('.datatable-scroll-y').DataTable({
+	        autoWidth: true,
+	        scrollY: 300
+	    });
+
+
+
+	    // External table additions
+	    // ------------------------------
+
+	    // Add placeholder to the datatable filter option
+	    $('.dataTables_filter input[type=search]').attr('placeholder','Fuck...');
+
+
+	    // Enable Select2 select for the length option
+	    $('.dataTables_length select').select2({
+	        minimumResultsForSearch: Infinity,
+	        width: 'auto'
+	    });
+
+	    $('#table_user tbody').on('click', '.icon-x', function (e) {
+	        var id = $(this).closest('tr').children('td:first').text();
+	        console.log("xoa user");
+	        console.log(id);
+	        $('#confirm li').on('click', '.btn-success', function (e) {
+	        	console.log("xac nhan xoa user");
+	        	$.post("delete_user",{id: id});
+	        	//userTable.ajax.reload();
+	        	//userTable.clear();
+				//userTable.fnAddData(data);
+				//userTable.draw();
+	        	return;
+	    	});
+	    });
+	}
+	componentWillMount()
+	{
+		console.log("componentWillMount");
+
+		var that=this;
+
+		var data1={
+			mon: "all",
+			lop: "all",
+			id: "all",
+			id_user: id_user
+		}
+		console.log(data1);
+		socket.emit('c2s_Thaoluan',data1);
+		socket.on('s2c_Thaoluan', function(data){
+			console.log(data);
+			if(data.length==0){
+				console.log("chua co bai biet");
+				$("#formCauhoi").children().append(
+					'<div class="timeline-row">'+
+						'<div class="timeline-icon">'+
+							'<img src="assets/images/placeholder.jpg" alt=""/>'+
+						'</div>'+
+
+						'<div class="panel panel-flat timeline-content">'+
+							'<div class="panel-heading">'+
+								'<h6 class="panel-title text-semibold no-margin"><a class="text-default">Không có hoạt động nào!</a></h6>'+
+							'</div>'+
+
+							'<div class="panel-body">'+
+								'<blockquote>'+
+									'<p>Hiện tại bạn chưa có hoạt động nào</p>'+
+								'</blockquote>'+
+							'</div>'+
+						'</div>'+
+					'</div>'
+					);
+
+			}
+			that.setState({listCauhoi: data});
+		});
+		////
 	}
 }

@@ -45,13 +45,13 @@ class Slidebar extends React.Component {
 			$("#Lichsu_lop9").addClass("disabled");
 
 		if(data.dataset.lop<6)
-			$("#Dialy_lop6").addClass("disabled");
+			$("#Diali_lop6").addClass("disabled");
 		if(data.dataset.lop<7)
-			$("#Dialy_lop7").addClass("disabled");
+			$("#Diali_lop7").addClass("disabled");
 		if(data.dataset.lop<8)
-			$("#Dialy_lop8").addClass("disabled");
+			$("#Diali_lop8").addClass("disabled");
 		if(data.dataset.lop<9)
-			$("#Dialy_lop9").addClass("disabled");
+			$("#Diali_lop9").addClass("disabled");
 	}
  	render() {
 	    return (
@@ -94,70 +94,70 @@ class Slidebar extends React.Component {
 										<li id="Lichsu_lop6">
 											<a><span>Lớp 6</span></a>
 											<ul> 
-												<li><a href="#Lichsu_baihoc/lop6" className="active" >Bài học</a></li>
-												<li><a href="#Lichsu_baitapnangcao/lop6" >Bài tập nâng cao</a></li>
-												<li><a href="#Lichsu_thaoluan/lop6" >Thảo luận</a></li>
+												<li><a href="#lichsu/lop6/baihoc" className="active" >Bài học</a></li>
+												<li><a href="#lichsu/lop6/baitap" >Bài tập nâng cao</a></li>
+												<li><a href="#lichsu/lop6/thaoluan" >Thảo luận</a></li>
 											</ul>
 										</li>
 										<li id="Lichsu_lop7">
 											<a><span>Lớp 7</span></a>
 											<ul>
-												<li><a href="#Lichsu_baihoc/lop7" className="active" >Bài học</a></li>
-												<li><a href="#Lichsu_baitapnangcao/lop7" >Bài tập nâng cao</a></li>
-												<li><a href="#Lichsu_thaoluan/lop7" >Thảo luận</a></li>
+												<li><a href="#lichsu/lop7/baihoc" className="active" >Bài học</a></li>
+												<li><a href="#lichsu/lop7/baitap" >Bài tập nâng cao</a></li>
+												<li><a href="#lichsu/lop7/thaoluan" >Thảo luận</a></li>
 											</ul>
 										</li>
 										<li id="Lichsu_lop8">
 											<a><span>Lớp 8</span></a>
 											<ul>
-												<li><a href="#Lichsu_baihoc/lop8" className="active" >Bài học</a></li>
-												<li><a href="#Lichsu_baitapnangcao/lop8" >Bài tập nâng cao</a></li>
-												<li><a href="#Lichsu_thaoluan/lop8" >Thảo luận</a></li>
+												<li><a href="#lichsu/lop8/baihoc" className="active" >Bài học</a></li>
+												<li><a href="#lichsu/lop8/baitap" >Bài tập nâng cao</a></li>
+												<li><a href="#lichsu/lop8/thaoluan" >Thảo luận</a></li>
 											</ul>
 										</li>
 										<li id="Lichsu_lop9">
 											<a><span>Lớp 9</span></a>
 											<ul>
-												<li><a href="#Lichsu_baihoc/lop9" className="active" >Bài học</a></li>
-												<li><a href="#Lichsu_baitapnangcao/lop9" >Bài tập nâng cao</a></li>
-												<li><a href="#Lichsu_thaoluan/lop9" >Thảo luận</a></li>
+												<li><a href="#lichsu/lop9/baihoc" className="active" >Bài học</a></li>
+												<li><a href="#lichsu/lop9/baitap" >Bài tập nâng cao</a></li>
+												<li><a href="#lichsu/lop9/thaoluan" >Thảo luận</a></li>
 											</ul>
 										</li>
 									</ul>
 								</li>
 								<li>
-									<a><i className="icon-stack2"></i> <span>Địa lý</span></a>
+									<a><i className="icon-stack2"></i> <span>Địa lí</span></a>
 									<ul>
-										<li id="Dialy_lop6">
+										<li id="Diali_lop6">
 											<a><span>Lớp 6</span></a>
 											<ul> 
-												<li><a href="#Dialy_lop6_baihoc" className="active" >Bài học</a></li>
-												<li><a href="#Dialy_lop6_baitapnangcao" >Bài tập nâng cao</a></li>
-												<li><a href="#Dialy_lop6_thaoluan" >Thảo luận</a></li>
+												<li><a href="#diali/lop6/baihoc" className="active" >Bài học</a></li>
+												<li><a href="#diali/lop6/baitap" >Bài tập nâng cao</a></li>
+												<li><a href="#diali/lop6/thaoluan" >Thảo luận</a></li>
 											</ul>
 										</li>
-										<li id="Dialy_lop7">
+										<li id="Diali_lop7">
 											<a><span>Lớp 7</span></a>
 											<ul>
-												<li><a href="#Dialy_lop7_baihoc" className="active" >Bài học</a></li>
-												<li><a href="#Dialy_lop7_baitapnangcao" >Bài tập nâng cao</a></li>
-												<li><a href="#Dialy_lop7_thaoluan" >Thảo luận</a></li>
+												<li><a href="#diali/lop7/baihoc" className="active" >Bài học</a></li>
+												<li><a href="#diali/lop7/baitap" >Bài tập nâng cao</a></li>
+												<li><a href="#diali/lop7/thaoluan" >Thảo luận</a></li>
 											</ul>
 										</li>
-										<li id="Dialy_lop8">
+										<li id="Diali_lop8">
 											<a><span>Lớp 8</span></a>
 											<ul>
-												<li><a href="#Dialy_lop8_baihoc" className="active" >Bài học</a></li>
-												<li><a href="#Dialy_lop8_baitapnangcao" >Bài tập nâng cao</a></li>
-												<li><a href="#Dialy_lop8_thaoluan" >Thảo luận</a></li>
+												<li><a href="#diali/lop8/baihoc" className="active" >Bài học</a></li>
+												<li><a href="#diali/lop8/baitap" >Bài tập nâng cao</a></li>
+												<li><a href="#diali/lop8/thaoluan" >Thảo luận</a></li>
 											</ul>
 										</li>
-										<li id="Dialy_lop9">
+										<li id="Diali_lop9">
 											<a><span>Lớp 9</span></a>
 											<ul>
-												<li><a href="#Dialy_lop9_baihoc" className="active" >Bài học</a></li>
-												<li><a href="#Dialy_lop9_baitapnangcao" >Bài tập nâng cao</a></li>
-												<li><a href="#Dialy_lop9_thaoluan" >Thảo luận</a></li>
+												<li><a href="#diali/lop9/baihoc" className="active" >Bài học</a></li>
+												<li><a href="#diali/lop9/baitap" >Bài tập nâng cao</a></li>
+												<li><a href="#diali/lop9/thaoluan" >Thảo luận</a></li>
 											</ul>
 										</li>
 									</ul>
@@ -165,8 +165,8 @@ class Slidebar extends React.Component {
 								<li>
 									<a><i className="icon-droplet2"></i> <span>Hỏi & đáp</span></a>
 									<ul>
-										<li><a href="#Hoidap_lichsu" id="layout1">Lịch Sử</a></li>
-										<li><a href="#Hoidap_dialy" id="layout3">Địa Lý</a></li>
+										<li><a href="#hoidap/lichsu">Lịch Sử</a></li>
+										<li><a href="#hoidap/diali" >Địa lí</a></li>
 									</ul>
 								</li>
 								<li><a href="../../RTL/index.html"><i className="icon-list-unordered"></i> <span>Giới thiệu</span></a></li>

@@ -7,33 +7,23 @@ import {Trangchu} from "./components/Trangchu";
 
 import {Trangcanhan} from "./components/Trangcanhan";
 
+
+import {baihoc} from "./components/baihoc";
+import {baihoc_tip} from "./components/baihoc_tip";
+import {baihoc_tip_chitiet} from "./components/baihoc_tip_chitiet";
+import {baitap} from './components/baitap';
+import {thaoluan} from './components/thaoluan';
+import {cauhoi_chitiet} from './components/cauhoi_chitiet';
+
+import {hoidap} from './components/hoidap';
+
 import {Lichsu_baihoc} from "./components/Lichsu_baihoc";
 import {Lichsu_baitapnangcao} from './components/Lichsu_baitapnangcao';
 import {Lichsu_thaoluan} from './components/Lichsu_thaoluan';
 
-import {Lichsu_lop6_baihoc} from "./components/Lichsu_lop6_baihoc";
-import {Lichsu_lop6_baitapnangcao} from './components/Lichsu_lop6_baitapnangcao';
-import {Lichsu_lop6_thaoluan} from './components/Lichsu_lop6_thaoluan';
-
-import {Lichsu_lop6_sachgiaokhoa} from "./components/Lichsu_lop6_sachgiaokhoa";
-import {Lichsu_lop6_video} from './components/Lichsu_lop6_video';
-import {Lichsu_lop6_tuongtac} from './components/Lichsu_lop6_tuongtac';
-
-import {Lichsu_lop7_baihoc} from "./components/Lichsu_lop7_baihoc";
-import {Lichsu_lop7_baitapnangcao} from './components/Lichsu_lop7_baitapnangcao';
-import {Lichsu_lop7_thaoluan} from './components/Lichsu_lop7_thaoluan';
-
-import {Lichsu_lop8_baihoc} from "./components/Lichsu_lop8_baihoc";
-import {Lichsu_lop8_baitapnangcao} from './components/Lichsu_lop8_baitapnangcao';
-import {Lichsu_lop8_thaoluan} from './components/Lichsu_lop8_thaoluan';
-
-import {Lichsu_lop9_baihoc} from "./components/Lichsu_lop9_baihoc";
-import {Lichsu_lop9_baitapnangcao} from './components/Lichsu_lop9_baitapnangcao';
-import {Lichsu_lop9_thaoluan} from './components/Lichsu_lop9_thaoluan';
-
 import {Hoidap_lichsu_chitiet} from './components/Hoidap_lichsu_chitiet';
 import {Hoidap_lichsu} from './components/Hoidap_lichsu';
-import {Hoidap_dialy} from './components/Hoidap_dialy';
+import {Hoidap_diali} from './components/Hoidap_diali';
 
 class MainContent extends React.Component {
   	render(){
@@ -43,34 +33,25 @@ class MainContent extends React.Component {
 				  	<Route path="/" component={Trangchu}/>
 				  	<Route path="Trangcanhan" component={Trangcanhan}/>
 
+
+					<Route path=":mon/lop:lop/baihoc" component={baihoc} />
+					<Route path=":mon/lop:lop/baihoc_tip" component={baihoc_tip} />
+					<Route path=":mon/lop:lop/baihoc_tip/bai:id" component={baihoc_tip_chitiet} />
+
+				 	<Route path=":mon/lop:lop/baitap" component={baitap} />
+				 	<Route path=":mon/lop:lop/thaoluan" component={thaoluan} />
+				 	<Route path=":mon/lop:lop/cauhoi:id" component={cauhoi_chitiet} />
+
+				 	<Route path="hoidap/:mon" component={hoidap} />
+
 				  	<Route path="Lichsu_baihoc/lop:lop" component={Lichsu_baihoc} />
 				 	<Route path="Lichsu_baitapnangcao/lop:lop" component={Lichsu_baitapnangcao} />
 				 	<Route path="Lichsu_thaoluan/lop:lop" component={Lichsu_thaoluan} />
 
 				 	<Route path="Hoidap_lichsu_chitiet/lop:lop/id:id" component={Hoidap_lichsu_chitiet} />
 
-				  	<Route path="Lichsu_lop6_baihoc" component={Lichsu_lop6_baihoc}/>
-				 	<Route path="Lichsu_lop6_baitapnangcao" component={Lichsu_lop6_baitapnangcao} />
-				 	<Route path="Lichsu_lop6_thaoluan" component={Lichsu_lop6_thaoluan} />
-
-				 	<Route path="Lichsu_lop6_sachgiaokhoa" component={Lichsu_lop6_sachgiaokhoa}/>
-				 	<Route path="Lichsu_lop6_video" component={Lichsu_lop6_video} />
-				 	<Route path="Lichsu_lop6_tuongtac" component={Lichsu_lop6_tuongtac} />
-
-				 	<Route path="Lichsu_lop7_baihoc" component={Lichsu_lop7_baihoc}/>
-				 	<Route path="Lichsu_lop7_baitapnangcao" component={Lichsu_lop7_baitapnangcao} />
-				 	<Route path="Lichsu_lop7_thaoluan" component={Lichsu_lop7_thaoluan} />
-
-				 	<Route path="Lichsu_lop8_baihoc" component={Lichsu_lop8_baihoc}/>
-				 	<Route path="Lichsu_lop8_baitapnangcao" component={Lichsu_lop8_baitapnangcao} />
-				 	<Route path="Lichsu_lop8_thaoluan" component={Lichsu_lop8_thaoluan} />
-
-				 	<Route path="Lichsu_lop9_baihoc" component={Lichsu_lop9_baihoc}/>
-				 	<Route path="Lichsu_lop9_baitapnangcao" component={Lichsu_lop9_baitapnangcao} />
-				 	<Route path="Lichsu_lop9_thaoluan" component={Lichsu_lop9_thaoluan} />
-
 				 	<Route path="Hoidap_lichsu/lop:lop/id:id" component={Hoidap_lichsu} />
-				 	<Route path="Hoidap_dialy/lop:lop/id:id" component={Hoidap_dialy} />
+				 	<Route path="Hoidap_diali/lop:lop/id:id" component={Hoidap_diali} />
 				 	
 			 	</div>
 		 	</Router>
