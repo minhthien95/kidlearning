@@ -61,7 +61,7 @@ export class thaoluan extends React.Component{
 								</div>
 							</div>
 						</div>
-					</div>
+					</div>	
 					{this.state.listCauhoi.map(function(data1,index){
 						return (
 							<div key={index} className="col-lg-12">
@@ -87,23 +87,34 @@ export class thaoluan extends React.Component{
 											</div>
 
 											<p>{data1.NOIDUNG}</p>
-											<a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/cauhoi"+data1.ID_CAUHOI} >[...]</a>
+											
 										</div>
 									</div>
 
 									<div className="panel-footer panel-footer-condensed"><a className="heading-elements-toggle"><i className="icon-more"></i></a>
 										<div className="heading-elements">
-											<ul className="list-inline list-inline-separate heading-text">
-												<li><i className="icon-comment-discussion position-left"></i> {data1.SOTRALOI} trả lời</li>
-												<li>
-													Đánh giá:&nbsp;
-													<span className="text-muted position-right">{data1.DANHGIA}&nbsp;</span>
-													<i className="icon-star-full2 text-size-base text-warning-300"></i>
-													<a id="up_cauhoi" name={data1.ID_CAUHOI} alt={data1.USERNAME}><i className="icon-arrow-up22 text-success"></i></a>
-													<a id="down_cauhoi" name={data1.ID_CAUHOI} alt={data1.USERNAME}><i className="icon-arrow-down22 text-danger"></i></a>
-												</li>
-											</ul>
-											
+											{data1.USERNAME==data.dataset.username ? (
+										        <ul className="list-inline list-inline-separate heading-text">
+													<li><i className="icon-comment-discussion position-left"></i> {data1.SOTRALOI} trả lời</li>
+													<li>
+														Đánh giá:&nbsp;
+														<span className="text-muted position-right">{data1.DANHGIA}&nbsp;</span>
+														<i className="icon-star-full2 text-size-base text-warning-300"></i>
+													
+													</li>
+												</ul>) : (
+										        <ul className="list-inline list-inline-separate heading-text">
+													<li><i className="icon-comment-discussion position-left"></i> {data1.SOTRALOI} trả lời</li>
+													<li>
+														Đánh giá:&nbsp;
+														<span className="text-muted position-right">{data1.DANHGIA}&nbsp;</span>
+														<i className="icon-star-full2 text-size-base text-warning-300"></i>
+														<a id="up_cauhoi" name={data1.ID_CAUHOI} alt={data1.USERNAME}><i className="icon-arrow-up22 text-success"></i></a>
+														<a id="down_cauhoi" name={data1.ID_CAUHOI} alt={data1.USERNAME}><i className="icon-arrow-down22 text-danger"></i></a>
+													</li>
+												</ul>
+									      	)}
+																						
 											<a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/cauhoi"+data1.ID_CAUHOI} className="heading-text pull-right">Chi tiết <i className="icon-arrow-right14 position-right"></i></a>
 										</div>
 									</div>
@@ -136,15 +147,7 @@ export class thaoluan extends React.Component{
 	componentDidMount()
 	{
 		console.log("componentDidMount");
-
-		var currentdate = new Date();
-		var datetime =currentdate.getFullYear() + "-"
-		    + (currentdate.getMonth()+1)  + "-" 
-		    + currentdate.getDate() +" "
-		    + currentdate.getHours() + ":"  
-		    + currentdate.getMinutes() + ":" 
-		    + currentdate.getSeconds();
-
+		
 		url1=window.location.href;
 		url1=url1.split('#');
 		mon=url1[1].split('/');
@@ -170,6 +173,14 @@ export class thaoluan extends React.Component{
 				return;
 			if($("#add_noidung").val()=="")
 				return;
+			var currentdate = new Date();
+			var datetime =currentdate.getFullYear() + "-"
+			    + (currentdate.getMonth()+1)  + "-" 
+			    + currentdate.getDate() +" "
+			    + currentdate.getHours() + ":"  
+			    + currentdate.getMinutes() + ":" 
+			    + currentdate.getSeconds();
+
 			var data={
 		        id:       id_user,
 		        tieude: $("#add_tieude").val(),
@@ -240,14 +251,37 @@ export class thaoluan extends React.Component{
 		socket.emit('c2s_Thaoluan',data1);
 		socket.on('s2c_Thaoluan', function(data){
 			console.log(data);
-				var mon1;
+			var mon1;
 			if(mon[1]=="lichsu")
 				mon1="Lịch sử";
 			if(mon[1]=="diali")
 				mon1="Địa lí";
 
 			var name_link="Thảo luận "+mon1+" lớp "+phanlop[0]; 
-			$("#link_pre").text(name_link); 
+			$("#link_pre").text(name_link);
+
+			if(data.length==0){
+				console.log("chua co bai biet");
+				$("#formadd").parent().append(
+					'<div id="note_emty" class="timeline-row">'+
+						'<div class="panel panel-flat timeline-content">'+
+							'<div class="panel-heading">'+
+								'<h6 class="panel-title text-semibold no-margin"><a class="text-default">Không có câu hỏi nào!</a></h6>'+
+							'</div>'+
+
+							'<div class="panel-body">'+
+								'<blockquote>'+
+									'<p>Hiện tại chưa có câu hỏi nào</p>'+
+								'</blockquote>'+
+							'</div>'+
+						'</div>'+
+					'</div>'
+					);
+			}
+			else{
+				$("#note_emty").remove();
+			} 
+
 			that.setState({listCauhoi: data});
 		});
 		////

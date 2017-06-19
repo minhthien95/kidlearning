@@ -9,6 +9,7 @@ import {Trangcanhan} from "./components/Trangcanhan";
 
 
 import {baihoc} from "./components/baihoc";
+import {baihoc_chitiet} from "./components/baihoc_chitiet";
 import {baihoc_tip} from "./components/baihoc_tip";
 import {baihoc_tip_chitiet} from "./components/baihoc_tip_chitiet";
 import {baitap} from './components/baitap';
@@ -16,14 +17,18 @@ import {thaoluan} from './components/thaoluan';
 import {cauhoi_chitiet} from './components/cauhoi_chitiet';
 
 import {hoidap} from './components/hoidap';
+import {gioithieu} from './components/gioithieu';
 
-import {Lichsu_baihoc} from "./components/Lichsu_baihoc";
-import {Lichsu_baitapnangcao} from './components/Lichsu_baitapnangcao';
-import {Lichsu_thaoluan} from './components/Lichsu_thaoluan';
+import {baihoc_baiviet} from "./components/baihoc_baiviet";
+import {baihoc_baiviet_chitiet} from './components/baihoc_baiviet_chitiet';
 
-import {Hoidap_lichsu_chitiet} from './components/Hoidap_lichsu_chitiet';
-import {Hoidap_lichsu} from './components/Hoidap_lichsu';
-import {Hoidap_diali} from './components/Hoidap_diali';
+import {baihoc_video} from "./components/baihoc_video";
+import {baihoc_video_chitiet} from './components/baihoc_video_chitiet';
+
+import {baitap_tracnghiem} from "./components/baitap_tracnghiem";
+import {baitap_tuluan} from "./components/baitap_tuluan";
+import {baitap_tracnghiem_chitiet} from "./components/baitap_tracnghiem_chitiet";
+import {baitap_tuluan_chitiet} from "./components/baitap_tuluan_chitiet";
 
 class MainContent extends React.Component {
   	render(){
@@ -35,24 +40,29 @@ class MainContent extends React.Component {
 
 
 					<Route path=":mon/lop:lop/baihoc" component={baihoc} />
+					<Route path=":mon/lop:lop/baihoc_chitiet/:id" component={baihoc_chitiet} />
 					<Route path=":mon/lop:lop/baihoc_tip" component={baihoc_tip} />
-					<Route path=":mon/lop:lop/baihoc_tip/bai:id" component={baihoc_tip_chitiet} />
+					<Route path=":mon/lop:lop/baihoc_tip_chitiet/:id" component={baihoc_tip_chitiet} />
 
 				 	<Route path=":mon/lop:lop/baitap" component={baitap} />
 				 	<Route path=":mon/lop:lop/thaoluan" component={thaoluan} />
 				 	<Route path=":mon/lop:lop/cauhoi:id" component={cauhoi_chitiet} />
 
-				 	<Route path="hoidap/:mon" component={hoidap} />
+				 	<Route path=":mon/lop:lop/baihoc_baiviet" component={baihoc_baiviet} />
+				 	<Route path=":mon/lop:lop/baihoc_baiviet_chitiet/:id" component={baihoc_baiviet_chitiet} />
 
-				  	<Route path="Lichsu_baihoc/lop:lop" component={Lichsu_baihoc} />
-				 	<Route path="Lichsu_baitapnangcao/lop:lop" component={Lichsu_baitapnangcao} />
-				 	<Route path="Lichsu_thaoluan/lop:lop" component={Lichsu_thaoluan} />
+				 	<Route path=":mon/lop:lop/baihoc_video/:bai" component={baihoc_video} />
+				 	<Route path=":mon/lop:lop/baihoc_video_chitiet/:id" component={baihoc_video_chitiet} />
 
-				 	<Route path="Hoidap_lichsu_chitiet/lop:lop/id:id" component={Hoidap_lichsu_chitiet} />
+				 	<Route path=":mon/lop:lop/baitap_tracnghiem" component={baitap_tracnghiem} />
+				 	<Route path=":mon/lop:lop/baitap_tuluan" component={baitap_tuluan} />
 
-				 	<Route path="Hoidap_lichsu/lop:lop/id:id" component={Hoidap_lichsu} />
-				 	<Route path="Hoidap_diali/lop:lop/id:id" component={Hoidap_diali} />
-				 	
+				 	<Route path=":mon/lop:lop/baitap_tracnghiem_chitiet/:id" component={baitap_tracnghiem_chitiet} />
+				 	<Route path=":mon/lop:lop/baitap_tuluan_chitiet/:id" component={baitap_tuluan_chitiet} />
+
+				 	<Route path="hoidap/:mon" component={hoidap} />	
+
+				 	<Route path="gioithieu" component={gioithieu} />	
 			 	</div>
 		 	</Router>
 

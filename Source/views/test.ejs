@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Vui học Lịch Sử và Địa Lý</title>
-
-	<!-- Global stylesheets -->
+	<title>Quiz</title>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Slab">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/quiz.css">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
 	<link href="assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
 	<link href="assets/css/bootstrap.css" rel="stylesheet" type="text/css">
@@ -39,49 +37,47 @@
 	<script type="text/javascript" src="assets/js/plugins/tables/datatables/datatables.min.js"></script>
 	<script type="text/javascript" src="assets/js/plugins/tables/datatables/extensions/natural_sort.js"></script>
 	<script type="text/javascript" src="assets/js/plugins/forms/selects/select2.min.js"></script>
-	<script type="text/javascript" src="assets/js/plugins/forms/wizards/steps.min.js"></script>
-	<script type="text/javascript" src="assets/js/plugins/forms/styling/uniform.min.js"></script>
-	<!-- /theme JS files -->
-	<!-- sgk -->
-	
-	<!-- sgk -->
-	
 </head>
-
 <body>
-	Xin chào <%= user.username%>!
-	<!-- Main navbar -->
-	<div class="navbar navbar-inverse">
-		<div id="statusbar" data-username=<%= user.username%> data-lop=<%= user.lop%> data-type=<%= user.type%> data-id=<%= user.id%>></div>
+	<div id="top">
+		<h1 style="text-align: center;">Bài 1 : SƠ LƯỢC VỀ MÔN LỊCH SỬ</h1>	
 	</div>
-	<!-- /main navbar -->
 
+	<div id="hint" class="hint" style="display: none;">
+		<h3>Hệ thống kiến thức : </h3>
+		<img src="" alt="photo here..." style="width: 700px; height: 700px; text-align: center; margin: 0 auto; display: block;">
+	</div>
 
-	<!-- Page container -->
-	<div class="page-container">
+	<div id="quizContainer" class="container">
+		<div class="title">Bài tập trắc nghiệm</div>
+		<div id="question" class="question"></div>
+		<div id="questionURL" class="questionURL"></div>
+		<label class="option">
+			<input type="radio" name="option" value="1" /><span id="opt1"></span>
+		</label>
+		<label class="option">
+			<input type="radio" name="option" value="2" /><span id="opt2"></span>
+		</label>
+		<label class="option">
+			<input type="radio" name="option" value="3" /><span id="opt3"></span>
+		</label>
+		<label class="option">
+			<input type="radio" name="option" value="4" /><span id="opt4"></span>
+		</label>
+		<button id="nextBtn" class="next-btn" onclick="loadNextQuestion();">
+			<i class="fa fa-arrow-right" aria-hidden="true"></i>
+		</button>
+		<button id="prevBtn" class="next-btn" onclick="loadPrevQuestion();">
+			<i class="fa fa-arrow-left" aria-hidden="true"></i>
+		</button>
+	</div>
 
-		<!-- Page content -->
-		<div class="page-content">
-
-			<!-- Main sidebar -->
-			<div class="sidebar sidebar-main" >
-				<div id="slidebar" data-username=<%= user.username%> data-lop=<%= user.lop%> data-type=<%= user.type%> data-id=<%= user.id%> ></div>
-			</div>
-			<!-- /main sidebar -->
-
-			<!-- Main content -->
-			<div id="maincontent" data-username=<%= user.username%> data-lop=<%= user.lop%> data-type=<%= user.type%> data-id=<%= user.id%>></div>
-			
-			<!-- /main content -->
-
-		</div>
-		<!-- /page content -->
+	<div id="result" class="container result" style="display: none;">
 
 	</div>
-	<!-- /page container -->
+	<!-- <button id="backBtn" class="backBtn" onclick="back();" style="display: none;">Trở về trang chủ</button> -->
 	
-	<!-- bundle -->
-	<script src="bundle.js"></script>
-	<!-- bundle -->
+<!-- 	<script type="text/javascript" src="question.js"></script>
+	<script type="text/javascript" src="../js/quiz-script.js"></script> -->
 </body>
 </html>

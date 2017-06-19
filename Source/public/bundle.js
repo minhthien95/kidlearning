@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 312);
+/******/ 	return __webpack_require__(__webpack_require__.s = 318);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -394,7 +394,7 @@ module.exports = warning;
 "use strict";
 
 
-module.exports = __webpack_require__(31);
+module.exports = __webpack_require__(32);
 
 
 /***/ }),
@@ -791,7 +791,7 @@ exports.__esModule = true;
 exports.default = routerWarning;
 exports._resetWarned = _resetWarned;
 
-var _warning = __webpack_require__(309);
+var _warning = __webpack_require__(315);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -1315,7 +1315,7 @@ module.exports = emptyFunction;
 var debugTool = null;
 
 if (process.env.NODE_ENV !== 'production') {
-  var ReactDebugTool = __webpack_require__(218);
+  var ReactDebugTool = __webpack_require__(224);
   debugTool = ReactDebugTool;
 }
 
@@ -1345,8 +1345,8 @@ var _prodInvariant = __webpack_require__(4),
 var CallbackQueue = __webpack_require__(95);
 var PooledClass = __webpack_require__(20);
 var ReactFeatureFlags = __webpack_require__(100);
-var ReactReconciler = __webpack_require__(28);
-var Transaction = __webpack_require__(42);
+var ReactReconciler = __webpack_require__(29);
+var Transaction = __webpack_require__(43);
 
 var invariant = __webpack_require__(1);
 
@@ -2504,7 +2504,7 @@ var _assign = __webpack_require__(5);
 var ReactCurrentOwner = __webpack_require__(16);
 
 var warning = __webpack_require__(2);
-var canDefineProperty = __webpack_require__(49);
+var canDefineProperty = __webpack_require__(50);
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 
 var REACT_ELEMENT_TYPE = __webpack_require__(127);
@@ -2879,6 +2879,121 @@ module.exports = reactProdInvariant;
 
 
 /**
+ * Module dependencies.
+ */
+
+var url = __webpack_require__(305);
+var parser = __webpack_require__(81);
+var Manager = __webpack_require__(131);
+var debug = __webpack_require__(51)('socket.io-client');
+
+/**
+ * Module exports.
+ */
+
+module.exports = exports = lookup;
+
+/**
+ * Managers cache.
+ */
+
+var cache = exports.managers = {};
+
+/**
+ * Looks up an existing `Manager` for multiplexing.
+ * If the user summons:
+ *
+ *   `io('http://localhost/a');`
+ *   `io('http://localhost/b');`
+ *
+ * We reuse the existing instance based on same scheme/port/host,
+ * and we initialize sockets for each namespace.
+ *
+ * @api public
+ */
+
+function lookup (uri, opts) {
+  if (typeof uri === 'object') {
+    opts = uri;
+    uri = undefined;
+  }
+
+  opts = opts || {};
+
+  var parsed = url(uri);
+  var source = parsed.source;
+  var id = parsed.id;
+  var path = parsed.path;
+  var sameNamespace = cache[id] && path in cache[id].nsps;
+  var newConnection = opts.forceNew || opts['force new connection'] ||
+                      false === opts.multiplex || sameNamespace;
+
+  var io;
+
+  if (newConnection) {
+    debug('ignoring socket cache for %s', source);
+    io = Manager(source, opts);
+  } else {
+    if (!cache[id]) {
+      debug('new io instance for %s', source);
+      cache[id] = Manager(source, opts);
+    }
+    io = cache[id];
+  }
+  if (parsed.query && !opts.query) {
+    opts.query = parsed.query;
+  } else if (opts && 'object' === typeof opts.query) {
+    opts.query = encodeQueryString(opts.query);
+  }
+  return io.socket(parsed.path, opts);
+}
+/**
+ *  Helper method to parse query objects to string.
+ * @param {object} query
+ * @returns {string}
+ */
+function encodeQueryString (obj) {
+  var str = [];
+  for (var p in obj) {
+    if (obj.hasOwnProperty(p)) {
+      str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
+    }
+  }
+  return str.join('&');
+}
+/**
+ * Protocol version.
+ *
+ * @api public
+ */
+
+exports.protocol = parser.protocol;
+
+/**
+ * `connect`.
+ *
+ * @param {String} uri
+ * @api public
+ */
+
+exports.connect = lookup;
+
+/**
+ * Expose constructors for standalone build.
+ *
+ * @api public
+ */
+
+exports.Manager = __webpack_require__(131);
+exports.Socket = __webpack_require__(133);
+
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+/**
  * Expose `Emitter`.
  */
 
@@ -3043,22 +3158,22 @@ Emitter.prototype.hasListeners = function(event){
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
  * Module dependencies.
  */
 
-var keys = __webpack_require__(167);
+var keys = __webpack_require__(173);
 var hasBinary = __webpack_require__(88);
 var sliceBuffer = __webpack_require__(140);
 var after = __webpack_require__(139);
-var utf8 = __webpack_require__(168);
+var utf8 = __webpack_require__(174);
 
 var base64encoder;
 if (global && global.ArrayBuffer) {
-  base64encoder = __webpack_require__(154);
+  base64encoder = __webpack_require__(160);
 }
 
 /**
@@ -3116,7 +3231,7 @@ var err = { type: 'error', data: 'parser error' };
  * Create a blob api even for blob builder when vendor prefixes exist
  */
 
-var Blob = __webpack_require__(155);
+var Blob = __webpack_require__(161);
 
 /**
  * Encodes a packet.
@@ -3656,7 +3771,7 @@ exports.decodePayloadAsBinary = function (data, binaryType, callback) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3673,7 +3788,7 @@ exports.decodePayloadAsBinary = function (data, binaryType, callback) {
 
 
 var DOMNamespaces = __webpack_require__(59);
-var setInnerHTML = __webpack_require__(44);
+var setInnerHTML = __webpack_require__(45);
 
 var createMicrosoftUnsafeLocalFunction = __webpack_require__(66);
 var setTextContent = __webpack_require__(113);
@@ -3779,7 +3894,7 @@ DOMLazyTree.queueText = queueText;
 module.exports = DOMLazyTree;
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3795,7 +3910,7 @@ module.exports = DOMLazyTree;
 
 
 
-var ReactRef = __webpack_require__(232);
+var ReactRef = __webpack_require__(238);
 var ReactInstrumentation = __webpack_require__(13);
 
 var warning = __webpack_require__(2);
@@ -3953,7 +4068,7 @@ module.exports = ReactReconciler;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4172,7 +4287,7 @@ function formatPattern(pattern, params) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4209,7 +4324,7 @@ exports['default'] = {
 };
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4227,16 +4342,16 @@ exports['default'] = {
 
 var _assign = __webpack_require__(5);
 
-var ReactChildren = __webpack_require__(288);
+var ReactChildren = __webpack_require__(294);
 var ReactComponent = __webpack_require__(79);
-var ReactPureComponent = __webpack_require__(293);
-var ReactClass = __webpack_require__(289);
-var ReactDOMFactories = __webpack_require__(290);
+var ReactPureComponent = __webpack_require__(299);
+var ReactClass = __webpack_require__(295);
+var ReactDOMFactories = __webpack_require__(296);
 var ReactElement = __webpack_require__(23);
-var ReactPropTypes = __webpack_require__(291);
-var ReactVersion = __webpack_require__(294);
+var ReactPropTypes = __webpack_require__(297);
+var ReactVersion = __webpack_require__(300);
 
-var onlyChild = __webpack_require__(297);
+var onlyChild = __webpack_require__(303);
 var warning = __webpack_require__(2);
 
 var createElement = ReactElement.createElement;
@@ -4244,7 +4359,7 @@ var createFactory = ReactElement.createFactory;
 var cloneElement = ReactElement.cloneElement;
 
 if (process.env.NODE_ENV !== 'production') {
-  var canDefineProperty = __webpack_require__(49);
+  var canDefineProperty = __webpack_require__(50);
   var ReactElementValidator = __webpack_require__(128);
   var didWarnPropTypesDeprecated = false;
   createElement = ReactElementValidator.createElement;
@@ -4319,7 +4434,7 @@ module.exports = React;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4345,7 +4460,7 @@ module.exports = emptyObject;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4363,7 +4478,7 @@ module.exports = emptyObject;
 
 var _prodInvariant = __webpack_require__(4);
 
-var EventPluginRegistry = __webpack_require__(39);
+var EventPluginRegistry = __webpack_require__(40);
 var EventPluginUtils = __webpack_require__(60);
 var ReactErrorUtils = __webpack_require__(64);
 
@@ -4629,7 +4744,7 @@ module.exports = EventPluginHub;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4645,7 +4760,7 @@ module.exports = EventPluginHub;
 
 
 
-var EventPluginHub = __webpack_require__(33);
+var EventPluginHub = __webpack_require__(34);
 var EventPluginUtils = __webpack_require__(60);
 
 var accumulateInto = __webpack_require__(107);
@@ -4769,7 +4884,7 @@ module.exports = EventPropagators;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4822,7 +4937,7 @@ var ReactInstanceMap = {
 module.exports = ReactInstanceMap;
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4886,7 +5001,7 @@ SyntheticEvent.augmentClass(SyntheticUIEvent, UIEventInterface);
 module.exports = SyntheticUIEvent;
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports) {
 
 
@@ -4898,7 +5013,7 @@ module.exports = function(a, b){
 };
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {/**
@@ -4907,7 +5022,7 @@ module.exports = function(a, b){
  * Expose `debug()` as the module.
  */
 
-exports = module.exports = __webpack_require__(165);
+exports = module.exports = __webpack_require__(171);
 exports.log = log;
 exports.formatArgs = formatArgs;
 exports.save = save;
@@ -5090,7 +5205,7 @@ function localstorage() {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5351,7 +5466,7 @@ module.exports = EventPluginRegistry;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5369,11 +5484,11 @@ module.exports = EventPluginRegistry;
 
 var _assign = __webpack_require__(5);
 
-var EventPluginRegistry = __webpack_require__(39);
-var ReactEventEmitterMixin = __webpack_require__(222);
+var EventPluginRegistry = __webpack_require__(40);
+var ReactEventEmitterMixin = __webpack_require__(228);
 var ViewportMetrics = __webpack_require__(106);
 
-var getVendorPrefixedEventName = __webpack_require__(257);
+var getVendorPrefixedEventName = __webpack_require__(263);
 var isEventSupported = __webpack_require__(70);
 
 /**
@@ -5684,7 +5799,7 @@ var ReactBrowserEventEmitter = _assign({}, ReactEventEmitterMixin, {
 module.exports = ReactBrowserEventEmitter;
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5700,7 +5815,7 @@ module.exports = ReactBrowserEventEmitter;
 
 
 
-var SyntheticUIEvent = __webpack_require__(36);
+var SyntheticUIEvent = __webpack_require__(37);
 var ViewportMetrics = __webpack_require__(106);
 
 var getEventModifierState = __webpack_require__(68);
@@ -5761,7 +5876,7 @@ SyntheticUIEvent.augmentClass(SyntheticMouseEvent, MouseEventInterface);
 module.exports = SyntheticMouseEvent;
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5992,7 +6107,7 @@ module.exports = TransactionImpl;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6120,7 +6235,7 @@ function escapeTextContentForBrowser(text) {
 module.exports = escapeTextContentForBrowser;
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6223,7 +6338,7 @@ if (ExecutionEnvironment.canUseDOM) {
 module.exports = setInnerHTML;
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6243,11 +6358,11 @@ var _react = __webpack_require__(3);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _deprecateObjectProperties = __webpack_require__(46);
+var _deprecateObjectProperties = __webpack_require__(47);
 
 var _deprecateObjectProperties2 = _interopRequireDefault(_deprecateObjectProperties);
 
-var _getRouteParams = __webpack_require__(274);
+var _getRouteParams = __webpack_require__(280);
 
 var _getRouteParams2 = _interopRequireDefault(_getRouteParams);
 
@@ -6386,7 +6501,7 @@ module.exports = exports['default'];
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6468,7 +6583,7 @@ exports.default = deprecateObjectProperties;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6479,7 +6594,7 @@ var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.do
 exports.canUseDOM = canUseDOM;
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6495,7 +6610,7 @@ var _warning = __webpack_require__(15);
 
 var _warning2 = _interopRequireDefault(_warning);
 
-var _queryString = __webpack_require__(189);
+var _queryString = __webpack_require__(195);
 
 var _runTransitionHook = __webpack_require__(78);
 
@@ -6662,7 +6777,7 @@ module.exports = exports['default'];
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6694,121 +6809,6 @@ module.exports = canDefineProperty;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 50 */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-/**
- * Module dependencies.
- */
-
-var url = __webpack_require__(299);
-var parser = __webpack_require__(81);
-var Manager = __webpack_require__(131);
-var debug = __webpack_require__(51)('socket.io-client');
-
-/**
- * Module exports.
- */
-
-module.exports = exports = lookup;
-
-/**
- * Managers cache.
- */
-
-var cache = exports.managers = {};
-
-/**
- * Looks up an existing `Manager` for multiplexing.
- * If the user summons:
- *
- *   `io('http://localhost/a');`
- *   `io('http://localhost/b');`
- *
- * We reuse the existing instance based on same scheme/port/host,
- * and we initialize sockets for each namespace.
- *
- * @api public
- */
-
-function lookup (uri, opts) {
-  if (typeof uri === 'object') {
-    opts = uri;
-    uri = undefined;
-  }
-
-  opts = opts || {};
-
-  var parsed = url(uri);
-  var source = parsed.source;
-  var id = parsed.id;
-  var path = parsed.path;
-  var sameNamespace = cache[id] && path in cache[id].nsps;
-  var newConnection = opts.forceNew || opts['force new connection'] ||
-                      false === opts.multiplex || sameNamespace;
-
-  var io;
-
-  if (newConnection) {
-    debug('ignoring socket cache for %s', source);
-    io = Manager(source, opts);
-  } else {
-    if (!cache[id]) {
-      debug('new io instance for %s', source);
-      cache[id] = Manager(source, opts);
-    }
-    io = cache[id];
-  }
-  if (parsed.query && !opts.query) {
-    opts.query = parsed.query;
-  } else if (opts && 'object' === typeof opts.query) {
-    opts.query = encodeQueryString(opts.query);
-  }
-  return io.socket(parsed.path, opts);
-}
-/**
- *  Helper method to parse query objects to string.
- * @param {object} query
- * @returns {string}
- */
-function encodeQueryString (obj) {
-  var str = [];
-  for (var p in obj) {
-    if (obj.hasOwnProperty(p)) {
-      str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
-    }
-  }
-  return str.join('&');
-}
-/**
- * Protocol version.
- *
- * @api public
- */
-
-exports.protocol = parser.protocol;
-
-/**
- * `connect`.
- *
- * @param {String} uri
- * @api public
- */
-
-exports.connect = lookup;
-
-/**
- * Expose constructors for standalone build.
- *
- * @api public
- */
-
-exports.Manager = __webpack_require__(131);
-exports.Socket = __webpack_require__(133);
-
-
-/***/ }),
 /* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -6818,7 +6818,7 @@ exports.Socket = __webpack_require__(133);
  * Expose `debug()` as the module.
  */
 
-exports = module.exports = __webpack_require__(300);
+exports = module.exports = __webpack_require__(306);
 exports.log = log;
 exports.formatArgs = formatArgs;
 exports.save = save;
@@ -7008,8 +7008,8 @@ function localstorage() {
  * Module dependencies.
  */
 
-var parser = __webpack_require__(26);
-var Emitter = __webpack_require__(25);
+var parser = __webpack_require__(27);
+var Emitter = __webpack_require__(26);
 
 /**
  * Module exports.
@@ -7169,7 +7169,7 @@ Transport.prototype.onClose = function () {
 
 /* WEBPACK VAR INJECTION */(function(global) {// browser shim for xmlhttprequest module
 
-var hasCORS = __webpack_require__(184);
+var hasCORS = __webpack_require__(190);
 
 module.exports = function (opts) {
   var xdomain = opts.xdomain;
@@ -7355,7 +7355,7 @@ if (process.env.NODE_ENV !== 'production') {
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(188)();
+  module.exports = __webpack_require__(194)();
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
@@ -7367,7 +7367,7 @@ if (process.env.NODE_ENV !== 'production') {
 "use strict";
 
 
-module.exports = __webpack_require__(203);
+module.exports = __webpack_require__(209);
 
 
 /***/ }),
@@ -7387,13 +7387,13 @@ module.exports = __webpack_require__(203);
 
 
 
-var DOMLazyTree = __webpack_require__(27);
-var Danger = __webpack_require__(195);
+var DOMLazyTree = __webpack_require__(28);
+var Danger = __webpack_require__(201);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactInstrumentation = __webpack_require__(13);
 
 var createMicrosoftUnsafeLocalFunction = __webpack_require__(66);
-var setInnerHTML = __webpack_require__(44);
+var setInnerHTML = __webpack_require__(45);
 var setTextContent = __webpack_require__(113);
 
 function getNodeAfter(parentNode, node) {
@@ -7944,7 +7944,7 @@ var _prodInvariant = __webpack_require__(4);
 var ReactPropTypesSecret = __webpack_require__(105);
 var propTypesFactory = __webpack_require__(91);
 
-var React = __webpack_require__(31);
+var React = __webpack_require__(32);
 var PropTypes = propTypesFactory(React.isValidElement);
 
 var invariant = __webpack_require__(1);
@@ -8220,7 +8220,7 @@ module.exports = ReactErrorUtils;
 var _prodInvariant = __webpack_require__(4);
 
 var ReactCurrentOwner = __webpack_require__(16);
-var ReactInstanceMap = __webpack_require__(35);
+var ReactInstanceMap = __webpack_require__(36);
 var ReactInstrumentation = __webpack_require__(13);
 var ReactUpdates = __webpack_require__(14);
 
@@ -9223,7 +9223,7 @@ exports.router = exports.routes = exports.route = exports.components = exports.c
 
 var _react = __webpack_require__(3);
 
-var _deprecateObjectProperties = __webpack_require__(46);
+var _deprecateObjectProperties = __webpack_require__(47);
 
 var _deprecateObjectProperties2 = _interopRequireDefault(_deprecateObjectProperties);
 
@@ -9336,21 +9336,21 @@ var _routerWarning = __webpack_require__(8);
 
 var _routerWarning2 = _interopRequireDefault(_routerWarning);
 
-var _computeChangedRoutes2 = __webpack_require__(272);
+var _computeChangedRoutes2 = __webpack_require__(278);
 
 var _computeChangedRoutes3 = _interopRequireDefault(_computeChangedRoutes2);
 
-var _TransitionUtils = __webpack_require__(269);
+var _TransitionUtils = __webpack_require__(275);
 
-var _isActive2 = __webpack_require__(277);
+var _isActive2 = __webpack_require__(283);
 
 var _isActive3 = _interopRequireDefault(_isActive2);
 
-var _getComponents = __webpack_require__(273);
+var _getComponents = __webpack_require__(279);
 
 var _getComponents2 = _interopRequireDefault(_getComponents);
 
-var _matchRoutes = __webpack_require__(279);
+var _matchRoutes = __webpack_require__(285);
 
 var _matchRoutes2 = _interopRequireDefault(_matchRoutes);
 
@@ -9787,8 +9787,8 @@ var _prodInvariant = __webpack_require__(24);
 
 var ReactNoopUpdateQueue = __webpack_require__(80);
 
-var canDefineProperty = __webpack_require__(49);
-var emptyObject = __webpack_require__(32);
+var canDefineProperty = __webpack_require__(50);
+var emptyObject = __webpack_require__(33);
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
 
@@ -10001,10 +10001,10 @@ module.exports = ReactNoopUpdateQueue;
  * Module dependencies.
  */
 
-var debug = __webpack_require__(303)('socket.io-parser');
-var Emitter = __webpack_require__(25);
+var debug = __webpack_require__(309)('socket.io-parser');
+var Emitter = __webpack_require__(26);
 var hasBin = __webpack_require__(88);
-var binary = __webpack_require__(302);
+var binary = __webpack_require__(308);
 var isBuf = __webpack_require__(134);
 
 /**
@@ -10436,9 +10436,9 @@ module.exports = function(obj, fn){
  */
 
 var XMLHttpRequest = __webpack_require__(53);
-var XHR = __webpack_require__(163);
-var JSONP = __webpack_require__(162);
-var websocket = __webpack_require__(164);
+var XHR = __webpack_require__(169);
+var JSONP = __webpack_require__(168);
+var websocket = __webpack_require__(170);
 
 /**
  * Export transports.
@@ -10497,10 +10497,10 @@ function polling (opts) {
 
 var Transport = __webpack_require__(52);
 var parseqs = __webpack_require__(55);
-var parser = __webpack_require__(26);
-var inherit = __webpack_require__(37);
+var parser = __webpack_require__(27);
+var inherit = __webpack_require__(38);
 var yeast = __webpack_require__(135);
-var debug = __webpack_require__(38)('engine.io-client:polling');
+var debug = __webpack_require__(39)('engine.io-client:polling');
 
 /**
  * Module exports.
@@ -10914,7 +10914,7 @@ module.exports = getActiveElement;
  * Module requirements.
  */
 
-var isArray = __webpack_require__(183);
+var isArray = __webpack_require__(189);
 
 var toString = Object.prototype.toString;
 var withNativeBlob = typeof global.Blob === 'function' || toString.call(global.Blob) === '[object BlobConstructor]';
@@ -11082,7 +11082,7 @@ var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
 
 var ReactPropTypesSecret = __webpack_require__(93);
-var checkPropTypes = __webpack_require__(187);
+var checkPropTypes = __webpack_require__(193);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
   /* global Symbol */
@@ -11867,7 +11867,7 @@ var DOMProperty = __webpack_require__(18);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactInstrumentation = __webpack_require__(13);
 
-var quoteAttributeValueForBrowser = __webpack_require__(258);
+var quoteAttributeValueForBrowser = __webpack_require__(264);
 var warning = __webpack_require__(2);
 
 var VALID_ATTRIBUTE_NAME_REGEX = new RegExp('^[' + DOMProperty.ATTRIBUTE_NAME_START_CHAR + '][' + DOMProperty.ATTRIBUTE_NAME_CHAR + ']*$');
@@ -12471,9 +12471,9 @@ module.exports = ReactHostComponent;
 
 
 
-var ReactDOMSelection = __webpack_require__(213);
+var ReactDOMSelection = __webpack_require__(219);
 
-var containsNode = __webpack_require__(171);
+var containsNode = __webpack_require__(177);
 var focusNode = __webpack_require__(86);
 var getActiveElement = __webpack_require__(87);
 
@@ -12602,26 +12602,26 @@ module.exports = ReactInputSelection;
 
 var _prodInvariant = __webpack_require__(4);
 
-var DOMLazyTree = __webpack_require__(27);
+var DOMLazyTree = __webpack_require__(28);
 var DOMProperty = __webpack_require__(18);
-var React = __webpack_require__(31);
-var ReactBrowserEventEmitter = __webpack_require__(40);
+var React = __webpack_require__(32);
+var ReactBrowserEventEmitter = __webpack_require__(41);
 var ReactCurrentOwner = __webpack_require__(16);
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactDOMContainerInfo = __webpack_require__(205);
-var ReactDOMFeatureFlags = __webpack_require__(207);
+var ReactDOMContainerInfo = __webpack_require__(211);
+var ReactDOMFeatureFlags = __webpack_require__(213);
 var ReactFeatureFlags = __webpack_require__(100);
-var ReactInstanceMap = __webpack_require__(35);
+var ReactInstanceMap = __webpack_require__(36);
 var ReactInstrumentation = __webpack_require__(13);
-var ReactMarkupChecksum = __webpack_require__(227);
-var ReactReconciler = __webpack_require__(28);
+var ReactMarkupChecksum = __webpack_require__(233);
+var ReactReconciler = __webpack_require__(29);
 var ReactUpdateQueue = __webpack_require__(65);
 var ReactUpdates = __webpack_require__(14);
 
-var emptyObject = __webpack_require__(32);
+var emptyObject = __webpack_require__(33);
 var instantiateReactComponent = __webpack_require__(111);
 var invariant = __webpack_require__(1);
-var setInnerHTML = __webpack_require__(44);
+var setInnerHTML = __webpack_require__(45);
 var shouldUpdateReactComponent = __webpack_require__(71);
 var warning = __webpack_require__(2);
 
@@ -13147,7 +13147,7 @@ module.exports = ReactMount;
 
 var _prodInvariant = __webpack_require__(4);
 
-var React = __webpack_require__(31);
+var React = __webpack_require__(32);
 
 var invariant = __webpack_require__(1);
 
@@ -13420,11 +13420,11 @@ module.exports = getTextContentAccessor;
 var _prodInvariant = __webpack_require__(4),
     _assign = __webpack_require__(5);
 
-var ReactCompositeComponent = __webpack_require__(202);
+var ReactCompositeComponent = __webpack_require__(208);
 var ReactEmptyComponent = __webpack_require__(99);
 var ReactHostComponent = __webpack_require__(101);
 
-var getNextDebugID = __webpack_require__(296);
+var getNextDebugID = __webpack_require__(302);
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
 
@@ -13609,8 +13609,8 @@ module.exports = isTextInputElement;
 
 
 var ExecutionEnvironment = __webpack_require__(7);
-var escapeTextContentForBrowser = __webpack_require__(43);
-var setInnerHTML = __webpack_require__(44);
+var escapeTextContentForBrowser = __webpack_require__(44);
+var setInnerHTML = __webpack_require__(45);
 
 /**
  * Set the textContent property of a node, ensuring that whitespace is preserved
@@ -13668,9 +13668,9 @@ module.exports = setTextContent;
 var _prodInvariant = __webpack_require__(4);
 
 var ReactCurrentOwner = __webpack_require__(16);
-var REACT_ELEMENT_TYPE = __webpack_require__(221);
+var REACT_ELEMENT_TYPE = __webpack_require__(227);
 
-var getIteratorFn = __webpack_require__(255);
+var getIteratorFn = __webpack_require__(261);
 var invariant = __webpack_require__(1);
 var KeyEscapeUtils = __webpack_require__(61);
 var warning = __webpack_require__(2);
@@ -14032,7 +14032,7 @@ var _invariant2 = _interopRequireDefault(_invariant);
 
 var _RouteUtils = __webpack_require__(19);
 
-var _PatternUtils = __webpack_require__(29);
+var _PatternUtils = __webpack_require__(30);
 
 var _InternalPropTypes = __webpack_require__(21);
 
@@ -14136,7 +14136,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 exports.createRouterObject = createRouterObject;
 exports.createRoutingHistory = createRoutingHistory;
 
-var _deprecateObjectProperties = __webpack_require__(46);
+var _deprecateObjectProperties = __webpack_require__(47);
 
 var _deprecateObjectProperties2 = _interopRequireDefault(_deprecateObjectProperties);
 
@@ -14171,7 +14171,7 @@ function createRoutingHistory(history, transitionManager) {
 exports.__esModule = true;
 exports.default = createMemoryHistory;
 
-var _useQueries = __webpack_require__(48);
+var _useQueries = __webpack_require__(49);
 
 var _useQueries2 = _interopRequireDefault(_useQueries);
 
@@ -14179,7 +14179,7 @@ var _useBasename = __webpack_require__(126);
 
 var _useBasename2 = _interopRequireDefault(_useBasename);
 
-var _createMemoryHistory = __webpack_require__(285);
+var _createMemoryHistory = __webpack_require__(291);
 
 var _createMemoryHistory2 = _interopRequireDefault(_createMemoryHistory);
 
@@ -14237,7 +14237,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 exports.default = makeStateWithLocation;
 
-var _deprecateObjectProperties = __webpack_require__(46);
+var _deprecateObjectProperties = __webpack_require__(47);
 
 var _routerWarning = __webpack_require__(8);
 
@@ -14290,7 +14290,7 @@ module.exports = exports['default'];
 exports.__esModule = true;
 exports.default = useRouterHistory;
 
-var _useQueries = __webpack_require__(48);
+var _useQueries = __webpack_require__(49);
 
 var _useQueries2 = _interopRequireDefault(_useQueries);
 
@@ -14406,7 +14406,7 @@ var _invariant = __webpack_require__(9);
 
 var _invariant2 = _interopRequireDefault(_invariant);
 
-var _ExecutionEnvironment = __webpack_require__(47);
+var _ExecutionEnvironment = __webpack_require__(48);
 
 var _DOMUtils = __webpack_require__(76);
 
@@ -14457,11 +14457,11 @@ var _invariant = __webpack_require__(9);
 
 var _invariant2 = _interopRequireDefault(_invariant);
 
-var _Actions = __webpack_require__(30);
+var _Actions = __webpack_require__(31);
 
 var _PathUtils = __webpack_require__(22);
 
-var _ExecutionEnvironment = __webpack_require__(47);
+var _ExecutionEnvironment = __webpack_require__(48);
 
 var _DOMUtils = __webpack_require__(76);
 
@@ -14706,17 +14706,17 @@ var _warning = __webpack_require__(15);
 
 var _warning2 = _interopRequireDefault(_warning);
 
-var _deepEqual = __webpack_require__(156);
+var _deepEqual = __webpack_require__(162);
 
 var _deepEqual2 = _interopRequireDefault(_deepEqual);
 
 var _PathUtils = __webpack_require__(22);
 
-var _AsyncUtils = __webpack_require__(282);
+var _AsyncUtils = __webpack_require__(288);
 
-var _Actions = __webpack_require__(30);
+var _Actions = __webpack_require__(31);
 
-var _createLocation2 = __webpack_require__(284);
+var _createLocation2 = __webpack_require__(290);
 
 var _createLocation3 = _interopRequireDefault(_createLocation2);
 
@@ -15001,7 +15001,7 @@ var _warning = __webpack_require__(15);
 
 var _warning2 = _interopRequireDefault(_warning);
 
-var _ExecutionEnvironment = __webpack_require__(47);
+var _ExecutionEnvironment = __webpack_require__(48);
 
 var _PathUtils = __webpack_require__(22);
 
@@ -15202,9 +15202,9 @@ var ReactCurrentOwner = __webpack_require__(16);
 var ReactComponentTreeHook = __webpack_require__(11);
 var ReactElement = __webpack_require__(23);
 
-var checkReactTypeSpec = __webpack_require__(295);
+var checkReactTypeSpec = __webpack_require__(301);
 
-var canDefineProperty = __webpack_require__(49);
+var canDefineProperty = __webpack_require__(50);
 var getIteratorFn = __webpack_require__(130);
 var warning = __webpack_require__(2);
 
@@ -15519,15 +15519,15 @@ module.exports = getIteratorFn;
  * Module dependencies.
  */
 
-var eio = __webpack_require__(159);
+var eio = __webpack_require__(165);
 var Socket = __webpack_require__(133);
-var Emitter = __webpack_require__(25);
+var Emitter = __webpack_require__(26);
 var parser = __webpack_require__(81);
 var on = __webpack_require__(132);
 var bind = __webpack_require__(82);
 var debug = __webpack_require__(51)('socket.io-client:manager');
 var indexOf = __webpack_require__(89);
-var Backoff = __webpack_require__(153);
+var Backoff = __webpack_require__(159);
 
 /**
  * IE6+ hasOwnProperty
@@ -16129,8 +16129,8 @@ function on (obj, ev, fn) {
  */
 
 var parser = __webpack_require__(81);
-var Emitter = __webpack_require__(25);
-var toArray = __webpack_require__(308);
+var Emitter = __webpack_require__(26);
+var toArray = __webpack_require__(314);
 var on = __webpack_require__(132);
 var bind = __webpack_require__(82);
 var debug = __webpack_require__(51)('socket.io-client:socket');
@@ -16654,37 +16654,45 @@ var _propTypes = __webpack_require__(56);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactRouter = __webpack_require__(276);
+var _reactRouter = __webpack_require__(282);
 
-var _Trangchu = __webpack_require__(148);
+var _Trangchu = __webpack_require__(142);
 
-var _Trangcanhan = __webpack_require__(147);
+var _Trangcanhan = __webpack_require__(141);
 
-var _baihoc = __webpack_require__(149);
+var _baihoc = __webpack_require__(143);
 
-var _baihoc_tip = __webpack_require__(313);
+var _baihoc_chitiet = __webpack_require__(146);
 
-var _baihoc_tip_chitiet = __webpack_require__(315);
+var _baihoc_tip = __webpack_require__(147);
 
-var _baitap = __webpack_require__(150);
+var _baihoc_tip_chitiet = __webpack_require__(148);
 
-var _thaoluan = __webpack_require__(152);
+var _baitap = __webpack_require__(151);
 
-var _cauhoi_chitiet = __webpack_require__(151);
+var _thaoluan = __webpack_require__(158);
 
-var _hoidap = __webpack_require__(314);
+var _cauhoi_chitiet = __webpack_require__(156);
 
-var _Lichsu_baihoc = __webpack_require__(144);
+var _hoidap = __webpack_require__(157);
 
-var _Lichsu_baitapnangcao = __webpack_require__(145);
+var _gioithieu = __webpack_require__(319);
 
-var _Lichsu_thaoluan = __webpack_require__(146);
+var _baihoc_baiviet = __webpack_require__(144);
 
-var _Hoidap_lichsu_chitiet = __webpack_require__(143);
+var _baihoc_baiviet_chitiet = __webpack_require__(145);
 
-var _Hoidap_lichsu = __webpack_require__(142);
+var _baihoc_video = __webpack_require__(149);
 
-var _Hoidap_diali = __webpack_require__(141);
+var _baihoc_video_chitiet = __webpack_require__(150);
+
+var _baitap_tracnghiem = __webpack_require__(152);
+
+var _baitap_tuluan = __webpack_require__(154);
+
+var _baitap_tracnghiem_chitiet = __webpack_require__(153);
+
+var _baitap_tuluan_chitiet = __webpack_require__(155);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16715,18 +16723,22 @@ var MainContent = function (_React$Component) {
 																				_react2.default.createElement(_reactRouter.Route, { path: "/", component: _Trangchu.Trangchu }),
 																				_react2.default.createElement(_reactRouter.Route, { path: "Trangcanhan", component: _Trangcanhan.Trangcanhan }),
 																				_react2.default.createElement(_reactRouter.Route, { path: ":mon/lop:lop/baihoc", component: _baihoc.baihoc }),
+																				_react2.default.createElement(_reactRouter.Route, { path: ":mon/lop:lop/baihoc_chitiet/:id", component: _baihoc_chitiet.baihoc_chitiet }),
 																				_react2.default.createElement(_reactRouter.Route, { path: ":mon/lop:lop/baihoc_tip", component: _baihoc_tip.baihoc_tip }),
-																				_react2.default.createElement(_reactRouter.Route, { path: ":mon/lop:lop/baihoc_tip/bai:id", component: _baihoc_tip_chitiet.baihoc_tip_chitiet }),
+																				_react2.default.createElement(_reactRouter.Route, { path: ":mon/lop:lop/baihoc_tip_chitiet/:id", component: _baihoc_tip_chitiet.baihoc_tip_chitiet }),
 																				_react2.default.createElement(_reactRouter.Route, { path: ":mon/lop:lop/baitap", component: _baitap.baitap }),
 																				_react2.default.createElement(_reactRouter.Route, { path: ":mon/lop:lop/thaoluan", component: _thaoluan.thaoluan }),
 																				_react2.default.createElement(_reactRouter.Route, { path: ":mon/lop:lop/cauhoi:id", component: _cauhoi_chitiet.cauhoi_chitiet }),
+																				_react2.default.createElement(_reactRouter.Route, { path: ":mon/lop:lop/baihoc_baiviet", component: _baihoc_baiviet.baihoc_baiviet }),
+																				_react2.default.createElement(_reactRouter.Route, { path: ":mon/lop:lop/baihoc_baiviet_chitiet/:id", component: _baihoc_baiviet_chitiet.baihoc_baiviet_chitiet }),
+																				_react2.default.createElement(_reactRouter.Route, { path: ":mon/lop:lop/baihoc_video/:bai", component: _baihoc_video.baihoc_video }),
+																				_react2.default.createElement(_reactRouter.Route, { path: ":mon/lop:lop/baihoc_video_chitiet/:id", component: _baihoc_video_chitiet.baihoc_video_chitiet }),
+																				_react2.default.createElement(_reactRouter.Route, { path: ":mon/lop:lop/baitap_tracnghiem", component: _baitap_tracnghiem.baitap_tracnghiem }),
+																				_react2.default.createElement(_reactRouter.Route, { path: ":mon/lop:lop/baitap_tuluan", component: _baitap_tuluan.baitap_tuluan }),
+																				_react2.default.createElement(_reactRouter.Route, { path: ":mon/lop:lop/baitap_tracnghiem_chitiet/:id", component: _baitap_tracnghiem_chitiet.baitap_tracnghiem_chitiet }),
+																				_react2.default.createElement(_reactRouter.Route, { path: ":mon/lop:lop/baitap_tuluan_chitiet/:id", component: _baitap_tuluan_chitiet.baitap_tuluan_chitiet }),
 																				_react2.default.createElement(_reactRouter.Route, { path: "hoidap/:mon", component: _hoidap.hoidap }),
-																				_react2.default.createElement(_reactRouter.Route, { path: "Lichsu_baihoc/lop:lop", component: _Lichsu_baihoc.Lichsu_baihoc }),
-																				_react2.default.createElement(_reactRouter.Route, { path: "Lichsu_baitapnangcao/lop:lop", component: _Lichsu_baitapnangcao.Lichsu_baitapnangcao }),
-																				_react2.default.createElement(_reactRouter.Route, { path: "Lichsu_thaoluan/lop:lop", component: _Lichsu_thaoluan.Lichsu_thaoluan }),
-																				_react2.default.createElement(_reactRouter.Route, { path: "Hoidap_lichsu_chitiet/lop:lop/id:id", component: _Hoidap_lichsu_chitiet.Hoidap_lichsu_chitiet }),
-																				_react2.default.createElement(_reactRouter.Route, { path: "Hoidap_lichsu/lop:lop/id:id", component: _Hoidap_lichsu.Hoidap_lichsu }),
-																				_react2.default.createElement(_reactRouter.Route, { path: "Hoidap_diali/lop:lop/id:id", component: _Hoidap_diali.Hoidap_diali })
+																				_react2.default.createElement(_reactRouter.Route, { path: "gioithieu", component: _gioithieu.gioithieu })
 																)
 												);
 								}
@@ -16814,6 +16826,73 @@ var Slidebar = function (_React$Component) {
 			if (data.dataset.lop < 7) $("#Diali_lop7").addClass("disabled");
 			if (data.dataset.lop < 8) $("#Diali_lop8").addClass("disabled");
 			if (data.dataset.lop < 9) $("#Diali_lop9").addClass("disabled");
+
+			// var url1=window.location.href;
+			// url1=url1.split('#');
+			// var mon=url1[1].split('/');
+			// var url2=window.location.href;
+			// url2=url2.split('lop');
+			// var phanlop=url2[1].split('/');
+
+			// //console.log(mon[1]);
+			// if(mon[1]=="lichsu"){
+			// 	console.log("Lich su");
+			// 	$("#Lichsu_lop"+phanlop[0]).addClass("active");
+			// }
+			// else if(mon[1]=="diali"){
+			// 	$("#Diali_lop"+phanlop[0]).addClass("active");
+			// }
+			$("#Trangchu").click(function () {
+				$("li").removeClass("active");
+				$("#Trangchu").addClass("active");
+			});
+			$("#Gioithieu").click(function () {
+				$("li").removeClass("active");
+				$("#Gioithieu").addClass("active");
+			});
+			$("#Lichsu").click(function () {
+				$("#Trangchu").removeClass("active");
+				$("#Gioithieu").removeClass("active");
+			});
+			$("#Diali").click(function () {
+				$("#Trangchu").removeClass("active");
+				$("#Gioithieu").removeClass("active");
+			});
+			$("#Hoidap").click(function () {
+				$("#Trangchu").removeClass("active");
+				$("#Gioithieu").removeClass("active");
+			});
+
+			var url = window.location.href;
+			url = url.split('#');
+			var urla = url[1].split('/');
+			console.log(urla[1]);
+
+			if (urla[1] == "lichsu") {
+				console.log("Lich su");
+				var url2 = window.location.href;
+				url2 = url2.split('lop');
+				var phanlop = url2[1].split('/');
+				$("#Lichsu_lop" + phanlop[0]).addClass("active");
+			} else if (urla[1] == "diali") {
+				var url2 = window.location.href;
+				url2 = url2.split('lop');
+				var phanlop = url2[1].split('/');
+				$("#Diali_lop" + phanlop[0]).addClass("active");
+			} else if (urla[1] == "hoidap") {
+				var url2 = window.location.href;
+				url2 = url2.split('hoidap');
+				var phanlop = url2[1].split('?');
+				console.log(phanlop[0]);
+				if (phanlop[0] == "/lichsu") {
+					$("#Hoidap").addClass("active");
+					//$("#Hoidap_lichsu").addClass("active");
+				}
+				if (phanlop[0] == "/diali") {
+					$("#Hoidap").addClass("active");
+					//$("#Hoidap_diali").addClass("active");
+				}
+			}
 		}
 	}, {
 		key: "render",
@@ -16839,7 +16918,7 @@ var Slidebar = function (_React$Component) {
 									"a",
 									{ href: "#trangcanhan", className: "media-left" },
 									_react2.default.createElement("img", { src: this.state.id_user, onError: function onError() {
-											_this2.setState({ id_user: "assets/images/placeholder.jpg" });
+											_this2.setState({ id_user: "assets/images/user.jpg" });
 										}, className: "img-circle img-sm", alt: "" })
 								),
 								_react2.default.createElement(
@@ -16890,17 +16969,13 @@ var Slidebar = function (_React$Component) {
 								_react2.default.createElement(
 									"li",
 									{ className: "navigation-header" },
-									_react2.default.createElement(
-										"span",
-										null,
-										"Main"
-									),
+									_react2.default.createElement("span", null),
 									" ",
 									_react2.default.createElement("i", { className: "icon-menu", title: "Main pages" })
 								),
 								_react2.default.createElement(
 									"li",
-									{ className: "active" },
+									{ id: "Trangchu" },
 									_react2.default.createElement(
 										"a",
 										{ href: "#" },
@@ -16915,11 +16990,11 @@ var Slidebar = function (_React$Component) {
 								),
 								_react2.default.createElement(
 									"li",
-									null,
+									{ id: "Lichsu" },
 									_react2.default.createElement(
 										"a",
 										null,
-										_react2.default.createElement("i", { className: "icon-stack2" }),
+										_react2.default.createElement("i", { className: "icon-history" }),
 										" ",
 										_react2.default.createElement(
 											"span",
@@ -16951,7 +17026,13 @@ var Slidebar = function (_React$Component) {
 													_react2.default.createElement(
 														"a",
 														{ href: "#lichsu/lop6/baihoc", className: "active" },
-														"B\xE0i h\u1ECDc"
+														_react2.default.createElement("i", { className: "icon-books" }),
+														" ",
+														_react2.default.createElement(
+															"span",
+															null,
+															"B\xE0i h\u1ECDc"
+														)
 													)
 												),
 												_react2.default.createElement(
@@ -16960,7 +17041,13 @@ var Slidebar = function (_React$Component) {
 													_react2.default.createElement(
 														"a",
 														{ href: "#lichsu/lop6/baitap" },
-														"B\xE0i t\u1EADp n\xE2ng cao"
+														_react2.default.createElement("i", { className: " icon-file-text" }),
+														" ",
+														_react2.default.createElement(
+															"span",
+															null,
+															"B\xE0i t\u1EADp n\xE2ng cao"
+														)
 													)
 												),
 												_react2.default.createElement(
@@ -16969,7 +17056,13 @@ var Slidebar = function (_React$Component) {
 													_react2.default.createElement(
 														"a",
 														{ href: "#lichsu/lop6/thaoluan" },
-														"Th\u1EA3o lu\u1EADn"
+														_react2.default.createElement("i", { className: " icon-bubbles6" }),
+														" ",
+														_react2.default.createElement(
+															"span",
+															null,
+															"Th\u1EA3o lu\u1EADn"
+														)
 													)
 												)
 											)
@@ -16995,7 +17088,13 @@ var Slidebar = function (_React$Component) {
 													_react2.default.createElement(
 														"a",
 														{ href: "#lichsu/lop7/baihoc", className: "active" },
-														"B\xE0i h\u1ECDc"
+														_react2.default.createElement("i", { className: "icon-books" }),
+														" ",
+														_react2.default.createElement(
+															"span",
+															null,
+															"B\xE0i h\u1ECDc"
+														)
 													)
 												),
 												_react2.default.createElement(
@@ -17004,7 +17103,13 @@ var Slidebar = function (_React$Component) {
 													_react2.default.createElement(
 														"a",
 														{ href: "#lichsu/lop7/baitap" },
-														"B\xE0i t\u1EADp n\xE2ng cao"
+														_react2.default.createElement("i", { className: " icon-file-text" }),
+														" ",
+														_react2.default.createElement(
+															"span",
+															null,
+															"B\xE0i t\u1EADp n\xE2ng cao"
+														)
 													)
 												),
 												_react2.default.createElement(
@@ -17013,7 +17118,13 @@ var Slidebar = function (_React$Component) {
 													_react2.default.createElement(
 														"a",
 														{ href: "#lichsu/lop7/thaoluan" },
-														"Th\u1EA3o lu\u1EADn"
+														_react2.default.createElement("i", { className: " icon-bubbles6" }),
+														" ",
+														_react2.default.createElement(
+															"span",
+															null,
+															"Th\u1EA3o lu\u1EADn"
+														)
 													)
 												)
 											)
@@ -17039,7 +17150,13 @@ var Slidebar = function (_React$Component) {
 													_react2.default.createElement(
 														"a",
 														{ href: "#lichsu/lop8/baihoc", className: "active" },
-														"B\xE0i h\u1ECDc"
+														_react2.default.createElement("i", { className: "icon-books" }),
+														" ",
+														_react2.default.createElement(
+															"span",
+															null,
+															"B\xE0i h\u1ECDc"
+														)
 													)
 												),
 												_react2.default.createElement(
@@ -17048,7 +17165,13 @@ var Slidebar = function (_React$Component) {
 													_react2.default.createElement(
 														"a",
 														{ href: "#lichsu/lop8/baitap" },
-														"B\xE0i t\u1EADp n\xE2ng cao"
+														_react2.default.createElement("i", { className: " icon-file-text" }),
+														" ",
+														_react2.default.createElement(
+															"span",
+															null,
+															"B\xE0i t\u1EADp n\xE2ng cao"
+														)
 													)
 												),
 												_react2.default.createElement(
@@ -17057,7 +17180,13 @@ var Slidebar = function (_React$Component) {
 													_react2.default.createElement(
 														"a",
 														{ href: "#lichsu/lop8/thaoluan" },
-														"Th\u1EA3o lu\u1EADn"
+														_react2.default.createElement("i", { className: " icon-bubbles6" }),
+														" ",
+														_react2.default.createElement(
+															"span",
+															null,
+															"Th\u1EA3o lu\u1EADn"
+														)
 													)
 												)
 											)
@@ -17083,7 +17212,13 @@ var Slidebar = function (_React$Component) {
 													_react2.default.createElement(
 														"a",
 														{ href: "#lichsu/lop9/baihoc", className: "active" },
-														"B\xE0i h\u1ECDc"
+														_react2.default.createElement("i", { className: "icon-books" }),
+														" ",
+														_react2.default.createElement(
+															"span",
+															null,
+															"B\xE0i h\u1ECDc"
+														)
 													)
 												),
 												_react2.default.createElement(
@@ -17092,7 +17227,13 @@ var Slidebar = function (_React$Component) {
 													_react2.default.createElement(
 														"a",
 														{ href: "#lichsu/lop9/baitap" },
-														"B\xE0i t\u1EADp n\xE2ng cao"
+														_react2.default.createElement("i", { className: " icon-file-text" }),
+														" ",
+														_react2.default.createElement(
+															"span",
+															null,
+															"B\xE0i t\u1EADp n\xE2ng cao"
+														)
 													)
 												),
 												_react2.default.createElement(
@@ -17101,7 +17242,13 @@ var Slidebar = function (_React$Component) {
 													_react2.default.createElement(
 														"a",
 														{ href: "#lichsu/lop9/thaoluan" },
-														"Th\u1EA3o lu\u1EADn"
+														_react2.default.createElement("i", { className: " icon-bubbles6" }),
+														" ",
+														_react2.default.createElement(
+															"span",
+															null,
+															"Th\u1EA3o lu\u1EADn"
+														)
 													)
 												)
 											)
@@ -17110,11 +17257,11 @@ var Slidebar = function (_React$Component) {
 								),
 								_react2.default.createElement(
 									"li",
-									null,
+									{ id: "Diali" },
 									_react2.default.createElement(
 										"a",
 										null,
-										_react2.default.createElement("i", { className: "icon-stack2" }),
+										_react2.default.createElement("i", { className: "icon-earth" }),
 										" ",
 										_react2.default.createElement(
 											"span",
@@ -17146,7 +17293,13 @@ var Slidebar = function (_React$Component) {
 													_react2.default.createElement(
 														"a",
 														{ href: "#diali/lop6/baihoc", className: "active" },
-														"B\xE0i h\u1ECDc"
+														_react2.default.createElement("i", { className: "icon-books" }),
+														" ",
+														_react2.default.createElement(
+															"span",
+															null,
+															"B\xE0i h\u1ECDc"
+														)
 													)
 												),
 												_react2.default.createElement(
@@ -17155,7 +17308,13 @@ var Slidebar = function (_React$Component) {
 													_react2.default.createElement(
 														"a",
 														{ href: "#diali/lop6/baitap" },
-														"B\xE0i t\u1EADp n\xE2ng cao"
+														_react2.default.createElement("i", { className: " icon-file-text" }),
+														" ",
+														_react2.default.createElement(
+															"span",
+															null,
+															"B\xE0i t\u1EADp n\xE2ng cao"
+														)
 													)
 												),
 												_react2.default.createElement(
@@ -17164,7 +17323,13 @@ var Slidebar = function (_React$Component) {
 													_react2.default.createElement(
 														"a",
 														{ href: "#diali/lop6/thaoluan" },
-														"Th\u1EA3o lu\u1EADn"
+														_react2.default.createElement("i", { className: " icon-bubbles6" }),
+														" ",
+														_react2.default.createElement(
+															"span",
+															null,
+															"Th\u1EA3o lu\u1EADn"
+														)
 													)
 												)
 											)
@@ -17190,7 +17355,13 @@ var Slidebar = function (_React$Component) {
 													_react2.default.createElement(
 														"a",
 														{ href: "#diali/lop7/baihoc", className: "active" },
-														"B\xE0i h\u1ECDc"
+														_react2.default.createElement("i", { className: "icon-books" }),
+														" ",
+														_react2.default.createElement(
+															"span",
+															null,
+															"B\xE0i h\u1ECDc"
+														)
 													)
 												),
 												_react2.default.createElement(
@@ -17199,7 +17370,13 @@ var Slidebar = function (_React$Component) {
 													_react2.default.createElement(
 														"a",
 														{ href: "#diali/lop7/baitap" },
-														"B\xE0i t\u1EADp n\xE2ng cao"
+														_react2.default.createElement("i", { className: " icon-file-text" }),
+														" ",
+														_react2.default.createElement(
+															"span",
+															null,
+															"B\xE0i t\u1EADp n\xE2ng cao"
+														)
 													)
 												),
 												_react2.default.createElement(
@@ -17208,7 +17385,13 @@ var Slidebar = function (_React$Component) {
 													_react2.default.createElement(
 														"a",
 														{ href: "#diali/lop7/thaoluan" },
-														"Th\u1EA3o lu\u1EADn"
+														_react2.default.createElement("i", { className: " icon-bubbles6" }),
+														" ",
+														_react2.default.createElement(
+															"span",
+															null,
+															"Th\u1EA3o lu\u1EADn"
+														)
 													)
 												)
 											)
@@ -17234,7 +17417,13 @@ var Slidebar = function (_React$Component) {
 													_react2.default.createElement(
 														"a",
 														{ href: "#diali/lop8/baihoc", className: "active" },
-														"B\xE0i h\u1ECDc"
+														_react2.default.createElement("i", { className: "icon-books" }),
+														" ",
+														_react2.default.createElement(
+															"span",
+															null,
+															"B\xE0i h\u1ECDc"
+														)
 													)
 												),
 												_react2.default.createElement(
@@ -17243,7 +17432,13 @@ var Slidebar = function (_React$Component) {
 													_react2.default.createElement(
 														"a",
 														{ href: "#diali/lop8/baitap" },
-														"B\xE0i t\u1EADp n\xE2ng cao"
+														_react2.default.createElement("i", { className: " icon-file-text" }),
+														" ",
+														_react2.default.createElement(
+															"span",
+															null,
+															"B\xE0i t\u1EADp n\xE2ng cao"
+														)
 													)
 												),
 												_react2.default.createElement(
@@ -17252,7 +17447,13 @@ var Slidebar = function (_React$Component) {
 													_react2.default.createElement(
 														"a",
 														{ href: "#diali/lop8/thaoluan" },
-														"Th\u1EA3o lu\u1EADn"
+														_react2.default.createElement("i", { className: " icon-bubbles6" }),
+														" ",
+														_react2.default.createElement(
+															"span",
+															null,
+															"Th\u1EA3o lu\u1EADn"
+														)
 													)
 												)
 											)
@@ -17278,7 +17479,13 @@ var Slidebar = function (_React$Component) {
 													_react2.default.createElement(
 														"a",
 														{ href: "#diali/lop9/baihoc", className: "active" },
-														"B\xE0i h\u1ECDc"
+														_react2.default.createElement("i", { className: "icon-books" }),
+														" ",
+														_react2.default.createElement(
+															"span",
+															null,
+															"B\xE0i h\u1ECDc"
+														)
 													)
 												),
 												_react2.default.createElement(
@@ -17287,7 +17494,13 @@ var Slidebar = function (_React$Component) {
 													_react2.default.createElement(
 														"a",
 														{ href: "#diali/lop9/baitap" },
-														"B\xE0i t\u1EADp n\xE2ng cao"
+														_react2.default.createElement("i", { className: " icon-file-text" }),
+														" ",
+														_react2.default.createElement(
+															"span",
+															null,
+															"B\xE0i t\u1EADp n\xE2ng cao"
+														)
 													)
 												),
 												_react2.default.createElement(
@@ -17296,7 +17509,13 @@ var Slidebar = function (_React$Component) {
 													_react2.default.createElement(
 														"a",
 														{ href: "#diali/lop9/thaoluan" },
-														"Th\u1EA3o lu\u1EADn"
+														_react2.default.createElement("i", { className: " icon-bubbles6" }),
+														" ",
+														_react2.default.createElement(
+															"span",
+															null,
+															"Th\u1EA3o lu\u1EADn"
+														)
 													)
 												)
 											)
@@ -17305,11 +17524,11 @@ var Slidebar = function (_React$Component) {
 								),
 								_react2.default.createElement(
 									"li",
-									null,
+									{ id: "Hoidap" },
 									_react2.default.createElement(
 										"a",
 										null,
-										_react2.default.createElement("i", { className: "icon-droplet2" }),
+										_react2.default.createElement("i", { className: "icon-question3" }),
 										" ",
 										_react2.default.createElement(
 											"span",
@@ -17322,7 +17541,7 @@ var Slidebar = function (_React$Component) {
 										null,
 										_react2.default.createElement(
 											"li",
-											null,
+											{ id: "Hoidap_lichsu" },
 											_react2.default.createElement(
 												"a",
 												{ href: "#hoidap/lichsu" },
@@ -17331,7 +17550,7 @@ var Slidebar = function (_React$Component) {
 										),
 										_react2.default.createElement(
 											"li",
-											null,
+											{ id: "Hoidap_diali" },
 											_react2.default.createElement(
 												"a",
 												{ href: "#hoidap/diali" },
@@ -17342,10 +17561,10 @@ var Slidebar = function (_React$Component) {
 								),
 								_react2.default.createElement(
 									"li",
-									null,
+									{ id: "Gioithieu" },
 									_react2.default.createElement(
 										"a",
-										{ href: "../../RTL/index.html" },
+										{ href: "#gioithieu" },
 										_react2.default.createElement("i", { className: "icon-list-unordered" }),
 										" ",
 										_react2.default.createElement(
@@ -17729,7 +17948,7 @@ var Statusbar = function (_React$Component) {
 								"a",
 								{ className: "dropdown-toggle", "data-toggle": "dropdown" },
 								_react2.default.createElement("img", { src: this.state.id_user, onError: function onError() {
-										_this2.setState({ id_user: "assets/images/placeholder.jpg" });
+										_this2.setState({ id_user: "assets/images/user.jpg" });
 									}, alt: "" }),
 								_react2.default.createElement(
 									"span",
@@ -17890,1569 +18109,6 @@ module.exports = function(arraybuffer, start, end) {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.Hoidap_diali = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(3);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Hoidap_diali = exports.Hoidap_diali = function (_React$Component) {
-	_inherits(Hoidap_diali, _React$Component);
-
-	function Hoidap_diali() {
-		_classCallCheck(this, Hoidap_diali);
-
-		return _possibleConstructorReturn(this, (Hoidap_diali.__proto__ || Object.getPrototypeOf(Hoidap_diali)).apply(this, arguments));
-	}
-
-	_createClass(Hoidap_diali, [{
-		key: "render",
-		value: function render() {
-			return _react2.default.createElement(
-				"div",
-				null,
-				_react2.default.createElement(
-					"div",
-					{ className: "page-header page-header-default" },
-					_react2.default.createElement(
-						"div",
-						{ className: "breadcrumb-line" },
-						_react2.default.createElement(
-							"ul",
-							{ className: "breadcrumb" },
-							_react2.default.createElement(
-								"li",
-								null,
-								_react2.default.createElement(
-									"a",
-									{ href: "#" },
-									_react2.default.createElement("i", { className: "icon-home2 position-left" }),
-									" Trang ch\u1EE7"
-								)
-							),
-							_react2.default.createElement(
-								"li",
-								{ className: "active" },
-								"H\u1ECFi v\xE0 \u0111\xE1p \u0110\u1ECBa l\xED"
-							)
-						)
-					)
-				),
-				_react2.default.createElement(
-					"div",
-					{ className: "content" },
-					_react2.default.createElement(
-						"div",
-						{ className: "panel panel-flat" },
-						_react2.default.createElement(
-							"div",
-							{ className: "panel-heading" },
-							_react2.default.createElement(
-								"h6",
-								{ className: "panel-title" },
-								"C\xE2u h\u1ECFi"
-							),
-							_react2.default.createElement("hr", null)
-						),
-						_react2.default.createElement(
-							"div",
-							{ className: "content" },
-							_react2.default.createElement(
-								"div",
-								{ className: "panel panel-success" },
-								_react2.default.createElement(
-									"div",
-									{ className: "panel-heading" },
-									_react2.default.createElement(
-										"h6",
-										{ className: "panel-title" },
-										"Success panel"
-									),
-									_react2.default.createElement(
-										"div",
-										{ className: "heading-elements" },
-										_react2.default.createElement(
-											"ul",
-											{ className: "icons-list" },
-											_react2.default.createElement(
-												"li",
-												null,
-												_react2.default.createElement("a", { "data-action": "collapse" })
-											),
-											_react2.default.createElement(
-												"li",
-												null,
-												_react2.default.createElement("a", { "data-action": "reload" })
-											),
-											_react2.default.createElement(
-												"li",
-												null,
-												_react2.default.createElement("a", { "data-action": "close" })
-											)
-										)
-									)
-								),
-								_react2.default.createElement(
-									"div",
-									{ className: "panel-body" },
-									"Success panel using ",
-									_react2.default.createElement(
-										"code",
-										null,
-										".panel-success"
-									),
-									" className"
-								)
-							)
-						)
-					),
-					_react2.default.createElement(
-						"div",
-						{ className: "footer text-muted" },
-						"\xA9 2015. ",
-						_react2.default.createElement(
-							"a",
-							{ href: "#" },
-							"Limitless Web App Kit"
-						),
-						" by ",
-						_react2.default.createElement(
-							"a",
-							{ href: "http://themeforest.net/user/Kopyov", target: "_blank" },
-							"Eugene Kopyov"
-						)
-					)
-				)
-			);
-		}
-	}]);
-
-	return Hoidap_diali;
-}(_react2.default.Component);
-
-/***/ }),
-/* 142 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.Hoidap_lichsu = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(3);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var data = document.querySelector('#maincontent');
-
-var Hoidap_lichsu = exports.Hoidap_lichsu = function (_React$Component) {
-	_inherits(Hoidap_lichsu, _React$Component);
-
-	function Hoidap_lichsu(props) {
-		_classCallCheck(this, Hoidap_lichsu);
-
-		var _this = _possibleConstructorReturn(this, (Hoidap_lichsu.__proto__ || Object.getPrototypeOf(Hoidap_lichsu)).call(this, props));
-
-		_this.state = {
-			listCauhoi: []
-		};
-		return _this;
-	}
-
-	_createClass(Hoidap_lichsu, [{
-		key: 'render',
-		value: function render() {
-			return _react2.default.createElement(
-				'div',
-				null,
-				_react2.default.createElement(
-					'div',
-					{ className: 'page-header page-header-default' },
-					_react2.default.createElement(
-						'div',
-						{ className: 'breadcrumb-line' },
-						_react2.default.createElement(
-							'ul',
-							{ className: 'breadcrumb' },
-							_react2.default.createElement(
-								'li',
-								null,
-								_react2.default.createElement(
-									'a',
-									{ href: '#' },
-									_react2.default.createElement('i', { className: 'icon-home2 position-left' }),
-									' Trang ch\u1EE7'
-								)
-							),
-							_react2.default.createElement(
-								'li',
-								{ className: 'active' },
-								'Th\u1EA3o lu\u1EADn l\u1ECBch s\u1EED L\u1EDBp ',
-								this.props.params.lop
-							)
-						),
-						_react2.default.createElement(
-							'ul',
-							{ className: 'breadcrumb-elements' },
-							_react2.default.createElement(
-								'li',
-								null,
-								_react2.default.createElement(
-									'a',
-									{ href: '#' },
-									_react2.default.createElement('i', { className: 'icon-comment-discussion position-left' }),
-									' Support'
-								)
-							),
-							_react2.default.createElement(
-								'li',
-								{ className: 'dropdown' },
-								_react2.default.createElement(
-									'a',
-									{ href: '#', className: 'dropdown-toggle', 'data-toggle': 'dropdown' },
-									_react2.default.createElement('i', { className: 'icon-gear position-left' }),
-									'Lo\u1EA1i b\xE0i h\u1ECDc',
-									_react2.default.createElement('span', { className: 'caret' })
-								),
-								_react2.default.createElement(
-									'ul',
-									{ className: 'dropdown-menu dropdown-menu-right' },
-									_react2.default.createElement(
-										'li',
-										null,
-										_react2.default.createElement(
-											'a',
-											{ href: '/Lichsu_lop6_sachgiaokhoa', target: '_blank' },
-											_react2.default.createElement('i', { className: 'icon-book' }),
-											' S\xE1ch gi\xE1o khoa'
-										)
-									),
-									_react2.default.createElement(
-										'li',
-										null,
-										_react2.default.createElement(
-											'a',
-											{ href: '#Lichsu_lop6_video' },
-											_react2.default.createElement('i', { className: 'icon-book-play' }),
-											' Video '
-										)
-									),
-									_react2.default.createElement(
-										'li',
-										null,
-										_react2.default.createElement(
-											'a',
-											{ href: '#Lichsu_lop6_tuongtac' },
-											_react2.default.createElement('i', { className: 'icon-reading' }),
-											' T\u01B0\u01A1ng t\xE1c'
-										)
-									)
-								)
-							)
-						)
-					)
-				),
-				_react2.default.createElement(
-					'div',
-					{ className: 'content' },
-					this.state.listCauhoi.map(function (data, index) {
-						return _react2.default.createElement(
-							'div',
-							{ key: index, className: 'col-lg-12' },
-							_react2.default.createElement(
-								'div',
-								{ className: 'panel panel-flat blog-horizontal blog-horizontal-2' },
-								_react2.default.createElement(
-									'div',
-									{ className: 'panel-body' },
-									_react2.default.createElement(
-										'div',
-										{ className: 'blog-preview' },
-										_react2.default.createElement(
-											'div',
-											{ className: 'content-group-sm media blog-title stack-media-on-mobile text-left' },
-											_react2.default.createElement(
-												'div',
-												{ className: 'media-body' },
-												_react2.default.createElement(
-													'h5',
-													{ className: 'text-semibold no-margin' },
-													_react2.default.createElement(
-														'a',
-														{ href: "#Hoidap_lichsu_chitiet/lop" + data.PHANLOP + "/id" + data.ID_CAUHOI, className: 'text-default' },
-														data.TIEUDE
-													)
-												),
-												_react2.default.createElement(
-													'ul',
-													{ className: 'list-inline list-inline-separate no-margin text-muted' },
-													_react2.default.createElement(
-														'li',
-														null,
-														'\u0110\u0103ng b\u1EDFi ',
-														_react2.default.createElement(
-															'a',
-															{ href: '#' },
-															data.USERNAME
-														)
-													),
-													_react2.default.createElement(
-														'li',
-														null,
-														data.to_char
-													)
-												)
-											)
-										),
-										_react2.default.createElement(
-											'p',
-											null,
-											data.NOIDUNG
-										),
-										_react2.default.createElement(
-											'a',
-											{ href: "#Hoidap_lichsu_chitiet/lop" + data.PHANLOP + "/id" + data.ID },
-											'[...]'
-										)
-									)
-								),
-								_react2.default.createElement(
-									'div',
-									{ className: 'panel-footer panel-footer-condensed' },
-									_react2.default.createElement(
-										'a',
-										{ className: 'heading-elements-toggle' },
-										_react2.default.createElement('i', { className: 'icon-more' })
-									),
-									_react2.default.createElement(
-										'div',
-										{ className: 'heading-elements' },
-										_react2.default.createElement(
-											'ul',
-											{ className: 'list-inline list-inline-separate heading-text' },
-											_react2.default.createElement(
-												'li',
-												null,
-												_react2.default.createElement('i', { className: 'icon-users position-left' }),
-												' ',
-												data.SOTRALOI,
-												' tr\u1EA3 l\u1EDDi'
-											),
-											_react2.default.createElement(
-												'li',
-												null,
-												'\u0110\xE1nh gi\xE1:\xA0',
-												_react2.default.createElement('i', { className: 'icon-star-full2 text-size-base text-warning-300' }),
-												_react2.default.createElement('i', { className: 'icon-star-full2 text-size-base text-warning-300' }),
-												_react2.default.createElement('i', { className: 'icon-star-full2 text-size-base text-warning-300' }),
-												_react2.default.createElement('i', { className: 'icon-star-full2 text-size-base text-warning-300' }),
-												_react2.default.createElement('i', { className: 'icon-star-full2 text-size-base text-warning-300' }),
-												_react2.default.createElement(
-													'span',
-													{ className: 'text-muted position-right' },
-													'(',
-													data.DANHGIA,
-													')'
-												)
-											)
-										),
-										_react2.default.createElement(
-											'a',
-											{ href: "#Hoidap_lichsu_chitiet/lop" + data.PHANLOP + "/id" + data.ID, className: 'heading-text pull-right' },
-											'Chi ti\u1EBFt ',
-											_react2.default.createElement('i', { className: 'icon-arrow-right14 position-right' })
-										)
-									)
-								)
-							)
-						);
-					})
-				)
-			);
-		}
-	}, {
-		key: 'componentWillMount',
-		value: function componentWillMount() {
-			var that = this;
-			$.post("Hoidap_lichsu/lop" + this.props.params.lop + "/idall", function (data) {
-				console.log("lay data");
-				console.log(data);
-				that.setState({ listCauhoi: data });
-			});
-		}
-	}, {
-		key: 'componentWillReceiveProps',
-		value: function componentWillReceiveProps(newProps) {
-			var that = this;
-
-			$.post("Hoidap_lichsu/lop" + newProps.params.lop + "/idall", function (data) {
-				//that.setState({noidung: data})
-				that.setState({ listCauhoi: data });
-			});
-		}
-	}]);
-
-	return Hoidap_lichsu;
-}(_react2.default.Component);
-
-/***/ }),
-/* 143 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.Hoidap_lichsu_chitiet = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(3);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var data = document.querySelector('#maincontent');
-
-var Hoidap_lichsu_chitiet = exports.Hoidap_lichsu_chitiet = function (_React$Component) {
-	_inherits(Hoidap_lichsu_chitiet, _React$Component);
-
-	function Hoidap_lichsu_chitiet(props) {
-		_classCallCheck(this, Hoidap_lichsu_chitiet);
-
-		var _this = _possibleConstructorReturn(this, (Hoidap_lichsu_chitiet.__proto__ || Object.getPrototypeOf(Hoidap_lichsu_chitiet)).call(this, props));
-
-		_this.state = {
-			listcauhoi: [],
-			listbinhluan: [],
-			link_userImage: '"' + "assets/images/user_" + data.dataset.id + ".jpg" + '"'
-		};
-		return _this;
-	}
-
-	_createClass(Hoidap_lichsu_chitiet, [{
-		key: 'render',
-		value: function render() {
-			return _react2.default.createElement(
-				'div',
-				null,
-				_react2.default.createElement(
-					'div',
-					{ className: 'page-header page-header-default' },
-					_react2.default.createElement(
-						'div',
-						{ className: 'breadcrumb-line' },
-						_react2.default.createElement(
-							'ul',
-							{ className: 'breadcrumb' },
-							_react2.default.createElement(
-								'li',
-								null,
-								_react2.default.createElement(
-									'a',
-									{ href: '#' },
-									_react2.default.createElement('i', { className: 'icon-home2 position-left' }),
-									' Trang ch\u1EE7'
-								)
-							),
-							_react2.default.createElement(
-								'li',
-								null,
-								_react2.default.createElement('a', { id: 'link_pre' })
-							),
-							_react2.default.createElement(
-								'li',
-								{ className: 'active' },
-								'H\u1ECFi & \u0110\xE1p L\u1ECBch s\u1EED chi ti\u1EBFt'
-							)
-						)
-					)
-				),
-				_react2.default.createElement(
-					'div',
-					{ className: 'content' },
-					_react2.default.createElement(
-						'div',
-						{ className: 'panel panel-flat' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'panel-heading mt-5' },
-							_react2.default.createElement('h5', { id: 'tieude', className: 'panel-title' })
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'panel-body' },
-							_react2.default.createElement('p', { id: 'noidung', className: 'content-group' })
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'panel-footer' },
-							_react2.default.createElement(
-								'div',
-								{ className: 'heading-elements' },
-								_react2.default.createElement(
-									'ul',
-									{ className: 'list-inline list-inline-condensed heading-text' },
-									_react2.default.createElement(
-										'li',
-										null,
-										'\u0110\xE1nh gi\xE1:\xA0',
-										_react2.default.createElement('a', { id: 'danhgia' }),
-										'\xA0',
-										_react2.default.createElement('i', { className: 'icon-star-full2 text-size-base text-warning-300' }),
-										_react2.default.createElement(
-											'a',
-											{ id: 'up_cauhoi' },
-											_react2.default.createElement('i', { className: 'icon-arrow-up22 text-success' })
-										),
-										_react2.default.createElement(
-											'a',
-											{ id: 'down_cauhoi' },
-											_react2.default.createElement('i', { className: 'icon-arrow-down22 text-danger' })
-										)
-									)
-								),
-								_react2.default.createElement(
-									'ul',
-									{ className: 'list-inline list-inline-separate heading-text pull-right' },
-									_react2.default.createElement(
-										'li',
-										null,
-										'\u0110\u0103ng b\u1EDFi: ',
-										_react2.default.createElement('a', { id: 'nguoidang' })
-									),
-									_react2.default.createElement('li', { id: 'thoigian' })
-								)
-							)
-						)
-					),
-					_react2.default.createElement(
-						'div',
-						{ className: 'panel panel-flat' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'panel-heading' },
-							_react2.default.createElement(
-								'h5',
-								{ className: 'panel-title text-semiold' },
-								_react2.default.createElement('i', { className: 'icon-bubbles4 position-left' }),
-								' Tr\u1EA3 l\u1EDDi'
-							)
-						),
-						_react2.default.createElement(
-							'div',
-							{ id: 'formBinhluan', className: 'panel-body' },
-							_react2.default.createElement(
-								'ul',
-								{ className: 'media-list content-group-lg stack-media-on-mobile' },
-								this.state.listbinhluan.map(function (data1, index1) {
-									return _react2.default.createElement(
-										'li',
-										{ key: index1, className: 'media' },
-										_react2.default.createElement(
-											'div',
-											{ className: 'media-left' },
-											_react2.default.createElement(
-												'a',
-												null,
-												_react2.default.createElement('img', { src: "assets/images/user_" + data1.ID_NGUOITRALOI + ".jpg", onError: function onError() {
-														src = "assets/images/placeholder.jpg";
-													}, className: 'img-circle img-sm', alt: '' })
-											)
-										),
-										_react2.default.createElement(
-											'div',
-											{ className: 'media-body' },
-											_react2.default.createElement(
-												'div',
-												{ className: 'media-heading' },
-												_react2.default.createElement(
-													'a',
-													{ id: 'username', className: 'text-semibold' },
-													data1.USERNAME
-												),
-												_react2.default.createElement(
-													'span',
-													{ className: 'media-annotation dotted' },
-													data1.to_char
-												)
-											),
-											_react2.default.createElement(
-												'p',
-												null,
-												data1.NOIDUNG
-											),
-											_react2.default.createElement(
-												'ul',
-												{ className: 'list-inline list-inline-separate text-size-small' },
-												_react2.default.createElement(
-													'li',
-													null,
-													'\u0110\xE1nh gi\xE1:\xA0 ',
-													data1.MUCDANHGIA,
-													_react2.default.createElement(
-														'a',
-														{ id: data1.USERNAME, name: data1.ID_BINHLUAN },
-														_react2.default.createElement('i', { className: 'icon-arrow-up22 text-success' })
-													),
-													_react2.default.createElement(
-														'a',
-														{ id: data1.USERNAME, name: data1.ID_BINHLUAN },
-														_react2.default.createElement('i', { className: 'icon-arrow-down22 text-danger' })
-													)
-												)
-											)
-										)
-									);
-								})
-							),
-							_react2.default.createElement(
-								'h6',
-								{ className: 'text-semibold' },
-								_react2.default.createElement('i', { className: 'icon-pencil7 position-left' }),
-								' C\xE2u tr\u1EA3 l\u1EDDi c\u1EE7a b\u1EA1n'
-							),
-							_react2.default.createElement(
-								'div',
-								{ className: 'input-group content-group' },
-								_react2.default.createElement(
-									'div',
-									{ className: 'has-feedback has-feedback-left' },
-									_react2.default.createElement('input', { id: 'binhluan_cauhoi', type: 'text', className: 'form-control input-xlg', placeholder: 'Nh\u1EADp c\xE2u tr\u1EA3 l\u1EDDi c\u1EE7a b\u1EA1n' }),
-									_react2.default.createElement(
-										'div',
-										{ className: 'form-control-feedback' },
-										_react2.default.createElement('i', { className: 'icon-plus22 text-muted text-size-base' })
-									)
-								),
-								_react2.default.createElement(
-									'div',
-									{ className: 'input-group-btn' },
-									_react2.default.createElement(
-										'button',
-										{ id: 'gui_binhluan', type: 'submit', className: 'btn btn-primary btn-xlg' },
-										_react2.default.createElement('i', { className: 'icon-plus22' }),
-										'Tr\u1EA3 l\u1EDDi'
-									)
-								)
-							)
-						)
-					),
-					_react2.default.createElement(
-						'div',
-						{ className: 'footer text-muted' },
-						'\xA9 2015. ',
-						_react2.default.createElement(
-							'a',
-							{ href: '#' },
-							'Limitless Web App Kit'
-						),
-						' by ',
-						_react2.default.createElement(
-							'a',
-							{ href: 'http://themeforest.net/user/Kopyov', target: '_blank' },
-							'Eugene Kopyov'
-						)
-					)
-				)
-			);
-		}
-	}, {
-		key: 'componentDidMount',
-		value: function componentDidMount() {
-			var url1, url2;
-			var id_cauhoi;
-			var phanlop;
-			var id_user = data.dataset.id;
-			var temp_username = data.dataset.username;
-
-			var currentdate = new Date();
-			var datetime = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate() + " " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
-
-			url1 = window.location.href;
-			url1 = url1.split('id');
-			id_cauhoi = url1[2].split('?');
-
-			url2 = window.location.href;
-			url2 = url2.split('lop');
-			phanlop = url2[1].split('/');
-
-			$('#gui_binhluan').click(function (event) {
-				if ($("#binhluan_cauhoi").val() == "") return;
-				var data = {
-					id: id_user,
-					id_cauhoi: id_cauhoi[0],
-					noidung: $("#binhluan_cauhoi").val(),
-					thoigian: datetime
-				};
-				console.log(data);
-				$.post("themBinhluan", data, function () {
-					alert("Đã thêm bình luận thành công!");
-					$("#binhluan_cauhoi").val("");
-					//window.location = "#/trangcanhan";
-					//Trangcanhan.dispatch(location.getCurrentPath(), null);
-				});
-			});
-
-			// $('#like').on('click', function (e) {
-			// 	console.log("like");
-			// });
-			$('#up_cauhoi,#down_cauhoi').click(function () {
-				// var temp_username=data.dataset.username;
-				if (temp_username == $("#nguoidang").text()) return;
-				var data = {
-					id_cauhoi: id_cauhoi[0],
-					type: $(this).attr('id')
-				};
-				console.log(data);
-				$.post("rate_cauhoi", data, function () {
-					alert("Đã rate cau hoi thành công!");
-					//window.location = "#/trangcanhan";
-					//Trangcanhan.dispatch(location.getCurrentPath(), null);
-				});
-			});
-
-			$('#formBinhluan').on('click', '.text-success,.text-danger', function (e) {
-				var usernameClick = $(this).parent().attr('id');
-				var idBinhluanClick = $(this).parent().attr('name');
-				var type = $(this).attr('class');
-
-				if (usernameClick == temp_username) return;
-				console.log("click binh luan 2");
-				var data = {
-					id_binhluan: idBinhluanClick,
-					type: type
-				};
-				console.log(data);
-				$.post("rate_binhluan", data, function () {
-					alert("Đã rate bình luận thành công!");
-				});
-			});
-		}
-	}, {
-		key: 'componentWillMount',
-		value: function componentWillMount() {
-			var that = this;
-			console.log(this.props.params.lop);
-
-			$.post("/Hoidap_lichsu/lop" + this.props.params.lop + "/id" + this.props.params.id, function (data) {
-				//that.setState({noidung: data})
-				that.setState({ listcauhoi: data });
-
-				var tieude = data[0].TIEUDE;
-				var noidung = data[0].NOIDUNG;
-				var nguoidang = data[0].USERNAME;
-				var thoigian = data[0].to_char;
-				var danhgia = data[0].DANHGIA;
-
-				var name_link = "Thảo luận Lịch sử lớp " + data[0].PHANLOP;
-				var link_pre = "#Lichsu_thaoluan/lop" + data[0].PHANLOP;
-
-				$("#tieude").text(tieude);
-				$("#noidung").text(noidung);
-				$("#nguoidang").text(nguoidang);
-				$("#thoigian").text(thoigian);
-				$("#danhgia").text(danhgia);
-
-				$('#link_pre').attr('href', link_pre);
-				$("#link_pre").text(name_link);
-				// console.log(that.state.listcauhoi[0]);
-			});
-
-			$.post("/Binhluan/id" + this.props.params.id, function (data1) {
-				//that.setState({noidung: data})
-				that.setState({ listbinhluan: data1 });
-				console.log(data1);
-			});
-		}
-	}, {
-		key: 'componentWillReceiveProps',
-		value: function componentWillReceiveProps(newProps) {
-			var that = this;
-
-			$.post("/Binhluan/id" + newProps.params.lop, function (data) {
-				//that.setState({noidung: data})
-				that.setState({ listbinhluan: data });
-			});
-		}
-	}]);
-
-	return Hoidap_lichsu_chitiet;
-}(_react2.default.Component);
-
-/***/ }),
-/* 144 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.Lichsu_baihoc = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(3);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Lichsu_baihoc = exports.Lichsu_baihoc = function (_React$Component) {
-	_inherits(Lichsu_baihoc, _React$Component);
-
-	function Lichsu_baihoc(props) {
-		_classCallCheck(this, Lichsu_baihoc);
-
-		var _this = _possibleConstructorReturn(this, (Lichsu_baihoc.__proto__ || Object.getPrototypeOf(Lichsu_baihoc)).call(this, props));
-
-		_this.state = {
-			listbaihoc: []
-		};
-		return _this;
-	}
-
-	_createClass(Lichsu_baihoc, [{
-		key: "render",
-		value: function render() {
-			return _react2.default.createElement(
-				"div",
-				null,
-				_react2.default.createElement(
-					"div",
-					{ className: "page-header page-header-default" },
-					_react2.default.createElement(
-						"div",
-						{ className: "breadcrumb-line" },
-						_react2.default.createElement(
-							"ul",
-							{ className: "breadcrumb" },
-							_react2.default.createElement(
-								"li",
-								null,
-								_react2.default.createElement(
-									"a",
-									{ href: "#" },
-									_react2.default.createElement("i", { className: "icon-home2 position-left" }),
-									" Trang ch\u1EE7"
-								)
-							),
-							_react2.default.createElement(
-								"li",
-								{ className: "active" },
-								"B\xE0i h\u1ECDc l\u1ECBch s\u1EED L\u1EDBp ",
-								this.props.params.lop
-							)
-						),
-						_react2.default.createElement(
-							"ul",
-							{ className: "breadcrumb-elements" },
-							_react2.default.createElement(
-								"li",
-								null,
-								_react2.default.createElement(
-									"a",
-									{ href: "#" },
-									_react2.default.createElement("i", { className: "icon-comment-discussion position-left" }),
-									" Support"
-								)
-							),
-							_react2.default.createElement(
-								"li",
-								{ className: "dropdown" },
-								_react2.default.createElement(
-									"a",
-									{ href: "#", className: "dropdown-toggle", "data-toggle": "dropdown" },
-									_react2.default.createElement("i", { className: "icon-gear position-left" }),
-									"Lo\u1EA1i b\xE0i h\u1ECDc",
-									_react2.default.createElement("span", { className: "caret" })
-								),
-								_react2.default.createElement(
-									"ul",
-									{ className: "dropdown-menu dropdown-menu-right" },
-									_react2.default.createElement(
-										"li",
-										null,
-										_react2.default.createElement(
-											"a",
-											{ href: "/Lichsu_lop6_sachgiaokhoa", target: "_blank" },
-											_react2.default.createElement("i", { className: "icon-book" }),
-											" S\xE1ch gi\xE1o khoa"
-										)
-									),
-									_react2.default.createElement(
-										"li",
-										null,
-										_react2.default.createElement(
-											"a",
-											{ href: "#Lichsu_lop6_video" },
-											_react2.default.createElement("i", { className: "icon-book-play" }),
-											" Video "
-										)
-									),
-									_react2.default.createElement(
-										"li",
-										null,
-										_react2.default.createElement(
-											"a",
-											{ href: "#Lichsu_lop6_tuongtac" },
-											_react2.default.createElement("i", { className: "icon-reading" }),
-											" T\u01B0\u01A1ng t\xE1c"
-										)
-									)
-								)
-							)
-						)
-					)
-				),
-				_react2.default.createElement(
-					"div",
-					{ className: "content" },
-					_react2.default.createElement(
-						"div",
-						{ className: "panel panel-flat" },
-						_react2.default.createElement(
-							"div",
-							{ className: "panel-heading" },
-							_react2.default.createElement(
-								"h6",
-								{ className: "panel-title" },
-								"B\xE0i h\u1ECDc"
-							),
-							_react2.default.createElement("hr", null)
-						),
-						_react2.default.createElement(
-							"div",
-							{ className: "content" },
-							_react2.default.createElement(
-								"div",
-								{ className: "panel-heading" },
-								_react2.default.createElement(
-									"h6",
-									{ className: "panel-title" },
-									"Videos",
-									_react2.default.createElement(
-										"a",
-										{ className: "heading-elements-toggle" },
-										_react2.default.createElement("i", { className: "icon-more" })
-									)
-								),
-								_react2.default.createElement(
-									"div",
-									{ className: "heading-elements" },
-									_react2.default.createElement(
-										"ul",
-										{ className: "icons-list" },
-										_react2.default.createElement(
-											"li",
-											null,
-											_react2.default.createElement("a", { "data-action": "collapse" })
-										),
-										_react2.default.createElement(
-											"li",
-											null,
-											_react2.default.createElement("a", { "data-action": "reload" })
-										),
-										_react2.default.createElement(
-											"li",
-											null,
-											_react2.default.createElement("a", { "data-action": "close" })
-										)
-									)
-								)
-							),
-							_react2.default.createElement(
-								"div",
-								{ className: "panel-body" },
-								_react2.default.createElement(
-									"ul",
-									{ className: "media-list content-group" },
-									this.state.listbaihoc.map(function (abc, index) {
-										return _react2.default.createElement(
-											"li",
-											{ key: index, className: "media stack-media-on-mobile" },
-											_react2.default.createElement(
-												"div",
-												{ className: "media-left" },
-												_react2.default.createElement(
-													"div",
-													{ className: "thumb" },
-													_react2.default.createElement(
-														"a",
-														{ href: "#" },
-														_react2.default.createElement("img", { src: "assets/images/placeholder.jpg", className: "img-responsive img-rounded media-preview", alt: "" }),
-														_react2.default.createElement(
-															"span",
-															{ className: "zoom-image" },
-															_react2.default.createElement("i", { className: "icon-play3" })
-														)
-													)
-												)
-											),
-											_react2.default.createElement(
-												"div",
-												{ className: "media-body" },
-												_react2.default.createElement(
-													"h6",
-													{ className: "media-heading" },
-													_react2.default.createElement(
-														"a",
-														{ href: "#/bai" + abc.ID, target: "_blank" },
-														"Bai ",
-														abc.ID,
-														" - ",
-														abc.LOAIBAIHOC
-													)
-												),
-												_react2.default.createElement(
-													"ul",
-													{ className: "list-inline list-inline-separate text-muted mb-5" },
-													_react2.default.createElement(
-														"li",
-														null,
-														_react2.default.createElement("i", { className: "icon-book-play position-left" }),
-														" Video tutorials"
-													),
-													_react2.default.createElement(
-														"li",
-														null,
-														"14 minutes ago"
-													)
-												),
-												"The him father parish looked has sooner. Attachment frequently gay terminated son..."
-											)
-										);
-									})
-								)
-							)
-						)
-					),
-					_react2.default.createElement(
-						"div",
-						{ className: "footer text-muted" },
-						"\xA9 2015. ",
-						_react2.default.createElement(
-							"a",
-							{ href: "#" },
-							"Limitless Web App Kit"
-						),
-						" by ",
-						_react2.default.createElement(
-							"a",
-							{ href: "http://themeforest.net/user/Kopyov", target: "_blank" },
-							"Eugene Kopyov"
-						)
-					)
-				)
-			);
-		}
-		// componentWillUpdate(){
-		// 	console.log("lay du lieu bai hoc 0");
-		// 	var that=this;
-
-		// 	$.post("/Lichsu_baihoc/lop"+this.props.params.lop, function(data){
-		// 		//that.setState({noidung: data})
-		// 		console.log("lay du lieu bai hoc 1");
-		// 		that.setState({listbaihoc: data});
-		// 	});
-		// }
-
-	}, {
-		key: "componentWillMount",
-		value: function componentWillMount() {
-			var that = this;
-
-			$.post("/Lichsu_baihoc/lop" + this.props.params.lop, function (data) {
-				//that.setState({noidung: data})
-				console.log("lay du lieu bai hoc 1");
-				that.setState({ listbaihoc: data });
-			});
-		}
-	}, {
-		key: "componentWillReceiveProps",
-		value: function componentWillReceiveProps(newProps) {
-			var that = this;
-
-			$.post("/Lichsu_baihoc/lop" + newProps.params.lop, function (data) {
-				//that.setState({noidung: data})
-				console.log("lay du lieu bai hoc 2");
-				that.setState({ listbaihoc: data });
-			});
-		}
-	}]);
-
-	return Lichsu_baihoc;
-}(_react2.default.Component);
-
-/***/ }),
-/* 145 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Lichsu_baitapnangcao = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(3);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Lichsu_baitapnangcao = exports.Lichsu_baitapnangcao = function (_React$Component) {
-  _inherits(Lichsu_baitapnangcao, _React$Component);
-
-  function Lichsu_baitapnangcao() {
-    _classCallCheck(this, Lichsu_baitapnangcao);
-
-    return _possibleConstructorReturn(this, (Lichsu_baitapnangcao.__proto__ || Object.getPrototypeOf(Lichsu_baitapnangcao)).apply(this, arguments));
-  }
-
-  _createClass(Lichsu_baitapnangcao, [{
-    key: 'render',
-    value: function render() {
-      return _react2.default.createElement(
-        'h1',
-        null,
-        'bai tap Lich su component m\u1EDBi'
-      );
-    }
-  }]);
-
-  return Lichsu_baitapnangcao;
-}(_react2.default.Component);
-
-/***/ }),
-/* 146 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.Lichsu_thaoluan = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(3);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _socket = __webpack_require__(50);
-
-var _socket2 = _interopRequireDefault(_socket);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var socket = (0, _socket2.default)('http://localhost:3000');
-
-var data = document.querySelector('#maincontent');
-
-var id_user = data.dataset.id;
-var check = true;
-var phanlop;
-var url2;
-
-var Lichsu_thaoluan = exports.Lichsu_thaoluan = function (_React$Component) {
-	_inherits(Lichsu_thaoluan, _React$Component);
-
-	function Lichsu_thaoluan(props) {
-		_classCallCheck(this, Lichsu_thaoluan);
-
-		var _this = _possibleConstructorReturn(this, (Lichsu_thaoluan.__proto__ || Object.getPrototypeOf(Lichsu_thaoluan)).call(this, props));
-
-		_this.state = {
-			listCauhoi: []
-		};
-		return _this;
-	}
-
-	_createClass(Lichsu_thaoluan, [{
-		key: 'render',
-		value: function render() {
-			return _react2.default.createElement(
-				'div',
-				null,
-				_react2.default.createElement(
-					'div',
-					{ className: 'page-header page-header-default' },
-					_react2.default.createElement(
-						'div',
-						{ className: 'breadcrumb-line' },
-						_react2.default.createElement(
-							'ul',
-							{ className: 'breadcrumb' },
-							_react2.default.createElement(
-								'li',
-								null,
-								_react2.default.createElement(
-									'a',
-									{ href: '#' },
-									_react2.default.createElement('i', { className: 'icon-home2 position-left' }),
-									' Trang ch\u1EE7'
-								)
-							),
-							_react2.default.createElement(
-								'li',
-								{ className: 'active' },
-								'Th\u1EA3o lu\u1EADn l\u1ECBch s\u1EED L\u1EDBp ',
-								this.props.params.lop
-							)
-						),
-						_react2.default.createElement(
-							'ul',
-							{ className: 'breadcrumb-elements' },
-							_react2.default.createElement(
-								'li',
-								null,
-								_react2.default.createElement(
-									'a',
-									{ id: 'themcauhoi' },
-									_react2.default.createElement('i', { className: 'icon-plus-circle2 position-left' }),
-									'Th\xEAm c\xE2u h\u1ECFi'
-								)
-							)
-						)
-					)
-				),
-				_react2.default.createElement(
-					'div',
-					{ className: 'content' },
-					_react2.default.createElement(
-						'div',
-						{ id: 'formadd', className: 'col-lg-12' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'panel panel-flat blog-horizontal blog-horizontal-2' },
-							_react2.default.createElement(
-								'div',
-								{ className: 'panel-body' },
-								_react2.default.createElement(
-									'div',
-									{ className: 'blog-preview' },
-									_react2.default.createElement(
-										'div',
-										{ className: 'panel-body' },
-										_react2.default.createElement(
-											'div',
-											{ className: 'form-group' },
-											_react2.default.createElement(
-												'label',
-												null,
-												'Ti\xEAu \u0111\u1EC1: '
-											),
-											_react2.default.createElement('input', { id: 'add_tieude', type: 'text', className: 'form-control', placeholder: 'Ti\xEAu \u0111\u1EC1 c\xE2u h\u1ECFi' })
-										),
-										_react2.default.createElement(
-											'div',
-											{ className: 'form-group' },
-											_react2.default.createElement(
-												'label',
-												null,
-												'N\u1ED9i dung c\xE2u h\u1ECFi: '
-											),
-											_react2.default.createElement('textarea', { id: 'add_noidung', rows: '3', cols: '3', className: 'form-control', placeholder: 'N\u1ED9i dung c\xE2u h\u1ECFi c\u1EE7a b\u1EA1n' })
-										),
-										_react2.default.createElement(
-											'div',
-											{ className: 'text-right' },
-											_react2.default.createElement(
-												'button',
-												{ id: 'addcauhoi', type: 'submit', className: 'btn bg-teal-400' },
-												'\u0110\u0103ng c\xE2u h\u1ECFi ',
-												_react2.default.createElement('i', { className: 'icon-arrow-right14 position-right' })
-											)
-										)
-									)
-								)
-							)
-						)
-					),
-					this.state.listCauhoi.map(function (data, index) {
-						return _react2.default.createElement(
-							'div',
-							{ key: index, className: 'col-lg-12' },
-							_react2.default.createElement(
-								'div',
-								{ className: 'panel panel-flat blog-horizontal blog-horizontal-2' },
-								_react2.default.createElement(
-									'div',
-									{ className: 'panel-body' },
-									_react2.default.createElement(
-										'div',
-										{ className: 'blog-preview' },
-										_react2.default.createElement(
-											'div',
-											{ className: 'content-group-sm media blog-title stack-media-on-mobile text-left' },
-											_react2.default.createElement(
-												'div',
-												{ className: 'media-body' },
-												_react2.default.createElement(
-													'h5',
-													{ className: 'text-semibold no-margin' },
-													_react2.default.createElement(
-														'a',
-														{ href: "#Hoidap_lichsu_chitiet/lop" + data.PHANLOP + "/id" + data.ID_CAUHOI, className: 'text-default' },
-														data.TIEUDE
-													)
-												),
-												_react2.default.createElement(
-													'ul',
-													{ className: 'list-inline list-inline-separate no-margin text-muted' },
-													_react2.default.createElement(
-														'li',
-														null,
-														'\u0110\u0103ng b\u1EDFi: ',
-														_react2.default.createElement(
-															'a',
-															null,
-															data.USERNAME
-														)
-													),
-													_react2.default.createElement(
-														'li',
-														null,
-														data.to_char
-													)
-												)
-											)
-										),
-										_react2.default.createElement(
-											'p',
-											null,
-											data.NOIDUNG
-										),
-										_react2.default.createElement(
-											'a',
-											{ href: "#Hoidap_lichsu_chitiet/lop" + data.PHANLOP + "/id" + data.ID_CAUHOI },
-											'[...]'
-										)
-									)
-								),
-								_react2.default.createElement(
-									'div',
-									{ className: 'panel-footer panel-footer-condensed' },
-									_react2.default.createElement(
-										'a',
-										{ className: 'heading-elements-toggle' },
-										_react2.default.createElement('i', { className: 'icon-more' })
-									),
-									_react2.default.createElement(
-										'div',
-										{ className: 'heading-elements' },
-										_react2.default.createElement(
-											'ul',
-											{ className: 'list-inline list-inline-separate heading-text' },
-											_react2.default.createElement(
-												'li',
-												null,
-												_react2.default.createElement('i', { className: 'icon-users position-left' }),
-												' ',
-												data.SOTRALOI,
-												' tr\u1EA3 l\u1EDDi'
-											),
-											_react2.default.createElement(
-												'li',
-												null,
-												'\u0110\xE1nh gi\xE1:\xA0',
-												_react2.default.createElement(
-													'span',
-													{ className: 'text-muted position-right' },
-													data.DANHGIA,
-													'\xA0'
-												),
-												_react2.default.createElement('i', { className: 'icon-star-full2 text-size-base text-warning-300' }),
-												_react2.default.createElement(
-													'a',
-													{ id: 'like' },
-													_react2.default.createElement('i', { className: 'icon-arrow-up22 text-success' })
-												),
-												_react2.default.createElement(
-													'a',
-													{ id: 'dislike' },
-													_react2.default.createElement('i', { className: 'icon-arrow-down22 text-danger' })
-												)
-											)
-										),
-										_react2.default.createElement(
-											'a',
-											{ href: "#Hoidap_lichsu_chitiet/lop" + data.PHANLOP + "/id" + data.ID_CAUHOI, className: 'heading-text pull-right' },
-											'Chi ti\u1EBFt ',
-											_react2.default.createElement('i', { className: 'icon-arrow-right14 position-right' })
-										)
-									)
-								)
-							)
-						);
-					})
-				)
-			);
-		}
-	}, {
-		key: 'componentDidMount',
-		value: function componentDidMount() {
-			console.log("componentDidMount");
-
-			var currentdate = new Date();
-			var datetime = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate() + " " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
-
-			url2 = window.location.href;
-			url2 = url2.split('lop');
-			phanlop = url2[1].split('?');
-
-			$("#formadd").hide();
-			$('#themcauhoi').click(function (event) {
-				console.log("io click");
-				if (check) {
-					check = false;
-					$("#formadd").show();
-				} else {
-					check = true;
-					$("#formadd").hide();
-				}
-			});
-
-			$('#addcauhoi').click(function () {
-				if ($("#add_tieude").val() == "") return;
-				if ($("#add_noidung").val() == "") return;
-				var data = {
-					id: id_user,
-					tieude: $("#add_tieude").val(),
-					noidung: $("#add_noidung").val(),
-					lop: phanlop[0],
-					thoigian: datetime
-
-				};
-				console.log(data);
-				$.post("themCauhoi", data, function () {
-					$("#add_tieude").val("");
-					$("#add_noidung").val("");
-					$("#formadd").hide();
-					//window.location = "#/trangcanhan";
-					//Trangcanhan.dispatch(location.getCurrentPath(), null);
-				});
-			});
-		}
-	}, {
-		key: 'componentWillMount',
-		value: function componentWillMount() {
-			console.log("componentWillMount");
-			var that = this;
-			// $.post("Hoidap_lichsu/lop"+this.props.params.lop+"/idall",function( data ){
-			// 	console.log("lay data");
-			// 	console.log(data);
-			// 	that.setState({listCauhoi: data});
-			// })
-			////test
-			url2 = window.location.href;
-			url2 = url2.split('lop');
-			phanlop = url2[1].split('?');
-
-			var data1 = {
-				lop: phanlop[0],
-				id: "all"
-			};
-			socket.emit('c2s_Thaoluan', data1);
-			socket.on('s2c_Thaoluan', function (data) {
-				console.log(data);
-				that.setState({ listCauhoi: data });
-			});
-			////
-		}
-	}, {
-		key: 'componentWillReceiveProps',
-		value: function componentWillReceiveProps(newProps) {
-			console.log("componentWillReceiveProps");
-			// var that=this;
-
-			url2 = window.location.href;
-			url2 = url2.split('lop');
-			phanlop = url2[1].split('?');
-
-			var data1 = {
-				lop: phanlop[0],
-				id: "all"
-			};
-			socket.emit('c2s_Thaoluan', data1);
-			// $.post("Hoidap_lichsu/lop"+newProps.params.lop+"/idall", function(data){
-			// 	//that.setState({noidung: data})
-			// 	that.setState({listCauhoi: data});
-			// });
-		}
-	}]);
-
-	return Lichsu_thaoluan;
-}(_react2.default.Component);
-
-/***/ }),
-/* 147 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
 exports.Trangcanhan = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -19461,7 +18117,7 @@ var _react = __webpack_require__(3);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _socket = __webpack_require__(50);
+var _socket = __webpack_require__(25);
 
 var _socket2 = _interopRequireDefault(_socket);
 
@@ -20051,7 +18707,7 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 													'div',
 													{ className: 'thumb thumb-rounded thumb-slide' },
 													_react2.default.createElement('img', { src: this.state.id_user, onError: function onError() {
-															_this2.setState({ id_user: "assets/images/placeholder.jpg" });
+															_this2.setState({ id_user: "assets/images/user.jpg" });
 														}, alt: '' }),
 													_react2.default.createElement(
 														'div',
@@ -20858,7 +19514,7 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 }(_react2.default.Component);
 
 /***/ }),
-/* 148 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20883,6 +19539,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var data = document.querySelector('#maincontent');
+
 var Trangchu = exports.Trangchu = function (_React$Component) {
 	_inherits(Trangchu, _React$Component);
 
@@ -20893,69 +19551,154 @@ var Trangchu = exports.Trangchu = function (_React$Component) {
 	}
 
 	_createClass(Trangchu, [{
-		key: "render",
+		key: 'render',
 		value: function render() {
 			return _react2.default.createElement(
-				"div",
+				'div',
 				null,
 				_react2.default.createElement(
-					"div",
-					{ className: "page-header page-header-default" },
+					'div',
+					{ className: 'page-header page-header-default' },
 					_react2.default.createElement(
-						"div",
-						{ className: "breadcrumb-line" },
+						'div',
+						{ className: 'breadcrumb-line' },
 						_react2.default.createElement(
-							"ul",
-							{ className: "breadcrumb" },
+							'ul',
+							{ className: 'breadcrumb' },
 							_react2.default.createElement(
-								"li",
+								'li',
 								null,
 								_react2.default.createElement(
-									"a",
-									{ href: "#" },
-									_react2.default.createElement("i", { className: "icon-home2 position-left" }),
-									" Trang ch\u1EE7"
+									'a',
+									{ href: '#' },
+									_react2.default.createElement('i', { className: 'icon-home2 position-left' }),
+									' Trang ch\u1EE7'
 								)
 							)
 						)
 					)
 				),
 				_react2.default.createElement(
-					"div",
-					{ className: "content" },
+					'div',
+					{ className: 'content' },
 					_react2.default.createElement(
-						"div",
-						{ className: "panel panel-flat" },
+						'div',
+						{ className: 'panel panel-flat' },
 						_react2.default.createElement(
-							"div",
-							{ className: "panel-heading" },
+							'div',
+							{ className: ' alert alert-success no-border' },
 							_react2.default.createElement(
-								"h6",
-								{ className: "panel-title" },
-								"Trang ch\u1EE7"
+								'h6',
+								{ className: 'panel-title ' },
+								'B\xE0i h\u1ECDc',
+								_react2.default.createElement(
+									'a',
+									{ className: 'heading-elements-toggle' },
+									_react2.default.createElement('i', { className: 'icon-more' })
+								)
 							),
-							_react2.default.createElement("hr", null)
+							_react2.default.createElement(
+								'div',
+								{ className: 'heading-elements' },
+								_react2.default.createElement(
+									'ul',
+									{ className: 'icons-list' },
+									_react2.default.createElement(
+										'li',
+										null,
+										_react2.default.createElement('a', { 'data-action': 'collapse' })
+									)
+								)
+							)
 						),
 						_react2.default.createElement(
-							"div",
-							{ className: "content" },
-							_react2.default.createElement("iframe", { width: "800", height: "600", src: "https://docs.google.com/gview?url=http://ieee802.org/secmail/docIZSEwEqHFr.doc&embedded=true", frameborder: "0" })
+							'div',
+							{ className: 'panel-body' },
+							_react2.default.createElement(
+								'h7',
+								{ className: 'content-group' },
+								'B\u1EA1n c\xF3 th\u1EC3 h\u1ECDc tr\u1EF1c ti\u1EBFp m\xF4n ',
+								_react2.default.createElement(
+									'code',
+									null,
+									'L\u1ECBch S\u1EED'
+								),
+								' v\xE0 ',
+								_react2.default.createElement(
+									'code',
+									null,
+									'\u0110\u1ECBa L\xED'
+								),
+								' th\xF4ng qua trang web c\u1EE7a ch\xFAng t\xF4i. C\xE1c b\xE0i h\u1ECDc \u0111\u01B0\u1EE3c thi\u1EBFt k\u1EBF d\u1EF1a tr\xEAn S\xE1ch Gi\xE1o Khoa b\xE1m s\xE1t v\u1EDBi ki\u1EBFn th\u1EE9c trong l\u1EDBp, c\xE1c b\xE0i h\u1ECDc \u0111\u01B0\u1EE3c ph\xE2n th\xE0nh ba d\u1EA1ng s\xE1ch gi\xE1o khoa, video, b\xE0i vi\u1EBFt h\u1ECDc thu\u1EADt.'
+							)
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'row' },
+							_react2.default.createElement('div', { className: 'col-md-3' }),
+							_react2.default.createElement(
+								'div',
+								{ className: 'col-md-3' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'panel-body text-center' },
+									_react2.default.createElement(
+										'div',
+										{ className: 'icon-object border-violet text-violet' },
+										_react2.default.createElement('i', { className: ' icon-hour-glass2' })
+									),
+									_react2.default.createElement(
+										'h5',
+										{ className: 'text-semibold' },
+										'Hoc L\u1ECBch S\u1EED Online'
+									),
+									_react2.default.createElement(
+										'a',
+										{ href: "#lichsu/lop" + data.dataset.lop + "/baihoc", className: 'btn bg-violet' },
+										'H\u1ECDc ngay'
+									)
+								)
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'col-md-3' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'panel-body text-center' },
+									_react2.default.createElement(
+										'div',
+										{ className: 'icon-object border-orange text-orange' },
+										_react2.default.createElement('i', { className: 'icon-earth' })
+									),
+									_react2.default.createElement(
+										'h5',
+										{ className: 'text-semibold' },
+										'H\u1ECDc \u0110\u1ECBa L\xED Online'
+									),
+									_react2.default.createElement(
+										'a',
+										{ href: "#diali/lop" + data.dataset.lop + "/baihoc", className: 'btn bg-orange' },
+										'H\u1ECDc ngay'
+									)
+								)
+							),
+							_react2.default.createElement('div', { className: 'col-md-3' })
 						)
 					),
 					_react2.default.createElement(
-						"div",
-						{ className: "footer text-muted" },
-						"\xA9 2015. ",
+						'div',
+						{ className: 'footer text-muted' },
+						'\xA9 2015. ',
 						_react2.default.createElement(
-							"a",
-							{ href: "#" },
-							"Limitless Web App Kit"
+							'a',
+							{ href: '#' },
+							'Limitless Web App Kit'
 						),
-						" by ",
+						' by ',
 						_react2.default.createElement(
-							"a",
-							{ href: "http://themeforest.net/user/Kopyov", target: "_blank" },
-							"Eugene Kopyov"
+							'a',
+							{ href: 'http://themeforest.net/user/Kopyov', target: '_blank' },
+							'Eugene Kopyov'
 						)
 					)
 				)
@@ -20967,7 +19710,7 @@ var Trangchu = exports.Trangchu = function (_React$Component) {
 }(_react2.default.Component);
 
 /***/ }),
-/* 149 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20984,15 +19727,28 @@ var _react = __webpack_require__(3);
 
 var _react2 = _interopRequireDefault(_react);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _socket = __webpack_require__(25);
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+var _socket2 = _interopRequireDefault(_socket);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var socket = (0, _socket2.default)('http://localhost:3000');
+
+var data = document.querySelector('#maincontent');
+
+var id_user = data.dataset.id;
+var check = true;
+var mon, phanlop;
+var url1, url2;
+var temp_username = data.dataset.username;
+var type_username = data.dataset.type;
 
 var baihoc = exports.baihoc = function (_React$Component) {
 	_inherits(baihoc, _React$Component);
@@ -21009,352 +19765,490 @@ var baihoc = exports.baihoc = function (_React$Component) {
 	}
 
 	_createClass(baihoc, [{
-		key: "render",
+		key: 'render',
 		value: function render() {
 			return _react2.default.createElement(
-				"div",
+				'div',
 				null,
 				_react2.default.createElement(
-					"div",
-					{ className: "page-header page-header-default" },
+					'div',
+					{ className: 'page-header page-header-default' },
 					_react2.default.createElement(
-						"div",
-						{ className: "breadcrumb-line" },
+						'div',
+						{ className: 'breadcrumb-line' },
 						_react2.default.createElement(
-							"ul",
-							{ className: "breadcrumb" },
+							'ul',
+							{ className: 'breadcrumb' },
 							_react2.default.createElement(
-								"li",
+								'li',
 								null,
 								_react2.default.createElement(
-									"a",
-									{ href: "#" },
-									_react2.default.createElement("i", { className: "icon-home2 position-left" }),
-									" Trang ch\u1EE7"
+									'a',
+									{ href: '#' },
+									_react2.default.createElement('i', { className: 'icon-home2 position-left' }),
+									' Trang ch\u1EE7'
 								)
 							),
-							_react2.default.createElement("li", { className: "active", id: "link_pre" })
+							_react2.default.createElement('li', { className: 'active', id: 'link_pre' })
 						),
 						_react2.default.createElement(
-							"ul",
-							{ className: "breadcrumb-elements" },
+							'ul',
+							{ className: 'breadcrumb-elements' },
 							_react2.default.createElement(
-								"li",
+								'li',
 								null,
 								_react2.default.createElement(
-									"a",
-									{ href: "#" },
-									_react2.default.createElement("i", { className: "icon-comment-discussion position-left" }),
-									" Support"
-								)
-							),
-							_react2.default.createElement(
-								"li",
-								{ className: "dropdown" },
-								_react2.default.createElement(
-									"a",
-									{ href: "#", className: "dropdown-toggle", "data-toggle": "dropdown" },
-									_react2.default.createElement("i", { className: "icon-gear position-left" }),
-									"Lo\u1EA1i b\xE0i h\u1ECDc",
-									_react2.default.createElement("span", { className: "caret" })
-								),
-								_react2.default.createElement(
-									"ul",
-									{ className: "dropdown-menu dropdown-menu-right" },
-									_react2.default.createElement(
-										"li",
-										null,
-										_react2.default.createElement(
-											"a",
-											_defineProperty({ href: "/sachgiaokhoa/" + this.props.params.lop + "/" + this.props.params.lop, target: "_blank" }, "href", "#abc"),
-											_react2.default.createElement("i", { className: "icon-book" }),
-											" S\xE1ch gi\xE1o khoa"
-										)
-									),
-									_react2.default.createElement(
-										"li",
-										null,
-										_react2.default.createElement(
-											"a",
-											{ href: "#Lichsu_lop6_video" },
-											_react2.default.createElement("i", { className: "icon-book-play" }),
-											" Video "
-										)
-									),
-									_react2.default.createElement(
-										"li",
-										null,
-										_react2.default.createElement(
-											"a",
-											{ href: "#Lichsu_lop6_tuongtac" },
-											_react2.default.createElement("i", { className: "icon-reading" }),
-											" T\u01B0\u01A1ng t\xE1c"
-										)
-									)
+									'a',
+									{ id: 'thembaihoc' },
+									_react2.default.createElement('i', { className: 'icon-plus-circle2 position-left' }),
+									'Th\xEAm b\xE0i h\u1ECDc'
 								)
 							)
 						)
 					)
 				),
 				_react2.default.createElement(
-					"div",
-					{ className: "content" },
+					'div',
+					{ className: 'content' },
 					_react2.default.createElement(
-						"div",
-						{ className: "panel panel-flat" },
+						'div',
+						{ id: 'formadd', className: 'panel panel-flat blog-horizontal blog-horizontal-2' },
 						_react2.default.createElement(
-							"div",
-							{ className: "panel-heading" },
+							'div',
+							{ className: 'panel-body' },
 							_react2.default.createElement(
-								"h6",
-								{ className: "panel-title" },
-								"B\xE0i h\u1ECDc"
-							),
-							_react2.default.createElement("hr", null)
-						),
-						_react2.default.createElement(
-							"div",
-							{ className: "content" },
-							_react2.default.createElement(
-								"div",
-								{ className: "panel-heading" },
+								'div',
+								{ className: 'blog-preview' },
 								_react2.default.createElement(
-									"h6",
-									{ className: "panel-title" },
-									"S\xE1ch gi\xE1o khoa",
+									'div',
+									{ className: 'panel-body' },
 									_react2.default.createElement(
-										"a",
-										{ className: "heading-elements-toggle" },
-										_react2.default.createElement("i", { className: "icon-more" })
-									)
-								),
-								_react2.default.createElement(
-									"div",
-									{ className: "heading-elements" },
-									_react2.default.createElement(
-										"ul",
-										{ className: "icons-list" },
+										'div',
+										{ className: 'form-group' },
 										_react2.default.createElement(
-											"li",
-											null,
-											_react2.default.createElement("a", { "data-action": "collapse" })
+											'label',
+											{ className: 'control-label col-lg-2' },
+											'Th\xF4ng tin b\xE0i m\u1EDBi'
 										),
 										_react2.default.createElement(
-											"li",
-											null,
-											_react2.default.createElement("a", { "data-action": "reload" })
-										),
-										_react2.default.createElement(
-											"li",
-											null,
-											_react2.default.createElement("a", { "data-action": "close" })
-										)
-									)
-								)
-							),
-							_react2.default.createElement(
-								"div",
-								{ className: "panel-body text-center" },
-								_react2.default.createElement(
-									"div",
-									{ className: "icon-object border-success text-success" },
-									_react2.default.createElement("i", { className: "icon-book" })
-								),
-								_react2.default.createElement(
-									"h5",
-									{ className: "text-semibold" },
-									"S\xE1ch gi\xE1o khoa l\u1EDBp 6"
-								),
-								_react2.default.createElement(
-									"a",
-									{ href: "/sachgiaokhoa/lichsu/" + this.props.params.lop, target: "_blank", className: "btn bg-success-400" },
-									"H\u1ECDc ngay"
-								)
-							)
-						),
-						_react2.default.createElement(
-							"div",
-							{ className: "content" },
-							_react2.default.createElement(
-								"div",
-								{ className: "panel-heading" },
-								_react2.default.createElement(
-									"h6",
-									{ className: "panel-title" },
-									"Videos",
-									_react2.default.createElement(
-										"a",
-										{ className: "heading-elements-toggle" },
-										_react2.default.createElement("i", { className: "icon-more" })
-									)
-								),
-								_react2.default.createElement(
-									"div",
-									{ className: "heading-elements" },
-									_react2.default.createElement(
-										"ul",
-										{ className: "icons-list" },
-										_react2.default.createElement(
-											"li",
-											null,
-											_react2.default.createElement("a", { "data-action": "collapse" })
-										),
-										_react2.default.createElement(
-											"li",
-											null,
-											_react2.default.createElement("a", { "data-action": "reload" })
-										),
-										_react2.default.createElement(
-											"li",
-											null,
-											_react2.default.createElement("a", { "data-action": "close" })
-										)
-									)
-								)
-							),
-							_react2.default.createElement(
-								"div",
-								{ className: "panel-body" },
-								_react2.default.createElement(
-									"ul",
-									{ className: "media-list content-group" },
-									this.state.listbaihoc.map(function (abc, index) {
-										return _react2.default.createElement(
-											"li",
-											{ key: index, className: "media stack-media-on-mobile" },
+											'div',
+											{ className: 'col-lg-12' },
 											_react2.default.createElement(
-												"div",
-												{ className: "media-left" },
+												'div',
+												{ className: 'row' },
 												_react2.default.createElement(
-													"div",
-													{ className: "thumb" },
-													_react2.default.createElement(
-														"a",
-														{ href: "#" },
-														_react2.default.createElement("img", { src: "assets/images/placeholder.jpg", className: "img-responsive img-rounded media-preview", alt: "" }),
-														_react2.default.createElement(
-															"span",
-															{ className: "zoom-image" },
-															_react2.default.createElement("i", { className: "icon-play3" })
-														)
-													)
+													'div',
+													{ className: 'col-md-2', style: { paddingRight: '0px' } },
+													_react2.default.createElement('input', { id: 'sobai', type: 'number', placeholder: 'S\u1ED1 th\u1EE9 t\u1EF1 b\xE0i', className: 'form-control' }),
+													_react2.default.createElement('span', { className: 'help-block' })
+												),
+												_react2.default.createElement(
+													'div',
+													{ className: 'col-md-10', style: { paddingRight: '0px' } },
+													_react2.default.createElement('input', { id: 'tieudebai', type: 'text', placeholder: 'Ti\xEAu \u0111\u1EC1 b\xE0i', className: 'form-control' }),
+													_react2.default.createElement('span', { className: 'help-block' })
 												)
-											),
-											_react2.default.createElement(
-												"div",
-												{ className: "media-body" },
-												_react2.default.createElement(
-													"h6",
-													{ className: "media-heading" },
-													_react2.default.createElement(
-														"a",
-														{ href: "#/bai" + abc.ID, target: "_blank" },
-														"Bai ",
-														abc.ID,
-														" - ",
-														abc.LOAIBAIHOC
-													)
-												),
-												_react2.default.createElement(
-													"ul",
-													{ className: "list-inline list-inline-separate text-muted mb-5" },
-													_react2.default.createElement(
-														"li",
-														null,
-														_react2.default.createElement("i", { className: "icon-book-play position-left" }),
-														" Video tutorials"
-													),
-													_react2.default.createElement(
-														"li",
-														null,
-														"14 minutes ago"
-													)
-												),
-												"The him father parish looked has sooner. Attachment frequently gay terminated son..."
 											)
-										);
-									})
+										)
+									),
+									_react2.default.createElement(
+										'div',
+										{ className: 'text-right' },
+										_react2.default.createElement(
+											'button',
+											{ id: 'addcauhoi', type: 'submit', className: 'btn bg-teal-400' },
+											'\u0110\u0103ng b\xE0i h\u1ECDc ',
+											_react2.default.createElement('i', { className: 'icon-arrow-right14 position-right' })
+										)
+									)
 								)
 							)
 						)
 					),
 					_react2.default.createElement(
-						"div",
-						{ className: "footer text-muted" },
-						"\xA9 2015. ",
+						'div',
+						{ id: 'formCauhoi', className: 'timeline timeline-left content-group' },
 						_react2.default.createElement(
-							"a",
-							{ href: "#" },
-							"Limitless Web App Kit"
-						),
-						" by ",
-						_react2.default.createElement(
-							"a",
-							{ href: "http://themeforest.net/user/Kopyov", target: "_blank" },
-							"Eugene Kopyov"
+							'div',
+							{ className: 'timeline-container' },
+							this.state.listbaihoc.map(function (data1, index) {
+								return data1.ID_BAIHOC < 3 || type_username == "trogiang" || type_username == "admin" ? data1.ID_BAIHOC == 2 ? _react2.default.createElement(
+									'div',
+									{ key: index, className: 'timeline-row' },
+									_react2.default.createElement(
+										'div',
+										{ className: 'timeline-icon' },
+										_react2.default.createElement(
+											'div',
+											{ className: 'bg-primary' },
+											_react2.default.createElement('i', { className: 'icon-pencil6' })
+										)
+									),
+									_react2.default.createElement(
+										'div',
+										{ className: 'panel panel-flat timeline-content' },
+										_react2.default.createElement(
+											'div',
+											{ className: 'panel-heading' },
+											_react2.default.createElement(
+												'h6',
+												{ className: 'panel-title text-semibold no-margin' },
+												_react2.default.createElement(
+													'a',
+													{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/baihoc_chitiet/" + data1.ID_BAIHOC, className: 'text-default' },
+													_react2.default.createElement(
+														'a',
+														null,
+														'B\xE0i ',
+														data1.BAI,
+														':'
+													),
+													'  ',
+													data1.TIEUDE
+												)
+											),
+											_react2.default.createElement(
+												'div',
+												{ className: 'heading-elements' },
+												_react2.default.createElement(
+													'span',
+													{ className: 'heading-text' },
+													data1.USERNAME,
+													' - ',
+													data1.to_char
+												)
+											)
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'panel-body' },
+											_react2.default.createElement(
+												'div',
+												{ className: 'row glyphs' },
+												_react2.default.createElement(
+													'div',
+													{ className: 'col-md-2 col-sm-3' },
+													_react2.default.createElement('i', { className: 'icon-book ' }),
+													_react2.default.createElement(
+														'a',
+														{ href: "/sachgiaokhoa/" + data1.MON + "/" + data1.PHANLOP, target: '_blank' },
+														_react2.default.createElement(
+															'span',
+															null,
+															'S\xE1ch gi\xE1o khoa'
+														)
+													)
+												),
+												_react2.default.createElement(
+													'div',
+													{ className: 'col-md-2 col-sm-3' },
+													_react2.default.createElement('i', { className: 'icon-tree7' }),
+													_react2.default.createElement(
+														'a',
+														{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/baihoc_tip_chitiet/" + data1.ID_BAIHOC },
+														_react2.default.createElement(
+															'span',
+															null,
+															'T\xF3m t\u1EAFt ki\u1EBFn th\u1EE9c'
+														)
+													)
+												),
+												_react2.default.createElement(
+													'div',
+													{ className: 'col-md-2 col-sm-3' },
+													_react2.default.createElement('i', { className: 'icon-book-play' }),
+													_react2.default.createElement(
+														'a',
+														{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/baihoc_video/" + data1.ID_BAIHOC },
+														_react2.default.createElement(
+															'span',
+															null,
+															'Video'
+														)
+													)
+												),
+												_react2.default.createElement(
+													'div',
+													{ className: 'col-md-2 col-sm-3' },
+													_react2.default.createElement('i', { className: 'icon-file-text' }),
+													_react2.default.createElement(
+														'a',
+														{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/baitap_tracnghiem_chitiet/" + data1.ID_BAIHOC },
+														_react2.default.createElement(
+															'span',
+															null,
+															'B\xE0i t\u1EADp'
+														)
+													)
+												)
+											)
+										)
+									)
+								) : _react2.default.createElement(
+									'div',
+									{ key: index, className: 'timeline-row' },
+									_react2.default.createElement(
+										'div',
+										{ className: 'timeline-icon' },
+										_react2.default.createElement(
+											'div',
+											{ className: 'bg-success' },
+											_react2.default.createElement('i', { className: 'icon-checkmark' })
+										)
+									),
+									_react2.default.createElement(
+										'div',
+										{ className: 'panel panel-flat timeline-content' },
+										_react2.default.createElement(
+											'div',
+											{ className: 'panel-heading' },
+											_react2.default.createElement(
+												'h6',
+												{ className: 'panel-title text-semibold no-margin' },
+												_react2.default.createElement(
+													'a',
+													{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/baihoc_chitiet/" + data1.ID_BAIHOC, className: 'text-default' },
+													_react2.default.createElement(
+														'a',
+														null,
+														'B\xE0i ',
+														data1.BAI,
+														':'
+													),
+													'  ',
+													data1.TIEUDE
+												)
+											),
+											_react2.default.createElement(
+												'div',
+												{ className: 'heading-elements' },
+												_react2.default.createElement(
+													'span',
+													{ className: 'heading-text' },
+													data1.USERNAME,
+													' - ',
+													data1.to_char
+												)
+											)
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'panel-body' },
+											_react2.default.createElement(
+												'div',
+												{ className: 'row glyphs' },
+												_react2.default.createElement(
+													'div',
+													{ className: 'col-md-2 col-sm-3' },
+													_react2.default.createElement('i', { className: 'icon-book ' }),
+													_react2.default.createElement(
+														'a',
+														{ href: "/sachgiaokhoa/" + data1.MON + "/" + data1.PHANLOP, target: '_blank' },
+														_react2.default.createElement(
+															'span',
+															null,
+															'S\xE1ch gi\xE1o khoa'
+														)
+													)
+												),
+												_react2.default.createElement(
+													'div',
+													{ className: 'col-md-2 col-sm-3' },
+													_react2.default.createElement('i', { className: 'icon-tree7' }),
+													_react2.default.createElement(
+														'a',
+														{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/baihoc_tip_chitiet/" + data1.ID_BAIHOC },
+														_react2.default.createElement(
+															'span',
+															null,
+															'T\xF3m t\u1EAFt ki\u1EBFn th\u1EE9c'
+														)
+													)
+												),
+												_react2.default.createElement(
+													'div',
+													{ className: 'col-md-2 col-sm-3' },
+													_react2.default.createElement('i', { className: 'icon-book-play' }),
+													_react2.default.createElement(
+														'a',
+														{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/baihoc_video/" + data1.ID_BAIHOC },
+														_react2.default.createElement(
+															'span',
+															null,
+															'Video'
+														)
+													)
+												),
+												_react2.default.createElement(
+													'div',
+													{ className: 'col-md-2 col-sm-3' },
+													_react2.default.createElement('i', { className: 'icon-file-text' }),
+													_react2.default.createElement(
+														'a',
+														{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/baitap_tracnghiem_chitiet/" + data1.ID_BAIHOC },
+														_react2.default.createElement(
+															'span',
+															null,
+															'B\xE0i t\u1EADp'
+														)
+													)
+												)
+											)
+										)
+									)
+								) : _react2.default.createElement(
+									'div',
+									{ key: index, className: 'timeline-row' },
+									_react2.default.createElement(
+										'div',
+										{ className: 'timeline-icon' },
+										_react2.default.createElement(
+											'div',
+											{ className: 'bg-grey-300' },
+											_react2.default.createElement('i', { className: 'icon-checkmark' })
+										)
+									),
+									_react2.default.createElement(
+										'div',
+										{ className: 'panel panel-flat timeline-content' },
+										_react2.default.createElement(
+											'div',
+											{ className: 'panel-heading' },
+											_react2.default.createElement(
+												'h6',
+												{ className: 'panel-title text-semibold no-margin' },
+												_react2.default.createElement(
+													'a',
+													{ className: 'text-grey ' },
+													'B\xE0i ',
+													data1.BAI,
+													': ',
+													data1.TIEUDE
+												)
+											),
+											_react2.default.createElement(
+												'div',
+												{ className: 'heading-elements' },
+												_react2.default.createElement(
+													'span',
+													{ className: 'heading-text' },
+													data1.USERNAME,
+													' - ',
+													data1.to_char
+												)
+											)
+										)
+									)
+								);
+							})
 						)
 					)
 				)
 			);
 		}
-		// componentWillUpdate(){
-		// 	console.log("lay du lieu bai hoc 0");
-		// 	var that=this;
-
-		// 	$.post("/Lichsu_baihoc/lop"+this.props.params.lop, function(data){
-		// 		//that.setState({noidung: data})
-		// 		console.log("lay du lieu bai hoc 1");
-		// 		that.setState({listbaihoc: data});
-		// 	});
-		// }
-
 	}, {
-		key: "componentWillMount",
-		value: function componentWillMount() {
-			var that = this;
+		key: 'componentDidMount',
+		value: function componentDidMount() {
 
-			var url1 = window.location.href;
+			url1 = window.location.href;
 			url1 = url1.split('#');
-			var mon = url1[1].split('/');
-			var url2 = window.location.href;
+			mon = url1[1].split('/');
+			url2 = window.location.href;
 			url2 = url2.split('lop');
-			var phanlop = url2[1].split('/');
+			phanlop = url2[1].split('/');
 
-			var mon1;
-			if (mon[1] == "lichsu") mon1 = "Lịch sử";
-			if (mon[1] == "diali") mon1 = "Địa lí";
-			var name_link = "Thảo luận " + mon1 + " lớp " + phanlop[0];
+			if (type_username != "trogiang") {
+				$("#thembaihoc").hide();
+			}
+			if (type_username == "admin") {
+				$("#thembaihoc").show();
+			}
+			$("#formadd").hide();
+			$('#thembaihoc').click(function (event) {
+				console.log("click");
+				if (check) {
+					check = false;
+					$("#formadd").show();
+				} else {
+					check = true;
+					$("#formadd").hide();
+				}
+			});
+			$('#addcauhoi').click(function () {
+				if ($("#sobai").val() == "") return;
+				if ($("#tieudebai").val() == "") return;
+				var currentdate = new Date();
+				var datetime = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate() + " " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
 
-			$.post("/Lichsu_baihoc/lop" + this.props.params.lop, function (data) {
-				//that.setState({noidung: data})
-				console.log("lay du lieu bai hoc 1");
-				$("#link_pre").text(name_link);
-				that.setState({ listbaihoc: data });
+				var data = {
+					id: id_user,
+					bai: $("#sobai").val(),
+					tieude: $("#tieudebai").val(),
+					lop: phanlop[0],
+					mon: mon[1],
+					thoigian: datetime
+
+				};
+				console.log(data);
+				$.post("themBaihoc", data, function () {
+					$("#sobai").val("");
+					$("#tieudebai").val("");
+					$("#formadd").hide();
+					//window.location = "#/trangcanhan";
+					//Trangcanhan.dispatch(location.getCurrentPath(), null);
+				});
 			});
 		}
 	}, {
-		key: "componentWillReceiveProps",
-		value: function componentWillReceiveProps(newProps) {
+		key: 'componentWillMount',
+		value: function componentWillMount() {
+			console.log("componentWillMount");
+
 			var that = this;
 
-			var url1 = window.location.href;
+			url1 = window.location.href;
 			url1 = url1.split('#');
-			var mon = url1[1].split('/');
-			var url2 = window.location.href;
+			mon = url1[1].split('/');
+			url2 = window.location.href;
 			url2 = url2.split('lop');
-			var phanlop = url2[1].split('/');
+			phanlop = url2[1].split('/');
 
-			var mon1;
-			if (mon[1] == "lichsu") mon1 = "Lịch sử";
-			if (mon[1] == "diali") mon1 = "Địa lí";
-			var name_link = "Thảo luận " + mon1 + " lớp " + phanlop[0];
+			var data1 = {
+				mon: this.props.params.mon,
+				lop: this.props.params.lop,
+				id: "all",
+				id_user: "all"
+			};
+			console.log(data1);
+			socket.emit('c2s_Baihoc', data1);
+			socket.on('s2c_Baihoc', function (data) {
+				console.log(data);
+				var mon1;
+				if (mon[1] == "lichsu") mon1 = "Lịch sử";
+				if (mon[1] == "diali") mon1 = "Địa lí";
 
-			$.post("/Lichsu_baihoc/lop" + newProps.params.lop, function (data) {
-				//that.setState({noidung: data})
-				console.log("lay du lieu bai hoc 2");
+				var name_link = "Bài học " + mon1 + " lớp " + that.props.params.lop;
 				$("#link_pre").text(name_link);
+
 				that.setState({ listbaihoc: data });
 			});
+			////
+		}
+	}, {
+		key: 'componentWillReceiveProps',
+		value: function componentWillReceiveProps(newProps) {
+			console.log("componentWillReceiveProps");
+			var mon1;
+			if (newProps.params.mon == "lichsu") mon1 = "Lịch sử";
+			if (newProps.params.mon == "diali") mon1 = "Địa lí";
+			var name_link = "Bài học " + mon1 + " lớp " + newProps.params.lop;
+			var data1 = {
+				mon: newProps.params.mon,
+				lop: newProps.params.lop,
+				id: "all",
+				id_user: "all"
+			};
+			socket.emit('c2s_Baihoc', data1);
 		}
 	}]);
 
@@ -21362,22 +20256,26 @@ var baihoc = exports.baihoc = function (_React$Component) {
 }(_react2.default.Component);
 
 /***/ }),
-/* 150 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+	value: true
 });
-exports.baitap = undefined;
+exports.baihoc_baiviet = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = __webpack_require__(3);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _socket = __webpack_require__(25);
+
+var _socket2 = _interopRequireDefault(_socket);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21387,31 +20285,449 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var baitap = exports.baitap = function (_React$Component) {
-  _inherits(baitap, _React$Component);
+var socket = (0, _socket2.default)('http://localhost:3000');
 
-  function baitap() {
-    _classCallCheck(this, baitap);
+var data = document.querySelector('#maincontent');
 
-    return _possibleConstructorReturn(this, (baitap.__proto__ || Object.getPrototypeOf(baitap)).apply(this, arguments));
-  }
+var id_user = data.dataset.id;
+var check = true;
+var mon, phanlop;
+var url1, url2;
+var temp_username = data.dataset.username;
 
-  _createClass(baitap, [{
-    key: 'render',
-    value: function render() {
-      return _react2.default.createElement(
-        'h1',
-        null,
-        'bai tap Lich su component m\u1EDBi'
-      );
-    }
-  }]);
+var baihoc_baiviet = exports.baihoc_baiviet = function (_React$Component) {
+	_inherits(baihoc_baiviet, _React$Component);
 
-  return baitap;
+	function baihoc_baiviet(props) {
+		_classCallCheck(this, baihoc_baiviet);
+
+		var _this = _possibleConstructorReturn(this, (baihoc_baiviet.__proto__ || Object.getPrototypeOf(baihoc_baiviet)).call(this, props));
+
+		_this.state = {
+			listCauhoi: []
+		};
+		return _this;
+	}
+
+	_createClass(baihoc_baiviet, [{
+		key: 'render',
+		value: function render() {
+			return _react2.default.createElement(
+				'div',
+				null,
+				_react2.default.createElement(
+					'div',
+					{ className: 'page-header page-header-default' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'breadcrumb-line' },
+						_react2.default.createElement(
+							'ul',
+							{ className: 'breadcrumb' },
+							_react2.default.createElement(
+								'li',
+								null,
+								_react2.default.createElement(
+									'a',
+									{ href: '#' },
+									_react2.default.createElement('i', { className: 'icon-home2 position-left' }),
+									' Trang ch\u1EE7'
+								)
+							),
+							_react2.default.createElement('li', { className: 'active', id: 'link_pre' })
+						),
+						_react2.default.createElement(
+							'ul',
+							{ className: 'breadcrumb-elements' },
+							_react2.default.createElement(
+								'li',
+								null,
+								_react2.default.createElement(
+									'a',
+									{ id: 'themBaiviet' },
+									_react2.default.createElement('i', { className: 'icon-plus-circle2 position-left' }),
+									'Th\xEAm b\xE0i vi\u1EBFt'
+								)
+							)
+						)
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ id: 'formCauhoi', className: 'content' },
+					_react2.default.createElement(
+						'div',
+						{ id: 'formadd', className: 'col-lg-12' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel panel-flat blog-horizontal blog-horizontal-2' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'panel-body' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'blog-preview' },
+									_react2.default.createElement(
+										'div',
+										{ className: 'panel-body' },
+										_react2.default.createElement(
+											'div',
+											{ className: 'form-group' },
+											_react2.default.createElement(
+												'label',
+												null,
+												'Ti\xEAu \u0111\u1EC1: '
+											),
+											_react2.default.createElement('input', { id: 'add_tieude', type: 'text', className: 'form-control', placeholder: 'Ti\xEAu \u0111\u1EC1 b\xE0i vi\u1EBFt' })
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'form-group' },
+											_react2.default.createElement(
+												'label',
+												null,
+												'N\u1ED9i dung b\xE0i vi\u1EBFt: '
+											),
+											_react2.default.createElement('textarea', { id: 'add_noidung', rows: '3', cols: '3', className: 'form-control', placeholder: 'N\u1ED9i dung b\xE0i vi\u1EBFt c\u1EE7a b\u1EA1n' })
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'text-right' },
+											_react2.default.createElement(
+												'button',
+												{ id: 'addcauhoi', type: 'submit', className: 'btn bg-teal-400' },
+												'\u0110\u0103ng c\xE2u h\u1ECFi ',
+												_react2.default.createElement('i', { className: 'icon-arrow-right14 position-right' })
+											)
+										)
+									)
+								)
+							)
+						)
+					),
+					this.state.listCauhoi.map(function (data1, index) {
+						return _react2.default.createElement(
+							'div',
+							{ key: index, className: 'col-lg-12' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'panel panel-flat blog-horizontal blog-horizontal-2' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'panel-body' },
+									_react2.default.createElement(
+										'div',
+										{ className: 'blog-preview' },
+										_react2.default.createElement(
+											'div',
+											{ className: 'content-group-sm media blog-title stack-media-on-mobile text-left' },
+											_react2.default.createElement(
+												'div',
+												{ className: 'media-body' },
+												data1.USERNAME == data.dataset.username ? _react2.default.createElement(
+													'ul',
+													{ className: 'list-inline list-inline-separate heading-text pull-right' },
+													_react2.default.createElement(
+														'li',
+														null,
+														_react2.default.createElement(
+															'a',
+															{ id: data1.USERNAME, name: data1.ID_CAUHOI, className: 'text-danger-400', 'data-popup': 'tooltip', 'data-toggle': 'modal', 'data-target': '#confirm' },
+															_react2.default.createElement('i', { className: 'icon-cross2 position-right' })
+														)
+													)
+												) : _react2.default.createElement('div', null),
+												_react2.default.createElement(
+													'h5',
+													{ className: 'text-semibold no-margin' },
+													_react2.default.createElement(
+														'a',
+														{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/cauhoi" + data1.ID_CAUHOI, className: 'text-default' },
+														data1.TIEUDE
+													)
+												),
+												_react2.default.createElement(
+													'ul',
+													{ className: 'list-inline list-inline-separate no-margin text-muted' },
+													_react2.default.createElement(
+														'li',
+														null,
+														'\u0110\u0103ng b\u1EDFi: ',
+														_react2.default.createElement(
+															'a',
+															null,
+															data1.USERNAME
+														)
+													),
+													_react2.default.createElement(
+														'li',
+														null,
+														data1.to_char
+													)
+												)
+											)
+										),
+										_react2.default.createElement(
+											'p',
+											null,
+											data1.NOIDUNG
+										),
+										_react2.default.createElement(
+											'a',
+											{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/cauhoi" + data1.ID_CAUHOI },
+											'[...]'
+										)
+									)
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'panel-footer panel-footer-condensed' },
+									_react2.default.createElement(
+										'a',
+										{ className: 'heading-elements-toggle' },
+										_react2.default.createElement('i', { className: 'icon-more' })
+									),
+									_react2.default.createElement(
+										'div',
+										{ className: 'heading-elements' },
+										_react2.default.createElement(
+											'ul',
+											{ className: 'list-inline list-inline-separate heading-text' },
+											_react2.default.createElement(
+												'li',
+												null,
+												_react2.default.createElement('i', { className: 'icon-comment-discussion position-left' }),
+												' ',
+												data1.SOTRALOI,
+												' tr\u1EA3 l\u1EDDi'
+											),
+											_react2.default.createElement(
+												'li',
+												null,
+												'\u0110\xE1nh gi\xE1:\xA0',
+												_react2.default.createElement(
+													'span',
+													{ className: 'text-muted position-right' },
+													data1.DANHGIA,
+													'\xA0'
+												),
+												_react2.default.createElement('i', { className: 'icon-star-full2 text-size-base text-warning-300' }),
+												_react2.default.createElement(
+													'a',
+													{ id: 'up_cauhoi', name: data1.ID_CAUHOI, alt: data1.USERNAME },
+													_react2.default.createElement('i', { className: 'icon-arrow-up22 text-success' })
+												),
+												_react2.default.createElement(
+													'a',
+													{ id: 'down_cauhoi', name: data1.ID_CAUHOI, alt: data1.USERNAME },
+													_react2.default.createElement('i', { className: 'icon-arrow-down22 text-danger' })
+												)
+											)
+										),
+										_react2.default.createElement(
+											'a',
+											{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/cauhoi" + data1.ID_CAUHOI, className: 'heading-text pull-right' },
+											'Chi ti\u1EBFt ',
+											_react2.default.createElement('i', { className: 'icon-arrow-right14 position-right' })
+										)
+									)
+								)
+							)
+						);
+					})
+				),
+				_react2.default.createElement(
+					'div',
+					{ id: 'confirm', className: 'modal fade' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'modal-dialog modal-xs' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'modal-content' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'thumbnail no-border no-margin' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'caption text-center' },
+									_react2.default.createElement(
+										'h6',
+										{ className: 'text-semibold no-margin-top content-group' },
+										'B\u1EA1n c\xF3 ch\u1EAFc mu\u1ED1n xo\xE1 c\xE2u h\u1ECFi n\xE0y!  D\u1EEF li\u1EC7u s\u1EBD kh\xF4ng th\u1EC3 kh\xF4i ph\u1EE5c. '
+									),
+									_react2.default.createElement(
+										'ul',
+										{ className: 'list-inline list-inline-condensed no-margin' },
+										_react2.default.createElement(
+											'li',
+											null,
+											_react2.default.createElement(
+												'a',
+												{ className: 'btn btn-success btn-float', 'data-dismiss': 'modal' },
+												'Xo\xE1'
+											)
+										),
+										_react2.default.createElement(
+											'li',
+											null,
+											_react2.default.createElement(
+												'a',
+												{ className: 'btn btn-danger btn-float', 'data-dismiss': 'modal' },
+												'Hu\u1EF7'
+											)
+										)
+									)
+								)
+							)
+						)
+					)
+				)
+			);
+		}
+	}, {
+		key: 'componentDidMount',
+		value: function componentDidMount() {
+			console.log("componentDidMount");
+
+			var currentdate = new Date();
+			var datetime = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate() + " " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+
+			url1 = window.location.href;
+			url1 = url1.split('#');
+			mon = url1[1].split('/');
+
+			url2 = window.location.href;
+			url2 = url2.split('lop');
+			phanlop = url2[1].split('/');
+
+			if (data.dataset.type == "hocsinh") {
+				$("#themBaiviet").hide();
+			}
+			$("#formadd").hide();
+			$('#themBaiviet').click(function (event) {
+				console.log("io click");
+				if (check) {
+					check = false;
+					$("#formadd").show();
+				} else {
+					check = true;
+					$("#formadd").hide();
+				}
+			});
+
+			$('#addcauhoi').click(function () {
+				if ($("#add_tieude").val() == "") return;
+				if ($("#add_noidung").val() == "") return;
+				var data = {
+					id: id_user,
+					tieude: $("#add_tieude").val(),
+					noidung: $("#add_noidung").val(),
+					lop: phanlop[0],
+					mon: mon[1],
+					thoigian: datetime
+
+				};
+				console.log(data);
+				$.post("themBaiviet", data, function () {
+					$("#add_tieude").val("");
+					$("#add_noidung").val("");
+					$("#formadd").hide();
+					//window.location = "#/trangcanhan";
+					//Trangcanhan.dispatch(location.getCurrentPath(), null);
+				});
+			});
+			$('#formCauhoi').on('click', '.text-success,.text-danger,.text-danger-400', function (e) {
+				var usernameClick = $(this).attr('id');
+				var type = $(this).parent().attr('id');
+				var id_cauhoi1 = $(this).attr('name');
+
+				if ($(this).attr('class') == "text-danger-400") {
+					console.log("click xoa");
+					$('#confirm li').on('click', '.btn-success', function (e) {
+						console.log("xac nhan xoa user");
+						$.post("delete_cauhoi", { id_cauhoi: id_cauhoi1 });
+						return;
+					});
+				} else {
+					if ($(this).parent().attr('alt') == temp_username) return;
+					var data = {
+						id_cauhoi: $(this).parent().attr('name'),
+						type: type
+					};
+					$.post("rate_cauhoi", data, function () {
+						return;
+					});
+				}
+			});
+		}
+	}, {
+		key: 'componentWillMount',
+		value: function componentWillMount() {
+			console.log("componentWillMount");
+			url1 = window.location.href;
+			url1 = url1.split('#');
+			mon = url1[1].split('/');
+
+			url2 = window.location.href;
+			url2 = url2.split('lop');
+			phanlop = url2[1].split('/');
+
+			var that = this;
+
+			var data1 = {
+				mon: mon[1],
+				lop: phanlop[0],
+				id: "all",
+				id_user: "all"
+			};
+			console.log(data1);
+			socket.emit('c2s_Baiviet', data1);
+			socket.on('s2c_Baiviet', function (data) {
+				console.log(data);
+				var mon1;
+				if (mon[1] == "lichsu") mon1 = "Lịch sử";
+				if (mon[1] == "diali") mon1 = "Địa lí";
+
+				var name_link = "Bài viết " + mon1 + " lớp " + phanlop[0];
+				$("#link_pre").text(name_link);
+				that.setState({ listCauhoi: data });
+			});
+			////
+		}
+	}, {
+		key: 'componentWillReceiveProps',
+		value: function componentWillReceiveProps(newProps) {
+			console.log("componentWillReceiveProps");
+			// var that=this;
+
+			url1 = window.location.href;
+			url1 = url1.split('#');
+			mon = url1[1].split('/');
+
+			url2 = window.location.href;
+			url2 = url2.split('lop');
+			phanlop = url2[1].split('/');
+
+			var data1 = {
+				mon: mon[1],
+				lop: phanlop[0],
+				id: "all",
+				id_user: "all"
+			};
+			socket.emit('c2s_Thaoluan', data1);
+			// $.post("Hoidap_lichsu/lop"+newProps.params.lop+"/idall", function(data){
+			// 	//that.setState({noidung: data})
+			// 	that.setState({listCauhoi: data});
+			// });
+		}
+	}]);
+
+	return baihoc_baiviet;
 }(_react2.default.Component);
 
 /***/ }),
-/* 151 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21420,7 +20736,7 @@ var baitap = exports.baitap = function (_React$Component) {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.cauhoi_chitiet = undefined;
+exports.baihoc_baiviet_chitiet = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -21428,7 +20744,7 @@ var _react = __webpack_require__(3);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _socket = __webpack_require__(50);
+var _socket = __webpack_require__(25);
 
 var _socket2 = _interopRequireDefault(_socket);
 
@@ -21450,13 +20766,13 @@ var phanlop, mon, cauhoi;
 var id_user = data.dataset.id;
 var temp_username = data.dataset.username;
 
-var cauhoi_chitiet = exports.cauhoi_chitiet = function (_React$Component) {
-	_inherits(cauhoi_chitiet, _React$Component);
+var baihoc_baiviet_chitiet = exports.baihoc_baiviet_chitiet = function (_React$Component) {
+	_inherits(baihoc_baiviet_chitiet, _React$Component);
 
-	function cauhoi_chitiet(props) {
-		_classCallCheck(this, cauhoi_chitiet);
+	function baihoc_baiviet_chitiet(props) {
+		_classCallCheck(this, baihoc_baiviet_chitiet);
 
-		var _this = _possibleConstructorReturn(this, (cauhoi_chitiet.__proto__ || Object.getPrototypeOf(cauhoi_chitiet)).call(this, props));
+		var _this = _possibleConstructorReturn(this, (baihoc_baiviet_chitiet.__proto__ || Object.getPrototypeOf(baihoc_baiviet_chitiet)).call(this, props));
 
 		_this.state = {
 			id_user: "assets/images/user_" + data.dataset.id + ".jpg",
@@ -21466,7 +20782,7 @@ var cauhoi_chitiet = exports.cauhoi_chitiet = function (_React$Component) {
 		return _this;
 	}
 
-	_createClass(cauhoi_chitiet, [{
+	_createClass(baihoc_baiviet_chitiet, [{
 		key: 'render',
 		value: function render() {
 			return _react2.default.createElement(
@@ -21843,11 +21159,3979 @@ var cauhoi_chitiet = exports.cauhoi_chitiet = function (_React$Component) {
 
 	}]);
 
-	return cauhoi_chitiet;
+	return baihoc_baiviet_chitiet;
+}(_react2.default.Component);
+
+/***/ }),
+/* 146 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.baihoc_chitiet = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(3);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _socket = __webpack_require__(25);
+
+var _socket2 = _interopRequireDefault(_socket);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var socket = (0, _socket2.default)('http://localhost:3000');
+
+var data = document.querySelector('#maincontent');
+
+var id_user = data.dataset.id;
+var check = true;
+var temp_username = data.dataset.username;
+
+var baihoc_chitiet = exports.baihoc_chitiet = function (_React$Component) {
+	_inherits(baihoc_chitiet, _React$Component);
+
+	function baihoc_chitiet(props) {
+		_classCallCheck(this, baihoc_chitiet);
+
+		var _this = _possibleConstructorReturn(this, (baihoc_chitiet.__proto__ || Object.getPrototypeOf(baihoc_chitiet)).call(this, props));
+
+		_this.state = {
+			listbaihoc: []
+		};
+		return _this;
+	}
+
+	_createClass(baihoc_chitiet, [{
+		key: 'render',
+		value: function render() {
+			return _react2.default.createElement(
+				'div',
+				null,
+				_react2.default.createElement(
+					'div',
+					{ className: 'page-header page-header-default' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'breadcrumb-line' },
+						_react2.default.createElement(
+							'ul',
+							{ className: 'breadcrumb' },
+							_react2.default.createElement(
+								'li',
+								null,
+								_react2.default.createElement(
+									'a',
+									{ href: '#' },
+									_react2.default.createElement('i', { className: 'icon-home2 position-left' }),
+									' Trang ch\u1EE7'
+								)
+							),
+							_react2.default.createElement(
+								'li',
+								null,
+								_react2.default.createElement('a', { id: 'link_pre' })
+							),
+							_react2.default.createElement(
+								'li',
+								{ className: 'active' },
+								'B\xE0i ',
+								this.props.params.id
+							)
+						)
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'page-header' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'navbar navbar-default navbar-component navbar-xs' },
+						_react2.default.createElement(
+							'ul',
+							{ className: 'nav navbar-nav visible-xs-block' },
+							_react2.default.createElement(
+								'li',
+								{ className: 'full-width text-center' },
+								_react2.default.createElement(
+									'a',
+									{ 'data-toggle': 'collapse', 'data-target': '#navbar-filter' },
+									_react2.default.createElement('i', { className: 'icon-menu7' })
+								)
+							)
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'navbar-collapse collapse', id: 'navbar-filter' },
+							_react2.default.createElement(
+								'ul',
+								{ className: 'nav navbar-nav' },
+								_react2.default.createElement(
+									'li',
+									{ className: 'active' },
+									_react2.default.createElement(
+										'h5',
+										{ id: 'bai_tieude', className: 'text-primary-800' },
+										_react2.default.createElement('i', { className: 'icon-menu7 position-left' }),
+										' '
+									)
+								)
+							)
+						)
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'content' },
+					_react2.default.createElement(
+						'div',
+						{ id: 'formCauhoi', className: 'timeline timeline-left content-group' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'timeline-container' },
+							this.state.listbaihoc.map(function (data1, index) {
+								return _react2.default.createElement(
+									'div',
+									{ key: index },
+									_react2.default.createElement(
+										'div',
+										{ className: 'timeline-row' },
+										_react2.default.createElement(
+											'div',
+											{ className: 'timeline-icon' },
+											_react2.default.createElement(
+												'span',
+												{ className: 'form-wizard-count' },
+												'1'
+											)
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'panel panel-flat timeline-content' },
+											_react2.default.createElement(
+												'div',
+												{ className: 'panel-heading' },
+												_react2.default.createElement(
+													'h6',
+													{ className: 'panel-title text-semibold no-margin' },
+													' ',
+													_react2.default.createElement(
+														'a',
+														{ href: "/sachgiaokhoa/" + data1.MON + "/" + data1.PHANLOP, target: '_blank', className: 'text-success' },
+														'S\xE1ch gi\xE1o khoa'
+													)
+												)
+											)
+										)
+									),
+									_react2.default.createElement(
+										'div',
+										{ className: 'timeline-row' },
+										_react2.default.createElement(
+											'div',
+											{ className: 'timeline-icon' },
+											_react2.default.createElement(
+												'span',
+												{ className: 'form-wizard-count border-orange text-orange-800' },
+												'2'
+											)
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'panel panel-flat timeline-content' },
+											_react2.default.createElement(
+												'div',
+												{ className: 'panel-heading' },
+												_react2.default.createElement(
+													'h6',
+													{ className: 'panel-title text-semibold no-margin' },
+													_react2.default.createElement(
+														'a',
+														{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/baihoc_tip_chitiet/" + data1.ID_BAIHOC, className: 'text-orange-800' },
+														'T\xF3m t\u1EAFt ki\u1EBFn th\u1EE9c'
+													)
+												)
+											)
+										)
+									),
+									_react2.default.createElement(
+										'div',
+										{ className: 'timeline-row' },
+										_react2.default.createElement(
+											'div',
+											{ className: 'timeline-icon' },
+											_react2.default.createElement(
+												'span',
+												{ className: 'form-wizard-count border-violet text-violet-800' },
+												'3'
+											)
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'panel panel-flat timeline-content' },
+											_react2.default.createElement(
+												'div',
+												{ className: 'panel-heading' },
+												_react2.default.createElement(
+													'h6',
+													{ className: 'panel-title text-semibold no-margin' },
+													_react2.default.createElement(
+														'a',
+														{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/baihoc_video/" + data1.ID_BAIHOC, className: 'text-violet' },
+														'Video'
+													)
+												)
+											)
+										)
+									),
+									_react2.default.createElement(
+										'div',
+										{ className: 'timeline-row' },
+										_react2.default.createElement(
+											'div',
+											{ className: 'timeline-icon' },
+											_react2.default.createElement(
+												'span',
+												{ className: 'form-wizard-count border-primary text-primary-800' },
+												'4'
+											)
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'panel panel-flat timeline-content' },
+											_react2.default.createElement(
+												'div',
+												{ className: 'panel-heading' },
+												_react2.default.createElement(
+													'h6',
+													{ className: 'panel-title text-semibold no-margin' },
+													_react2.default.createElement(
+														'a',
+														{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/baitap_tracnghiem_chitiet/" + data1.ID_BAIHOC, className: 'text-primary-800' },
+														'B\xE0i t\u1EADp'
+													)
+												)
+											)
+										)
+									)
+								);
+							})
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'footer text-muted' },
+						'\xA9 2015. ',
+						_react2.default.createElement(
+							'a',
+							{ href: '#' },
+							'Limitless Web App Kit'
+						),
+						' by ',
+						_react2.default.createElement(
+							'a',
+							{ href: 'http://themeforest.net/user/Kopyov', target: '_blank' },
+							'Eugene Kopyov'
+						)
+					)
+				)
+			);
+		}
+	}, {
+		key: 'componentWillMount',
+		value: function componentWillMount() {
+			var that = this;
+
+			var mon1;
+			if (this.props.params.mon == "lichsu") mon1 = "Lịch sử";
+			if (this.props.params.mon == "diali") mon1 = "Địa lí";
+			var name_link = "Bài học " + mon1 + " lớp " + this.props.params.lop;
+			var link_pre = "#" + this.props.params.mon + "/lop" + this.props.params.lop + "/baihoc";
+
+			var data1 = {
+				mon: this.props.params.mon,
+				lop: this.props.params.lop,
+				id: this.props.params.id,
+				id_user: "all"
+			};
+			console.log(data1);
+			socket.emit('c2s_Baihoc', data1);
+			socket.on('s2c_Baihoc', function (data) {
+				console.log(data);
+				$("#link_pre").text(name_link);
+				$('#link_pre').attr('href', link_pre);
+				$("#bai_tieude").text("Bài " + data[0].BAI + ": " + data[0].TIEUDE);
+				that.setState({ listbaihoc: data });
+			});
+		}
+		// componentWillReceiveProps(newProps)
+		// {
+		// 	var that=this;
+
+		// 	var url1=window.location.href;
+		// 	url1=url1.split('#');
+		// 	var mon=url1[1].split('/');
+		// 	var url2=window.location.href;
+		// 	url2=url2.split('lop');
+		// 	var phanlop=url2[1].split('/');
+
+		// 	var mon1;
+		// 	if(mon[1]=="lichsu")
+		// 			mon1="Lịch sử";
+		// 		if(mon[1]=="diali")
+		// 			mon1="Địa lí";
+		// 	var name_link="Bài học "+mon1+" lớp "+phanlop[0]; 
+		// 	var link_pre="#"+mon[1]+"/lop"+phanlop[0]+"/baihoc";
+
+		// 	$.post("/"+mon[1]+"/lop"+this.props.params.lop+"/baihoc_tip", function(data){
+		// 		console.log("lay du lieu baihoc");
+		// 		console.log(data);
+		// 		$("#link_pre").text(name_link);
+		// 		$('#link_pre').attr('href', link_pre);
+		// 		that.setState({listtip: data});
+		// 	});
+		// }
+
+	}]);
+
+	return baihoc_chitiet;
+}(_react2.default.Component);
+
+/***/ }),
+/* 147 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.baihoc_tip = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(3);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var baihoc_tip = exports.baihoc_tip = function (_React$Component) {
+	_inherits(baihoc_tip, _React$Component);
+
+	function baihoc_tip(props) {
+		_classCallCheck(this, baihoc_tip);
+
+		var _this = _possibleConstructorReturn(this, (baihoc_tip.__proto__ || Object.getPrototypeOf(baihoc_tip)).call(this, props));
+
+		_this.state = {
+			listtip: []
+		};
+		return _this;
+	}
+
+	_createClass(baihoc_tip, [{
+		key: "render",
+		value: function render() {
+			return _react2.default.createElement(
+				"div",
+				null,
+				_react2.default.createElement(
+					"div",
+					{ className: "page-header page-header-default" },
+					_react2.default.createElement(
+						"div",
+						{ className: "breadcrumb-line" },
+						_react2.default.createElement(
+							"ul",
+							{ className: "breadcrumb" },
+							_react2.default.createElement(
+								"li",
+								null,
+								_react2.default.createElement(
+									"a",
+									{ href: "#" },
+									_react2.default.createElement("i", { className: "icon-home2 position-left" }),
+									" Trang ch\u1EE7"
+								)
+							),
+							_react2.default.createElement(
+								"li",
+								null,
+								_react2.default.createElement("a", { id: "link_pre" })
+							),
+							_react2.default.createElement("li", { className: "active", id: "link_pre1" })
+						)
+					)
+				),
+				_react2.default.createElement(
+					"div",
+					{ className: "content" },
+					_react2.default.createElement(
+						"div",
+						{ className: "panel panel-flat" },
+						_react2.default.createElement(
+							"div",
+							{ className: "panel-heading" },
+							_react2.default.createElement(
+								"h6",
+								{ className: "panel-title" },
+								"T\xF3m t\u1EAFt ki\u1EBFn th\u1EE9c t\u1EEBng b\xE0i"
+							)
+						),
+						_react2.default.createElement(
+							"div",
+							{ className: "content" },
+							_react2.default.createElement(
+								"table",
+								{ className: "table text-nowrap" },
+								_react2.default.createElement("thead", null),
+								_react2.default.createElement(
+									"tbody",
+									null,
+									this.state.listtip.map(function (data1, index) {
+										return _react2.default.createElement(
+											"tr",
+											null,
+											_react2.default.createElement(
+												"td",
+												null,
+												_react2.default.createElement(
+													"div",
+													{ className: "media-left media-middle" },
+													_react2.default.createElement(
+														"a",
+														{ href: "#", className: "btn bg-teal-400 btn-rounded btn-icon btn-xs" },
+														_react2.default.createElement(
+															"span",
+															{ className: "letter-icon" },
+															data1.BAI
+														)
+													)
+												),
+												_react2.default.createElement(
+													"div",
+													{ className: "media-body" },
+													_react2.default.createElement(
+														"a",
+														{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/baihoc_tip/bai" + data1.BAI, className: "display-inline-block text-default text-semibold letter-icon-title" },
+														"B\xE0i ",
+														data1.BAI,
+														": ",
+														data1.TIEUDE
+													),
+													_react2.default.createElement(
+														"div",
+														{ className: "text-muted text-size-small" },
+														_react2.default.createElement("span", { className: "status-mark border-blue position-left" }),
+														"Ng\u01B0\u1EDDi \u0111\u0103ng: ",
+														_react2.default.createElement(
+															"a",
+															null,
+															data1.USERNAME
+														)
+													)
+												)
+											),
+											_react2.default.createElement(
+												"td",
+												null,
+												_react2.default.createElement(
+													"a",
+													{ href: "#", className: "text-default display-inline-block" },
+													_react2.default.createElement(
+														"span",
+														{ className: "display-block text-muted" },
+														"Ng\xE0y c\u1EADp nh\u1EADt: ",
+														data1.to_char
+													)
+												)
+											)
+										);
+									})
+								)
+							)
+						)
+					),
+					_react2.default.createElement(
+						"div",
+						{ className: "footer text-muted" },
+						"\xA9 2015. ",
+						_react2.default.createElement(
+							"a",
+							{ href: "#" },
+							"Limitless Web App Kit"
+						),
+						" by ",
+						_react2.default.createElement(
+							"a",
+							{ href: "http://themeforest.net/user/Kopyov", target: "_blank" },
+							"Eugene Kopyov"
+						)
+					)
+				)
+			);
+		}
+	}, {
+		key: "componentWillMount",
+		value: function componentWillMount() {
+			var that = this;
+
+			var url1 = window.location.href;
+			url1 = url1.split('#');
+			var mon = url1[1].split('/');
+			var url2 = window.location.href;
+			url2 = url2.split('lop');
+			var phanlop = url2[1].split('/');
+
+			var mon1;
+			if (mon[1] == "lichsu") mon1 = "Lịch sử";
+			if (mon[1] == "diali") mon1 = "Địa lí";
+			var name_link = "Bài học " + mon1 + " lớp " + phanlop[0];
+			var name_link1 = "Tóm tắt nội dung " + mon1 + " lớp " + phanlop[0];
+			var link_pre = "#" + mon[1] + "/lop" + phanlop[0] + "/baihoc";
+			$.post("/" + mon[1] + "/lop" + phanlop[0] + "/baihoc_tip", function (data) {
+				console.log("lay du lieu baihoc_tip 1");
+				console.log(data);
+				$("#link_pre").text(name_link);
+				$('#link_pre').attr('href', link_pre);
+				$("#link_pre1").text(name_link1);
+				that.setState({ listtip: data });
+			});
+		}
+	}, {
+		key: "componentWillReceiveProps",
+		value: function componentWillReceiveProps(newProps) {
+			var that = this;
+
+			var url1 = window.location.href;
+			url1 = url1.split('#');
+			var mon = url1[1].split('/');
+			var url2 = window.location.href;
+			url2 = url2.split('lop');
+			var phanlop = url2[1].split('/');
+
+			var mon1;
+			if (mon[1] == "lichsu") mon1 = "Lịch sử";
+			if (mon[1] == "diali") mon1 = "Địa lí";
+			var name_link = "Thảo luận " + mon1 + " lớp " + phanlop[0];
+			var name_link1 = "Tóm tắt nội dung " + mon1 + " lớp " + phanlop[0];
+			var link_pre = "#" + mon[1] + "/lop" + phanlop[0] + "/baihoc";
+
+			$.post("/" + mon[1] + "/lop" + phanlop[0] + "/baihoc_tip", function (data) {
+				console.log("lay du lieu baihoc_tip 1");
+				console.log(data);
+				that.setState({ listtip: data });
+			});
+		}
+	}]);
+
+	return baihoc_tip;
+}(_react2.default.Component);
+
+/***/ }),
+/* 148 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.baihoc_tip_chitiet = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(3);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var baihoc_tip_chitiet = exports.baihoc_tip_chitiet = function (_React$Component) {
+	_inherits(baihoc_tip_chitiet, _React$Component);
+
+	function baihoc_tip_chitiet(props) {
+		_classCallCheck(this, baihoc_tip_chitiet);
+
+		var _this = _possibleConstructorReturn(this, (baihoc_tip_chitiet.__proto__ || Object.getPrototypeOf(baihoc_tip_chitiet)).call(this, props));
+
+		_this.state = {
+			listtip: []
+		};
+		return _this;
+	}
+
+	_createClass(baihoc_tip_chitiet, [{
+		key: "render",
+		value: function render() {
+			return _react2.default.createElement(
+				"div",
+				null,
+				_react2.default.createElement(
+					"div",
+					{ className: "page-header page-header-default" },
+					_react2.default.createElement(
+						"div",
+						{ className: "breadcrumb-line" },
+						_react2.default.createElement(
+							"ul",
+							{ className: "breadcrumb" },
+							_react2.default.createElement(
+								"li",
+								null,
+								_react2.default.createElement(
+									"a",
+									{ href: "#" },
+									_react2.default.createElement("i", { className: "icon-home2 position-left" }),
+									" Trang ch\u1EE7"
+								)
+							),
+							_react2.default.createElement(
+								"li",
+								null,
+								_react2.default.createElement("a", { id: "link_pre" })
+							),
+							_react2.default.createElement(
+								"li",
+								null,
+								_react2.default.createElement("a", { id: "link_pre1" })
+							),
+							_react2.default.createElement(
+								"li",
+								{ className: "active" },
+								"B\xE0i ",
+								this.props.params.id
+							)
+						)
+					)
+				),
+				_react2.default.createElement(
+					"div",
+					{ className: "content" },
+					_react2.default.createElement(
+						"div",
+						{ className: "panel panel-flat" },
+						_react2.default.createElement(
+							"div",
+							{ className: "panel-heading" },
+							_react2.default.createElement(
+								"h6",
+								{ className: "panel-title" },
+								"T\xF3m t\u1EAFt ki\u1EBFn th\u1EE9c b\xE0i ",
+								this.props.params.id
+							)
+						),
+						_react2.default.createElement("div", { className: "content" })
+					),
+					_react2.default.createElement(
+						"div",
+						{ className: "footer text-muted" },
+						"\xA9 2015. ",
+						_react2.default.createElement(
+							"a",
+							{ href: "#" },
+							"Limitless Web App Kit"
+						),
+						" by ",
+						_react2.default.createElement(
+							"a",
+							{ href: "http://themeforest.net/user/Kopyov", target: "_blank" },
+							"Eugene Kopyov"
+						)
+					)
+				)
+			);
+		}
+	}, {
+		key: "componentWillMount",
+		value: function componentWillMount() {
+			var that = this;
+
+			var url1 = window.location.href;
+			url1 = url1.split('#');
+			var mon = url1[1].split('/');
+			var url2 = window.location.href;
+			url2 = url2.split('lop');
+			var phanlop = url2[1].split('/');
+
+			var mon1;
+			if (mon[1] == "lichsu") mon1 = "Lịch sử";
+			if (mon[1] == "diali") mon1 = "Địa lí";
+			var name_link = "Bài học " + mon1 + " lớp " + phanlop[0];
+			var name_link1 = "Tóm tắt nội dung " + mon1 + " lớp " + phanlop[0];
+
+			var link_pre = "#" + mon[1] + "/lop" + phanlop[0] + "/baihoc";
+			var link_pre1 = "#" + mon[1] + "/lop" + phanlop[0] + "/baihoc_tip";
+
+			$.post("/" + mon[1] + "/lop" + this.props.params.lop + "/baihoc_tip", function (data) {
+				console.log("lay du lieu baihoc_tip 1");
+				console.log(data);
+				$("#link_pre").text(name_link);
+				$('#link_pre').attr('href', link_pre);
+				$("#link_pre1").text(name_link1);
+				$('#link_pre1').attr('href', link_pre1);
+				that.setState({ listtip: data });
+			});
+		}
+	}, {
+		key: "componentWillReceiveProps",
+		value: function componentWillReceiveProps(newProps) {
+			var that = this;
+
+			var url1 = window.location.href;
+			url1 = url1.split('#');
+			var mon = url1[1].split('/');
+			var url2 = window.location.href;
+			url2 = url2.split('lop');
+			var phanlop = url2[1].split('/');
+
+			var mon1;
+			if (mon[1] == "lichsu") mon1 = "Lịch sử";
+			if (mon[1] == "diali") mon1 = "Địa lí";
+			var name_link = "Bài học " + mon1 + " lớp " + phanlop[0];
+			var name_link1 = "Tóm tắt nội dung " + mon1 + " lớp " + phanlop[0];
+
+			var link_pre = "#" + mon[1] + "/lop" + phanlop[0] + "/baihoc";
+			var link_pre1 = "#" + mon[1] + "/lop" + phanlop[0] + "/baihoc_tip";
+
+			$.post("/" + mon[1] + "/lop" + this.props.params.lop + "/baihoc_tip", function (data) {
+				console.log("lay du lieu baihoc_tip 1");
+				console.log(data);
+				$("#link_pre").text(name_link);
+				$('#link_pre').attr('href', link_pre);
+				$("#link_pre1").text(name_link1);
+				$('#link_pre1').attr('href', link_pre1);
+				that.setState({ listtip: data });
+			});
+		}
+	}]);
+
+	return baihoc_tip_chitiet;
+}(_react2.default.Component);
+
+/***/ }),
+/* 149 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.baihoc_video = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(3);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var data = document.querySelector('#maincontent');
+
+var id_user = data.dataset.id;
+var check = true;
+var mon, phanlop;
+var url1, url2;
+var temp_username = data.dataset.username;
+var type_username = data.dataset.type;
+var baihoc;
+
+var baihoc_video = exports.baihoc_video = function (_React$Component) {
+	_inherits(baihoc_video, _React$Component);
+
+	function baihoc_video(props) {
+		_classCallCheck(this, baihoc_video);
+
+		var _this = _possibleConstructorReturn(this, (baihoc_video.__proto__ || Object.getPrototypeOf(baihoc_video)).call(this, props));
+
+		_this.state = {
+			listtip: []
+		};
+		return _this;
+	}
+
+	_createClass(baihoc_video, [{
+		key: 'render',
+		value: function render() {
+			return _react2.default.createElement(
+				'div',
+				null,
+				_react2.default.createElement(
+					'div',
+					{ className: 'page-header page-header-default' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'breadcrumb-line' },
+						_react2.default.createElement(
+							'ul',
+							{ className: 'breadcrumb' },
+							_react2.default.createElement(
+								'li',
+								null,
+								_react2.default.createElement(
+									'a',
+									{ href: '#' },
+									_react2.default.createElement('i', { className: 'icon-home2 position-left' }),
+									' Trang ch\u1EE7'
+								)
+							),
+							_react2.default.createElement(
+								'li',
+								null,
+								_react2.default.createElement('a', { id: 'link_pre' })
+							),
+							_react2.default.createElement('li', { className: 'active', id: 'link_pre1' })
+						),
+						_react2.default.createElement(
+							'ul',
+							{ className: 'breadcrumb-elements' },
+							_react2.default.createElement(
+								'li',
+								null,
+								_react2.default.createElement(
+									'a',
+									{ id: 'thembaihoc' },
+									_react2.default.createElement('i', { className: 'icon-plus-circle2 position-left' }),
+									'Th\xEAm video'
+								)
+							)
+						)
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'content' },
+					_react2.default.createElement(
+						'div',
+						{ id: 'formadd', className: 'panel panel-flat blog-horizontal blog-horizontal-2' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel-body' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'blog-preview' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'panel-body' },
+									_react2.default.createElement(
+										'div',
+										{ className: 'form-group' },
+										_react2.default.createElement(
+											'label',
+											{ className: 'control-label col-lg-2' },
+											'Th\xF4ng tin video m\u1EDBi'
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'col-lg-12' },
+											_react2.default.createElement(
+												'div',
+												{ className: 'row' },
+												_react2.default.createElement(
+													'div',
+													{ className: 'col-md-5', style: { paddingRight: '0px' } },
+													_react2.default.createElement('input', { id: 'add_tieude', type: 'text', placeholder: 'Ti\xEAu \u0111\u1EC1', className: 'form-control' }),
+													_react2.default.createElement('span', { className: 'help-block' })
+												),
+												_react2.default.createElement(
+													'div',
+													{ className: 'col-md-7', style: { paddingRight: '0px' } },
+													_react2.default.createElement('input', { id: 'add_link', type: 'text', placeholder: '\u0110\u01B0\u1EDDng d\u1EABn youtube video', className: 'form-control' }),
+													_react2.default.createElement('span', { className: 'help-block' })
+												)
+											)
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'col-md-12', style: { paddingRight: '0px' } },
+											_react2.default.createElement('input', { id: 'add_noidung', type: 'text', placeholder: 'T\xF3m t\u1EAFc n\u1ED9i dung', className: 'form-control' }),
+											_react2.default.createElement('span', { className: 'help-block' })
+										)
+									),
+									_react2.default.createElement(
+										'div',
+										{ className: 'text-right' },
+										_react2.default.createElement(
+											'button',
+											{ id: 'add_video', type: 'submit', className: 'btn bg-teal-400' },
+											'\u0110\u0103ng video',
+											_react2.default.createElement('i', { className: 'icon-arrow-right14 position-right' })
+										)
+									)
+								)
+							)
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'panel panel-flat' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel-heading' },
+							_react2.default.createElement(
+								'h5',
+								{ className: 'panel-title' },
+								'Video b\xE0i h\u1ECDc'
+							)
+						),
+						_react2.default.createElement(
+							'table',
+							{ id: 'table_video', className: 'table datatable-basic' },
+							_react2.default.createElement(
+								'thead',
+								null,
+								_react2.default.createElement(
+									'tr',
+									null,
+									_react2.default.createElement(
+										'th',
+										null,
+										'B\xE0i'
+									),
+									_react2.default.createElement(
+										'th',
+										null,
+										'Ti\xEAu \u0111\u1EC1'
+									),
+									_react2.default.createElement(
+										'th',
+										null,
+										'N\u1ED9i dung'
+									),
+									_react2.default.createElement(
+										'th',
+										null,
+										'video'
+									),
+									_react2.default.createElement(
+										'th',
+										null,
+										'Ng\u01B0\u1EDDi \u0111\u0103ng'
+									),
+									_react2.default.createElement(
+										'th',
+										null,
+										'Ng\xE0y \u0111\u0103ng'
+									),
+									_react2.default.createElement('th', null)
+								)
+							),
+							_react2.default.createElement('tbody', null)
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ id: 'confirm1', className: 'modal fade' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'modal-dialog modal-xs' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'modal-content' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'thumbnail no-border no-margin' },
+									_react2.default.createElement(
+										'div',
+										{ className: 'caption text-center' },
+										_react2.default.createElement(
+											'h6',
+											{ className: 'text-semibold no-margin-top content-group' },
+											'B\u1EA1n c\xF3 ch\u1EAFc mu\u1ED1n xo\xE1 video n\xE0y! D\u1EEF li\u1EC7u s\u1EBD kh\xF4ng th\u1EC3 kh\xF4i ph\u1EE5c. '
+										),
+										_react2.default.createElement(
+											'ul',
+											{ className: 'list-inline list-inline-condensed no-margin' },
+											_react2.default.createElement(
+												'li',
+												null,
+												_react2.default.createElement(
+													'a',
+													{ className: 'btn btn-success btn-float', 'data-dismiss': 'modal' },
+													'Xo\xE1'
+												)
+											),
+											_react2.default.createElement(
+												'li',
+												null,
+												_react2.default.createElement(
+													'a',
+													{ className: 'btn btn-danger btn-float', 'data-dismiss': 'modal' },
+													'Hu\u1EF7'
+												)
+											)
+										)
+									)
+								)
+							)
+						)
+					)
+				)
+			);
+		}
+	}, {
+		key: 'componentDidMount',
+		value: function componentDidMount() {
+			url1 = window.location.href;
+			url1 = url1.split('#');
+			mon = url1[1].split('/');
+			url2 = window.location.href;
+			url2 = url2.split('lop');
+			phanlop = url2[1].split('/');
+			baihoc = this.props.params.bai;
+
+			if (type_username != "trogiang") {
+				$("#thembaihoc").hide();
+			}
+			if (type_username == "admin") {
+				$("#thembaihoc").show();
+			}
+			$("#formadd").hide();
+			$('#thembaihoc').click(function (event) {
+				console.log("click");
+				if (check) {
+					check = false;
+					$("#formadd").show();
+				} else {
+					check = true;
+					$("#formadd").hide();
+				}
+			});
+			$('#add_video').click(function () {
+				if ($("#add_tieude").val() == "") return;
+				if ($("#add_noidung").val() == "") return;
+				if ($("#add_link").val() == "") return;
+				var currentdate = new Date();
+				var datetime = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate() + " " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+				var link_video = $("#add_link").val();
+				link_video = link_video.split('=');
+				var data = {
+					id: id_user,
+					bai: baihoc,
+					tieude: $("#add_tieude").val(),
+					noidung: $("#add_noidung").val(),
+					link: link_video[1],
+					lop: phanlop[0],
+					mon: mon[1],
+					thoigian: datetime
+				};
+				console.log(data);
+				$.post("themVideo", data, function () {
+					$("#add_tieude").val("");
+					$("#add_noidung").val("");
+					$("#add_link").val("");
+					$("#formadd").hide();
+					alert("Video đã được thêm, làm mới trang để xem kết quả");
+					//window.location = "#/trangcanhan";
+					//Trangcanhan.dispatch(location.getCurrentPath(), null);
+				});
+			});
+			///xoa video
+			$('#table_video').on('click', '.text-danger-400', function (e) {
+				var idVideo = $(this).attr('name');
+				console.log(idVideo);
+				$('#confirm1 li').on('click', '.btn-success', function (e) {
+					console.log("xac nhan xoa video");
+					$.post("delete_video", { id_video: idVideo });
+					return;
+				});
+			});
+		}
+	}, {
+		key: 'componentWillMount',
+		value: function componentWillMount() {
+			console.log("lay video");
+			var that = this;
+			var id_cauhoi = this.props.params.mon + this.props.params.lop + this.props.params.id;
+			var mon1;
+			if (this.props.params.mon == "lichsu") mon1 = "Lịch sử";
+			if (this.props.params.mon == "diali") mon1 = "Địa lí";
+			var name_link = "Bài học " + mon1 + " lớp " + this.props.params.lop;
+			var link_pre = "#" + this.props.params.mon + "/lop" + this.props.params.lop + "/baihoc_chitiet/" + this.props.params.bai;
+			var name_link1 = "Bài học video " + mon1 + " lớp " + this.props.params.lop;
+
+			// Table setup
+			// ------------------------------
+
+			// Setting datatable defaults
+			$.extend($.fn.dataTable.defaults, {
+				autoWidth: false,
+				columnDefs: [{
+					orderable: false,
+					width: '100px',
+					targets: [5]
+				}],
+				dom: '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
+				language: {
+					search: '<span>Tìm kiếm:</span> _INPUT_',
+					lengthMenu: 'Hiển thị: _MENU_',
+					info: "<span>Hiển thị:</span> _START_ đến _END_ trong tổng _TOTAL_ video",
+					paginate: { 'first': 'First', 'last': 'Last', 'next': '&rarr;', 'previous': '&larr;' }
+				},
+				drawCallback: function drawCallback() {
+					$(this).find('tbody tr').slice(-3).find('.dropdown, .btn-group').addClass('dropup');
+				},
+				preDrawCallback: function preDrawCallback() {
+					$(this).find('tbody tr').slice(-3).find('.dropdown, .btn-group').removeClass('dropup');
+				}
+			});
+
+			var userTable;
+			$.post("/" + this.props.params.mon + "/lop" + this.props.params.lop + "/baihoc_video/" + this.props.params.bai, function (data) {
+				// Basic datatable
+				console.log("lay du lieu baihoc_tip 1");
+				console.log(data);
+				$("#link_pre").text(name_link);
+				$('#link_pre').attr('href', link_pre);
+				$("#link_pre1").text(name_link1);
+				userTable = $('.datatable-basic').DataTable({
+					bAutoWidth: false,
+					"aaData": data,
+					"aoColumnDefs": [{ "aTargets": [0], "bSortable": false }, { "aTargets": [1], "bSortable": true }, { "aTargets": [2], "bSortable": true }, { "aTargets": [3], "bSortable": false }, { "aTargets": [4], "bSortable": true }, { "aTargets": [5], "bSortable": true }, { "aTargets": [6], "bSortable": false }],
+					"aoColumns": [{ "mDataProp": "ID_BAIHOC" }, { "mDataProp": "TIEUDE" }, { "mDataProp": "NOIDUNG" }, { "mRender": function mRender(data1, type, full, meta) {
+							console.log(full);
+							var tool_bar = '<div class="media-left">' + '<div class="thumb">' + '<a href="#/' + full.MON + '/lop' + full.PHANLOP + '/baihoc_video_chitiet/' + full.ID + '">' + '<img src="http://img.youtube.com/vi/' + full.LINK_VIDEO + '/0.jpg" class="img-responsive img-rounded media-preview" alt=""/>' + '<span class="zoom-image"><i class="icon-play3"></i></span>' + '</a>' + '</div>' + '</div>';
+							return tool_bar;
+						}
+					}, { "mDataProp": "USERNAME" }, { "mDataProp": "to_char" }, { "mRender": function mRender(data, type, full, meta) {
+							if (full.USERNAME == temp_username) {
+								var tool_bar = '<div class="hidden-sm hidden-xs action-buttons">' + '<a name="' + full.ID_VIDEO + '" class="text-danger-400" data-popup="tooltip" data-toggle="modal" data-target="#confirm1">' + '<i class="icon-x"></i>' + '</a>' + '</div>';
+								return tool_bar;
+							} else {
+								var tool_bar = '<div class="hidden-sm hidden-xs action-buttons">' + '</div>';
+								return tool_bar;
+							}
+						}
+					}]
+
+				});
+				return;
+			});
+		}
+	}, {
+		key: 'componentWillReceiveProps',
+		value: function componentWillReceiveProps(newProps) {}
+	}]);
+
+	return baihoc_video;
+}(_react2.default.Component);
+
+/***/ }),
+/* 150 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.baihoc_video_chitiet = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(3);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var baihoc_video_chitiet = exports.baihoc_video_chitiet = function (_React$Component) {
+	_inherits(baihoc_video_chitiet, _React$Component);
+
+	function baihoc_video_chitiet(props) {
+		_classCallCheck(this, baihoc_video_chitiet);
+
+		var _this = _possibleConstructorReturn(this, (baihoc_video_chitiet.__proto__ || Object.getPrototypeOf(baihoc_video_chitiet)).call(this, props));
+
+		_this.state = {
+			listtip: []
+		};
+		return _this;
+	}
+
+	_createClass(baihoc_video_chitiet, [{
+		key: "render",
+		value: function render() {
+			return _react2.default.createElement(
+				"div",
+				null,
+				_react2.default.createElement(
+					"div",
+					{ className: "page-header page-header-default" },
+					_react2.default.createElement(
+						"div",
+						{ className: "breadcrumb-line" },
+						_react2.default.createElement(
+							"ul",
+							{ className: "breadcrumb" },
+							_react2.default.createElement(
+								"li",
+								null,
+								_react2.default.createElement(
+									"a",
+									{ href: "#" },
+									_react2.default.createElement("i", { className: "icon-home2 position-left" }),
+									" Trang ch\u1EE7"
+								)
+							),
+							_react2.default.createElement(
+								"li",
+								null,
+								_react2.default.createElement("a", { id: "link_pre" })
+							),
+							_react2.default.createElement(
+								"li",
+								null,
+								_react2.default.createElement("a", { id: "link_pre1" })
+							),
+							_react2.default.createElement(
+								"li",
+								{ className: "active" },
+								"B\xE0i ",
+								this.props.params.id
+							)
+						)
+					)
+				),
+				_react2.default.createElement(
+					"div",
+					{ className: "content" },
+					_react2.default.createElement(
+						"div",
+						{ className: "panel panel-flat" },
+						_react2.default.createElement(
+							"div",
+							{ className: "panel-heading" },
+							_react2.default.createElement(
+								"h6",
+								{ className: "panel-title" },
+								"Video b\xE0i ",
+								this.props.params.id
+							)
+						),
+						_react2.default.createElement(
+							"div",
+							{ className: "content" },
+							_react2.default.createElement("iframe", { width: "500", height: "500",
+								src: "https://www.youtube.com/embed/XGSy3_Czz8k" })
+						)
+					),
+					_react2.default.createElement(
+						"div",
+						{ className: "footer text-muted" },
+						"\xA9 2015. ",
+						_react2.default.createElement(
+							"a",
+							{ href: "#" },
+							"Limitless Web App Kit"
+						),
+						" by ",
+						_react2.default.createElement(
+							"a",
+							{ href: "http://themeforest.net/user/Kopyov", target: "_blank" },
+							"Eugene Kopyov"
+						)
+					)
+				)
+			);
+		}
+	}, {
+		key: "componentWillMount",
+		value: function componentWillMount() {
+			var that = this;
+
+			var url1 = window.location.href;
+			url1 = url1.split('#');
+			var mon = url1[1].split('/');
+			var url2 = window.location.href;
+			url2 = url2.split('lop');
+			var phanlop = url2[1].split('/');
+
+			var mon1;
+			if (mon[1] == "lichsu") mon1 = "Lịch sử";
+			if (mon[1] == "diali") mon1 = "Địa lí";
+			var name_link = "Bài học " + mon1 + " lớp " + phanlop[0];
+			var name_link1 = "Bài học video " + mon1 + " lớp " + phanlop[0];
+
+			var link_pre = "#" + mon[1] + "/lop" + phanlop[0] + "/baihoc";
+			var link_pre1 = "#" + mon[1] + "/lop" + phanlop[0] + "/baihoc_video";
+
+			$.post("/" + mon[1] + "/lop" + this.props.params.lop + "/baihoc_video", function (data) {
+				console.log("lay du lieu baihoc_tip 1");
+				console.log(data);
+				$("#link_pre").text(name_link);
+				$('#link_pre').attr('href', link_pre);
+				$("#link_pre1").text(name_link1);
+				$('#link_pre1').attr('href', link_pre1);
+				that.setState({ listtip: data });
+			});
+		}
+	}]);
+
+	return baihoc_video_chitiet;
+}(_react2.default.Component);
+
+/***/ }),
+/* 151 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.baitap = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(3);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var baitap = exports.baitap = function (_React$Component) {
+	_inherits(baitap, _React$Component);
+
+	function baitap(props) {
+		_classCallCheck(this, baitap);
+
+		var _this = _possibleConstructorReturn(this, (baitap.__proto__ || Object.getPrototypeOf(baitap)).call(this, props));
+
+		_this.state = {
+			listvideo: []
+		};
+		return _this;
+	}
+
+	_createClass(baitap, [{
+		key: "render",
+		value: function render() {
+			return _react2.default.createElement(
+				"div",
+				null,
+				_react2.default.createElement(
+					"div",
+					{ className: "page-header page-header-default" },
+					_react2.default.createElement(
+						"div",
+						{ className: "breadcrumb-line" },
+						_react2.default.createElement(
+							"ul",
+							{ className: "breadcrumb" },
+							_react2.default.createElement(
+								"li",
+								null,
+								_react2.default.createElement(
+									"a",
+									{ href: "#" },
+									_react2.default.createElement("i", { className: "icon-home2 position-left" }),
+									" Trang ch\u1EE7"
+								)
+							),
+							_react2.default.createElement("li", { className: "active", id: "link_pre" })
+						)
+					)
+				),
+				_react2.default.createElement(
+					"div",
+					{ className: "content" },
+					_react2.default.createElement(
+						"div",
+						{ className: "panel panel-flat" },
+						_react2.default.createElement(
+							"div",
+							{ className: " alert text-info-600 alpha-info no-border" },
+							_react2.default.createElement(
+								"h6",
+								{ className: "panel-title " },
+								_react2.default.createElement(
+									"a",
+									null,
+									"B\xE0i t\u1EADp"
+								),
+								_react2.default.createElement(
+									"a",
+									{ className: "heading-elements-toggle" },
+									_react2.default.createElement("i", { className: "icon-more" })
+								)
+							),
+							_react2.default.createElement(
+								"div",
+								{ className: "heading-elements" },
+								_react2.default.createElement(
+									"ul",
+									{ className: "icons-list" },
+									_react2.default.createElement(
+										"li",
+										null,
+										_react2.default.createElement("a", { "data-action": "collapse" })
+									)
+								)
+							)
+						),
+						_react2.default.createElement(
+							"div",
+							{ className: "row" },
+							_react2.default.createElement("div", { className: "col-md-3" }),
+							_react2.default.createElement(
+								"div",
+								{ className: "col-md-3" },
+								_react2.default.createElement(
+									"div",
+									{ className: "panel-body text-center" },
+									_react2.default.createElement(
+										"div",
+										{ className: "icon-object border-info-600 text-info-600" },
+										_react2.default.createElement("i", { className: " icon-clipboard5" })
+									),
+									_react2.default.createElement(
+										"h5",
+										{ className: "text-semibold" },
+										"B\xE0i t\u1EADp tr\u1EAFc nghi\u1EC7m l\u1EDBp ",
+										this.props.params.lop
+									),
+									_react2.default.createElement(
+										"a",
+										{ href: "#" + this.props.params.mon + "/lop" + this.props.params.lop + "/baitap_tracnghiem", className: "btn bg-info-600" },
+										"Xem ngay"
+									)
+								)
+							),
+							_react2.default.createElement(
+								"div",
+								{ className: "col-md-3" },
+								_react2.default.createElement(
+									"div",
+									{ className: "panel-body text-center " },
+									_react2.default.createElement(
+										"div",
+										{ className: "icon-object border-info-600 text-info-600" },
+										_react2.default.createElement("i", { className: " icon-clipboard6" })
+									),
+									_react2.default.createElement(
+										"h5",
+										{ className: "text-semibold" },
+										"B\xE0i t\u1EADp t\u1EF1 lu\u1EADn l\u1EDBp ",
+										this.props.params.lop
+									),
+									_react2.default.createElement(
+										"a",
+										{ href: "#" + this.props.params.mon + "/lop" + this.props.params.lop + "/baitap_tuluan", className: "btn bg-info-600" },
+										"Xem ngay"
+									)
+								)
+							),
+							_react2.default.createElement("div", { className: "col-md-3" })
+						)
+					),
+					_react2.default.createElement(
+						"div",
+						{ className: "footer text-muted" },
+						"\xA9 2015. ",
+						_react2.default.createElement(
+							"a",
+							{ href: "#" },
+							"Limitless Web App Kit"
+						),
+						" by ",
+						_react2.default.createElement(
+							"a",
+							{ href: "http://themeforest.net/user/Kopyov", target: "_blank" },
+							"Eugene Kopyov"
+						)
+					)
+				)
+			);
+		}
+	}, {
+		key: "componentWillMount",
+		value: function componentWillMount() {
+			console.log("componentWillMount");
+			var that = this;
+
+			var url1 = window.location.href;
+			url1 = url1.split('#');
+			var mon = url1[1].split('/');
+			var url2 = window.location.href;
+			url2 = url2.split('lop');
+			var phanlop = url2[1].split('/');
+
+			var mon1;
+			if (mon[1] == "lichsu") mon1 = "Lịch sử";
+			if (mon[1] == "diali") mon1 = "Địa lí";
+			var name_link = "Bài tập " + mon1 + " lớp " + phanlop[0];
+
+			$.post("/" + mon[1] + "/lop" + phanlop[0] + "/baihoc_video", function (data) {
+				//that.setState({noidung: data})
+				$("#link_pre").text(name_link);
+				that.setState({ listvideo: data });
+				console.log(data);
+			});
+		}
+	}, {
+		key: "componentWillReceiveProps",
+		value: function componentWillReceiveProps(newProps) {
+			console.log("componentWillReceiveProps");
+			var that = this;
+
+			var url1 = window.location.href;
+			url1 = url1.split('#');
+			var mon = url1[1].split('/');
+			var url2 = window.location.href;
+			url2 = url2.split('lop');
+			var phanlop = url2[1].split('/');
+
+			var mon1;
+			if (mon[1] == "lichsu") mon1 = "Lịch sử";
+			if (mon[1] == "diali") mon1 = "Địa lí";
+			var name_link = "Bài tập " + mon1 + " lớp " + phanlop[0];
+
+			$.post("/" + mon[1] + "/lop" + phanlop[0] + "/baihoc_video", function (data) {
+				//that.setState({noidung: data})
+				$("#link_pre").text(name_link);
+				that.setState({ listvideo: data });
+				console.log(data);
+			});
+		}
+	}]);
+
+	return baitap;
 }(_react2.default.Component);
 
 /***/ }),
 /* 152 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.baitap_tracnghiem = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(3);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var baitap_tracnghiem = exports.baitap_tracnghiem = function (_React$Component) {
+	_inherits(baitap_tracnghiem, _React$Component);
+
+	function baitap_tracnghiem(props) {
+		_classCallCheck(this, baitap_tracnghiem);
+
+		var _this = _possibleConstructorReturn(this, (baitap_tracnghiem.__proto__ || Object.getPrototypeOf(baitap_tracnghiem)).call(this, props));
+
+		_this.state = {
+			listtip: []
+		};
+		return _this;
+	}
+
+	_createClass(baitap_tracnghiem, [{
+		key: "render",
+		value: function render() {
+			return _react2.default.createElement(
+				"div",
+				null,
+				_react2.default.createElement(
+					"div",
+					{ className: "page-header page-header-default" },
+					_react2.default.createElement(
+						"div",
+						{ className: "breadcrumb-line" },
+						_react2.default.createElement(
+							"ul",
+							{ className: "breadcrumb" },
+							_react2.default.createElement(
+								"li",
+								null,
+								_react2.default.createElement(
+									"a",
+									{ href: "#" },
+									_react2.default.createElement("i", { className: "icon-home2 position-left" }),
+									" Trang ch\u1EE7"
+								)
+							),
+							_react2.default.createElement(
+								"li",
+								null,
+								_react2.default.createElement("a", { id: "link_pre" })
+							),
+							_react2.default.createElement("li", { className: "active", id: "link_pre1" })
+						)
+					)
+				),
+				_react2.default.createElement(
+					"div",
+					{ className: "content" },
+					_react2.default.createElement(
+						"div",
+						{ className: "panel panel-white" },
+						_react2.default.createElement(
+							"div",
+							{ className: "panel-heading" },
+							_react2.default.createElement(
+								"h6",
+								{ className: "panel-title" },
+								"B\xE0i t\u1EADp "
+							),
+							_react2.default.createElement(
+								"div",
+								{ className: "heading-elements" },
+								_react2.default.createElement(
+									"ul",
+									{ className: "icons-list" },
+									_react2.default.createElement(
+										"li",
+										null,
+										_react2.default.createElement("a", { "data-action": "collapse" })
+									)
+								)
+							)
+						),
+						_react2.default.createElement(
+							"form",
+							{ className: "steps-basic", action: "#" },
+							_react2.default.createElement(
+								"h6",
+								null,
+								"C\xE2u 1"
+							),
+							_react2.default.createElement(
+								"fieldset",
+								null,
+								_react2.default.createElement(
+									"p",
+									{ className: "content-group text-semibold" },
+									"Besides default color, both checkboxes an options."
+								),
+								_react2.default.createElement(
+									"div",
+									{ className: "form-group pt-5" },
+									_react2.default.createElement(
+										"label",
+										{ className: "text-semibold" },
+										"Ch\u1ECDn c\xE2u tr\u1EA3 l\u1EDDi:"
+									),
+									_react2.default.createElement(
+										"div",
+										{ className: "radio" },
+										_react2.default.createElement(
+											"label",
+											null,
+											_react2.default.createElement("input", { type: "radio", name: "stacked-radio-left", className: "styled", checked: "checked" }),
+											"Selected styled"
+										)
+									),
+									_react2.default.createElement(
+										"div",
+										{ className: "radio" },
+										_react2.default.createElement(
+											"label",
+											null,
+											_react2.default.createElement("input", { type: "radio", name: "stacked-radio-left", className: "styled" }),
+											"Unselected styled"
+										)
+									),
+									_react2.default.createElement(
+										"div",
+										{ className: "radio" },
+										_react2.default.createElement(
+											"label",
+											null,
+											_react2.default.createElement("input", { type: "radio", name: "stacked-radio-left", className: "styled" }),
+											"Unselected styled"
+										)
+									),
+									_react2.default.createElement(
+										"div",
+										{ className: "radio" },
+										_react2.default.createElement(
+											"label",
+											null,
+											_react2.default.createElement("input", { type: "radio", name: "stacked-radio-left", className: "styled" }),
+											"Unselected styled"
+										)
+									)
+								)
+							),
+							_react2.default.createElement(
+								"h6",
+								null,
+								"C\xE2u 2"
+							),
+							_react2.default.createElement(
+								"fieldset",
+								null,
+								_react2.default.createElement(
+									"p",
+									{ className: "content-group text-semibold" },
+									"Besides default color, both checkboxes an options."
+								),
+								_react2.default.createElement(
+									"div",
+									{ className: "form-group pt-5" },
+									_react2.default.createElement(
+										"label",
+										{ className: "text-semibold" },
+										"Ch\u1ECDn c\xE2u tr\u1EA3 l\u1EDDi:"
+									),
+									_react2.default.createElement(
+										"div",
+										{ className: "radio" },
+										_react2.default.createElement(
+											"label",
+											null,
+											_react2.default.createElement("input", { type: "radio", name: "stacked-radio-left", className: "styled", checked: "checked" }),
+											"Selected styled"
+										)
+									),
+									_react2.default.createElement(
+										"div",
+										{ className: "radio" },
+										_react2.default.createElement(
+											"label",
+											null,
+											_react2.default.createElement("input", { type: "radio", name: "stacked-radio-left", className: "styled" }),
+											"Unselected styled"
+										)
+									),
+									_react2.default.createElement(
+										"div",
+										{ className: "radio" },
+										_react2.default.createElement(
+											"label",
+											null,
+											_react2.default.createElement("input", { type: "radio", name: "stacked-radio-left", className: "styled" }),
+											"Unselected styled"
+										)
+									),
+									_react2.default.createElement(
+										"div",
+										{ className: "radio" },
+										_react2.default.createElement(
+											"label",
+											null,
+											_react2.default.createElement("input", { type: "radio", name: "stacked-radio-left", className: "styled" }),
+											"Unselected styled"
+										)
+									)
+								)
+							),
+							_react2.default.createElement(
+								"h6",
+								null,
+								"C\xE2u 3"
+							),
+							_react2.default.createElement(
+								"fieldset",
+								null,
+								_react2.default.createElement(
+									"p",
+									{ className: "content-group text-semibold" },
+									"Besides default color, both checkboxes an options."
+								),
+								_react2.default.createElement(
+									"div",
+									{ className: "form-group pt-5" },
+									_react2.default.createElement(
+										"label",
+										{ className: "text-semibold" },
+										"Ch\u1ECDn c\xE2u tr\u1EA3 l\u1EDDi:"
+									),
+									_react2.default.createElement(
+										"div",
+										{ className: "radio" },
+										_react2.default.createElement(
+											"label",
+											null,
+											_react2.default.createElement("input", { type: "radio", name: "stacked-radio-left", className: "styled", checked: "checked" }),
+											"Selected styled"
+										)
+									),
+									_react2.default.createElement(
+										"div",
+										{ className: "radio" },
+										_react2.default.createElement(
+											"label",
+											null,
+											_react2.default.createElement("input", { type: "radio", name: "stacked-radio-left", className: "styled" }),
+											"Unselected styled"
+										)
+									),
+									_react2.default.createElement(
+										"div",
+										{ className: "radio" },
+										_react2.default.createElement(
+											"label",
+											null,
+											_react2.default.createElement("input", { type: "radio", name: "stacked-radio-left", className: "styled" }),
+											"Unselected styled"
+										)
+									),
+									_react2.default.createElement(
+										"div",
+										{ className: "radio" },
+										_react2.default.createElement(
+											"label",
+											null,
+											_react2.default.createElement("input", { type: "radio", name: "stacked-radio-left", className: "styled" }),
+											"Unselected styled"
+										)
+									)
+								)
+							)
+						)
+					),
+					_react2.default.createElement(
+						"div",
+						{ className: "footer text-muted" },
+						"\xA9 2015. ",
+						_react2.default.createElement(
+							"a",
+							{ href: "#" },
+							"Limitless Web App Kit"
+						),
+						" by ",
+						_react2.default.createElement(
+							"a",
+							{ href: "http://themeforest.net/user/Kopyov", target: "_blank" },
+							"Eugene Kopyov"
+						)
+					)
+				)
+			);
+		}
+	}, {
+		key: "componentDidMount",
+		value: function componentDidMount() {
+			var that = this;
+
+			var url1 = window.location.href;
+			url1 = url1.split('#');
+			var mon = url1[1].split('/');
+			var url2 = window.location.href;
+			url2 = url2.split('lop');
+			var phanlop = url2[1].split('/');
+
+			var mon1;
+			if (mon[1] == "lichsu") mon1 = "Lịch sử";
+			if (mon[1] == "diali") mon1 = "Địa lí";
+			var name_link = "Bài học " + mon1 + " lớp " + phanlop[0];
+			var name_link1 = "Bài tập trắc nghiệm " + mon1 + " lớp " + phanlop[0];
+			var link_pre = "#" + mon[1] + "/lop" + phanlop[0] + "/baihoc_chitiet/";
+
+			$("#link_pre").text(name_link);
+			$('#link_pre').attr('href', link_pre);
+			$("#link_pre1").text(name_link1);
+
+			// Basic wizard setup
+			$(".steps-basic").steps({
+				headerTag: "h6",
+				bodyTag: "fieldset",
+				transitionEffect: "fade",
+				titleTemplate: '<span class="number">#index#</span> #title#',
+				labels: {
+					finish: 'Xong',
+					previous: 'Quay lại',
+					next: 'Tiếp theo'
+				},
+				onFinished: function onFinished(event, currentIndex) {
+					alert("Form submitted.");
+				}
+			});
+			// Default initialization Radió
+			$(".styled, .multiselect-container input").uniform({
+				radioClass: 'choice'
+			});
+		}
+	}, {
+		key: "componentWillMount",
+		value: function componentWillMount() {
+			console.log("lay video");
+		}
+	}, {
+		key: "componentWillReceiveProps",
+		value: function componentWillReceiveProps(newProps) {}
+	}]);
+
+	return baitap_tracnghiem;
+}(_react2.default.Component);
+
+/***/ }),
+/* 153 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.baitap_tracnghiem_chitiet = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(3);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _socket = __webpack_require__(25);
+
+var _socket2 = _interopRequireDefault(_socket);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var socket = (0, _socket2.default)('http://localhost:3000');
+var data = document.querySelector('#maincontent');
+
+var id_user = data.dataset.id;
+var check = true;
+var mon, phanlop;
+var url1, url2;
+var temp_username = data.dataset.username;
+var type_username = data.dataset.type;
+
+var baitap_tracnghiem_chitiet = exports.baitap_tracnghiem_chitiet = function (_React$Component) {
+	_inherits(baitap_tracnghiem_chitiet, _React$Component);
+
+	function baitap_tracnghiem_chitiet(props) {
+		_classCallCheck(this, baitap_tracnghiem_chitiet);
+
+		var _this = _possibleConstructorReturn(this, (baitap_tracnghiem_chitiet.__proto__ || Object.getPrototypeOf(baitap_tracnghiem_chitiet)).call(this, props));
+
+		_this.state = {
+			listbinhluan: []
+		};
+		return _this;
+	}
+
+	_createClass(baitap_tracnghiem_chitiet, [{
+		key: 'render',
+		value: function render() {
+			return _react2.default.createElement(
+				'div',
+				null,
+				_react2.default.createElement(
+					'div',
+					{ className: 'page-header page-header-default' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'breadcrumb-line' },
+						_react2.default.createElement(
+							'ul',
+							{ className: 'breadcrumb' },
+							_react2.default.createElement(
+								'li',
+								null,
+								_react2.default.createElement(
+									'a',
+									{ href: '#' },
+									_react2.default.createElement('i', { className: 'icon-home2 position-left' }),
+									' Trang ch\u1EE7'
+								)
+							),
+							_react2.default.createElement(
+								'li',
+								null,
+								_react2.default.createElement('a', { id: 'link_pre' })
+							),
+							_react2.default.createElement(
+								'li',
+								{ className: 'active' },
+								'B\xE0i ',
+								this.props.params.id
+							)
+						),
+						_react2.default.createElement(
+							'ul',
+							{ className: 'breadcrumb-elements' },
+							_react2.default.createElement(
+								'li',
+								null,
+								_react2.default.createElement(
+									'a',
+									{ id: 'thembaitap' },
+									_react2.default.createElement('i', { className: 'icon-plus-circle2 position-left' }),
+									'Th\xEAm b\xE0i t\u1EADp'
+								)
+							)
+						)
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'content', style: { paddingBottom: '0px' } },
+					_react2.default.createElement(
+						'div',
+						{ id: 'formadd', className: 'panel panel-flat blog-horizontal blog-horizontal-2' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel-body' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'blog-preview' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'panel-body' },
+									_react2.default.createElement(
+										'div',
+										{ className: 'form-group' },
+										_react2.default.createElement(
+											'label',
+											{ className: 'control-label col-lg-2' },
+											'C\xE2u h\u1ECFi'
+										),
+										_react2.default.createElement(
+											'div',
+											{ style: { paddingRight: '0px' } },
+											_react2.default.createElement('input', { id: 'tieudebai', type: 'text', placeholder: 'Nh\u1EADp c\xE2u h\u1ECFi...', className: 'form-control' }),
+											_react2.default.createElement('span', { className: 'help-block' })
+										)
+									),
+									_react2.default.createElement(
+										'div',
+										{ id: 'list_dapan', className: 'form-group' },
+										_react2.default.createElement(
+											'label',
+											{ 'class': 'text-semibold' },
+											'C\xE2u tr\u1EA3 l\u1EDDi:'
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'radio' },
+											_react2.default.createElement(
+												'div',
+												{ className: 'col-lg-1 radio-inline control-label' },
+												_react2.default.createElement('input', { type: 'radio', name: 'stacked-radio-left', className: 'styled' })
+											),
+											_react2.default.createElement(
+												'div',
+												{ className: 'col-lg-11' },
+												_react2.default.createElement('input', { type: 'text', className: 'form-control', placeholder: 'Enter your username...' })
+											)
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'radio' },
+											_react2.default.createElement(
+												'label',
+												{ className: 'radio-inline control-label' },
+												_react2.default.createElement('input', { type: 'radio', name: 'stacked-radio-left', className: 'styled' })
+											),
+											_react2.default.createElement('input', { type: 'text', className: 'form-control', placeholder: 'Enter your username...' })
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'radio' },
+											_react2.default.createElement(
+												'label',
+												null,
+												_react2.default.createElement('input', { type: 'radio', name: 'stacked-radio-left', className: 'styled' }),
+												'Unselected styled'
+											)
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'radio' },
+											_react2.default.createElement(
+												'label',
+												null,
+												_react2.default.createElement('input', { type: 'radio', name: 'stacked-radio-left', className: 'styled' }),
+												'Unselected styled'
+											)
+										)
+									),
+									_react2.default.createElement(
+										'div',
+										{ className: 'text-right' },
+										_react2.default.createElement(
+											'button',
+											{ id: 'add_baitap', type: 'submit', className: 'btn bg-teal-400' },
+											'\u0110\u0103ng b\xE0i t\u1EADp ',
+											_react2.default.createElement('i', { className: 'icon-arrow-right14 position-right' })
+										)
+									)
+								)
+							)
+						)
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'content' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'panel panel-white' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel-heading' },
+							_react2.default.createElement(
+								'h6',
+								{ className: 'panel-title' },
+								'B\xE0i t\u1EADp '
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'heading-elements' },
+								_react2.default.createElement(
+									'ul',
+									{ className: 'icons-list' },
+									_react2.default.createElement(
+										'li',
+										null,
+										_react2.default.createElement('a', { 'data-action': 'collapse' })
+									)
+								)
+							)
+						),
+						_react2.default.createElement('form', { id: 'xxx', className: 'steps-basic', action: '#' })
+					),
+					_react2.default.createElement(
+						'div',
+						{ id: 'baitap_binhluan', className: 'panel panel-flat' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel-heading' },
+							_react2.default.createElement(
+								'h5',
+								{ className: 'panel-title text-semiold' },
+								_react2.default.createElement('i', { className: 'icon-bubbles4 position-left' }),
+								' Th\u1EA3o lu\u1EADn'
+							)
+						),
+						_react2.default.createElement(
+							'div',
+							{ id: 'formBinhluan', className: 'panel-body' },
+							_react2.default.createElement(
+								'ul',
+								{ className: 'media-list content-group-lg stack-media-on-mobile' },
+								this.state.listbinhluan.map(function (data1, index1) {
+									return _react2.default.createElement(
+										'li',
+										{ key: index1, className: 'media' },
+										_react2.default.createElement(
+											'div',
+											{ className: 'media-left' },
+											_react2.default.createElement(
+												'a',
+												null,
+												_react2.default.createElement('img', { id: 'img_user', src: "assets/images/user_" + data1.ID_NGUOITRALOI + ".jpg", onError: function onError() {
+														$("#img_user").attr('src', "assets/images/user.jpg");
+													}, className: 'img-circle img-sm', alt: '' })
+											)
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'media-body' },
+											data1.USERNAME == data.dataset.username ? _react2.default.createElement(
+												'ul',
+												{ className: 'list-inline list-inline-separate heading-text pull-right' },
+												_react2.default.createElement(
+													'li',
+													null,
+													_react2.default.createElement(
+														'a',
+														{ id: data1.USERNAME, name: data1.ID_BINHLUAN, className: 'text-danger-400' },
+														'Xo\xE1'
+													)
+												)
+											) : _react2.default.createElement('div', null),
+											_react2.default.createElement(
+												'div',
+												{ className: 'media-heading' },
+												_react2.default.createElement(
+													'a',
+													{ id: 'username', className: 'text-semibold' },
+													data1.USERNAME
+												),
+												_react2.default.createElement(
+													'span',
+													{ className: 'media-annotation dotted' },
+													data1.to_char
+												)
+											),
+											_react2.default.createElement(
+												'p',
+												null,
+												data1.NOIDUNG
+											),
+											data1.USERNAME == data.dataset.username ? _react2.default.createElement(
+												'ul',
+												{ className: 'list-inline list-inline-separate text-size-small' },
+												_react2.default.createElement(
+													'li',
+													null,
+													'\u0110\xE1nh gi\xE1:\xA0 ',
+													data1.MUCDANHGIA
+												)
+											) : _react2.default.createElement(
+												'ul',
+												{ className: 'list-inline list-inline-separate text-size-small' },
+												_react2.default.createElement(
+													'li',
+													null,
+													'\u0110\xE1nh gi\xE1:\xA0 ',
+													data1.MUCDANHGIA,
+													_react2.default.createElement(
+														'a',
+														{ id: data1.USERNAME, name: data1.ID_BINHLUAN },
+														_react2.default.createElement('i', { className: 'icon-arrow-up22 text-success' })
+													),
+													_react2.default.createElement(
+														'a',
+														{ id: data1.USERNAME, name: data1.ID_BINHLUAN },
+														_react2.default.createElement('i', { className: 'icon-arrow-down22 text-danger' })
+													)
+												)
+											)
+										),
+										_react2.default.createElement('hr', null)
+									);
+								})
+							),
+							_react2.default.createElement(
+								'h6',
+								{ className: 'text-semibold' },
+								_react2.default.createElement('i', { className: 'icon-pencil7 position-left' }),
+								' B\xECnh lu\u1EADn c\u1EE7a b\u1EA1n'
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'input-group content-group' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'has-feedback has-feedback-left' },
+									_react2.default.createElement('input', { id: 'binhluan_cauhoi', type: 'text', className: 'form-control input-xlg', placeholder: 'Nh\u1EADp b\xECnh lu\u1EADn c\u1EE7a b\u1EA1n' }),
+									_react2.default.createElement(
+										'div',
+										{ className: 'form-control-feedback' },
+										_react2.default.createElement('i', { className: 'icon-plus22 text-muted text-size-base' })
+									)
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'input-group-btn' },
+									_react2.default.createElement(
+										'button',
+										{ id: 'gui_binhluan', type: 'submit', className: 'btn btn-primary btn-xlg' },
+										_react2.default.createElement('i', { className: 'icon-plus22' }),
+										'B\xECnh lu\u1EADn'
+									)
+								)
+							)
+						)
+					)
+				)
+			);
+		}
+	}, {
+		key: 'componentDidMount',
+		value: function componentDidMount() {
+			var that = this;
+			var id_cauhoi = this.props.params.mon + this.props.params.lop + this.props.params.id;
+			var mon1;
+			if (this.props.params.mon == "lichsu") mon1 = "Lịch sử";
+			if (this.props.params.mon == "diali") mon1 = "Địa lí";
+			var name_link = "Bài học " + mon1 + " lớp " + this.props.params.lop;
+			var link_pre = "#" + this.props.params.mon + "/lop" + this.props.params.lop + "/baihoc_chitiet/" + this.props.params.id;
+
+			///them bai tap
+
+			if (type_username != "trogiang") {
+				$("#thembaitap").hide();
+			}
+			if (type_username == "admin") {
+				$("#thembaitap").show();
+			}
+			$("#formadd").hide();
+			$('#thembaitap').click(function (event) {
+				console.log("click");
+				if (check) {
+					check = false;
+					$("#formadd").show();
+				} else {
+					check = true;
+					$("#formadd").hide();
+				}
+			});
+			//   $('#addcauhoi').click(function () {
+			//   	if($("#sobai").val()=="")
+			// 	return;
+			// if($("#tieudebai").val()=="")
+			// 	return;
+			// var currentdate = new Date();
+			// var datetime =currentdate.getFullYear() + "-"
+			//     + (currentdate.getMonth()+1)  + "-" 
+			//     + currentdate.getDate() +" "
+			//     + currentdate.getHours() + ":"  
+			//     + currentdate.getMinutes() + ":" 
+			//     + currentdate.getSeconds();
+
+			// var data={
+			//        id:       id_user,
+			//        bai: $("#sobai").val(),
+			// 	tieude: $("#tieudebai").val(),
+			// 	lop: phanlop[0],
+			// 	mon: mon[1],
+			// 	thoigian: datetime
+
+			// };
+			// console.log(data);
+			//       $.post("themBaihoc", data, function(){
+			//       	$("#sobai").val("");
+			//       	$("#tieudebai").val("");
+			//       	$("#formadd").hide();
+			//       	//window.location = "#/trangcanhan";
+			//          	//Trangcanhan.dispatch(location.getCurrentPath(), null);
+			//  		});
+			//   });
+			//them bai tap
+
+
+			$("#baitap_binhluan").hide();
+			$("#link_pre").text(name_link);
+			$('#link_pre').attr('href', link_pre);
+			///binh luan
+			$('#gui_binhluan').click(function (event) {
+				var currentdate = new Date();
+				var datetime = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate() + " " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+
+				if ($("#binhluan_cauhoi").val() == "") return;
+				var data = {
+					id: id_user,
+					id_cauhoi: id_cauhoi,
+					noidung: $("#binhluan_cauhoi").val(),
+					thoigian: datetime
+				};
+				console.log(data);
+				$.post("themBinhluan", data, function () {
+					$("#binhluan_cauhoi").val("");
+					//window.location = "#/trangcanhan";
+					//Trangcanhan.dispatch(location.getCurrentPath(), null);
+				});
+			});
+			$('#formBinhluan').on('click', '.text-success,.text-danger,.text-danger-400', function (e) {
+				var usernameClick = $(this).parent().attr('id');
+				var idBinhluanClick = $(this).parent().attr('name');
+				var type = $(this).attr('class');
+
+				if (type == "text-danger-400") {
+					console.log("click xoa");
+					$.post("delete_binhluan", { id_binhluan: $(this).attr('name'), id_cauhoi: id_cauhoi });
+					return;
+				}
+				if (usernameClick == temp_username) return;
+				console.log("click binh luan 2");
+				var data = {
+					id_binhluan: idBinhluanClick,
+					type: type
+				};
+				console.log(data);
+				$.post("rate_binhluan", data, function () {});
+			});
+		}
+	}, {
+		key: 'componentWillMount',
+		value: function componentWillMount() {
+			var that = this;
+			var id_cauhoi = this.props.params.mon + this.props.params.lop + this.props.params.id;
+
+			var count1 = 1;
+			$.post("/" + this.props.params.mon + "/lop" + this.props.params.lop + "/baitap_tracnghiem_chitiet_cauhoi/" + this.props.params.id, function (data) {
+				console.log("lay trac nghiem");
+				console.log(data);
+				for (var i = 0; i < data.length; i++) {
+					var count = i + 1;
+					console.log("tren" + count);
+
+					$("#xxx").append('<h6>Câu ' + count + '</h6>' + '<fieldset>' + '<p class="content-group text-semibold">' + data[i].NOIDUNG + '</p>' + '<div id="cau' + count + '"class="form-group pt-5">' + '<label class="text-semibold">Chọn câu trả lời:</label>' + '</div>' + '</fieldset>');
+					var idCauhoi = data[i].ID_BAIHOC;
+					$.post("/getDapan", { id: data[i].ID }, function (data1) {
+						console.log("duoi" + count);
+						console.log(data1);
+						for (var j = 0; j < data1.length; j++) {
+							$("#cau" + count1).append('<div class="radio">' + '<label>' + '<input type="radio" id="' + data1[j].CHECK + '" alt="' + j + '" name="' + count1 + '" class="styled" />' + data1[j].DAPAN + '</label>' + '</div>');
+						}
+						count1++;
+						// Default initialization Radió
+						$(".styled, .multiselect-container input").uniform({
+							radioClass: 'choice'
+						});
+					});
+				}
+
+				// Basic wizard setup
+				$(".steps-basic").steps({
+					headerTag: "h6",
+					bodyTag: "fieldset",
+					transitionEffect: "fade",
+					titleTemplate: '<span class="number">#index#</span> #title#',
+					labels: {
+						finish: 'Xong',
+						previous: 'Quay lại',
+						next: 'Tiếp theo'
+					},
+					onStepChanging: function onStepChanging(event, currentIndex, newIndex) {
+						console.log("onStepChanging");
+						var test = currentIndex + 1;
+						var temtem3 = 'input[name=' + test + ']';
+						console.log(test);
+
+						var iddapan = $(temtem3).closest('.checked').children().attr("id");
+						console.log(iddapan);
+
+						if (iddapan == "1") {
+							return true;
+						}
+					},
+					onFinishing: function onFinishing(event, currentIndex) {
+						var test = currentIndex + 1;
+						var temtem3 = 'input[name=' + test + ']';
+						console.log(test);
+
+						var iddapan = $(temtem3).closest('.checked').children().attr("id");
+						console.log(iddapan);
+
+						if (iddapan == "1") {
+							return true;
+						}
+					},
+					onFinished: function onFinished(event, currentIndex) {
+						alert("Bạn đã hoà thành bài tập");
+						$("#baitap_binhluan").show();
+					}
+				});
+
+				//lay binh luan
+				socket.emit('c2s_Binhluan', { id: id_cauhoi });
+				socket.on('s2c_Binhluan', function (data) {
+					that.setState({ listbinhluan: data });
+				});
+			});
+		}
+	}, {
+		key: 'componentWillReceiveProps',
+		value: function componentWillReceiveProps(newProps) {}
+	}]);
+
+	return baitap_tracnghiem_chitiet;
+}(_react2.default.Component);
+
+/***/ }),
+/* 154 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.baitap_tuluan = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(3);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var baitap_tuluan = exports.baitap_tuluan = function (_React$Component) {
+	_inherits(baitap_tuluan, _React$Component);
+
+	function baitap_tuluan(props) {
+		_classCallCheck(this, baitap_tuluan);
+
+		var _this = _possibleConstructorReturn(this, (baitap_tuluan.__proto__ || Object.getPrototypeOf(baitap_tuluan)).call(this, props));
+
+		_this.state = {
+			listtip: []
+		};
+		return _this;
+	}
+
+	_createClass(baitap_tuluan, [{
+		key: "render",
+		value: function render() {
+			return _react2.default.createElement(
+				"div",
+				null,
+				_react2.default.createElement(
+					"div",
+					{ className: "page-header page-header-default" },
+					_react2.default.createElement(
+						"div",
+						{ className: "breadcrumb-line" },
+						_react2.default.createElement(
+							"ul",
+							{ className: "breadcrumb" },
+							_react2.default.createElement(
+								"li",
+								null,
+								_react2.default.createElement(
+									"a",
+									{ href: "#" },
+									_react2.default.createElement("i", { className: "icon-home2 position-left" }),
+									" Trang ch\u1EE7"
+								)
+							),
+							_react2.default.createElement(
+								"li",
+								null,
+								_react2.default.createElement("a", { id: "link_pre" })
+							),
+							_react2.default.createElement("li", { className: "active", id: "link_pre1" })
+						)
+					)
+				),
+				_react2.default.createElement(
+					"div",
+					{ className: "content" },
+					_react2.default.createElement(
+						"div",
+						{ className: "panel panel-flat" },
+						_react2.default.createElement(
+							"div",
+							{ className: "panel-heading" },
+							_react2.default.createElement(
+								"h5",
+								{ className: "panel-title" },
+								"Video b\xE0i h\u1ECDc"
+							)
+						),
+						_react2.default.createElement(
+							"table",
+							{ id: "table_video", className: "table datatable-basic" },
+							_react2.default.createElement(
+								"thead",
+								null,
+								_react2.default.createElement(
+									"tr",
+									null,
+									_react2.default.createElement(
+										"th",
+										null,
+										"B\xE0i"
+									),
+									_react2.default.createElement(
+										"th",
+										null,
+										"Ti\xEAu \u0111\u1EC1"
+									),
+									_react2.default.createElement(
+										"th",
+										null,
+										"N\u1ED9i dung"
+									),
+									_react2.default.createElement(
+										"th",
+										null,
+										"video"
+									),
+									_react2.default.createElement(
+										"th",
+										null,
+										"Ng\u01B0\u1EDDi \u0111\u0103ng"
+									),
+									_react2.default.createElement(
+										"th",
+										null,
+										"Ng\xE0y \u0111\u0103ng"
+									)
+								)
+							),
+							_react2.default.createElement("tbody", null)
+						)
+					),
+					_react2.default.createElement(
+						"div",
+						{ className: "footer text-muted" },
+						"\xA9 2015. ",
+						_react2.default.createElement(
+							"a",
+							{ href: "#" },
+							"Limitless Web App Kit"
+						),
+						" by ",
+						_react2.default.createElement(
+							"a",
+							{ href: "http://themeforest.net/user/Kopyov", target: "_blank" },
+							"Eugene Kopyov"
+						)
+					)
+				)
+			);
+		}
+	}, {
+		key: "componentWillMount",
+		value: function componentWillMount() {
+			console.log("lay video");
+			var that = this;
+
+			var url1 = window.location.href;
+			url1 = url1.split('#');
+			var mon = url1[1].split('/');
+			var url2 = window.location.href;
+			url2 = url2.split('lop');
+			var phanlop = url2[1].split('/');
+
+			var mon1;
+			if (mon[1] == "lichsu") mon1 = "Lịch sử";
+			if (mon[1] == "diali") mon1 = "Địa lí";
+			var name_link = "Bài tập " + mon1 + " lớp " + phanlop[0];
+			var name_link1 = "Bài tập tự luận " + mon1 + " lớp " + phanlop[0];
+			var link_pre = "#" + mon[1] + "/lop" + phanlop[0] + "/baitap";
+
+			// Table setup
+			// ------------------------------
+
+			// Setting datatable defaults
+			$.extend($.fn.dataTable.defaults, {
+				autoWidth: false,
+				columnDefs: [{
+					orderable: false,
+					width: '100px',
+					targets: [5]
+				}],
+				dom: '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
+				language: {
+					search: '<span>Tìm kiếm:</span> _INPUT_',
+					lengthMenu: 'Hiển thị: _MENU_',
+					info: "<span>Hiển thị:</span> _START_ đến _END_ trong tổng _TOTAL_ video",
+					paginate: { 'first': 'First', 'last': 'Last', 'next': '&rarr;', 'previous': '&larr;' }
+				},
+				drawCallback: function drawCallback() {
+					$(this).find('tbody tr').slice(-3).find('.dropdown, .btn-group').addClass('dropup');
+				},
+				preDrawCallback: function preDrawCallback() {
+					$(this).find('tbody tr').slice(-3).find('.dropdown, .btn-group').removeClass('dropup');
+				}
+			});
+
+			var userTable;
+			$.post("/" + mon[1] + "/lop" + this.props.params.lop + "/baihoc_video", function (data) {
+				// Basic datatable
+				console.log("lay du lieu baihoc_tip 1");
+				console.log(data);
+				$("#link_pre").text(name_link);
+				$('#link_pre').attr('href', link_pre);
+				$("#link_pre1").text(name_link1);
+				userTable = $('.datatable-basic').DataTable({
+					bAutoWidth: false,
+					"aaData": data,
+					"aoColumnDefs": [{ "aTargets": [0], "bSortable": true }, { "aTargets": [1], "bSortable": true }, { "aTargets": [2], "bSortable": true }, { "aTargets": [3], "bSortable": false }, { "aTargets": [4], "bSortable": true }, { "aTargets": [5], "bSortable": true }],
+					"aoColumns": [{ "mDataProp": "ID_BAIHOC" }, { "mDataProp": "TIEUDE" }, { "mDataProp": "NOIDUNG" }, { "mRender": function mRender(data1, type, full, meta) {
+							console.log(full);
+							var tool_bar = '<div class="media-left">' + '<div class="thumb">' + '<a href="#/' + full.MON + '/lop' + full.PHANLOP + '/baihoc_video_chitiet/' + full.ID + '">' + '<img src="http://img.youtube.com/vi/' + full.LINK_VIDEO + '/0.jpg" class="img-responsive img-rounded media-preview" alt=""/>' + '<span class="zoom-image"><i class="icon-play3"></i></span>' + '</a>' + '</div>' + '</div>';
+							return tool_bar;
+						}
+					}, { "mDataProp": "USERNAME" }, { "mDataProp": "to_char" }]
+
+				});
+				return;
+			});
+		}
+	}, {
+		key: "componentWillReceiveProps",
+		value: function componentWillReceiveProps(newProps) {}
+	}]);
+
+	return baitap_tuluan;
+}(_react2.default.Component);
+
+/***/ }),
+/* 155 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.baitap_tuluan_chitiet = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(3);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var baitap_tuluan_chitiet = exports.baitap_tuluan_chitiet = function (_React$Component) {
+	_inherits(baitap_tuluan_chitiet, _React$Component);
+
+	function baitap_tuluan_chitiet(props) {
+		_classCallCheck(this, baitap_tuluan_chitiet);
+
+		var _this = _possibleConstructorReturn(this, (baitap_tuluan_chitiet.__proto__ || Object.getPrototypeOf(baitap_tuluan_chitiet)).call(this, props));
+
+		_this.state = {
+			listtip: []
+		};
+		return _this;
+	}
+
+	_createClass(baitap_tuluan_chitiet, [{
+		key: "render",
+		value: function render() {
+			return _react2.default.createElement(
+				"div",
+				null,
+				_react2.default.createElement(
+					"div",
+					{ className: "page-header page-header-default" },
+					_react2.default.createElement(
+						"div",
+						{ className: "breadcrumb-line" },
+						_react2.default.createElement(
+							"ul",
+							{ className: "breadcrumb" },
+							_react2.default.createElement(
+								"li",
+								null,
+								_react2.default.createElement(
+									"a",
+									{ href: "#" },
+									_react2.default.createElement("i", { className: "icon-home2 position-left" }),
+									" Trang ch\u1EE7"
+								)
+							),
+							_react2.default.createElement(
+								"li",
+								null,
+								_react2.default.createElement("a", { id: "link_pre" })
+							),
+							_react2.default.createElement(
+								"li",
+								null,
+								_react2.default.createElement("a", { id: "link_pre1" })
+							),
+							_react2.default.createElement(
+								"li",
+								{ className: "active" },
+								"B\xE0i ",
+								this.props.params.id
+							)
+						)
+					)
+				),
+				_react2.default.createElement(
+					"div",
+					{ className: "content" },
+					_react2.default.createElement(
+						"div",
+						{ className: "panel panel-flat" },
+						_react2.default.createElement(
+							"div",
+							{ className: "panel-heading" },
+							_react2.default.createElement(
+								"h6",
+								{ className: "panel-title" },
+								"T\u1EF1 lu\u1EADn b\xE0i ",
+								this.props.params.id
+							)
+						),
+						_react2.default.createElement(
+							"div",
+							{ className: "content" },
+							_react2.default.createElement(
+								"div",
+								{ className: "panel panel-flat" },
+								_react2.default.createElement(
+									"div",
+									{ className: "panel-heading" },
+									_react2.default.createElement(
+										"h6",
+										{ className: "panel-title" },
+										"With placeholder"
+									),
+									_react2.default.createElement(
+										"div",
+										{ className: "heading-elements" },
+										_react2.default.createElement(
+											"ul",
+											{ className: "icons-list" },
+											_react2.default.createElement(
+												"li",
+												null,
+												_react2.default.createElement("a", { "data-action": "collapse" })
+											),
+											_react2.default.createElement(
+												"li",
+												null,
+												_react2.default.createElement("a", { "data-action": "reload" })
+											),
+											_react2.default.createElement(
+												"li",
+												null,
+												_react2.default.createElement("a", { "data-action": "close" })
+											)
+										)
+									)
+								),
+								_react2.default.createElement(
+									"div",
+									{ className: "panel-body" },
+									_react2.default.createElement(
+										"p",
+										{ className: "content-group" },
+										"The following example uses the ",
+										_react2.default.createElement(
+											"code",
+											null,
+											"placeholder"
+										),
+										" option to set up the placeholder text for a text area field. This basic option is available in all input types: text, number, search, url, email, textarea etc."
+									),
+									_react2.default.createElement("div", { id: "alpaca-textarea-placeholder" }),
+									_react2.default.createElement(
+										"a",
+										{ href: "#alpaca-textarea-placeholder-source", "data-toggle": "collapse" },
+										_react2.default.createElement("i", { className: "icon-embed2 position-left" }),
+										" Show source code \u2192"
+									),
+									_react2.default.createElement("div", { className: "collapse mt-10", id: "alpaca-textarea-placeholder-source" })
+								)
+							)
+						)
+					),
+					_react2.default.createElement(
+						"div",
+						{ className: "footer text-muted" },
+						"\xA9 2015. ",
+						_react2.default.createElement(
+							"a",
+							{ href: "#" },
+							"Limitless Web App Kit"
+						),
+						" by ",
+						_react2.default.createElement(
+							"a",
+							{ href: "http://themeforest.net/user/Kopyov", target: "_blank" },
+							"Eugene Kopyov"
+						)
+					)
+				)
+			);
+		}
+	}, {
+		key: "componentWillMount",
+		value: function componentWillMount() {
+			var that = this;
+
+			var url1 = window.location.href;
+			url1 = url1.split('#');
+			var mon = url1[1].split('/');
+			var url2 = window.location.href;
+			url2 = url2.split('lop');
+			var phanlop = url2[1].split('/');
+
+			var mon1;
+			if (mon[1] == "lichsu") mon1 = "Lịch sử";
+			if (mon[1] == "diali") mon1 = "Địa lí";
+			var name_link = "Bài tập " + mon1 + " lớp " + phanlop[0];
+			var name_link1 = "Bài tập tự luận " + mon1 + " lớp " + phanlop[0];
+
+			var link_pre = "#" + mon[1] + "/lop" + phanlop[0] + "/baitap";
+			var link_pre1 = "#" + mon[1] + "/lop" + phanlop[0] + "/baitap_tuluan";
+
+			$.post("/" + mon[1] + "/lop" + this.props.params.lop + "/baihoc_tip", function (data) {
+				console.log("lay du lieu baihoc_tip 1");
+				console.log(data);
+				$("#link_pre").text(name_link);
+				$('#link_pre').attr('href', link_pre);
+				$("#link_pre1").text(name_link1);
+				$('#link_pre1').attr('href', link_pre1);
+				that.setState({ listtip: data });
+			});
+		}
+	}, {
+		key: "componentWillReceiveProps",
+		value: function componentWillReceiveProps(newProps) {
+			var that = this;
+
+			var url1 = window.location.href;
+			url1 = url1.split('#');
+			var mon = url1[1].split('/');
+			var url2 = window.location.href;
+			url2 = url2.split('lop');
+			var phanlop = url2[1].split('/');
+
+			var mon1;
+			if (mon[1] == "lichsu") mon1 = "Lịch sử";
+			if (mon[1] == "diali") mon1 = "Địa lí";
+			var name_link = "Bài học " + mon1 + " lớp " + phanlop[0];
+			var name_link1 = "Tóm tắt nội dung " + mon1 + " lớp " + phanlop[0];
+
+			var link_pre = "#" + mon[1] + "/lop" + phanlop[0] + "/baihoc";
+			var link_pre1 = "#" + mon[1] + "/lop" + phanlop[0] + "/baihoc_tip";
+
+			$.post("/" + mon[1] + "/lop" + this.props.params.lop + "/baihoc_tip", function (data) {
+				console.log("lay du lieu baihoc_tip 1");
+				console.log(data);
+				$("#link_pre").text(name_link);
+				$('#link_pre').attr('href', link_pre);
+				$("#link_pre1").text(name_link1);
+				$('#link_pre1').attr('href', link_pre1);
+				that.setState({ listtip: data });
+			});
+		}
+	}]);
+
+	return baitap_tuluan_chitiet;
+}(_react2.default.Component);
+
+/***/ }),
+/* 156 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.cauhoi_chitiet = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(3);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _socket = __webpack_require__(25);
+
+var _socket2 = _interopRequireDefault(_socket);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var socket = (0, _socket2.default)('http://localhost:3000');
+
+var data = document.querySelector('#maincontent');
+var url1, url2;
+var id_cauhoi;
+var urllop, urlmon, urlid;
+var phanlop, mon, cauhoi;
+var id_user = data.dataset.id;
+var temp_username = data.dataset.username;
+
+var cauhoi_chitiet = exports.cauhoi_chitiet = function (_React$Component) {
+	_inherits(cauhoi_chitiet, _React$Component);
+
+	function cauhoi_chitiet(props) {
+		_classCallCheck(this, cauhoi_chitiet);
+
+		var _this = _possibleConstructorReturn(this, (cauhoi_chitiet.__proto__ || Object.getPrototypeOf(cauhoi_chitiet)).call(this, props));
+
+		_this.state = {
+			id_user: "assets/images/user_" + data.dataset.id + ".jpg",
+			listbinhluan: []
+		};
+		return _this;
+	}
+
+	_createClass(cauhoi_chitiet, [{
+		key: 'render',
+		value: function render() {
+			return _react2.default.createElement(
+				'div',
+				null,
+				_react2.default.createElement(
+					'div',
+					{ className: 'page-header page-header-default' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'breadcrumb-line' },
+						_react2.default.createElement(
+							'ul',
+							{ className: 'breadcrumb' },
+							_react2.default.createElement(
+								'li',
+								null,
+								_react2.default.createElement(
+									'a',
+									{ href: '#' },
+									_react2.default.createElement('i', { className: 'icon-home2 position-left' }),
+									' Trang ch\u1EE7'
+								)
+							),
+							_react2.default.createElement(
+								'li',
+								null,
+								_react2.default.createElement('a', { id: 'link_pre' })
+							),
+							_react2.default.createElement(
+								'li',
+								{ className: 'active' },
+								'H\u1ECFi & \u0110\xE1p L\u1ECBch s\u1EED chi ti\u1EBFt'
+							)
+						)
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'content' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'panel panel-flat' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel-heading mt-5' },
+							_react2.default.createElement('h5', { id: 'tieude', className: 'panel-title' })
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel-body' },
+							_react2.default.createElement('p', { id: 'noidung', className: 'content-group' })
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel-footer' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'heading-elements' },
+								$("#nguoidang").text() == data.dataset.username ? _react2.default.createElement(
+									'ul',
+									{ className: 'list-inline list-inline-condensed heading-text' },
+									_react2.default.createElement(
+										'li',
+										null,
+										'\u0110\xE1nh gi\xE1:\xA0',
+										_react2.default.createElement('a', { id: 'danhgia' }),
+										'\xA0',
+										_react2.default.createElement('i', { className: 'icon-star-full2 text-size-base text-warning-300' })
+									)
+								) : _react2.default.createElement(
+									'ul',
+									{ className: 'list-inline list-inline-condensed heading-text' },
+									_react2.default.createElement(
+										'li',
+										null,
+										'\u0110\xE1nh gi\xE1:\xA0',
+										_react2.default.createElement('a', { id: 'danhgia' }),
+										'\xA0',
+										_react2.default.createElement('i', { className: 'icon-star-full2 text-size-base text-warning-300' }),
+										_react2.default.createElement(
+											'a',
+											{ id: 'up_cauhoi' },
+											_react2.default.createElement('i', { className: 'icon-arrow-up22 text-success' })
+										),
+										_react2.default.createElement(
+											'a',
+											{ id: 'down_cauhoi' },
+											_react2.default.createElement('i', { className: 'icon-arrow-down22 text-danger' })
+										)
+									)
+								),
+								_react2.default.createElement(
+									'ul',
+									{ className: 'list-inline list-inline-separate heading-text pull-right' },
+									_react2.default.createElement(
+										'li',
+										null,
+										'\u0110\u0103ng b\u1EDFi: ',
+										_react2.default.createElement('a', { id: 'nguoidang' })
+									),
+									_react2.default.createElement('li', { id: 'thoigian' })
+								)
+							)
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'panel panel-flat' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel-heading' },
+							_react2.default.createElement(
+								'h5',
+								{ className: 'panel-title text-semiold' },
+								_react2.default.createElement('i', { className: 'icon-bubbles4 position-left' }),
+								' Tr\u1EA3 l\u1EDDi'
+							)
+						),
+						_react2.default.createElement(
+							'div',
+							{ id: 'formBinhluan', className: 'panel-body' },
+							_react2.default.createElement(
+								'ul',
+								{ className: 'media-list content-group-lg stack-media-on-mobile' },
+								this.state.listbinhluan.map(function (data1, index1) {
+									return _react2.default.createElement(
+										'li',
+										{ key: index1, className: 'media' },
+										_react2.default.createElement(
+											'div',
+											{ className: 'media-left' },
+											_react2.default.createElement(
+												'a',
+												null,
+												_react2.default.createElement('img', { id: 'img_user', src: "assets/images/user_" + data1.ID_NGUOITRALOI + ".jpg", onError: function onError() {
+														$("#img_user").attr('src', "assets/images/user.jpg");
+													}, className: 'img-circle img-sm', alt: '' })
+											)
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'media-body' },
+											data1.USERNAME == data.dataset.username ? _react2.default.createElement(
+												'ul',
+												{ className: 'list-inline list-inline-separate heading-text pull-right' },
+												_react2.default.createElement(
+													'li',
+													null,
+													_react2.default.createElement(
+														'a',
+														{ id: data1.USERNAME, name: data1.ID_BINHLUAN, className: 'text-danger-400' },
+														'Xo\xE1'
+													)
+												)
+											) : _react2.default.createElement('div', null),
+											_react2.default.createElement(
+												'div',
+												{ className: 'media-heading' },
+												_react2.default.createElement(
+													'a',
+													{ id: 'username', className: 'text-semibold' },
+													data1.USERNAME
+												),
+												_react2.default.createElement(
+													'span',
+													{ className: 'media-annotation dotted' },
+													data1.to_char
+												)
+											),
+											_react2.default.createElement(
+												'p',
+												null,
+												data1.NOIDUNG
+											),
+											data1.USERNAME == data.dataset.username ? _react2.default.createElement(
+												'ul',
+												{ className: 'list-inline list-inline-separate text-size-small' },
+												_react2.default.createElement(
+													'li',
+													null,
+													'\u0110\xE1nh gi\xE1:\xA0 ',
+													data1.MUCDANHGIA
+												)
+											) : _react2.default.createElement(
+												'ul',
+												{ className: 'list-inline list-inline-separate text-size-small' },
+												_react2.default.createElement(
+													'li',
+													null,
+													'\u0110\xE1nh gi\xE1:\xA0 ',
+													data1.MUCDANHGIA,
+													_react2.default.createElement(
+														'a',
+														{ id: data1.USERNAME, name: data1.ID_BINHLUAN },
+														_react2.default.createElement('i', { className: 'icon-arrow-up22 text-success' })
+													),
+													_react2.default.createElement(
+														'a',
+														{ id: data1.USERNAME, name: data1.ID_BINHLUAN },
+														_react2.default.createElement('i', { className: 'icon-arrow-down22 text-danger' })
+													)
+												)
+											)
+										),
+										_react2.default.createElement('hr', null)
+									);
+								})
+							),
+							_react2.default.createElement(
+								'h6',
+								{ className: 'text-semibold' },
+								_react2.default.createElement('i', { className: 'icon-pencil7 position-left' }),
+								' C\xE2u tr\u1EA3 l\u1EDDi c\u1EE7a b\u1EA1n'
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'input-group content-group' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'has-feedback has-feedback-left' },
+									_react2.default.createElement('input', { id: 'binhluan_cauhoi', type: 'text', className: 'form-control input-xlg', placeholder: 'Nh\u1EADp c\xE2u tr\u1EA3 l\u1EDDi c\u1EE7a b\u1EA1n' }),
+									_react2.default.createElement(
+										'div',
+										{ className: 'form-control-feedback' },
+										_react2.default.createElement('i', { className: 'icon-plus22 text-muted text-size-base' })
+									)
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'input-group-btn' },
+									_react2.default.createElement(
+										'button',
+										{ id: 'gui_binhluan', type: 'submit', className: 'btn btn-primary btn-xlg' },
+										_react2.default.createElement('i', { className: 'icon-plus22' }),
+										'Tr\u1EA3 l\u1EDDi'
+									)
+								)
+							)
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'footer text-muted' },
+						'\xA9 2015. ',
+						_react2.default.createElement(
+							'a',
+							{ href: '#' },
+							'Limitless Web App Kit'
+						),
+						' by ',
+						_react2.default.createElement(
+							'a',
+							{ href: 'http://themeforest.net/user/Kopyov', target: '_blank' },
+							'Eugene Kopyov'
+						)
+					)
+				)
+			);
+		}
+	}, {
+		key: 'componentDidMount',
+		value: function componentDidMount() {
+			var currentdate = new Date();
+			var datetime = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate() + " " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+
+			urlid = window.location.href;
+			urlid = urlid.split('cauhoi');
+			id_cauhoi = urlid[1].split('?');
+
+			$('#gui_binhluan').click(function (event) {
+				var datetime = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate() + " " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+
+				if ($("#binhluan_cauhoi").val() == "") return;
+				var data = {
+					id: id_user,
+					id_cauhoi: id_cauhoi[0],
+					noidung: $("#binhluan_cauhoi").val(),
+					thoigian: datetime
+				};
+				console.log(data);
+				$.post("themBinhluan", data, function () {
+					$("#binhluan_cauhoi").val("");
+					//window.location = "#/trangcanhan";
+					//Trangcanhan.dispatch(location.getCurrentPath(), null);
+				});
+			});
+
+			// $('#like').on('click', function (e) {
+			// 	console.log("like");
+			// });
+			$('#up_cauhoi,#down_cauhoi').click(function () {
+				// var temp_username=data.dataset.username;
+				if (temp_username == $("#nguoidang").text()) return;
+				var data = {
+					id_cauhoi: id_cauhoi[0],
+					type: $(this).attr('id')
+				};
+				console.log(data);
+				$.post("rate_cauhoi", data, function () {
+					// alert("Đã rate cau hoi thành công!");
+					//window.location = "#/trangcanhan";
+					//Trangcanhan.dispatch(location.getCurrentPath(), null);
+				});
+			});
+
+			$('#formBinhluan').on('click', '.text-success,.text-danger,.text-danger-400', function (e) {
+				var usernameClick = $(this).parent().attr('id');
+				var idBinhluanClick = $(this).parent().attr('name');
+				var type = $(this).attr('class');
+
+				if (type == "text-danger-400") {
+					console.log("click xoa");
+					$.post("delete_binhluan", { id_binhluan: $(this).attr('name'), id_cauhoi: id_cauhoi[0] });
+					return;
+				}
+				if (usernameClick == temp_username) return;
+				console.log("click binh luan 2");
+				var data = {
+					id_binhluan: idBinhluanClick,
+					type: type
+				};
+				console.log(data);
+				$.post("rate_binhluan", data, function () {});
+			});
+		}
+	}, {
+		key: 'componentWillMount',
+		value: function componentWillMount() {
+
+			console.log("componentWillMount");
+			urlmon = window.location.href;
+			urlmon = urlmon.split('#');
+			mon = urlmon[1].split('/');
+
+			urllop = window.location.href;
+			urllop = urllop.split('lop');
+			phanlop = urllop[1].split('/');
+
+			urlid = window.location.href;
+			urlid = urlid.split('cauhoi');
+			id_cauhoi = urlid[1].split('?');
+
+			var that = this;
+
+			var data1 = {
+				mon: mon[1],
+				lop: phanlop[0],
+				id: id_cauhoi[0],
+				id_user: "all"
+			};
+			console.log(data1);
+			socket.emit('c2s_Thaoluan', data1);
+			socket.on('s2c_Thaoluan', function (data) {
+				console.log(data);
+				var mon1;
+				if (mon[1] == "lichsu") mon1 = "Lịch sử";
+				if (mon[1] == "diali") mon1 = "Địa lí";
+
+				var name_link = "Thảo luận " + mon1 + " lớp " + phanlop[0];
+				var link_pre = "#" + mon[1] + "/lop" + phanlop[0] + "/thaoluan";
+				$('#link_pre').attr('href', link_pre);
+				$("#link_pre").text(name_link);
+
+				var tieude = data[0].TIEUDE;
+				var noidung = data[0].NOIDUNG;
+				var nguoidang = data[0].USERNAME;
+				var thoigian = data[0].to_char;
+				var danhgia = data[0].DANHGIA;
+
+				$("#tieude").text(tieude);
+				$("#noidung").text(noidung);
+				$("#nguoidang").text(nguoidang);
+				$("#thoigian").text(thoigian);
+				$("#danhgia").text(danhgia);
+			});
+
+			socket.emit('c2s_Binhluan', { id: id_cauhoi[0] });
+			socket.on('s2c_Binhluan', function (data) {
+				that.setState({ listbinhluan: data });
+			});
+		}
+		// componentWillReceiveProps(newProps)
+		// {
+		// 	var that=this;
+		// 	urlid=window.location.href;
+		// 	urlid=urlid.split('cauhoi');
+		// 	id_cauhoi=urlid[1].split('?');
+
+		// 	socket.emit('c2s_Binhluan',{id: id_cauhoi[0]});
+		// }
+
+	}]);
+
+	return cauhoi_chitiet;
+}(_react2.default.Component);
+
+/***/ }),
+/* 157 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.hoidap = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(3);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _socket = __webpack_require__(25);
+
+var _socket2 = _interopRequireDefault(_socket);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var socket = (0, _socket2.default)('http://localhost:3000');
+
+var data = document.querySelector('#maincontent');
+
+var id_user = data.dataset.id;
+var check = true;
+var mon, phanlop;
+var url1, url2;
+var temp_username = data.dataset.username;
+
+var hoidap = exports.hoidap = function (_React$Component) {
+	_inherits(hoidap, _React$Component);
+
+	function hoidap(props) {
+		_classCallCheck(this, hoidap);
+
+		var _this = _possibleConstructorReturn(this, (hoidap.__proto__ || Object.getPrototypeOf(hoidap)).call(this, props));
+
+		_this.state = {
+			listCauhoi: []
+		};
+		return _this;
+	}
+
+	_createClass(hoidap, [{
+		key: 'render',
+		value: function render() {
+			return _react2.default.createElement(
+				'div',
+				null,
+				_react2.default.createElement(
+					'div',
+					{ className: 'page-header page-header-default' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'breadcrumb-line' },
+						_react2.default.createElement(
+							'ul',
+							{ className: 'breadcrumb' },
+							_react2.default.createElement(
+								'li',
+								null,
+								_react2.default.createElement(
+									'a',
+									{ href: '#' },
+									_react2.default.createElement('i', { className: 'icon-home2 position-left' }),
+									' Trang ch\u1EE7'
+								)
+							),
+							_react2.default.createElement('li', { className: 'active', id: 'link_pre' })
+						),
+						_react2.default.createElement(
+							'ul',
+							{ className: 'breadcrumb-elements' },
+							_react2.default.createElement(
+								'li',
+								null,
+								_react2.default.createElement(
+									'a',
+									{ id: 'themcauhoi' },
+									_react2.default.createElement('i', { className: 'icon-plus-circle2 position-left' }),
+									'Th\xEAm c\xE2u h\u1ECFi'
+								)
+							)
+						)
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ id: 'formCauhoi', className: 'content' },
+					_react2.default.createElement(
+						'div',
+						{ id: 'formadd', className: 'col-lg-12' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel panel-flat blog-horizontal blog-horizontal-2' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'panel-body' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'blog-preview' },
+									_react2.default.createElement(
+										'div',
+										{ className: 'panel-body' },
+										_react2.default.createElement(
+											'div',
+											{ className: 'form-group' },
+											_react2.default.createElement(
+												'label',
+												null,
+												'Ti\xEAu \u0111\u1EC1: '
+											),
+											_react2.default.createElement('input', { id: 'add_tieude', type: 'text', className: 'form-control', placeholder: 'Ti\xEAu \u0111\u1EC1 c\xE2u h\u1ECFi' })
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'form-group' },
+											_react2.default.createElement(
+												'label',
+												null,
+												'N\u1ED9i dung c\xE2u h\u1ECFi: '
+											),
+											_react2.default.createElement('textarea', { id: 'add_noidung', rows: '3', cols: '3', className: 'form-control', placeholder: 'N\u1ED9i dung c\xE2u h\u1ECFi c\u1EE7a b\u1EA1n' })
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'text-right btn-group' },
+											_react2.default.createElement(
+												'label',
+												null,
+												'L\u1EDBp:\xA0 '
+											),
+											_react2.default.createElement(
+												'select',
+												{ id: 'addlop' },
+												_react2.default.createElement(
+													'option',
+													{ value: '', disabled: true, selected: true, hidden: true },
+													'Ch\u1ECDn l\u1EDBp'
+												),
+												_react2.default.createElement(
+													'option',
+													{ value: '6' },
+													'6'
+												),
+												_react2.default.createElement(
+													'option',
+													{ value: '7' },
+													'7'
+												),
+												_react2.default.createElement(
+													'option',
+													{ value: '8' },
+													'8'
+												),
+												_react2.default.createElement(
+													'option',
+													{ value: '9' },
+													'9'
+												)
+											)
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'text-right' },
+											_react2.default.createElement(
+												'button',
+												{ id: 'addcauhoi', type: 'submit', className: 'btn bg-teal-400' },
+												'\u0110\u0103ng c\xE2u h\u1ECFi ',
+												_react2.default.createElement('i', { className: 'icon-arrow-right14 position-right' })
+											)
+										)
+									)
+								)
+							)
+						)
+					),
+					this.state.listCauhoi.map(function (data1, index) {
+						return _react2.default.createElement(
+							'div',
+							{ key: index, className: 'col-lg-12' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'panel panel-flat blog-horizontal blog-horizontal-2' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'panel-body' },
+									_react2.default.createElement(
+										'div',
+										{ className: 'blog-preview' },
+										_react2.default.createElement(
+											'div',
+											{ className: 'content-group-sm media blog-title stack-media-on-mobile text-left' },
+											_react2.default.createElement(
+												'div',
+												{ className: 'media-body' },
+												data1.USERNAME == data.dataset.username ? _react2.default.createElement(
+													'ul',
+													{ className: 'list-inline list-inline-separate heading-text pull-right' },
+													_react2.default.createElement(
+														'li',
+														null,
+														_react2.default.createElement(
+															'a',
+															{ id: data1.USERNAME, name: data1.ID_CAUHOI, className: 'text-danger-400', 'data-popup': 'tooltip', 'data-toggle': 'modal', 'data-target': '#confirm' },
+															_react2.default.createElement('i', { className: 'icon-cross2 position-right' })
+														)
+													)
+												) : _react2.default.createElement('div', null),
+												_react2.default.createElement(
+													'h5',
+													{ className: 'text-semibold no-margin' },
+													_react2.default.createElement(
+														'a',
+														{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/cauhoi" + data1.ID_CAUHOI, className: 'text-default' },
+														_react2.default.createElement(
+															'a',
+															null,
+															data1.MON == "lichsu" ? _react2.default.createElement(
+																'a',
+																{ className: 'text-success' },
+																'L\u1ECBch s\u1EED ',
+																data1.PHANLOP,
+																' - '
+															) : _react2.default.createElement(
+																'a',
+																null,
+																'\u0110\u1ECBa l\xED ',
+																data1.PHANLOP,
+																' - '
+															)
+														),
+														data1.TIEUDE
+													)
+												),
+												_react2.default.createElement(
+													'ul',
+													{ className: 'list-inline list-inline-separate no-margin text-muted' },
+													_react2.default.createElement(
+														'li',
+														null,
+														'\u0110\u0103ng b\u1EDFi: ',
+														_react2.default.createElement(
+															'a',
+															null,
+															data1.USERNAME
+														)
+													),
+													_react2.default.createElement(
+														'li',
+														null,
+														data1.to_char
+													)
+												)
+											)
+										),
+										_react2.default.createElement(
+											'p',
+											null,
+											data1.NOIDUNG
+										),
+										_react2.default.createElement(
+											'a',
+											{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/cauhoi" + data1.ID_CAUHOI },
+											'[...]'
+										)
+									)
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'panel-footer panel-footer-condensed' },
+									_react2.default.createElement(
+										'a',
+										{ className: 'heading-elements-toggle' },
+										_react2.default.createElement('i', { className: 'icon-more' })
+									),
+									_react2.default.createElement(
+										'div',
+										{ className: 'heading-elements' },
+										_react2.default.createElement(
+											'ul',
+											{ className: 'list-inline list-inline-separate heading-text' },
+											_react2.default.createElement(
+												'li',
+												null,
+												_react2.default.createElement('i', { className: 'icon-comment-discussion position-left' }),
+												' ',
+												data1.SOTRALOI,
+												' tr\u1EA3 l\u1EDDi'
+											),
+											_react2.default.createElement(
+												'li',
+												null,
+												'\u0110\xE1nh gi\xE1:\xA0',
+												_react2.default.createElement(
+													'span',
+													{ className: 'text-muted position-right' },
+													data1.DANHGIA,
+													'\xA0'
+												),
+												_react2.default.createElement('i', { className: 'icon-star-full2 text-size-base text-warning-300' }),
+												_react2.default.createElement(
+													'a',
+													{ id: 'up_cauhoi', name: data1.ID_CAUHOI, alt: data1.USERNAME },
+													_react2.default.createElement('i', { className: 'icon-arrow-up22 text-success' })
+												),
+												_react2.default.createElement(
+													'a',
+													{ id: 'down_cauhoi', name: data1.ID_CAUHOI, alt: data1.USERNAME },
+													_react2.default.createElement('i', { className: 'icon-arrow-down22 text-danger' })
+												)
+											)
+										),
+										_react2.default.createElement(
+											'a',
+											{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/cauhoi" + data1.ID_CAUHOI, className: 'heading-text pull-right' },
+											'Chi ti\u1EBFt ',
+											_react2.default.createElement('i', { className: 'icon-arrow-right14 position-right' })
+										)
+									)
+								)
+							)
+						);
+					})
+				),
+				_react2.default.createElement(
+					'div',
+					{ id: 'confirm', className: 'modal fade' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'modal-dialog modal-xs' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'modal-content' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'thumbnail no-border no-margin' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'caption text-center' },
+									_react2.default.createElement(
+										'h6',
+										{ className: 'text-semibold no-margin-top content-group' },
+										'B\u1EA1n c\xF3 ch\u1EAFc mu\u1ED1n xo\xE1 c\xE2u h\u1ECFi n\xE0y!  D\u1EEF li\u1EC7u s\u1EBD kh\xF4ng th\u1EC3 kh\xF4i ph\u1EE5c. '
+									),
+									_react2.default.createElement(
+										'ul',
+										{ className: 'list-inline list-inline-condensed no-margin' },
+										_react2.default.createElement(
+											'li',
+											null,
+											_react2.default.createElement(
+												'a',
+												{ className: 'btn btn-success btn-float', 'data-dismiss': 'modal' },
+												'Xo\xE1'
+											)
+										),
+										_react2.default.createElement(
+											'li',
+											null,
+											_react2.default.createElement(
+												'a',
+												{ className: 'btn btn-danger btn-float', 'data-dismiss': 'modal' },
+												'Hu\u1EF7'
+											)
+										)
+									)
+								)
+							)
+						)
+					)
+				)
+			);
+		}
+	}, {
+		key: 'componentDidMount',
+		value: function componentDidMount() {
+			console.log("componentDidMount");
+
+			var currentdate = new Date();
+			var datetime = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate() + " " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+
+			url1 = window.location.href;
+			url1 = url1.split('hoidap');
+			var tempmon = url1[1].split('?');
+			mon = tempmon[0].split('/');
+
+			$("#formadd").hide();
+			$('#themcauhoi').click(function (event) {
+				console.log("io click");
+				if (check) {
+					check = false;
+					$("#formadd").show();
+				} else {
+					check = true;
+					$("#formadd").hide();
+				}
+			});
+
+			$('#addcauhoi').click(function () {
+				console.log($("#addlop").val());
+				if ($("#add_tieude").val() == "") return;
+				if ($("#add_noidung").val() == "") return;
+				if ($("#addlop").val() == null) return;
+				var data = {
+					id: id_user,
+					tieude: $("#add_tieude").val(),
+					noidung: $("#add_noidung").val(),
+					lop: $("#addlop").val(),
+					mon: mon[1],
+					thoigian: datetime
+
+				};
+				console.log(data);
+				$.post("themCauhoi", data, function () {
+					$("#add_tieude").val("");
+					$("#add_noidung").val("");
+					$("#formadd").hide();
+					//window.location = "#/trangcanhan";
+					//Trangcanhan.dispatch(location.getCurrentPath(), null);
+				});
+			});
+			$('#formCauhoi').on('click', '.text-success,.text-danger,.text-danger-400', function (e) {
+				var usernameClick = $(this).attr('id');
+				var type = $(this).parent().attr('id');
+				var id_cauhoi1 = $(this).attr('name');
+
+				if ($(this).attr('class') == "text-danger-400") {
+					console.log("click xoa");
+					$('#confirm li').on('click', '.btn-success', function (e) {
+						console.log("xac nhan xoa user");
+						$.post("delete_cauhoi", { id_cauhoi: id_cauhoi1 });
+						return;
+					});
+				} else {
+					if ($(this).parent().attr('alt') == temp_username) return;
+					var data = {
+						id_cauhoi: $(this).parent().attr('name'),
+						type: type
+					};
+					$.post("rate_cauhoi", data, function () {
+						return;
+					});
+				}
+			});
+		}
+	}, {
+		key: 'componentWillMount',
+		value: function componentWillMount() {
+			console.log("componentWillMount");
+			url1 = window.location.href;
+			url1 = url1.split('hoidap');
+			var tempmon = url1[1].split('?');
+			mon = tempmon[0].split('/');
+
+			var that = this;
+
+			var data1 = {
+				mon: mon[1],
+				lop: "all",
+				id: "all",
+				id_user: "all"
+			};
+			console.log(data1);
+			socket.emit('c2s_Thaoluan', data1);
+			socket.on('s2c_Thaoluan', function (data) {
+				console.log(data);
+				var mon1;
+				if (mon[1] == "lichsu") mon1 = "Lịch sử";
+				if (mon[1] == "diali") mon1 = "Địa lí";
+
+				var name_link = "Hỏi và đáp " + mon1;
+				$("#link_pre").text(name_link);
+				that.setState({ listCauhoi: data });
+			});
+			////
+		}
+	}, {
+		key: 'componentWillReceiveProps',
+		value: function componentWillReceiveProps(newProps) {
+			console.log("componentWillReceiveProps");
+			// var that=this;
+
+			url1 = window.location.href;
+			url1 = url1.split('hoidap');
+			var tempmon = url1[1].split('?');
+			mon = tempmon[0].split('/');
+
+			var data1 = {
+				mon: mon[1],
+				lop: "all",
+				id: "all",
+				id_user: "all"
+			};
+			socket.emit('c2s_Thaoluan', data1);
+		}
+	}]);
+
+	return hoidap;
+}(_react2.default.Component);
+
+/***/ }),
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21864,7 +25148,7 @@ var _react = __webpack_require__(3);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _socket = __webpack_require__(50);
+var _socket = __webpack_require__(25);
 
 var _socket2 = _interopRequireDefault(_socket);
 
@@ -22062,11 +25346,6 @@ var thaoluan = exports.thaoluan = function (_React$Component) {
 											'p',
 											null,
 											data1.NOIDUNG
-										),
-										_react2.default.createElement(
-											'a',
-											{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/cauhoi" + data1.ID_CAUHOI },
-											'[...]'
 										)
 									)
 								),
@@ -22081,7 +25360,30 @@ var thaoluan = exports.thaoluan = function (_React$Component) {
 									_react2.default.createElement(
 										'div',
 										{ className: 'heading-elements' },
-										_react2.default.createElement(
+										data1.USERNAME == data.dataset.username ? _react2.default.createElement(
+											'ul',
+											{ className: 'list-inline list-inline-separate heading-text' },
+											_react2.default.createElement(
+												'li',
+												null,
+												_react2.default.createElement('i', { className: 'icon-comment-discussion position-left' }),
+												' ',
+												data1.SOTRALOI,
+												' tr\u1EA3 l\u1EDDi'
+											),
+											_react2.default.createElement(
+												'li',
+												null,
+												'\u0110\xE1nh gi\xE1:\xA0',
+												_react2.default.createElement(
+													'span',
+													{ className: 'text-muted position-right' },
+													data1.DANHGIA,
+													'\xA0'
+												),
+												_react2.default.createElement('i', { className: 'icon-star-full2 text-size-base text-warning-300' })
+											)
+										) : _react2.default.createElement(
 											'ul',
 											{ className: 'list-inline list-inline-separate heading-text' },
 											_react2.default.createElement(
@@ -22181,9 +25483,6 @@ var thaoluan = exports.thaoluan = function (_React$Component) {
 		value: function componentDidMount() {
 			console.log("componentDidMount");
 
-			var currentdate = new Date();
-			var datetime = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate() + " " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
-
 			url1 = window.location.href;
 			url1 = url1.split('#');
 			mon = url1[1].split('/');
@@ -22207,6 +25506,9 @@ var thaoluan = exports.thaoluan = function (_React$Component) {
 			$('#addcauhoi').click(function () {
 				if ($("#add_tieude").val() == "") return;
 				if ($("#add_noidung").val() == "") return;
+				var currentdate = new Date();
+				var datetime = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate() + " " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+
 				var data = {
 					id: id_user,
 					tieude: $("#add_tieude").val(),
@@ -22279,6 +25581,14 @@ var thaoluan = exports.thaoluan = function (_React$Component) {
 
 				var name_link = "Thảo luận " + mon1 + " lớp " + phanlop[0];
 				$("#link_pre").text(name_link);
+
+				if (data.length == 0) {
+					console.log("chua co bai biet");
+					$("#formadd").parent().append('<div id="note_emty" class="timeline-row">' + '<div class="panel panel-flat timeline-content">' + '<div class="panel-heading">' + '<h6 class="panel-title text-semibold no-margin"><a class="text-default">Không có câu hỏi nào!</a></h6>' + '</div>' + '<div class="panel-body">' + '<blockquote>' + '<p>Hiện tại chưa có câu hỏi nào</p>' + '</blockquote>' + '</div>' + '</div>' + '</div>');
+				} else {
+					$("#note_emty").remove();
+				}
+
 				that.setState({ listCauhoi: data });
 			});
 			////
@@ -22315,7 +25625,7 @@ var thaoluan = exports.thaoluan = function (_React$Component) {
 }(_react2.default.Component);
 
 /***/ }),
-/* 153 */
+/* 159 */
 /***/ (function(module, exports) {
 
 
@@ -22406,7 +25716,7 @@ Backoff.prototype.setJitter = function(jitter){
 
 
 /***/ }),
-/* 154 */
+/* 160 */
 /***/ (function(module, exports) {
 
 /*
@@ -22479,7 +25789,7 @@ Backoff.prototype.setJitter = function(jitter){
 
 
 /***/ }),
-/* 155 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -22582,12 +25892,12 @@ module.exports = (function() {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ }),
-/* 156 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var pSlice = Array.prototype.slice;
-var objectKeys = __webpack_require__(158);
-var isArguments = __webpack_require__(157);
+var objectKeys = __webpack_require__(164);
+var isArguments = __webpack_require__(163);
 
 var deepEqual = module.exports = function (actual, expected, opts) {
   if (!opts) opts = {};
@@ -22682,7 +25992,7 @@ function objEquiv(a, b, opts) {
 
 
 /***/ }),
-/* 157 */
+/* 163 */
 /***/ (function(module, exports) {
 
 var supportsArgumentsClass = (function(){
@@ -22708,7 +26018,7 @@ function unsupported(object){
 
 
 /***/ }),
-/* 158 */
+/* 164 */
 /***/ (function(module, exports) {
 
 exports = module.exports = typeof Object.keys === 'function'
@@ -22723,19 +26033,19 @@ function shim (obj) {
 
 
 /***/ }),
-/* 159 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-module.exports = __webpack_require__(160);
+module.exports = __webpack_require__(166);
 
 
 /***/ }),
-/* 160 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-module.exports = __webpack_require__(161);
+module.exports = __webpack_require__(167);
 
 /**
  * Exports parser
@@ -22743,11 +26053,11 @@ module.exports = __webpack_require__(161);
  * @api public
  *
  */
-module.exports.parser = __webpack_require__(26);
+module.exports.parser = __webpack_require__(27);
 
 
 /***/ }),
-/* 161 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -22755,12 +26065,12 @@ module.exports.parser = __webpack_require__(26);
  */
 
 var transports = __webpack_require__(83);
-var Emitter = __webpack_require__(25);
-var debug = __webpack_require__(38)('engine.io-client:socket');
+var Emitter = __webpack_require__(26);
+var debug = __webpack_require__(39)('engine.io-client:socket');
 var index = __webpack_require__(89);
-var parser = __webpack_require__(26);
+var parser = __webpack_require__(27);
 var parseuri = __webpack_require__(90);
-var parsejson = __webpack_require__(186);
+var parsejson = __webpack_require__(192);
 var parseqs = __webpack_require__(55);
 
 /**
@@ -22896,7 +26206,7 @@ Socket.protocol = parser.protocol; // this is an int
 Socket.Socket = Socket;
 Socket.Transport = __webpack_require__(52);
 Socket.transports = __webpack_require__(83);
-Socket.parser = __webpack_require__(26);
+Socket.parser = __webpack_require__(27);
 
 /**
  * Creates transport of the given type.
@@ -23498,7 +26808,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ }),
-/* 162 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -23507,7 +26817,7 @@ Socket.prototype.filterUpgrades = function (upgrades) {
  */
 
 var Polling = __webpack_require__(84);
-var inherit = __webpack_require__(37);
+var inherit = __webpack_require__(38);
 
 /**
  * Module exports.
@@ -23736,7 +27046,7 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ }),
-/* 163 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -23745,9 +27055,9 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
 
 var XMLHttpRequest = __webpack_require__(53);
 var Polling = __webpack_require__(84);
-var Emitter = __webpack_require__(25);
-var inherit = __webpack_require__(37);
-var debug = __webpack_require__(38)('engine.io-client:polling-xhr');
+var Emitter = __webpack_require__(26);
+var inherit = __webpack_require__(38);
+var debug = __webpack_require__(39)('engine.io-client:polling-xhr');
 
 /**
  * Module exports.
@@ -24156,7 +27466,7 @@ function unloadHandler () {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ }),
-/* 164 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -24164,16 +27474,16 @@ function unloadHandler () {
  */
 
 var Transport = __webpack_require__(52);
-var parser = __webpack_require__(26);
+var parser = __webpack_require__(27);
 var parseqs = __webpack_require__(55);
-var inherit = __webpack_require__(37);
+var inherit = __webpack_require__(38);
 var yeast = __webpack_require__(135);
-var debug = __webpack_require__(38)('engine.io-client:websocket');
+var debug = __webpack_require__(39)('engine.io-client:websocket');
 var BrowserWebSocket = global.WebSocket || global.MozWebSocket;
 var NodeWebSocket;
 if (typeof window === 'undefined') {
   try {
-    NodeWebSocket = __webpack_require__(311);
+    NodeWebSocket = __webpack_require__(317);
   } catch (e) { }
 }
 
@@ -24449,7 +27759,7 @@ WS.prototype.check = function () {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ }),
-/* 165 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -24465,7 +27775,7 @@ exports.coerce = coerce;
 exports.disable = disable;
 exports.enable = enable;
 exports.enabled = enabled;
-exports.humanize = __webpack_require__(166);
+exports.humanize = __webpack_require__(172);
 
 /**
  * The currently active debug mode names, and names to skip.
@@ -24657,7 +27967,7 @@ function coerce(val) {
 
 
 /***/ }),
-/* 166 */
+/* 172 */
 /***/ (function(module, exports) {
 
 /**
@@ -24815,7 +28125,7 @@ function plural(ms, n, name) {
 
 
 /***/ }),
-/* 167 */
+/* 173 */
 /***/ (function(module, exports) {
 
 
@@ -24840,7 +28150,7 @@ module.exports = Object.keys || function keys (obj){
 
 
 /***/ }),
-/* 168 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;/*! https://mths.be/utf8js v2.1.2 by @mathias */
@@ -25098,10 +28408,10 @@ module.exports = Object.keys || function keys (obj){
 
 }(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(310)(module), __webpack_require__(10)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(316)(module), __webpack_require__(10)))
 
 /***/ }),
-/* 169 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25138,7 +28448,7 @@ function camelize(string) {
 module.exports = camelize;
 
 /***/ }),
-/* 170 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25155,7 +28465,7 @@ module.exports = camelize;
 
 
 
-var camelize = __webpack_require__(169);
+var camelize = __webpack_require__(175);
 
 var msPattern = /^-ms-/;
 
@@ -25183,7 +28493,7 @@ function camelizeStyleName(string) {
 module.exports = camelizeStyleName;
 
 /***/ }),
-/* 171 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25200,7 +28510,7 @@ module.exports = camelizeStyleName;
  * 
  */
 
-var isTextNode = __webpack_require__(179);
+var isTextNode = __webpack_require__(185);
 
 /*eslint-disable no-bitwise */
 
@@ -25228,7 +28538,7 @@ function containsNode(outerNode, innerNode) {
 module.exports = containsNode;
 
 /***/ }),
-/* 172 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25361,7 +28671,7 @@ module.exports = createArrayFromMixed;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 173 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25382,8 +28692,8 @@ module.exports = createArrayFromMixed;
 
 var ExecutionEnvironment = __webpack_require__(7);
 
-var createArrayFromMixed = __webpack_require__(172);
-var getMarkupWrap = __webpack_require__(174);
+var createArrayFromMixed = __webpack_require__(178);
+var getMarkupWrap = __webpack_require__(180);
 var invariant = __webpack_require__(1);
 
 /**
@@ -25451,7 +28761,7 @@ module.exports = createNodesFromMarkup;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 174 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25552,7 +28862,7 @@ module.exports = getMarkupWrap;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 175 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25596,7 +28906,7 @@ function getUnboundedScrollPosition(scrollable) {
 module.exports = getUnboundedScrollPosition;
 
 /***/ }),
-/* 176 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25634,7 +28944,7 @@ function hyphenate(string) {
 module.exports = hyphenate;
 
 /***/ }),
-/* 177 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25651,7 +28961,7 @@ module.exports = hyphenate;
 
 
 
-var hyphenate = __webpack_require__(176);
+var hyphenate = __webpack_require__(182);
 
 var msPattern = /^ms-/;
 
@@ -25678,7 +28988,7 @@ function hyphenateStyleName(string) {
 module.exports = hyphenateStyleName;
 
 /***/ }),
-/* 178 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25708,7 +29018,7 @@ function isNode(object) {
 module.exports = isNode;
 
 /***/ }),
-/* 179 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25725,7 +29035,7 @@ module.exports = isNode;
  * @typechecks
  */
 
-var isNode = __webpack_require__(178);
+var isNode = __webpack_require__(184);
 
 /**
  * @param {*} object The object to check.
@@ -25738,7 +29048,7 @@ function isTextNode(object) {
 module.exports = isTextNode;
 
 /***/ }),
-/* 180 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25773,7 +29083,7 @@ function memoizeStringOnly(callback) {
 module.exports = memoizeStringOnly;
 
 /***/ }),
-/* 181 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25801,7 +29111,7 @@ if (ExecutionEnvironment.canUseDOM) {
 module.exports = performance || {};
 
 /***/ }),
-/* 182 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25818,7 +29128,7 @@ module.exports = performance || {};
  * @typechecks
  */
 
-var performance = __webpack_require__(181);
+var performance = __webpack_require__(187);
 
 var performanceNow;
 
@@ -25840,7 +29150,7 @@ if (performance.now) {
 module.exports = performanceNow;
 
 /***/ }),
-/* 183 */
+/* 189 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -25851,7 +29161,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 184 */
+/* 190 */
 /***/ (function(module, exports) {
 
 
@@ -25874,7 +29184,7 @@ try {
 
 
 /***/ }),
-/* 185 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25931,7 +29241,7 @@ module.exports = function hoistNonReactStatics(targetComponent, sourceComponent,
 
 
 /***/ }),
-/* 186 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -25969,7 +29279,7 @@ module.exports = function parsejson(data) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ }),
-/* 187 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26038,7 +29348,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 188 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26099,12 +29409,12 @@ module.exports = function() {
 
 
 /***/ }),
-/* 189 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var strictUriEncode = __webpack_require__(307);
+var strictUriEncode = __webpack_require__(313);
 
 exports.extract = function (str) {
 	return str.split('?')[1] || '';
@@ -26172,7 +29482,7 @@ exports.stringify = function (obj) {
 
 
 /***/ }),
-/* 190 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26251,7 +29561,7 @@ var ARIADOMPropertyConfig = {
 module.exports = ARIADOMPropertyConfig;
 
 /***/ }),
-/* 191 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26280,7 +29590,7 @@ var AutoFocusUtils = {
 module.exports = AutoFocusUtils;
 
 /***/ }),
-/* 192 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26296,11 +29606,11 @@ module.exports = AutoFocusUtils;
 
 
 
-var EventPropagators = __webpack_require__(34);
+var EventPropagators = __webpack_require__(35);
 var ExecutionEnvironment = __webpack_require__(7);
-var FallbackCompositionState = __webpack_require__(198);
-var SyntheticCompositionEvent = __webpack_require__(241);
-var SyntheticInputEvent = __webpack_require__(244);
+var FallbackCompositionState = __webpack_require__(204);
+var SyntheticCompositionEvent = __webpack_require__(247);
+var SyntheticInputEvent = __webpack_require__(250);
 
 var END_KEYCODES = [9, 13, 27, 32]; // Tab, Return, Esc, Space
 var START_KEYCODE = 229;
@@ -26670,7 +29980,7 @@ var BeforeInputEventPlugin = {
 module.exports = BeforeInputEventPlugin;
 
 /***/ }),
-/* 193 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26690,10 +30000,10 @@ var CSSProperty = __webpack_require__(94);
 var ExecutionEnvironment = __webpack_require__(7);
 var ReactInstrumentation = __webpack_require__(13);
 
-var camelizeStyleName = __webpack_require__(170);
-var dangerousStyleValue = __webpack_require__(251);
-var hyphenateStyleName = __webpack_require__(177);
-var memoizeStringOnly = __webpack_require__(180);
+var camelizeStyleName = __webpack_require__(176);
+var dangerousStyleValue = __webpack_require__(257);
+var hyphenateStyleName = __webpack_require__(183);
+var memoizeStringOnly = __webpack_require__(186);
 var warning = __webpack_require__(2);
 
 var processStyleName = memoizeStringOnly(function (styleName) {
@@ -26885,7 +30195,7 @@ module.exports = CSSPropertyOperations;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 194 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26901,8 +30211,8 @@ module.exports = CSSPropertyOperations;
 
 
 
-var EventPluginHub = __webpack_require__(33);
-var EventPropagators = __webpack_require__(34);
+var EventPluginHub = __webpack_require__(34);
+var EventPropagators = __webpack_require__(35);
 var ExecutionEnvironment = __webpack_require__(7);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactUpdates = __webpack_require__(14);
@@ -27236,7 +30546,7 @@ var ChangeEventPlugin = {
 module.exports = ChangeEventPlugin;
 
 /***/ }),
-/* 195 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27254,10 +30564,10 @@ module.exports = ChangeEventPlugin;
 
 var _prodInvariant = __webpack_require__(4);
 
-var DOMLazyTree = __webpack_require__(27);
+var DOMLazyTree = __webpack_require__(28);
 var ExecutionEnvironment = __webpack_require__(7);
 
-var createNodesFromMarkup = __webpack_require__(173);
+var createNodesFromMarkup = __webpack_require__(179);
 var emptyFunction = __webpack_require__(12);
 var invariant = __webpack_require__(1);
 
@@ -27290,7 +30600,7 @@ module.exports = Danger;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 196 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27321,7 +30631,7 @@ var DefaultEventPluginOrder = ['ResponderEventPlugin', 'SimpleEventPlugin', 'Tap
 module.exports = DefaultEventPluginOrder;
 
 /***/ }),
-/* 197 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27337,9 +30647,9 @@ module.exports = DefaultEventPluginOrder;
 
 
 
-var EventPropagators = __webpack_require__(34);
+var EventPropagators = __webpack_require__(35);
 var ReactDOMComponentTree = __webpack_require__(6);
-var SyntheticMouseEvent = __webpack_require__(41);
+var SyntheticMouseEvent = __webpack_require__(42);
 
 var eventTypes = {
   mouseEnter: {
@@ -27426,7 +30736,7 @@ var EnterLeaveEventPlugin = {
 module.exports = EnterLeaveEventPlugin;
 
 /***/ }),
-/* 198 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27526,7 +30836,7 @@ PooledClass.addPoolingTo(FallbackCompositionState);
 module.exports = FallbackCompositionState;
 
 /***/ }),
-/* 199 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27767,7 +31077,7 @@ var HTMLDOMPropertyConfig = {
 module.exports = HTMLDOMPropertyConfig;
 
 /***/ }),
-/* 200 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27783,7 +31093,7 @@ module.exports = HTMLDOMPropertyConfig;
 
 
 
-var ReactReconciler = __webpack_require__(28);
+var ReactReconciler = __webpack_require__(29);
 
 var instantiateReactComponent = __webpack_require__(111);
 var KeyEscapeUtils = __webpack_require__(61);
@@ -27927,7 +31237,7 @@ module.exports = ReactChildReconciler;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 201 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27944,7 +31254,7 @@ module.exports = ReactChildReconciler;
 
 
 var DOMChildrenOperations = __webpack_require__(58);
-var ReactDOMIDOperations = __webpack_require__(208);
+var ReactDOMIDOperations = __webpack_require__(214);
 
 /**
  * Abstracts away all functionality of the reconciler that requires knowledge of
@@ -27962,7 +31272,7 @@ var ReactComponentBrowserEnvironment = {
 module.exports = ReactComponentBrowserEnvironment;
 
 /***/ }),
-/* 202 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27981,20 +31291,20 @@ module.exports = ReactComponentBrowserEnvironment;
 var _prodInvariant = __webpack_require__(4),
     _assign = __webpack_require__(5);
 
-var React = __webpack_require__(31);
+var React = __webpack_require__(32);
 var ReactComponentEnvironment = __webpack_require__(63);
 var ReactCurrentOwner = __webpack_require__(16);
 var ReactErrorUtils = __webpack_require__(64);
-var ReactInstanceMap = __webpack_require__(35);
+var ReactInstanceMap = __webpack_require__(36);
 var ReactInstrumentation = __webpack_require__(13);
 var ReactNodeTypes = __webpack_require__(104);
-var ReactReconciler = __webpack_require__(28);
+var ReactReconciler = __webpack_require__(29);
 
 if (process.env.NODE_ENV !== 'production') {
-  var checkReactTypeSpec = __webpack_require__(250);
+  var checkReactTypeSpec = __webpack_require__(256);
 }
 
-var emptyObject = __webpack_require__(32);
+var emptyObject = __webpack_require__(33);
 var invariant = __webpack_require__(1);
 var shallowEqual = __webpack_require__(54);
 var shouldUpdateReactComponent = __webpack_require__(71);
@@ -28870,7 +32180,7 @@ module.exports = ReactCompositeComponent;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 203 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28889,15 +32199,15 @@ module.exports = ReactCompositeComponent;
 
 
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactDefaultInjection = __webpack_require__(220);
+var ReactDefaultInjection = __webpack_require__(226);
 var ReactMount = __webpack_require__(103);
-var ReactReconciler = __webpack_require__(28);
+var ReactReconciler = __webpack_require__(29);
 var ReactUpdates = __webpack_require__(14);
-var ReactVersion = __webpack_require__(235);
+var ReactVersion = __webpack_require__(241);
 
-var findDOMNode = __webpack_require__(252);
+var findDOMNode = __webpack_require__(258);
 var getHostComponentFromComposite = __webpack_require__(109);
-var renderSubtreeIntoContainer = __webpack_require__(259);
+var renderSubtreeIntoContainer = __webpack_require__(265);
 var warning = __webpack_require__(2);
 
 ReactDefaultInjection.inject();
@@ -28974,9 +32284,9 @@ if (process.env.NODE_ENV !== 'production') {
 
 if (process.env.NODE_ENV !== 'production') {
   var ReactInstrumentation = __webpack_require__(13);
-  var ReactDOMUnknownPropertyHook = __webpack_require__(217);
-  var ReactDOMNullInputValuePropHook = __webpack_require__(211);
-  var ReactDOMInvalidARIAHook = __webpack_require__(210);
+  var ReactDOMUnknownPropertyHook = __webpack_require__(223);
+  var ReactDOMNullInputValuePropHook = __webpack_require__(217);
+  var ReactDOMInvalidARIAHook = __webpack_require__(216);
 
   ReactInstrumentation.debugTool.addHook(ReactDOMUnknownPropertyHook);
   ReactInstrumentation.debugTool.addHook(ReactDOMNullInputValuePropHook);
@@ -28987,7 +32297,7 @@ module.exports = ReactDOM;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 204 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29008,27 +32318,27 @@ module.exports = ReactDOM;
 var _prodInvariant = __webpack_require__(4),
     _assign = __webpack_require__(5);
 
-var AutoFocusUtils = __webpack_require__(191);
-var CSSPropertyOperations = __webpack_require__(193);
-var DOMLazyTree = __webpack_require__(27);
+var AutoFocusUtils = __webpack_require__(197);
+var CSSPropertyOperations = __webpack_require__(199);
+var DOMLazyTree = __webpack_require__(28);
 var DOMNamespaces = __webpack_require__(59);
 var DOMProperty = __webpack_require__(18);
 var DOMPropertyOperations = __webpack_require__(96);
-var EventPluginHub = __webpack_require__(33);
-var EventPluginRegistry = __webpack_require__(39);
-var ReactBrowserEventEmitter = __webpack_require__(40);
+var EventPluginHub = __webpack_require__(34);
+var EventPluginRegistry = __webpack_require__(40);
+var ReactBrowserEventEmitter = __webpack_require__(41);
 var ReactDOMComponentFlags = __webpack_require__(97);
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactDOMInput = __webpack_require__(209);
-var ReactDOMOption = __webpack_require__(212);
+var ReactDOMInput = __webpack_require__(215);
+var ReactDOMOption = __webpack_require__(218);
 var ReactDOMSelect = __webpack_require__(98);
-var ReactDOMTextarea = __webpack_require__(215);
+var ReactDOMTextarea = __webpack_require__(221);
 var ReactInstrumentation = __webpack_require__(13);
-var ReactMultiChild = __webpack_require__(228);
-var ReactServerRenderingTransaction = __webpack_require__(233);
+var ReactMultiChild = __webpack_require__(234);
+var ReactServerRenderingTransaction = __webpack_require__(239);
 
 var emptyFunction = __webpack_require__(12);
-var escapeTextContentForBrowser = __webpack_require__(43);
+var escapeTextContentForBrowser = __webpack_require__(44);
 var invariant = __webpack_require__(1);
 var isEventSupported = __webpack_require__(70);
 var shallowEqual = __webpack_require__(54);
@@ -29994,7 +33304,7 @@ module.exports = ReactDOMComponent;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 205 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30033,7 +33343,7 @@ module.exports = ReactDOMContainerInfo;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 206 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30051,7 +33361,7 @@ module.exports = ReactDOMContainerInfo;
 
 var _assign = __webpack_require__(5);
 
-var DOMLazyTree = __webpack_require__(27);
+var DOMLazyTree = __webpack_require__(28);
 var ReactDOMComponentTree = __webpack_require__(6);
 
 var ReactDOMEmptyComponent = function (instantiate) {
@@ -30098,7 +33408,7 @@ _assign(ReactDOMEmptyComponent.prototype, {
 module.exports = ReactDOMEmptyComponent;
 
 /***/ }),
-/* 207 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30122,7 +33432,7 @@ var ReactDOMFeatureFlags = {
 module.exports = ReactDOMFeatureFlags;
 
 /***/ }),
-/* 208 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30161,7 +33471,7 @@ var ReactDOMIDOperations = {
 module.exports = ReactDOMIDOperations;
 
 /***/ }),
-/* 209 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30452,7 +33762,7 @@ module.exports = ReactDOMInput;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 210 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30551,7 +33861,7 @@ module.exports = ReactDOMInvalidARIAHook;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 211 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30600,7 +33910,7 @@ module.exports = ReactDOMNullInputValuePropHook;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 212 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30618,7 +33928,7 @@ module.exports = ReactDOMNullInputValuePropHook;
 
 var _assign = __webpack_require__(5);
 
-var React = __webpack_require__(31);
+var React = __webpack_require__(32);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactDOMSelect = __webpack_require__(98);
 
@@ -30729,7 +34039,7 @@ module.exports = ReactDOMOption;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 213 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30747,7 +34057,7 @@ module.exports = ReactDOMOption;
 
 var ExecutionEnvironment = __webpack_require__(7);
 
-var getNodeForCharacterOffset = __webpack_require__(256);
+var getNodeForCharacterOffset = __webpack_require__(262);
 var getTextContentAccessor = __webpack_require__(110);
 
 /**
@@ -30946,7 +34256,7 @@ var ReactDOMSelection = {
 module.exports = ReactDOMSelection;
 
 /***/ }),
-/* 214 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30966,10 +34276,10 @@ var _prodInvariant = __webpack_require__(4),
     _assign = __webpack_require__(5);
 
 var DOMChildrenOperations = __webpack_require__(58);
-var DOMLazyTree = __webpack_require__(27);
+var DOMLazyTree = __webpack_require__(28);
 var ReactDOMComponentTree = __webpack_require__(6);
 
-var escapeTextContentForBrowser = __webpack_require__(43);
+var escapeTextContentForBrowser = __webpack_require__(44);
 var invariant = __webpack_require__(1);
 var validateDOMNesting = __webpack_require__(72);
 
@@ -31116,7 +34426,7 @@ module.exports = ReactDOMTextComponent;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 215 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31282,7 +34592,7 @@ module.exports = ReactDOMTextarea;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 216 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31424,7 +34734,7 @@ module.exports = {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 217 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31441,7 +34751,7 @@ module.exports = {
 
 
 var DOMProperty = __webpack_require__(18);
-var EventPluginRegistry = __webpack_require__(39);
+var EventPluginRegistry = __webpack_require__(40);
 var ReactComponentTreeHook = __webpack_require__(11);
 
 var warning = __webpack_require__(2);
@@ -31542,7 +34852,7 @@ module.exports = ReactDOMUnknownPropertyHook;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 218 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31559,12 +34869,12 @@ module.exports = ReactDOMUnknownPropertyHook;
 
 
 
-var ReactInvalidSetStateWarningHook = __webpack_require__(226);
-var ReactHostOperationHistoryHook = __webpack_require__(224);
+var ReactInvalidSetStateWarningHook = __webpack_require__(232);
+var ReactHostOperationHistoryHook = __webpack_require__(230);
 var ReactComponentTreeHook = __webpack_require__(11);
 var ExecutionEnvironment = __webpack_require__(7);
 
-var performanceNow = __webpack_require__(182);
+var performanceNow = __webpack_require__(188);
 var warning = __webpack_require__(2);
 
 var hooks = [];
@@ -31907,7 +35217,7 @@ module.exports = ReactDebugTool;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 219 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31926,7 +35236,7 @@ module.exports = ReactDebugTool;
 var _assign = __webpack_require__(5);
 
 var ReactUpdates = __webpack_require__(14);
-var Transaction = __webpack_require__(42);
+var Transaction = __webpack_require__(43);
 
 var emptyFunction = __webpack_require__(12);
 
@@ -31980,7 +35290,7 @@ var ReactDefaultBatchingStrategy = {
 module.exports = ReactDefaultBatchingStrategy;
 
 /***/ }),
-/* 220 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31996,25 +35306,25 @@ module.exports = ReactDefaultBatchingStrategy;
 
 
 
-var ARIADOMPropertyConfig = __webpack_require__(190);
-var BeforeInputEventPlugin = __webpack_require__(192);
-var ChangeEventPlugin = __webpack_require__(194);
-var DefaultEventPluginOrder = __webpack_require__(196);
-var EnterLeaveEventPlugin = __webpack_require__(197);
-var HTMLDOMPropertyConfig = __webpack_require__(199);
-var ReactComponentBrowserEnvironment = __webpack_require__(201);
-var ReactDOMComponent = __webpack_require__(204);
+var ARIADOMPropertyConfig = __webpack_require__(196);
+var BeforeInputEventPlugin = __webpack_require__(198);
+var ChangeEventPlugin = __webpack_require__(200);
+var DefaultEventPluginOrder = __webpack_require__(202);
+var EnterLeaveEventPlugin = __webpack_require__(203);
+var HTMLDOMPropertyConfig = __webpack_require__(205);
+var ReactComponentBrowserEnvironment = __webpack_require__(207);
+var ReactDOMComponent = __webpack_require__(210);
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactDOMEmptyComponent = __webpack_require__(206);
-var ReactDOMTreeTraversal = __webpack_require__(216);
-var ReactDOMTextComponent = __webpack_require__(214);
-var ReactDefaultBatchingStrategy = __webpack_require__(219);
-var ReactEventListener = __webpack_require__(223);
-var ReactInjection = __webpack_require__(225);
-var ReactReconcileTransaction = __webpack_require__(231);
-var SVGDOMPropertyConfig = __webpack_require__(236);
-var SelectEventPlugin = __webpack_require__(237);
-var SimpleEventPlugin = __webpack_require__(238);
+var ReactDOMEmptyComponent = __webpack_require__(212);
+var ReactDOMTreeTraversal = __webpack_require__(222);
+var ReactDOMTextComponent = __webpack_require__(220);
+var ReactDefaultBatchingStrategy = __webpack_require__(225);
+var ReactEventListener = __webpack_require__(229);
+var ReactInjection = __webpack_require__(231);
+var ReactReconcileTransaction = __webpack_require__(237);
+var SVGDOMPropertyConfig = __webpack_require__(242);
+var SelectEventPlugin = __webpack_require__(243);
+var SimpleEventPlugin = __webpack_require__(244);
 
 var alreadyInjected = false;
 
@@ -32071,7 +35381,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 221 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32096,7 +35406,7 @@ var REACT_ELEMENT_TYPE = typeof Symbol === 'function' && Symbol['for'] && Symbol
 module.exports = REACT_ELEMENT_TYPE;
 
 /***/ }),
-/* 222 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32112,7 +35422,7 @@ module.exports = REACT_ELEMENT_TYPE;
 
 
 
-var EventPluginHub = __webpack_require__(33);
+var EventPluginHub = __webpack_require__(34);
 
 function runEventQueueInBatch(events) {
   EventPluginHub.enqueueEvents(events);
@@ -32134,7 +35444,7 @@ var ReactEventEmitterMixin = {
 module.exports = ReactEventEmitterMixin;
 
 /***/ }),
-/* 223 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32159,7 +35469,7 @@ var ReactDOMComponentTree = __webpack_require__(6);
 var ReactUpdates = __webpack_require__(14);
 
 var getEventTarget = __webpack_require__(69);
-var getUnboundedScrollPosition = __webpack_require__(175);
+var getUnboundedScrollPosition = __webpack_require__(181);
 
 /**
  * Find the deepest React component completely containing the root of the
@@ -32294,7 +35604,7 @@ var ReactEventListener = {
 module.exports = ReactEventListener;
 
 /***/ }),
-/* 224 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32333,7 +35643,7 @@ var ReactHostOperationHistoryHook = {
 module.exports = ReactHostOperationHistoryHook;
 
 /***/ }),
-/* 225 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32350,11 +35660,11 @@ module.exports = ReactHostOperationHistoryHook;
 
 
 var DOMProperty = __webpack_require__(18);
-var EventPluginHub = __webpack_require__(33);
+var EventPluginHub = __webpack_require__(34);
 var EventPluginUtils = __webpack_require__(60);
 var ReactComponentEnvironment = __webpack_require__(63);
 var ReactEmptyComponent = __webpack_require__(99);
-var ReactBrowserEventEmitter = __webpack_require__(40);
+var ReactBrowserEventEmitter = __webpack_require__(41);
 var ReactHostComponent = __webpack_require__(101);
 var ReactUpdates = __webpack_require__(14);
 
@@ -32372,7 +35682,7 @@ var ReactInjection = {
 module.exports = ReactInjection;
 
 /***/ }),
-/* 226 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32415,7 +35725,7 @@ module.exports = ReactInvalidSetStateWarningHook;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 227 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32431,7 +35741,7 @@ module.exports = ReactInvalidSetStateWarningHook;
 
 
 
-var adler32 = __webpack_require__(249);
+var adler32 = __webpack_require__(255);
 
 var TAG_END = /\/?>/;
 var COMMENT_START = /^<\!\-\-/;
@@ -32470,7 +35780,7 @@ var ReactMarkupChecksum = {
 module.exports = ReactMarkupChecksum;
 
 /***/ }),
-/* 228 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32489,15 +35799,15 @@ module.exports = ReactMarkupChecksum;
 var _prodInvariant = __webpack_require__(4);
 
 var ReactComponentEnvironment = __webpack_require__(63);
-var ReactInstanceMap = __webpack_require__(35);
+var ReactInstanceMap = __webpack_require__(36);
 var ReactInstrumentation = __webpack_require__(13);
 
 var ReactCurrentOwner = __webpack_require__(16);
-var ReactReconciler = __webpack_require__(28);
-var ReactChildReconciler = __webpack_require__(200);
+var ReactReconciler = __webpack_require__(29);
+var ReactChildReconciler = __webpack_require__(206);
 
 var emptyFunction = __webpack_require__(12);
-var flattenChildren = __webpack_require__(253);
+var flattenChildren = __webpack_require__(259);
 var invariant = __webpack_require__(1);
 
 /**
@@ -32926,7 +36236,7 @@ module.exports = ReactMultiChild;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 229 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33026,7 +36336,7 @@ module.exports = ReactOwner;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 230 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33057,7 +36367,7 @@ module.exports = ReactPropTypeLocationNames;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 231 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33077,10 +36387,10 @@ var _assign = __webpack_require__(5);
 
 var CallbackQueue = __webpack_require__(95);
 var PooledClass = __webpack_require__(20);
-var ReactBrowserEventEmitter = __webpack_require__(40);
+var ReactBrowserEventEmitter = __webpack_require__(41);
 var ReactInputSelection = __webpack_require__(102);
 var ReactInstrumentation = __webpack_require__(13);
-var Transaction = __webpack_require__(42);
+var Transaction = __webpack_require__(43);
 var ReactUpdateQueue = __webpack_require__(65);
 
 /**
@@ -33241,7 +36551,7 @@ module.exports = ReactReconcileTransaction;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 232 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33258,7 +36568,7 @@ module.exports = ReactReconcileTransaction;
 
 
 
-var ReactOwner = __webpack_require__(229);
+var ReactOwner = __webpack_require__(235);
 
 var ReactRef = {};
 
@@ -33335,7 +36645,7 @@ ReactRef.detachRefs = function (instance, element) {
 module.exports = ReactRef;
 
 /***/ }),
-/* 233 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33354,9 +36664,9 @@ module.exports = ReactRef;
 var _assign = __webpack_require__(5);
 
 var PooledClass = __webpack_require__(20);
-var Transaction = __webpack_require__(42);
+var Transaction = __webpack_require__(43);
 var ReactInstrumentation = __webpack_require__(13);
-var ReactServerUpdateQueue = __webpack_require__(234);
+var ReactServerUpdateQueue = __webpack_require__(240);
 
 /**
  * Executed within the scope of the `Transaction` instance. Consider these as
@@ -33431,7 +36741,7 @@ module.exports = ReactServerRenderingTransaction;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 234 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33576,7 +36886,7 @@ module.exports = ReactServerUpdateQueue;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 235 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33595,7 +36905,7 @@ module.exports = ReactServerUpdateQueue;
 module.exports = '15.5.4';
 
 /***/ }),
-/* 236 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33902,7 +37212,7 @@ Object.keys(ATTRS).forEach(function (key) {
 module.exports = SVGDOMPropertyConfig;
 
 /***/ }),
-/* 237 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33918,7 +37228,7 @@ module.exports = SVGDOMPropertyConfig;
 
 
 
-var EventPropagators = __webpack_require__(34);
+var EventPropagators = __webpack_require__(35);
 var ExecutionEnvironment = __webpack_require__(7);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactInputSelection = __webpack_require__(102);
@@ -34098,7 +37408,7 @@ var SelectEventPlugin = {
 module.exports = SelectEventPlugin;
 
 /***/ }),
-/* 238 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34118,19 +37428,19 @@ module.exports = SelectEventPlugin;
 var _prodInvariant = __webpack_require__(4);
 
 var EventListener = __webpack_require__(85);
-var EventPropagators = __webpack_require__(34);
+var EventPropagators = __webpack_require__(35);
 var ReactDOMComponentTree = __webpack_require__(6);
-var SyntheticAnimationEvent = __webpack_require__(239);
-var SyntheticClipboardEvent = __webpack_require__(240);
+var SyntheticAnimationEvent = __webpack_require__(245);
+var SyntheticClipboardEvent = __webpack_require__(246);
 var SyntheticEvent = __webpack_require__(17);
-var SyntheticFocusEvent = __webpack_require__(243);
-var SyntheticKeyboardEvent = __webpack_require__(245);
-var SyntheticMouseEvent = __webpack_require__(41);
-var SyntheticDragEvent = __webpack_require__(242);
-var SyntheticTouchEvent = __webpack_require__(246);
-var SyntheticTransitionEvent = __webpack_require__(247);
-var SyntheticUIEvent = __webpack_require__(36);
-var SyntheticWheelEvent = __webpack_require__(248);
+var SyntheticFocusEvent = __webpack_require__(249);
+var SyntheticKeyboardEvent = __webpack_require__(251);
+var SyntheticMouseEvent = __webpack_require__(42);
+var SyntheticDragEvent = __webpack_require__(248);
+var SyntheticTouchEvent = __webpack_require__(252);
+var SyntheticTransitionEvent = __webpack_require__(253);
+var SyntheticUIEvent = __webpack_require__(37);
+var SyntheticWheelEvent = __webpack_require__(254);
 
 var emptyFunction = __webpack_require__(12);
 var getEventCharCode = __webpack_require__(67);
@@ -34332,7 +37642,7 @@ module.exports = SimpleEventPlugin;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 239 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34376,7 +37686,7 @@ SyntheticEvent.augmentClass(SyntheticAnimationEvent, AnimationEventInterface);
 module.exports = SyntheticAnimationEvent;
 
 /***/ }),
-/* 240 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34419,7 +37729,7 @@ SyntheticEvent.augmentClass(SyntheticClipboardEvent, ClipboardEventInterface);
 module.exports = SyntheticClipboardEvent;
 
 /***/ }),
-/* 241 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34460,7 +37770,7 @@ SyntheticEvent.augmentClass(SyntheticCompositionEvent, CompositionEventInterface
 module.exports = SyntheticCompositionEvent;
 
 /***/ }),
-/* 242 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34476,7 +37786,7 @@ module.exports = SyntheticCompositionEvent;
 
 
 
-var SyntheticMouseEvent = __webpack_require__(41);
+var SyntheticMouseEvent = __webpack_require__(42);
 
 /**
  * @interface DragEvent
@@ -34501,7 +37811,7 @@ SyntheticMouseEvent.augmentClass(SyntheticDragEvent, DragEventInterface);
 module.exports = SyntheticDragEvent;
 
 /***/ }),
-/* 243 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34517,7 +37827,7 @@ module.exports = SyntheticDragEvent;
 
 
 
-var SyntheticUIEvent = __webpack_require__(36);
+var SyntheticUIEvent = __webpack_require__(37);
 
 /**
  * @interface FocusEvent
@@ -34542,7 +37852,7 @@ SyntheticUIEvent.augmentClass(SyntheticFocusEvent, FocusEventInterface);
 module.exports = SyntheticFocusEvent;
 
 /***/ }),
-/* 244 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34584,7 +37894,7 @@ SyntheticEvent.augmentClass(SyntheticInputEvent, InputEventInterface);
 module.exports = SyntheticInputEvent;
 
 /***/ }),
-/* 245 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34600,10 +37910,10 @@ module.exports = SyntheticInputEvent;
 
 
 
-var SyntheticUIEvent = __webpack_require__(36);
+var SyntheticUIEvent = __webpack_require__(37);
 
 var getEventCharCode = __webpack_require__(67);
-var getEventKey = __webpack_require__(254);
+var getEventKey = __webpack_require__(260);
 var getEventModifierState = __webpack_require__(68);
 
 /**
@@ -34673,7 +37983,7 @@ SyntheticUIEvent.augmentClass(SyntheticKeyboardEvent, KeyboardEventInterface);
 module.exports = SyntheticKeyboardEvent;
 
 /***/ }),
-/* 246 */
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34689,7 +37999,7 @@ module.exports = SyntheticKeyboardEvent;
 
 
 
-var SyntheticUIEvent = __webpack_require__(36);
+var SyntheticUIEvent = __webpack_require__(37);
 
 var getEventModifierState = __webpack_require__(68);
 
@@ -34723,7 +38033,7 @@ SyntheticUIEvent.augmentClass(SyntheticTouchEvent, TouchEventInterface);
 module.exports = SyntheticTouchEvent;
 
 /***/ }),
-/* 247 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34767,7 +38077,7 @@ SyntheticEvent.augmentClass(SyntheticTransitionEvent, TransitionEventInterface);
 module.exports = SyntheticTransitionEvent;
 
 /***/ }),
-/* 248 */
+/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34783,7 +38093,7 @@ module.exports = SyntheticTransitionEvent;
 
 
 
-var SyntheticMouseEvent = __webpack_require__(41);
+var SyntheticMouseEvent = __webpack_require__(42);
 
 /**
  * @interface WheelEvent
@@ -34826,7 +38136,7 @@ SyntheticMouseEvent.augmentClass(SyntheticWheelEvent, WheelEventInterface);
 module.exports = SyntheticWheelEvent;
 
 /***/ }),
-/* 249 */
+/* 255 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34875,7 +38185,7 @@ function adler32(data) {
 module.exports = adler32;
 
 /***/ }),
-/* 250 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34893,7 +38203,7 @@ module.exports = adler32;
 
 var _prodInvariant = __webpack_require__(4);
 
-var ReactPropTypeLocationNames = __webpack_require__(230);
+var ReactPropTypeLocationNames = __webpack_require__(236);
 var ReactPropTypesSecret = __webpack_require__(105);
 
 var invariant = __webpack_require__(1);
@@ -34968,7 +38278,7 @@ module.exports = checkReactTypeSpec;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 251 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35053,7 +38363,7 @@ module.exports = dangerousStyleValue;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 252 */
+/* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35073,7 +38383,7 @@ var _prodInvariant = __webpack_require__(4);
 
 var ReactCurrentOwner = __webpack_require__(16);
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactInstanceMap = __webpack_require__(35);
+var ReactInstanceMap = __webpack_require__(36);
 
 var getHostComponentFromComposite = __webpack_require__(109);
 var invariant = __webpack_require__(1);
@@ -35119,7 +38429,7 @@ module.exports = findDOMNode;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 253 */
+/* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35201,7 +38511,7 @@ module.exports = flattenChildren;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 254 */
+/* 260 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35308,7 +38618,7 @@ function getEventKey(nativeEvent) {
 module.exports = getEventKey;
 
 /***/ }),
-/* 255 */
+/* 261 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35354,7 +38664,7 @@ function getIteratorFn(maybeIterable) {
 module.exports = getIteratorFn;
 
 /***/ }),
-/* 256 */
+/* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35433,7 +38743,7 @@ function getNodeForCharacterOffset(root, offset) {
 module.exports = getNodeForCharacterOffset;
 
 /***/ }),
-/* 257 */
+/* 263 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35539,7 +38849,7 @@ function getVendorPrefixedEventName(eventName) {
 module.exports = getVendorPrefixedEventName;
 
 /***/ }),
-/* 258 */
+/* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35555,7 +38865,7 @@ module.exports = getVendorPrefixedEventName;
 
 
 
-var escapeTextContentForBrowser = __webpack_require__(43);
+var escapeTextContentForBrowser = __webpack_require__(44);
 
 /**
  * Escapes attribute value to prevent scripting attacks.
@@ -35570,7 +38880,7 @@ function quoteAttributeValueForBrowser(value) {
 module.exports = quoteAttributeValueForBrowser;
 
 /***/ }),
-/* 259 */
+/* 265 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35591,7 +38901,7 @@ var ReactMount = __webpack_require__(103);
 module.exports = ReactMount.renderSubtreeIntoContainer;
 
 /***/ }),
-/* 260 */
+/* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35627,7 +38937,7 @@ module.exports = exports['default'];
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 261 */
+/* 267 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35661,7 +38971,7 @@ exports.default = IndexLink;
 module.exports = exports['default'];
 
 /***/ }),
-/* 262 */
+/* 268 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35731,7 +39041,7 @@ module.exports = exports['default'];
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 263 */
+/* 269 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35798,7 +39108,7 @@ module.exports = exports['default'];
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 264 */
+/* 270 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35873,7 +39183,7 @@ module.exports = exports['default'];
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 265 */
+/* 271 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35937,7 +39247,7 @@ module.exports = exports['default'];
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 266 */
+/* 272 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35989,7 +39299,7 @@ module.exports = exports['default'];
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 267 */
+/* 273 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36003,7 +39313,7 @@ var _createHashHistory = __webpack_require__(124);
 
 var _createHashHistory2 = _interopRequireDefault(_createHashHistory);
 
-var _useQueries = __webpack_require__(48);
+var _useQueries = __webpack_require__(49);
 
 var _useQueries2 = _interopRequireDefault(_useQueries);
 
@@ -36021,7 +39331,7 @@ var _createTransitionManager2 = _interopRequireDefault(_createTransitionManager)
 
 var _InternalPropTypes = __webpack_require__(21);
 
-var _RouterContext = __webpack_require__(45);
+var _RouterContext = __webpack_require__(46);
 
 var _RouterContext2 = _interopRequireDefault(_RouterContext);
 
@@ -36220,7 +39530,7 @@ module.exports = exports['default'];
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 268 */
+/* 274 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36232,7 +39542,7 @@ var _react = __webpack_require__(3);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _RouterContext = __webpack_require__(45);
+var _RouterContext = __webpack_require__(46);
 
 var _RouterContext2 = _interopRequireDefault(_RouterContext);
 
@@ -36257,7 +39567,7 @@ module.exports = exports['default'];
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 269 */
+/* 275 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36386,7 +39696,7 @@ function runLeaveHooks(routes, prevState) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 270 */
+/* 276 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36400,7 +39710,7 @@ var _react = __webpack_require__(3);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _RouterContext = __webpack_require__(45);
+var _RouterContext = __webpack_require__(46);
 
 var _RouterContext2 = _interopRequireDefault(_RouterContext);
 
@@ -36450,7 +39760,7 @@ module.exports = exports['default'];
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 271 */
+/* 277 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36458,7 +39768,7 @@ module.exports = exports['default'];
 
 exports.__esModule = true;
 
-var _createBrowserHistory = __webpack_require__(283);
+var _createBrowserHistory = __webpack_require__(289);
 
 var _createBrowserHistory2 = _interopRequireDefault(_createBrowserHistory);
 
@@ -36472,7 +39782,7 @@ exports.default = (0, _createRouterHistory2.default)(_createBrowserHistory2.defa
 module.exports = exports['default'];
 
 /***/ }),
-/* 272 */
+/* 278 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36480,7 +39790,7 @@ module.exports = exports['default'];
 
 exports.__esModule = true;
 
-var _PatternUtils = __webpack_require__(29);
+var _PatternUtils = __webpack_require__(30);
 
 function routeParamsChanged(route, prevState, nextState) {
   if (!route.path) return false;
@@ -36555,7 +39865,7 @@ exports.default = computeChangedRoutes;
 module.exports = exports['default'];
 
 /***/ }),
-/* 273 */
+/* 279 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36607,7 +39917,7 @@ exports.default = getComponents;
 module.exports = exports['default'];
 
 /***/ }),
-/* 274 */
+/* 280 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36615,7 +39925,7 @@ module.exports = exports['default'];
 
 exports.__esModule = true;
 
-var _PatternUtils = __webpack_require__(29);
+var _PatternUtils = __webpack_require__(30);
 
 /**
  * Extracts an object of params the given route cares about from
@@ -36639,7 +39949,7 @@ exports.default = getRouteParams;
 module.exports = exports['default'];
 
 /***/ }),
-/* 275 */
+/* 281 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36661,7 +39971,7 @@ exports.default = (0, _createRouterHistory2.default)(_createHashHistory2.default
 module.exports = exports['default'];
 
 /***/ }),
-/* 276 */
+/* 282 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36694,7 +40004,7 @@ Object.defineProperty(exports, 'routerShape', {
   }
 });
 
-var _PatternUtils = __webpack_require__(29);
+var _PatternUtils = __webpack_require__(30);
 
 Object.defineProperty(exports, 'formatPattern', {
   enumerable: true,
@@ -36703,7 +40013,7 @@ Object.defineProperty(exports, 'formatPattern', {
   }
 });
 
-var _Router2 = __webpack_require__(267);
+var _Router2 = __webpack_require__(273);
 
 var _Router3 = _interopRequireDefault(_Router2);
 
@@ -36711,19 +40021,19 @@ var _Link2 = __webpack_require__(115);
 
 var _Link3 = _interopRequireDefault(_Link2);
 
-var _IndexLink2 = __webpack_require__(261);
+var _IndexLink2 = __webpack_require__(267);
 
 var _IndexLink3 = _interopRequireDefault(_IndexLink2);
 
-var _withRouter2 = __webpack_require__(281);
+var _withRouter2 = __webpack_require__(287);
 
 var _withRouter3 = _interopRequireDefault(_withRouter2);
 
-var _IndexRedirect2 = __webpack_require__(262);
+var _IndexRedirect2 = __webpack_require__(268);
 
 var _IndexRedirect3 = _interopRequireDefault(_IndexRedirect2);
 
-var _IndexRoute2 = __webpack_require__(263);
+var _IndexRoute2 = __webpack_require__(269);
 
 var _IndexRoute3 = _interopRequireDefault(_IndexRoute2);
 
@@ -36731,37 +40041,37 @@ var _Redirect2 = __webpack_require__(116);
 
 var _Redirect3 = _interopRequireDefault(_Redirect2);
 
-var _Route2 = __webpack_require__(265);
+var _Route2 = __webpack_require__(271);
 
 var _Route3 = _interopRequireDefault(_Route2);
 
-var _History2 = __webpack_require__(260);
+var _History2 = __webpack_require__(266);
 
 var _History3 = _interopRequireDefault(_History2);
 
-var _Lifecycle2 = __webpack_require__(264);
+var _Lifecycle2 = __webpack_require__(270);
 
 var _Lifecycle3 = _interopRequireDefault(_Lifecycle2);
 
-var _RouteContext2 = __webpack_require__(266);
+var _RouteContext2 = __webpack_require__(272);
 
 var _RouteContext3 = _interopRequireDefault(_RouteContext2);
 
-var _useRoutes2 = __webpack_require__(280);
+var _useRoutes2 = __webpack_require__(286);
 
 var _useRoutes3 = _interopRequireDefault(_useRoutes2);
 
-var _RouterContext2 = __webpack_require__(45);
+var _RouterContext2 = __webpack_require__(46);
 
 var _RouterContext3 = _interopRequireDefault(_RouterContext2);
 
-var _RoutingContext2 = __webpack_require__(268);
+var _RoutingContext2 = __webpack_require__(274);
 
 var _RoutingContext3 = _interopRequireDefault(_RoutingContext2);
 
 var _PropTypes3 = _interopRequireDefault(_PropTypes2);
 
-var _match2 = __webpack_require__(278);
+var _match2 = __webpack_require__(284);
 
 var _match3 = _interopRequireDefault(_match2);
 
@@ -36769,15 +40079,15 @@ var _useRouterHistory2 = __webpack_require__(121);
 
 var _useRouterHistory3 = _interopRequireDefault(_useRouterHistory2);
 
-var _applyRouterMiddleware2 = __webpack_require__(270);
+var _applyRouterMiddleware2 = __webpack_require__(276);
 
 var _applyRouterMiddleware3 = _interopRequireDefault(_applyRouterMiddleware2);
 
-var _browserHistory2 = __webpack_require__(271);
+var _browserHistory2 = __webpack_require__(277);
 
 var _browserHistory3 = _interopRequireDefault(_browserHistory2);
 
-var _hashHistory2 = __webpack_require__(275);
+var _hashHistory2 = __webpack_require__(281);
 
 var _hashHistory3 = _interopRequireDefault(_hashHistory2);
 
@@ -36823,7 +40133,7 @@ exports.hashHistory = _hashHistory3.default;
 exports.createMemoryHistory = _createMemoryHistory3.default;
 
 /***/ }),
-/* 277 */
+/* 283 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36835,7 +40145,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.default = isActive;
 
-var _PatternUtils = __webpack_require__(29);
+var _PatternUtils = __webpack_require__(30);
 
 function deepEqual(a, b) {
   if (a == b) return true;
@@ -36981,7 +40291,7 @@ function isActive(_ref, indexOnly, currentLocation, routes, params) {
 module.exports = exports['default'];
 
 /***/ }),
-/* 278 */
+/* 284 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36991,7 +40301,7 @@ exports.__esModule = true;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _Actions = __webpack_require__(30);
+var _Actions = __webpack_require__(31);
 
 var _invariant = __webpack_require__(9);
 
@@ -37071,7 +40381,7 @@ module.exports = exports['default'];
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 279 */
+/* 285 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37091,7 +40401,7 @@ var _makeStateWithLocation = __webpack_require__(120);
 
 var _makeStateWithLocation2 = _interopRequireDefault(_makeStateWithLocation);
 
-var _PatternUtils = __webpack_require__(29);
+var _PatternUtils = __webpack_require__(30);
 
 var _routerWarning = __webpack_require__(8);
 
@@ -37329,7 +40639,7 @@ module.exports = exports['default'];
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 280 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37339,7 +40649,7 @@ exports.__esModule = true;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _useQueries = __webpack_require__(48);
+var _useQueries = __webpack_require__(49);
 
 var _useQueries2 = _interopRequireDefault(_useQueries);
 
@@ -37387,7 +40697,7 @@ module.exports = exports['default'];
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 281 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37407,7 +40717,7 @@ var _react = __webpack_require__(3);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _hoistNonReactStatics = __webpack_require__(185);
+var _hoistNonReactStatics = __webpack_require__(191);
 
 var _hoistNonReactStatics2 = _interopRequireDefault(_hoistNonReactStatics);
 
@@ -37458,7 +40768,7 @@ module.exports = exports['default'];
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 282 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37522,7 +40832,7 @@ function loopAsync(turns, work, callback) {
 }
 
 /***/ }),
-/* 283 */
+/* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37538,11 +40848,11 @@ var _invariant = __webpack_require__(9);
 
 var _invariant2 = _interopRequireDefault(_invariant);
 
-var _Actions = __webpack_require__(30);
+var _Actions = __webpack_require__(31);
 
 var _PathUtils = __webpack_require__(22);
 
-var _ExecutionEnvironment = __webpack_require__(47);
+var _ExecutionEnvironment = __webpack_require__(48);
 
 var _DOMUtils = __webpack_require__(76);
 
@@ -37709,7 +41019,7 @@ module.exports = exports['default'];
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 284 */
+/* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37725,7 +41035,7 @@ var _warning = __webpack_require__(15);
 
 var _warning2 = _interopRequireDefault(_warning);
 
-var _Actions = __webpack_require__(30);
+var _Actions = __webpack_require__(31);
 
 var _PathUtils = __webpack_require__(22);
 
@@ -37767,7 +41077,7 @@ module.exports = exports['default'];
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 285 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37789,7 +41099,7 @@ var _invariant2 = _interopRequireDefault(_invariant);
 
 var _PathUtils = __webpack_require__(22);
 
-var _Actions = __webpack_require__(30);
+var _Actions = __webpack_require__(31);
 
 var _createHistory = __webpack_require__(125);
 
@@ -37928,7 +41238,7 @@ module.exports = exports['default'];
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 286 */
+/* 292 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37992,7 +41302,7 @@ var KeyEscapeUtils = {
 module.exports = KeyEscapeUtils;
 
 /***/ }),
-/* 287 */
+/* 293 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38110,7 +41420,7 @@ module.exports = PooledClass;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 288 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38126,11 +41436,11 @@ module.exports = PooledClass;
 
 
 
-var PooledClass = __webpack_require__(287);
+var PooledClass = __webpack_require__(293);
 var ReactElement = __webpack_require__(23);
 
 var emptyFunction = __webpack_require__(12);
-var traverseAllChildren = __webpack_require__(298);
+var traverseAllChildren = __webpack_require__(304);
 
 var twoArgumentPooler = PooledClass.twoArgumentPooler;
 var fourArgumentPooler = PooledClass.fourArgumentPooler;
@@ -38306,7 +41616,7 @@ var ReactChildren = {
 module.exports = ReactChildren;
 
 /***/ }),
-/* 289 */
+/* 295 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38330,7 +41640,7 @@ var ReactElement = __webpack_require__(23);
 var ReactPropTypeLocationNames = __webpack_require__(129);
 var ReactNoopUpdateQueue = __webpack_require__(80);
 
-var emptyObject = __webpack_require__(32);
+var emptyObject = __webpack_require__(33);
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
 
@@ -39035,7 +42345,7 @@ module.exports = ReactClass;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 290 */
+/* 296 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39211,7 +42521,7 @@ module.exports = ReactDOMFactories;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 291 */
+/* 297 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39235,7 +42545,7 @@ var factory = __webpack_require__(91);
 module.exports = factory(isValidElement);
 
 /***/ }),
-/* 292 */
+/* 298 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39257,7 +42567,7 @@ var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
 module.exports = ReactPropTypesSecret;
 
 /***/ }),
-/* 293 */
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39278,7 +42588,7 @@ var _assign = __webpack_require__(5);
 var ReactComponent = __webpack_require__(79);
 var ReactNoopUpdateQueue = __webpack_require__(80);
 
-var emptyObject = __webpack_require__(32);
+var emptyObject = __webpack_require__(33);
 
 /**
  * Base class helpers for the updating state of a component.
@@ -39304,7 +42614,7 @@ ReactPureComponent.prototype.isPureReactComponent = true;
 module.exports = ReactPureComponent;
 
 /***/ }),
-/* 294 */
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39323,7 +42633,7 @@ module.exports = ReactPureComponent;
 module.exports = '15.5.4';
 
 /***/ }),
-/* 295 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39342,7 +42652,7 @@ module.exports = '15.5.4';
 var _prodInvariant = __webpack_require__(24);
 
 var ReactPropTypeLocationNames = __webpack_require__(129);
-var ReactPropTypesSecret = __webpack_require__(292);
+var ReactPropTypesSecret = __webpack_require__(298);
 
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
@@ -39416,7 +42726,7 @@ module.exports = checkReactTypeSpec;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 296 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39442,7 +42752,7 @@ function getNextDebugID() {
 module.exports = getNextDebugID;
 
 /***/ }),
-/* 297 */
+/* 303 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39486,7 +42796,7 @@ module.exports = onlyChild;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 298 */
+/* 304 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39509,7 +42819,7 @@ var REACT_ELEMENT_TYPE = __webpack_require__(127);
 
 var getIteratorFn = __webpack_require__(130);
 var invariant = __webpack_require__(1);
-var KeyEscapeUtils = __webpack_require__(286);
+var KeyEscapeUtils = __webpack_require__(292);
 var warning = __webpack_require__(2);
 
 var SEPARATOR = '.';
@@ -39668,7 +42978,7 @@ module.exports = traverseAllChildren;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 299 */
+/* 305 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -39750,7 +43060,7 @@ function url (uri, loc) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ }),
-/* 300 */
+/* 306 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -39766,7 +43076,7 @@ exports.coerce = coerce;
 exports.disable = disable;
 exports.enable = enable;
 exports.enabled = enabled;
-exports.humanize = __webpack_require__(301);
+exports.humanize = __webpack_require__(307);
 
 /**
  * The currently active debug mode names, and names to skip.
@@ -39958,7 +43268,7 @@ function coerce(val) {
 
 
 /***/ }),
-/* 301 */
+/* 307 */
 /***/ (function(module, exports) {
 
 /**
@@ -40113,7 +43423,7 @@ function plural(ms, n, name) {
 
 
 /***/ }),
-/* 302 */
+/* 308 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/*global Blob,File*/
@@ -40122,7 +43432,7 @@ function plural(ms, n, name) {
  * Module requirements
  */
 
-var isArray = __webpack_require__(305);
+var isArray = __webpack_require__(311);
 var isBuf = __webpack_require__(134);
 var toString = Object.prototype.toString;
 var withNativeBlob = typeof global.Blob === 'function' || toString.call(global.Blob) === '[object BlobConstructor]';
@@ -40261,7 +43571,7 @@ exports.removeBlobs = function(data, callback) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10)))
 
 /***/ }),
-/* 303 */
+/* 309 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {/**
@@ -40270,7 +43580,7 @@ exports.removeBlobs = function(data, callback) {
  * Expose `debug()` as the module.
  */
 
-exports = module.exports = __webpack_require__(304);
+exports = module.exports = __webpack_require__(310);
 exports.log = log;
 exports.formatArgs = formatArgs;
 exports.save = save;
@@ -40453,7 +43763,7 @@ function localstorage() {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 304 */
+/* 310 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -40469,7 +43779,7 @@ exports.coerce = coerce;
 exports.disable = disable;
 exports.enable = enable;
 exports.enabled = enabled;
-exports.humanize = __webpack_require__(306);
+exports.humanize = __webpack_require__(312);
 
 /**
  * The currently active debug mode names, and names to skip.
@@ -40661,7 +43971,7 @@ function coerce(val) {
 
 
 /***/ }),
-/* 305 */
+/* 311 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -40672,7 +43982,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 306 */
+/* 312 */
 /***/ (function(module, exports) {
 
 /**
@@ -40830,7 +44140,7 @@ function plural(ms, n, name) {
 
 
 /***/ }),
-/* 307 */
+/* 313 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40843,7 +44153,7 @@ module.exports = function (str) {
 
 
 /***/ }),
-/* 308 */
+/* 314 */
 /***/ (function(module, exports) {
 
 module.exports = toArray
@@ -40862,7 +44172,7 @@ function toArray(list, index) {
 
 
 /***/ }),
-/* 309 */
+/* 315 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40930,7 +44240,7 @@ module.exports = warning;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 310 */
+/* 316 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -40958,13 +44268,13 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 311 */
+/* 317 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 312 */
+/* 318 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(136);
@@ -40973,7 +44283,7 @@ module.exports = __webpack_require__(138);
 
 
 /***/ }),
-/* 313 */
+/* 319 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40982,7 +44292,7 @@ module.exports = __webpack_require__(138);
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.baihoc_tip = undefined;
+exports.gioithieu = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -40998,21 +44308,16 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var baihoc_tip = exports.baihoc_tip = function (_React$Component) {
-	_inherits(baihoc_tip, _React$Component);
+var gioithieu = exports.gioithieu = function (_React$Component) {
+	_inherits(gioithieu, _React$Component);
 
-	function baihoc_tip(props) {
-		_classCallCheck(this, baihoc_tip);
+	function gioithieu() {
+		_classCallCheck(this, gioithieu);
 
-		var _this = _possibleConstructorReturn(this, (baihoc_tip.__proto__ || Object.getPrototypeOf(baihoc_tip)).call(this, props));
-
-		_this.state = {
-			listtip: []
-		};
-		return _this;
+		return _possibleConstructorReturn(this, (gioithieu.__proto__ || Object.getPrototypeOf(gioithieu)).apply(this, arguments));
 	}
 
-	_createClass(baihoc_tip, [{
+	_createClass(gioithieu, [{
 		key: "render",
 		value: function render() {
 			return _react2.default.createElement(
@@ -41039,10 +44344,9 @@ var baihoc_tip = exports.baihoc_tip = function (_React$Component) {
 							),
 							_react2.default.createElement(
 								"li",
-								null,
-								_react2.default.createElement("a", { id: "link_pre" })
-							),
-							_react2.default.createElement("li", { className: "active", id: "link_pre1" })
+								{ className: "active" },
+								"Gi\u1EDBi thi\u1EC7u chung"
+							)
 						)
 					)
 				),
@@ -41054,762 +44358,23 @@ var baihoc_tip = exports.baihoc_tip = function (_React$Component) {
 						{ className: "panel panel-flat" },
 						_react2.default.createElement(
 							"div",
-							{ className: "panel-heading" },
+							{ className: "panel-heading " },
 							_react2.default.createElement(
 								"h6",
-								{ className: "panel-title" },
-								"T\xF3m t\u1EAFt ki\u1EBFn th\u1EE9c t\u1EEBng b\xE0i"
+								{ className: "panel-title text-semibold" },
+								"V\u1EC1 d\u1EF1 \xE1n"
 							)
 						),
 						_react2.default.createElement(
 							"div",
 							{ className: "content" },
 							_react2.default.createElement(
-								"table",
-								{ className: "table text-nowrap" },
-								_react2.default.createElement("thead", null),
-								_react2.default.createElement(
-									"tbody",
-									null,
-									this.state.listtip.map(function (data1, index) {
-										return _react2.default.createElement(
-											"tr",
-											null,
-											_react2.default.createElement(
-												"td",
-												null,
-												_react2.default.createElement(
-													"div",
-													{ className: "media-left media-middle" },
-													_react2.default.createElement(
-														"a",
-														{ href: "#", className: "btn bg-teal-400 btn-rounded btn-icon btn-xs" },
-														_react2.default.createElement(
-															"span",
-															{ className: "letter-icon" },
-															data1.BAI
-														)
-													)
-												),
-												_react2.default.createElement(
-													"div",
-													{ className: "media-body" },
-													_react2.default.createElement(
-														"a",
-														{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/baihoc_tip/bai" + data1.BAI, className: "display-inline-block text-default text-semibold letter-icon-title" },
-														"B\xE0i ",
-														data1.BAI,
-														": ",
-														data1.TIEUDE
-													),
-													_react2.default.createElement(
-														"div",
-														{ className: "text-muted text-size-small" },
-														_react2.default.createElement("span", { className: "status-mark border-blue position-left" }),
-														"Ng\u01B0\u1EDDi \u0111\u0103ng: ",
-														_react2.default.createElement(
-															"a",
-															null,
-															data1.USERNAME
-														)
-													)
-												)
-											),
-											_react2.default.createElement(
-												"td",
-												null,
-												_react2.default.createElement(
-													"a",
-													{ href: "#", className: "text-default display-inline-block" },
-													_react2.default.createElement(
-														"span",
-														{ className: "display-block text-muted" },
-														"Ng\xE0y c\u1EADp nh\u1EADt: ",
-														data1.to_char
-													)
-												)
-											)
-										);
-									})
-								)
+								"p",
+								{ className: "content-group" },
+								"\u2003\u2003\u0110\u1EC1 t\xE0i c\u1EE7a nh\xF3m s\u1EBD t\u1EADp trung v\xE0o vi\u1EC7c kh\u1EA3o s\xE1t c\xE1c ph\u01B0\u01A1ng ph\xE1p h\u1ECDc t\u1EADp truy\u1EC1n th\u1ED1ng c\u1EE7a h\u1ECDc sinh c\u1EA5p II (t\u1EEB l\u1EDBp 6 \u0111\u1EBFn l\u1EDBp 9) t\u1EA1i l\u1EDBp h\u1ECDc v\u1EDBi 2 m\xF4n L\u1ECBch s\u1EED v\xE0 \u0110\u1ECBa l\xFD, t\u1EEB \u0111\xF3 t\u1EA1o ra m\u1ED9t h\u1EC7 th\u1ED1ng v\u1EC1 gi\u1EA3ng d\u1EA1y L\u1ECBch s\u1EED v\xE0 \u0110\u1ECBa l\xFD m\u1ED9t c\xE1ch tr\u1EF1c quan sinh \u0111\u1ED9ng d\u1EF1a tr\xEAn n\u1ED9i dung c\u1EE7a S\xE1ch giao khoa cho h\u1ECDc sinh c\u1EA5p II. V\u1EDBi h\u1EC7 th\u1ED1ng n\xE0y h\u1ECDc sinh c\xF3 th\u1EC3 h\u1ECDc t\u1EADp nghi\xEAn c\u1EE9u v\xE0 t\u01B0\u01A1ng t\xE1c v\u1EDBi nhau, ti\u1EBFp c\u1EADn b\xE0i gi\u1EA3ng d\u1EC5 d\xE0ng h\u01A1n. N\u1ED9i dung gi\u1EA3ng d\u1EA1y v\u1EABn d\u1EF1a tr\xEAn ki\u1EBFn th\u1EE9c n\u1EC1n t\u1EA3ng trong s\xE1ch gi\xE1o khoa m\xE0 c\xE1c em \u0111\u01B0\u1EE3c h\u1ECDc \u1EDF tr\u01B0\u1EDDng, l\u1ED3ng gh\xE9p v\xE0o \u0111\xF3 nh\u1EEFng c\xE2u h\u1ECFi, tr\xF2 ch\u01A1i v\xE0 k\u1EBFt h\u1EE3p kh\u1EA3 n\u0103ng t\u01B0\u01A1ng t\xE1c v\u1EDBi nhau, t\u1EEB \u0111\xF3 gi\xFAp cho h\u1ECDc sinh d\u1EC5 d\xE0ng h\u01A1n trong qu\xE1 tr\xECnh h\u1ECDc t\u1EADp v\xE0 t\u1EA1o cho ng\u01B0\u1EDDi h\u1ECDc \u0111\u01B0\u1EE3c s\u1EF1 h\u1EE9ng th\xFA v\u1EDBi hai m\xF4n h\u1ECDc n\xE0y."
 							)
 						)
 					),
-					_react2.default.createElement(
-						"div",
-						{ className: "footer text-muted" },
-						"\xA9 2015. ",
-						_react2.default.createElement(
-							"a",
-							{ href: "#" },
-							"Limitless Web App Kit"
-						),
-						" by ",
-						_react2.default.createElement(
-							"a",
-							{ href: "http://themeforest.net/user/Kopyov", target: "_blank" },
-							"Eugene Kopyov"
-						)
-					)
-				)
-			);
-		}
-	}, {
-		key: "componentWillMount",
-		value: function componentWillMount() {
-			var that = this;
-
-			var url1 = window.location.href;
-			url1 = url1.split('#');
-			var mon = url1[1].split('/');
-			var url2 = window.location.href;
-			url2 = url2.split('lop');
-			var phanlop = url2[1].split('/');
-
-			var mon1;
-			if (mon[1] == "lichsu") mon1 = "Lịch sử";
-			if (mon[1] == "diali") mon1 = "Địa lí";
-			var name_link = "Bài học " + mon1 + " lớp " + phanlop[0];
-			var name_link1 = "Tóm tắt nội dung " + mon1 + " lớp " + phanlop[0];
-			var link_pre = "#" + mon[1] + "/lop" + phanlop[0] + "/baihoc";
-			$.post("/" + mon[1] + "/lop" + this.props.params.lop + "/baihoc_tip", function (data) {
-				console.log("lay du lieu baihoc_tip 1");
-				console.log(data);
-				$("#link_pre").text(name_link);
-				$('#link_pre').attr('href', link_pre);
-				$("#link_pre1").text(name_link1);
-				that.setState({ listtip: data });
-			});
-		}
-	}, {
-		key: "componentWillReceiveProps",
-		value: function componentWillReceiveProps(newProps) {
-			var that = this;
-
-			var url1 = window.location.href;
-			url1 = url1.split('#');
-			var mon = url1[1].split('/');
-			var url2 = window.location.href;
-			url2 = url2.split('lop');
-			var phanlop = url2[1].split('/');
-
-			var mon1;
-			if (mon[1] == "lichsu") mon1 = "Lịch sử";
-			if (mon[1] == "diali") mon1 = "Địa lí";
-			var name_link = "Thảo luận " + mon1 + " lớp " + phanlop[0];
-			var name_link1 = "Tóm tắt nội dung " + mon1 + " lớp " + phanlop[0];
-			var link_pre = "#" + mon[1] + "/lop" + phanlop[0] + "/baihoc";
-
-			$.post("/" + mon[1] + "/lop" + this.props.params.lop + "/baihoc_tip", function (data) {
-				console.log("lay du lieu baihoc_tip 1");
-				console.log(data);
-				that.setState({ listtip: data });
-			});
-		}
-	}]);
-
-	return baihoc_tip;
-}(_react2.default.Component);
-
-/***/ }),
-/* 314 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.hoidap = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(3);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _socket = __webpack_require__(50);
-
-var _socket2 = _interopRequireDefault(_socket);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var socket = (0, _socket2.default)('http://localhost:3000');
-
-var data = document.querySelector('#maincontent');
-
-var id_user = data.dataset.id;
-var check = true;
-var mon, phanlop;
-var url1, url2;
-var temp_username = data.dataset.username;
-
-var hoidap = exports.hoidap = function (_React$Component) {
-	_inherits(hoidap, _React$Component);
-
-	function hoidap(props) {
-		_classCallCheck(this, hoidap);
-
-		var _this = _possibleConstructorReturn(this, (hoidap.__proto__ || Object.getPrototypeOf(hoidap)).call(this, props));
-
-		_this.state = {
-			listCauhoi: []
-		};
-		return _this;
-	}
-
-	_createClass(hoidap, [{
-		key: 'render',
-		value: function render() {
-			return _react2.default.createElement(
-				'div',
-				null,
-				_react2.default.createElement(
-					'div',
-					{ className: 'page-header page-header-default' },
-					_react2.default.createElement(
-						'div',
-						{ className: 'breadcrumb-line' },
-						_react2.default.createElement(
-							'ul',
-							{ className: 'breadcrumb' },
-							_react2.default.createElement(
-								'li',
-								null,
-								_react2.default.createElement(
-									'a',
-									{ href: '#' },
-									_react2.default.createElement('i', { className: 'icon-home2 position-left' }),
-									' Trang ch\u1EE7'
-								)
-							),
-							_react2.default.createElement('li', { className: 'active', id: 'link_pre' })
-						),
-						_react2.default.createElement(
-							'ul',
-							{ className: 'breadcrumb-elements' },
-							_react2.default.createElement(
-								'li',
-								null,
-								_react2.default.createElement(
-									'a',
-									{ id: 'themcauhoi' },
-									_react2.default.createElement('i', { className: 'icon-plus-circle2 position-left' }),
-									'Th\xEAm c\xE2u h\u1ECFi'
-								)
-							)
-						)
-					)
-				),
-				_react2.default.createElement(
-					'div',
-					{ id: 'formCauhoi', className: 'content' },
-					_react2.default.createElement(
-						'div',
-						{ id: 'formadd', className: 'col-lg-12' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'panel panel-flat blog-horizontal blog-horizontal-2' },
-							_react2.default.createElement(
-								'div',
-								{ className: 'panel-body' },
-								_react2.default.createElement(
-									'div',
-									{ className: 'blog-preview' },
-									_react2.default.createElement(
-										'div',
-										{ className: 'panel-body' },
-										_react2.default.createElement(
-											'div',
-											{ className: 'form-group' },
-											_react2.default.createElement(
-												'label',
-												null,
-												'Ti\xEAu \u0111\u1EC1: '
-											),
-											_react2.default.createElement('input', { id: 'add_tieude', type: 'text', className: 'form-control', placeholder: 'Ti\xEAu \u0111\u1EC1 c\xE2u h\u1ECFi' })
-										),
-										_react2.default.createElement(
-											'div',
-											{ className: 'form-group' },
-											_react2.default.createElement(
-												'label',
-												null,
-												'N\u1ED9i dung c\xE2u h\u1ECFi: '
-											),
-											_react2.default.createElement('textarea', { id: 'add_noidung', rows: '3', cols: '3', className: 'form-control', placeholder: 'N\u1ED9i dung c\xE2u h\u1ECFi c\u1EE7a b\u1EA1n' })
-										),
-										_react2.default.createElement(
-											'div',
-											{ className: 'text-right btn-group' },
-											_react2.default.createElement(
-												'label',
-												null,
-												'L\u1EDBp:\xA0 '
-											),
-											_react2.default.createElement(
-												'select',
-												{ id: 'addlop' },
-												_react2.default.createElement(
-													'option',
-													{ value: '', disabled: true, selected: true, hidden: true },
-													'Ch\u1ECDn l\u1EDBp'
-												),
-												_react2.default.createElement(
-													'option',
-													{ value: '6' },
-													'6'
-												),
-												_react2.default.createElement(
-													'option',
-													{ value: '7' },
-													'7'
-												),
-												_react2.default.createElement(
-													'option',
-													{ value: '8' },
-													'8'
-												),
-												_react2.default.createElement(
-													'option',
-													{ value: '9' },
-													'9'
-												)
-											)
-										),
-										_react2.default.createElement(
-											'div',
-											{ className: 'text-right' },
-											_react2.default.createElement(
-												'button',
-												{ id: 'addcauhoi', type: 'submit', className: 'btn bg-teal-400' },
-												'\u0110\u0103ng c\xE2u h\u1ECFi ',
-												_react2.default.createElement('i', { className: 'icon-arrow-right14 position-right' })
-											)
-										)
-									)
-								)
-							)
-						)
-					),
-					this.state.listCauhoi.map(function (data1, index) {
-						return _react2.default.createElement(
-							'div',
-							{ key: index, className: 'col-lg-12' },
-							_react2.default.createElement(
-								'div',
-								{ className: 'panel panel-flat blog-horizontal blog-horizontal-2' },
-								_react2.default.createElement(
-									'div',
-									{ className: 'panel-body' },
-									_react2.default.createElement(
-										'div',
-										{ className: 'blog-preview' },
-										_react2.default.createElement(
-											'div',
-											{ className: 'content-group-sm media blog-title stack-media-on-mobile text-left' },
-											_react2.default.createElement(
-												'div',
-												{ className: 'media-body' },
-												data1.USERNAME == data.dataset.username ? _react2.default.createElement(
-													'ul',
-													{ className: 'list-inline list-inline-separate heading-text pull-right' },
-													_react2.default.createElement(
-														'li',
-														null,
-														_react2.default.createElement(
-															'a',
-															{ id: data1.USERNAME, name: data1.ID_CAUHOI, className: 'text-danger-400', 'data-popup': 'tooltip', 'data-toggle': 'modal', 'data-target': '#confirm' },
-															_react2.default.createElement('i', { className: 'icon-cross2 position-right' })
-														)
-													)
-												) : _react2.default.createElement('div', null),
-												_react2.default.createElement(
-													'h5',
-													{ className: 'text-semibold no-margin' },
-													_react2.default.createElement(
-														'a',
-														{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/cauhoi" + data1.ID_CAUHOI, className: 'text-default' },
-														_react2.default.createElement(
-															'a',
-															null,
-															data1.MON == "lichsu" ? _react2.default.createElement(
-																'a',
-																{ className: 'text-success' },
-																'L\u1ECBch s\u1EED ',
-																data1.PHANLOP,
-																' - '
-															) : _react2.default.createElement(
-																'a',
-																null,
-																'\u0110\u1ECBa l\xED ',
-																data1.PHANLOP,
-																' - '
-															)
-														),
-														data1.TIEUDE
-													)
-												),
-												_react2.default.createElement(
-													'ul',
-													{ className: 'list-inline list-inline-separate no-margin text-muted' },
-													_react2.default.createElement(
-														'li',
-														null,
-														'\u0110\u0103ng b\u1EDFi: ',
-														_react2.default.createElement(
-															'a',
-															null,
-															data1.USERNAME
-														)
-													),
-													_react2.default.createElement(
-														'li',
-														null,
-														data1.to_char
-													)
-												)
-											)
-										),
-										_react2.default.createElement(
-											'p',
-											null,
-											data1.NOIDUNG
-										),
-										_react2.default.createElement(
-											'a',
-											{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/cauhoi" + data1.ID_CAUHOI },
-											'[...]'
-										)
-									)
-								),
-								_react2.default.createElement(
-									'div',
-									{ className: 'panel-footer panel-footer-condensed' },
-									_react2.default.createElement(
-										'a',
-										{ className: 'heading-elements-toggle' },
-										_react2.default.createElement('i', { className: 'icon-more' })
-									),
-									_react2.default.createElement(
-										'div',
-										{ className: 'heading-elements' },
-										_react2.default.createElement(
-											'ul',
-											{ className: 'list-inline list-inline-separate heading-text' },
-											_react2.default.createElement(
-												'li',
-												null,
-												_react2.default.createElement('i', { className: 'icon-comment-discussion position-left' }),
-												' ',
-												data1.SOTRALOI,
-												' tr\u1EA3 l\u1EDDi'
-											),
-											_react2.default.createElement(
-												'li',
-												null,
-												'\u0110\xE1nh gi\xE1:\xA0',
-												_react2.default.createElement(
-													'span',
-													{ className: 'text-muted position-right' },
-													data1.DANHGIA,
-													'\xA0'
-												),
-												_react2.default.createElement('i', { className: 'icon-star-full2 text-size-base text-warning-300' }),
-												_react2.default.createElement(
-													'a',
-													{ id: 'up_cauhoi', name: data1.ID_CAUHOI, alt: data1.USERNAME },
-													_react2.default.createElement('i', { className: 'icon-arrow-up22 text-success' })
-												),
-												_react2.default.createElement(
-													'a',
-													{ id: 'down_cauhoi', name: data1.ID_CAUHOI, alt: data1.USERNAME },
-													_react2.default.createElement('i', { className: 'icon-arrow-down22 text-danger' })
-												)
-											)
-										),
-										_react2.default.createElement(
-											'a',
-											{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/cauhoi" + data1.ID_CAUHOI, className: 'heading-text pull-right' },
-											'Chi ti\u1EBFt ',
-											_react2.default.createElement('i', { className: 'icon-arrow-right14 position-right' })
-										)
-									)
-								)
-							)
-						);
-					})
-				),
-				_react2.default.createElement(
-					'div',
-					{ id: 'confirm', className: 'modal fade' },
-					_react2.default.createElement(
-						'div',
-						{ className: 'modal-dialog modal-xs' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'modal-content' },
-							_react2.default.createElement(
-								'div',
-								{ className: 'thumbnail no-border no-margin' },
-								_react2.default.createElement(
-									'div',
-									{ className: 'caption text-center' },
-									_react2.default.createElement(
-										'h6',
-										{ className: 'text-semibold no-margin-top content-group' },
-										'B\u1EA1n c\xF3 ch\u1EAFc mu\u1ED1n xo\xE1 c\xE2u h\u1ECFi n\xE0y!  D\u1EEF li\u1EC7u s\u1EBD kh\xF4ng th\u1EC3 kh\xF4i ph\u1EE5c. '
-									),
-									_react2.default.createElement(
-										'ul',
-										{ className: 'list-inline list-inline-condensed no-margin' },
-										_react2.default.createElement(
-											'li',
-											null,
-											_react2.default.createElement(
-												'a',
-												{ className: 'btn btn-success btn-float', 'data-dismiss': 'modal' },
-												'Xo\xE1'
-											)
-										),
-										_react2.default.createElement(
-											'li',
-											null,
-											_react2.default.createElement(
-												'a',
-												{ className: 'btn btn-danger btn-float', 'data-dismiss': 'modal' },
-												'Hu\u1EF7'
-											)
-										)
-									)
-								)
-							)
-						)
-					)
-				)
-			);
-		}
-	}, {
-		key: 'componentDidMount',
-		value: function componentDidMount() {
-			console.log("componentDidMount");
-
-			var currentdate = new Date();
-			var datetime = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate() + " " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
-
-			url1 = window.location.href;
-			url1 = url1.split('hoidap');
-			var tempmon = url1[1].split('?');
-			mon = tempmon[0].split('/');
-
-			$("#formadd").hide();
-			$('#themcauhoi').click(function (event) {
-				console.log("io click");
-				if (check) {
-					check = false;
-					$("#formadd").show();
-				} else {
-					check = true;
-					$("#formadd").hide();
-				}
-			});
-
-			$('#addcauhoi').click(function () {
-				console.log($("#addlop").val());
-				if ($("#add_tieude").val() == "") return;
-				if ($("#add_noidung").val() == "") return;
-				if ($("#addlop").val() == null) return;
-				var data = {
-					id: id_user,
-					tieude: $("#add_tieude").val(),
-					noidung: $("#add_noidung").val(),
-					lop: $("#addlop").val(),
-					mon: mon[1],
-					thoigian: datetime
-
-				};
-				console.log(data);
-				$.post("themCauhoi", data, function () {
-					$("#add_tieude").val("");
-					$("#add_noidung").val("");
-					$("#formadd").hide();
-					//window.location = "#/trangcanhan";
-					//Trangcanhan.dispatch(location.getCurrentPath(), null);
-				});
-			});
-			$('#formCauhoi').on('click', '.text-success,.text-danger,.text-danger-400', function (e) {
-				var usernameClick = $(this).attr('id');
-				var type = $(this).parent().attr('id');
-				var id_cauhoi1 = $(this).attr('name');
-
-				if ($(this).attr('class') == "text-danger-400") {
-					console.log("click xoa");
-					$('#confirm li').on('click', '.btn-success', function (e) {
-						console.log("xac nhan xoa user");
-						$.post("delete_cauhoi", { id_cauhoi: id_cauhoi1 });
-						return;
-					});
-				} else {
-					if ($(this).parent().attr('alt') == temp_username) return;
-					var data = {
-						id_cauhoi: $(this).parent().attr('name'),
-						type: type
-					};
-					$.post("rate_cauhoi", data, function () {
-						return;
-					});
-				}
-			});
-		}
-	}, {
-		key: 'componentWillMount',
-		value: function componentWillMount() {
-			console.log("componentWillMount");
-			url1 = window.location.href;
-			url1 = url1.split('hoidap');
-			var tempmon = url1[1].split('?');
-			mon = tempmon[0].split('/');
-
-			var that = this;
-
-			var data1 = {
-				mon: mon[1],
-				lop: "all",
-				id: "all",
-				id_user: "all"
-			};
-			console.log(data1);
-			socket.emit('c2s_Thaoluan', data1);
-			socket.on('s2c_Thaoluan', function (data) {
-				console.log(data);
-				var mon1;
-				if (mon[1] == "lichsu") mon1 = "Lịch sử";
-				if (mon[1] == "diali") mon1 = "Địa lí";
-
-				var name_link = "Hỏi và đáp " + mon1;
-				$("#link_pre").text(name_link);
-				that.setState({ listCauhoi: data });
-			});
-			////
-		}
-	}, {
-		key: 'componentWillReceiveProps',
-		value: function componentWillReceiveProps(newProps) {
-			console.log("componentWillReceiveProps");
-			// var that=this;
-
-			url1 = window.location.href;
-			url1 = url1.split('hoidap');
-			var tempmon = url1[1].split('?');
-			mon = tempmon[0].split('/');
-
-			var data1 = {
-				mon: mon[1],
-				lop: "all",
-				id: "all",
-				id_user: "all"
-			};
-			socket.emit('c2s_Thaoluan', data1);
-		}
-	}]);
-
-	return hoidap;
-}(_react2.default.Component);
-
-/***/ }),
-/* 315 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.baihoc_tip_chitiet = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(3);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var baihoc_tip_chitiet = exports.baihoc_tip_chitiet = function (_React$Component) {
-	_inherits(baihoc_tip_chitiet, _React$Component);
-
-	function baihoc_tip_chitiet(props) {
-		_classCallCheck(this, baihoc_tip_chitiet);
-
-		var _this = _possibleConstructorReturn(this, (baihoc_tip_chitiet.__proto__ || Object.getPrototypeOf(baihoc_tip_chitiet)).call(this, props));
-
-		_this.state = {
-			listtip: []
-		};
-		return _this;
-	}
-
-	_createClass(baihoc_tip_chitiet, [{
-		key: "render",
-		value: function render() {
-			return _react2.default.createElement(
-				"div",
-				null,
-				_react2.default.createElement(
-					"div",
-					{ className: "page-header page-header-default" },
-					_react2.default.createElement(
-						"div",
-						{ className: "breadcrumb-line" },
-						_react2.default.createElement(
-							"ul",
-							{ className: "breadcrumb" },
-							_react2.default.createElement(
-								"li",
-								null,
-								_react2.default.createElement(
-									"a",
-									{ href: "#" },
-									_react2.default.createElement("i", { className: "icon-home2 position-left" }),
-									" Trang ch\u1EE7"
-								)
-							),
-							_react2.default.createElement(
-								"li",
-								null,
-								_react2.default.createElement("a", { id: "link_pre" })
-							),
-							_react2.default.createElement(
-								"li",
-								null,
-								_react2.default.createElement("a", { id: "link_pre1" })
-							),
-							_react2.default.createElement(
-								"li",
-								{ className: "active" },
-								"B\xE0i ",
-								this.props.params.id
-							)
-						)
-					)
-				),
-				_react2.default.createElement(
-					"div",
-					{ className: "content" },
 					_react2.default.createElement(
 						"div",
 						{ className: "panel panel-flat" },
@@ -41818,97 +44383,141 @@ var baihoc_tip_chitiet = exports.baihoc_tip_chitiet = function (_React$Component
 							{ className: "panel-heading" },
 							_react2.default.createElement(
 								"h6",
-								{ className: "panel-title" },
-								"T\xF3m t\u1EAFt ki\u1EBFn th\u1EE9c b\xE0i ",
-								this.props.params.id
+								{ className: "panel-title text-semibold" },
+								"V\u1EC1 ch\xFAng t\xF4i"
 							)
 						),
-						_react2.default.createElement("div", { className: "content" })
-					),
-					_react2.default.createElement(
-						"div",
-						{ className: "footer text-muted" },
-						"\xA9 2015. ",
 						_react2.default.createElement(
-							"a",
-							{ href: "#" },
-							"Limitless Web App Kit"
-						),
-						" by ",
-						_react2.default.createElement(
-							"a",
-							{ href: "http://themeforest.net/user/Kopyov", target: "_blank" },
-							"Eugene Kopyov"
+							"div",
+							{ className: "content" },
+							_react2.default.createElement(
+								"div",
+								{ className: "row" },
+								_react2.default.createElement(
+									"div",
+									{ className: "col-lg-3 col-md-6" },
+									_react2.default.createElement(
+										"div",
+										{ className: "thumbnail no-padding" },
+										_react2.default.createElement(
+											"div",
+											{ className: "thumbnail" },
+											_react2.default.createElement("img", { src: "assets/images/user_1.jpg", alt: "" })
+										),
+										_react2.default.createElement(
+											"div",
+											{ className: "caption text-center" },
+											_react2.default.createElement(
+												"h6",
+												{ className: "text-semibold no-margin" },
+												"L\xEA Minh Thi\u1EC7n ",
+												_react2.default.createElement(
+													"small",
+													{ className: "display-block" },
+													"Developer"
+												)
+											),
+											_react2.default.createElement(
+												"ul",
+												{ className: "icons-list mt-15" },
+												_react2.default.createElement(
+													"li",
+													null,
+													_react2.default.createElement(
+														"a",
+														{ href: "https://plus.google.com/u/0/116798315574237710462", target: "_blank", "data-popup": "tooltip", title: "Google+", "data-container": "body" },
+														_react2.default.createElement("i", { className: " icon-google-plus2" })
+													)
+												),
+												_react2.default.createElement(
+													"li",
+													null,
+													_react2.default.createElement(
+														"a",
+														{ href: "https://www.facebook.com/leminhthien95", target: "_blank", "data-popup": "tooltip", title: "Facebook", "data-container": "body" },
+														_react2.default.createElement("i", { className: "icon-facebook2" })
+													)
+												),
+												_react2.default.createElement(
+													"li",
+													null,
+													_react2.default.createElement(
+														"a",
+														{ href: "https://github.com/minhthien95/kidlearning/", target: "_blank", "data-popup": "tooltip", title: "Github", "data-container": "body" },
+														_react2.default.createElement("i", { className: "icon-github" })
+													)
+												)
+											)
+										)
+									)
+								),
+								_react2.default.createElement(
+									"div",
+									{ className: "col-lg-3 col-md-6" },
+									_react2.default.createElement(
+										"div",
+										{ className: "thumbnail no-padding" },
+										_react2.default.createElement(
+											"div",
+											{ className: "thumbnail" },
+											_react2.default.createElement("img", { src: "assets/images/user_2.jpg", alt: "" })
+										),
+										_react2.default.createElement(
+											"div",
+											{ className: "caption text-center" },
+											_react2.default.createElement(
+												"h6",
+												{ className: "text-semibold no-margin" },
+												"\u0110inh Trang Thanh Giang ",
+												_react2.default.createElement(
+													"small",
+													{ className: "display-block" },
+													"Developer"
+												)
+											),
+											_react2.default.createElement(
+												"ul",
+												{ className: "icons-list mt-15" },
+												_react2.default.createElement(
+													"li",
+													null,
+													_react2.default.createElement(
+														"a",
+														{ href: "https://plus.google.com/", target: "_blank", "data-popup": "tooltip", title: "Google+", "data-container": "body" },
+														_react2.default.createElement("i", { className: " icon-google-plus2" })
+													)
+												),
+												_react2.default.createElement(
+													"li",
+													null,
+													_react2.default.createElement(
+														"a",
+														{ href: "https://www.facebook.com/thanhgiang.hcmus", target: "_blank", "data-popup": "tooltip", title: "Facebook", "data-container": "body" },
+														_react2.default.createElement("i", { className: "icon-facebook2" })
+													)
+												),
+												_react2.default.createElement(
+													"li",
+													null,
+													_react2.default.createElement(
+														"a",
+														{ href: "https://github.com/", target: "_blank", "data-popup": "tooltip", title: "Github", "data-container": "body" },
+														_react2.default.createElement("i", { className: "icon-github" })
+													)
+												)
+											)
+										)
+									)
+								)
+							)
 						)
 					)
 				)
 			);
 		}
-	}, {
-		key: "componentWillMount",
-		value: function componentWillMount() {
-			var that = this;
-
-			var url1 = window.location.href;
-			url1 = url1.split('#');
-			var mon = url1[1].split('/');
-			var url2 = window.location.href;
-			url2 = url2.split('lop');
-			var phanlop = url2[1].split('/');
-
-			var mon1;
-			if (mon[1] == "lichsu") mon1 = "Lịch sử";
-			if (mon[1] == "diali") mon1 = "Địa lí";
-			var name_link = "Bài học " + mon1 + " lớp " + phanlop[0];
-			var name_link1 = "Tóm tắt nội dung " + mon1 + " lớp " + phanlop[0];
-
-			var link_pre = "#" + mon[1] + "/lop" + phanlop[0] + "/baihoc";
-			var link_pre1 = "#" + mon[1] + "/lop" + phanlop[0] + "/baihoc_tip";
-
-			$.post("/" + mon[1] + "/lop" + this.props.params.lop + "/baihoc_tip", function (data) {
-				console.log("lay du lieu baihoc_tip 1");
-				console.log(data);
-				$("#link_pre").text(name_link);
-				$('#link_pre').attr('href', link_pre);
-				$("#link_pre1").text(name_link1);
-				$('#link_pre1').attr('href', link_pre1);
-				that.setState({ listtip: data });
-			});
-		}
-	}, {
-		key: "componentWillReceiveProps",
-		value: function componentWillReceiveProps(newProps) {
-			var that = this;
-
-			var url1 = window.location.href;
-			url1 = url1.split('#');
-			var mon = url1[1].split('/');
-			var url2 = window.location.href;
-			url2 = url2.split('lop');
-			var phanlop = url2[1].split('/');
-
-			var mon1;
-			if (mon[1] == "lichsu") mon1 = "Lịch sử";
-			if (mon[1] == "diali") mon1 = "Địa lí";
-			var name_link = "Bài học " + mon1 + " lớp " + phanlop[0];
-			var name_link1 = "Tóm tắt nội dung " + mon1 + " lớp " + phanlop[0];
-
-			var link_pre = "#" + mon[1] + "/lop" + phanlop[0] + "/baihoc";
-			var link_pre1 = "#" + mon[1] + "/lop" + phanlop[0] + "/baihoc_tip";
-
-			$.post("/" + mon[1] + "/lop" + this.props.params.lop + "/baihoc_tip", function (data) {
-				console.log("lay du lieu baihoc_tip 1");
-				console.log(data);
-				$("#link_pre").text(name_link);
-				$('#link_pre').attr('href', link_pre);
-				$("#link_pre1").text(name_link1);
-				$('#link_pre1').attr('href', link_pre1);
-				that.setState({ listtip: data });
-			});
-		}
 	}]);
 
-	return baihoc_tip_chitiet;
+	return gioithieu;
 }(_react2.default.Component);
 
 /***/ })

@@ -254,7 +254,7 @@ export class Trangcanhan extends React.Component{
 											{/* User thumbnail */}
 											<div className="thumbnail">
 												<div className="thumb thumb-rounded thumb-slide">
-													<img src={this.state.id_user} onError={() => {this.setState({id_user : "assets/images/placeholder.jpg"}) }} alt=""/>
+													<img src={this.state.id_user} onError={() => {this.setState({id_user : "assets/images/user.jpg"}) }} alt=""/>
 													<div className="caption">
 														<span>
 															<a href="#" className="btn bg-success-400 btn-icon btn-xs" data-popup="lightbox"><i className="icon-plus2"></i></a>

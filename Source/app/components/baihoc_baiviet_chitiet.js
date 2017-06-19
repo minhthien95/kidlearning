@@ -10,11 +10,12 @@ var phanlop,mon,cauhoi;
 var id_user=data.dataset.id;
 var temp_username=data.dataset.username;
 
-export class cauhoi_chitiet extends React.Component{
+export class baihoc_baiviet_chitiet extends React.Component{
 	constructor(props) {
 	    super(props);
 	  	this.state = {
 	  		id_user: "assets/images/user_"+data.dataset.id+".jpg",
+	        listcauhoi: [],
 	        listbinhluan: []
 	    };
     }
@@ -50,29 +51,20 @@ export class cauhoi_chitiet extends React.Component{
 
 				    	<div className="panel-footer">
 							<div className="heading-elements">
-								{$("#nguoidang").text()==data.dataset.username ? (
-							        <ul className="list-inline list-inline-condensed heading-text">
-										<li>Đánh giá:&nbsp; 
-											<a  id="danhgia"></a>
-											&nbsp;
-											<i className="icon-star-full2 text-size-base text-warning-300"></i>
-										</li>
-									</ul>) : (
-							        <ul className="list-inline list-inline-condensed heading-text">
-										<li>Đánh giá:&nbsp; 
-											<a  id="danhgia"></a>
-											&nbsp;
-											<i className="icon-star-full2 text-size-base text-warning-300"></i>
-											<a id="up_cauhoi"><i className="icon-arrow-up22 text-success"></i></a>
-											<a id="down_cauhoi"><i className="icon-arrow-down22 text-danger"></i></a>
-										</li>
-									</ul>
-						      	)}
+								<ul className="list-inline list-inline-condensed heading-text">
+									<li>Đánh giá:&nbsp; 
+										<a  id="danhgia"></a>
+										&nbsp;
+										<i className="icon-star-full2 text-size-base text-warning-300"></i>
+										<a id="up_cauhoi"><i className="icon-arrow-up22 text-success"></i></a>
+										<a id="down_cauhoi"><i className="icon-arrow-down22 text-danger"></i></a>
+									</li>
+								</ul>
 								<ul className="list-inline list-inline-separate heading-text pull-right">
 									<li>Đăng bởi: <a id="nguoidang"></a></li>
 									<li id="thoigian"></li>
 								</ul>
-
+						
 							</div>
 						</div>
 					</div>
@@ -90,7 +82,7 @@ export class cauhoi_chitiet extends React.Component{
 									return (
 										<li key={index1} className="media">
 											<div className="media-left">
-												<a><img id="img_user" src={"assets/images/user_"+data1.ID_NGUOITRALOI+".jpg"} onError={() => { $("#img_user").attr('src',"assets/images/user.jpg") }} className="img-circle img-sm" alt=""/></a>
+												<a><img id="img_user" src={"assets/images/user_"+data1.ID_NGUOITRALOI+".jpg"} onError={() => { $("#img_user").attr('src',"assets/images/placeholder.jpg") }} className="img-circle img-sm" alt=""/></a>
 											</div>
 
 											<div className="media-body">
@@ -108,20 +100,13 @@ export class cauhoi_chitiet extends React.Component{
 
 												<p>{data1.NOIDUNG}</p>
 
-												{data1.USERNAME==data.dataset.username ? (
-											        <ul className="list-inline list-inline-separate text-size-small">
-														<li>Đánh giá:&nbsp; {data1.MUCDANHGIA}
-														</li>
-													</ul>) : (
-											        <ul className="list-inline list-inline-separate text-size-small">
-														<li>Đánh giá:&nbsp; {data1.MUCDANHGIA} 
-														<a id={data1.USERNAME} name={data1.ID_BINHLUAN}><i className="icon-arrow-up22 text-success"></i></a>
-														<a id={data1.USERNAME} name={data1.ID_BINHLUAN}><i className="icon-arrow-down22 text-danger"></i></a>
-														
-														</li>
-													</ul>
-										      	)}
-							
+												<ul className="list-inline list-inline-separate text-size-small">
+													<li>Đánh giá:&nbsp; {data1.MUCDANHGIA} 
+													<a id={data1.USERNAME} name={data1.ID_BINHLUAN}><i className="icon-arrow-up22 text-success"></i></a>
+													<a id={data1.USERNAME} name={data1.ID_BINHLUAN}><i className="icon-arrow-down22 text-danger"></i></a>
+													
+													</li>
+												</ul>
 											</div>
 											<hr/>
 										</li>
@@ -175,7 +160,7 @@ export class cauhoi_chitiet extends React.Component{
 		            + currentdate.getHours() + ":"  
 		            + currentdate.getMinutes() + ":" 
 		            + currentdate.getSeconds();
-
+		            
 			if($("#binhluan_cauhoi").val()=="")
 				return;
 			var data={
@@ -272,12 +257,16 @@ export class cauhoi_chitiet extends React.Component{
 			var link_pre="#"+mon[1]+"/lop"+phanlop[0]+"/thaoluan";
 			$('#link_pre').attr('href', link_pre);
 			$("#link_pre").text(name_link); 
-			
+
+			that.setState({listCauhoi: data});
+
 			var tieude=data[0].TIEUDE;
 			var noidung=data[0].NOIDUNG;
 			var nguoidang=data[0].USERNAME;
 			var thoigian=data[0].to_char;
 			var danhgia=data[0].DANHGIA;
+
+
 
 			$("#tieude").text(tieude);
 			$("#noidung").text(noidung);

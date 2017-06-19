@@ -98,7 +98,7 @@ export class baihoc_tip extends React.Component{
 		var name_link="Bài học "+mon1+" lớp "+phanlop[0]; 
 		var name_link1="Tóm tắt nội dung "+mon1+" lớp "+phanlop[0];
 		var link_pre="#"+mon[1]+"/lop"+phanlop[0]+"/baihoc";
-		$.post("/"+mon[1]+"/lop"+this.props.params.lop+"/baihoc_tip", function(data){
+		$.post("/"+mon[1]+"/lop"+phanlop[0]+"/baihoc_tip", function(data){
 			console.log("lay du lieu baihoc_tip 1");
 			console.log(data);
 			$("#link_pre").text(name_link);
@@ -127,7 +127,7 @@ export class baihoc_tip extends React.Component{
 		var name_link1="Tóm tắt nội dung "+mon1+" lớp "+phanlop[0];
 		var link_pre="#"+mon[1]+"/lop"+phanlop[0]+"/baihoc";
 
-		$.post("/"+mon[1]+"/lop"+this.props.params.lop+"/baihoc_tip", function(data){
+		$.post("/"+mon[1]+"/lop"+phanlop[0]+"/baihoc_tip", function(data){
 			console.log("lay du lieu baihoc_tip 1");
 			console.log(data);
 			that.setState({listtip: data});

@@ -10,7 +10,7 @@ var mon,phanlop;
 var url1,url2;
 var temp_username=data.dataset.username;
 
-export class hoidap extends React.Component{
+export class baihoc_baiviet extends React.Component{
 	constructor(props) {
     	super(props);
   		this.state = {
@@ -30,13 +30,11 @@ export class hoidap extends React.Component{
 						</ul>
 
 						<ul className="breadcrumb-elements">
-							<li ><a id="themcauhoi" ><i className="icon-plus-circle2 position-left"></i>Thêm câu hỏi</a></li>
+							<li ><a id="themBaiviet" ><i className="icon-plus-circle2 position-left"></i>Thêm bài viết</a></li>
 						</ul>
 					</div>
 				</div>
 				{/* /page header */}
-
-
 				{/* Content area */}
 				<div id="formCauhoi" className="content">
 					<div id="formadd" className="col-lg-12">
@@ -47,23 +45,13 @@ export class hoidap extends React.Component{
 									<div className="panel-body">
 										<div className="form-group">
 											<label >Tiêu đề: </label>
-											<input id="add_tieude" type="text" className="form-control" placeholder="Tiêu đề câu hỏi"/>
+											<input id="add_tieude" type="text" className="form-control" placeholder="Tiêu đề bài viết"/>
 										</div>
 										<div className="form-group">
-											<label>Nội dung câu hỏi: </label>
-											<textarea id="add_noidung" rows="3" cols="3" className="form-control" placeholder="Nội dung câu hỏi của bạn"></textarea>
+											<label>Nội dung bài viết: </label>
+											<textarea id="add_noidung" rows="3" cols="3" className="form-control" placeholder="Nội dung bài viết của bạn"></textarea>
 										</div>
-										<div className="text-right btn-group">
-											<label>Lớp:&nbsp; </label>
-											<select id="addlop">
-												<option value ="" disabled selected hidden>Chọn lớp</option>
-												<option value ="6" >6</option>
-												<option value ="7" >7</option>
-												<option value ="8" >8</option>
-												<option value ="9" >9</option>
-											</select>
-											
-										</div>
+
 										<div className="text-right">
 											<button id="addcauhoi" type="submit" className="btn bg-teal-400">Đăng câu hỏi <i className="icon-arrow-right14 position-right"></i></button>
 										</div>
@@ -87,10 +75,7 @@ export class hoidap extends React.Component{
 														</ul>) : (
 												        <div/>
 											      	)}
-													<h5 className="text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/cauhoi"+data1.ID_CAUHOI} className="text-default"><a>{data1.MON=="lichsu" ? (
-																																													        <a className="text-success">Lịch sử {data1.PHANLOP} - </a>) : (
-																																													        <a>Địa lí {data1.PHANLOP} - </a>
-																																												      	)}</a>{data1.TIEUDE}</a></h5>
+													<h5 className="text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/cauhoi"+data1.ID_CAUHOI} className="text-default">{data1.TIEUDE}</a></h5>
 
 													<ul className="list-inline list-inline-separate no-margin text-muted">
 														<li>Đăng bởi: <a >{data1.USERNAME}</a></li>
@@ -159,12 +144,18 @@ export class hoidap extends React.Component{
 		    + currentdate.getSeconds();
 
 		url1=window.location.href;
-		url1=url1.split('hoidap');
-		var tempmon=url1[1].split('?');
-		mon=tempmon[0].split('/');
+		url1=url1.split('#');
+		mon=url1[1].split('/');
 
+		url2=window.location.href;
+		url2=url2.split('lop');
+		phanlop=url2[1].split('/');
+
+		if(data.dataset.type=="hocsinh"){
+			$("#themBaiviet").hide();
+		}
 		$("#formadd").hide();
-		$('#themcauhoi').click(function (event) {
+		$('#themBaiviet').click(function (event) {
 			console.log("io click");
 	        if (check) {
 	            check=false;
@@ -176,24 +167,21 @@ export class hoidap extends React.Component{
 	    });
 
 	    $('#addcauhoi').click(function () {
-	    	console.log($("#addlop").val());
 	    	if($("#add_tieude").val()=="")
 				return;
 			if($("#add_noidung").val()=="")
-				return;
-			if($("#addlop").val()==null)
 				return;
 			var data={
 		        id:       id_user,
 		        tieude: $("#add_tieude").val(),
 				noidung: $("#add_noidung").val(),
-				lop: $("#addlop").val(),
+				lop: phanlop[0],
 				mon: mon[1],
 				thoigian: datetime
 
 			};
 			console.log(data);
-	        $.post("themCauhoi", data, function(){
+	        $.post("themBaiviet", data, function(){
 	        	$("#add_tieude").val("");
 	        	$("#add_noidung").val("");
 	        	$("#formadd").hide();
@@ -232,21 +220,26 @@ export class hoidap extends React.Component{
 	{
 		console.log("componentWillMount");
 		url1=window.location.href;
-		url1=url1.split('hoidap');
-		var tempmon=url1[1].split('?');
-		mon=tempmon[0].split('/');
+		url1=url1.split('#');
+		mon=url1[1].split('/');
+
+		url2=window.location.href;
+		url2=url2.split('lop');
+		phanlop=url2[1].split('/');
+
+	
 
 		var that=this;
 
 		var data1={
 			mon: mon[1],
-			lop: "all",
+			lop: phanlop[0],
 			id: "all",
 			id_user: "all"
 		}
 		console.log(data1);
-		socket.emit('c2s_Thaoluan',data1);
-		socket.on('s2c_Thaoluan', function(data){
+		socket.emit('c2s_Baiviet',data1);
+		socket.on('s2c_Baiviet', function(data){
 			console.log(data);
 				var mon1;
 			if(mon[1]=="lichsu")
@@ -254,7 +247,7 @@ export class hoidap extends React.Component{
 			if(mon[1]=="diali")
 				mon1="Địa lí";
 
-			var name_link="Hỏi và đáp "+mon1; 
+			var name_link="Bài viết "+mon1+" lớp "+phanlop[0]; 
 			$("#link_pre").text(name_link); 
 			that.setState({listCauhoi: data});
 		});
@@ -266,16 +259,23 @@ export class hoidap extends React.Component{
 		// var that=this;
 
 		url1=window.location.href;
-		url1=url1.split('hoidap');
-		var tempmon=url1[1].split('?');
-		mon=tempmon[0].split('/');
+		url1=url1.split('#');
+		mon=url1[1].split('/');
 
+		url2=window.location.href;
+		url2=url2.split('lop');
+		phanlop=url2[1].split('/');
+		
 		var data1={
 			mon: mon[1],
-			lop: "all",
+			lop: phanlop[0],
 			id: "all",
 			id_user: "all"
 		}
 		socket.emit('c2s_Thaoluan',data1);
+		// $.post("Hoidap_lichsu/lop"+newProps.params.lop+"/idall", function(data){
+		// 	//that.setState({noidung: data})
+		// 	that.setState({listCauhoi: data});
+		// });
 	}
 }

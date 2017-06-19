@@ -40,9 +40,16 @@ var config = {
   password: '1234', //env var: PGPASSWORD
   host: 'localhost', // Server hosting the postgres database
   port: 5432, //env var: PGPORT
-  max: 10, // max number of clients in the pool
-  idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
+  // max: 10, // max number of clients in the pool
+  // idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
 };
+// var config = {
+//   user: 'avcmrazelrvvjs', //env var: PGUSER
+//   database: 'd9q456o7ql21ai', //env var: PGDATABASE
+//   password: '5c08b03aae2e27e8a31984e0708fb572e36d20dc4c551d7f2fb2bd26db9dee69', //env var: PGPASSWORD
+//   host: 'ec2-50-19-219-69.compute-1.amazonaws.com', // Server hosting the postgres database
+//   port: 5432 //env var: PGPORT
+// };
 var pool = new pg.Pool(config);
 
 ///
@@ -342,52 +349,52 @@ app.post('/updateUserInfo', function(req, res){
 });
 //sua thong tin
 
-app.post("/Lichsu_baihoc/lop:id", function(req,res){
-	var id ="'"+ req.params.id+"'";
-	pool.connect(function(err, client, done) {
-		if(err) {
-		    return console.error('error fetching client from pool', err);
-		}
-	    var query = client.query("LISTEN realtimebaihoc");
+// app.post("/Lichsu_baihoc/lop:id", function(req,res){
+// 	var id ="'"+ req.params.id+"'";
+// 	pool.connect(function(err, client, done) {
+// 		if(err) {
+// 		    return console.error('error fetching client from pool', err);
+// 		}
+// 	    var query = client.query("LISTEN realtimebaihoc");
 
-		client.on('notification', function(msg) {
-	        console.log("data change baihoc");
+// 		client.on('notification', function(msg) {
+// 	        console.log("data change baihoc");
 
-	    });
+// 	    });
 
-		client.query('select * from "BAIHOC" where "PHANLOP"='+id, function(err, result) {
-		    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
-		    done(err);
+// 		client.query('select * from "BAIHOC" where "PHANLOP"='+id, function(err, result) {
+// 		    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+// 		    done(err);
 
-		    if(err) {
-		      return console.error('error running query', err);
-		    }
-		    var data = result.rows;
-		   	res.send(data);
-		})
-	});
+// 		    if(err) {
+// 		      return console.error('error running query', err);
+// 		    }
+// 		    var data = result.rows;
+// 		   	res.send(data);
+// 		})
+// 	});
 
-});
+// });
 
-app.post("/Lichsu_lop6_video", function(req,res){
-	var id = req.params.id;
-	pool.connect(function(err, client, done) {
-	  if(err) {
-	    return console.error('error fetching client from pool', err);
-	  }
-	  client.query('select * from "BAIHOC","VIDEO" where "BAIHOC"."ID"="VIDEO"."ID"', function(err, result) {
-	    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
-	    done(err);
+// app.post("/Lichsu_lop6_video", function(req,res){
+// 	var id = req.params.id;
+// 	pool.connect(function(err, client, done) {
+// 	  if(err) {
+// 	    return console.error('error fetching client from pool', err);
+// 	  }
+// 	  client.query('select * from "BAIHOC","VIDEO" where "BAIHOC"."ID"="VIDEO"."ID"', function(err, result) {
+// 	    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+// 	    done(err);
 
-	    if(err) {
-	      return console.error('error running query', err);
-	    }
-	    var data = result.rows;
-	   	res.send(data);
-	   	res.end();
-	  });
-	});
-});
+// 	    if(err) {
+// 	      return console.error('error running query', err);
+// 	    }
+// 	    var data = result.rows;
+// 	   	res.send(data);
+// 	   	res.end();
+// 	  });
+// 	});
+// });
 
 app.get("/sachgiaokhoa/:mon/:lop", function(req,res){
 	var path="sgk/"+req.params.mon+req.params.lop+"/index";
@@ -508,6 +515,118 @@ io.sockets.on('connection', function(socket){
 			   	socket.emit('s2c_Binhluan',data1);
 		  	});
 		});
+	});
+	//show lists bai viet
+	socket.on('c2s_Baiviet', function(data){// param{mon,lop,id_cauhoi}
+	    console.log("Bai viet");
+    	var tempDate="'"+"HH24:MI DD-MM-YYYY"+"'";
+    	var mon=data.mon;
+		var lop=data.lop;
+		var id=data.id;
+		var id_user=data.id_user;
+
+		var query="select *,"+'"'+"BAIVIET"+'"'+'.'+'"'+"ID"+'" as '+'"'+"ID_BAIVIET"+'"'+",to_char("+'"'+"THOIGIAN"+'"'+","+ tempDate+") from "+'"'+"BAIVIET"+'"'+","+'"'+"USER"+'"'+
+		 " where "+'"'+"BAIVIET"+'"'+'.'+'"'+"ID_TACGIA"+'"'+" = "+'"'+"USER"+'"'+'.'+'"'+"ID"+'"';
+		if(mon!="all")
+			query+=" and "+'"'+"MON"+'"'+"= '"+mon+"' ";
+		if(lop!="all")
+			query+=" and "+'"'+"PHANLOP"+'"'+"= '"+lop+"' ";
+		if(id!="all")
+			query+=" and "+'"'+"BAIVIET"+'"'+'.'+'"'+"ID"+'"'+"= '"+id+"' ";
+		if(id_user!="all")
+			query+=" and "+'"'+"BAIVIET"+'"'+'.'+'"'+"ID_TACGIA"+'"'+"= '"+id_user+"' ";
+		query+=" order by "+'"'+"THOIGIAN"+'"'+" desc ";
+
+		pool.connect(function(err, client, done) {
+			if(err) {
+			    return console.error('error fetching client from pool', err);
+			}
+
+			client.query("LISTEN realtimebaiviet");
+
+			client.on('notification', function(msg) {
+		        console.log("realtime baiviet");
+				client.query(query, function(err, result) {
+				    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+				    done(err);
+
+				    if(err) {
+				      return console.error('error running query', err);
+				    }
+				    var data1 = result.rows;
+				    io.sockets.emit('s2c_Thaoluan',data1);
+				   	//console.log(data1);
+				});
+		    });
+			client.query(query, function(err, result) {
+			    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+			    done(err);
+
+			    if(err) {
+			      return console.error('error running query', err);
+			    }
+			    var data1 = result.rows;
+			    socket.emit('s2c_Baiviet',data1);
+			   	//console.log(data1);
+			});
+		});
+
+	});
+	//show lists bai hoc
+	socket.on('c2s_Baihoc', function(data){// param{mon,lop,id_cauhoi}
+	    console.log("Baihoc");
+    	var tempDate="'"+"HH24:MI DD-MM-YYYY"+"'";
+    	var mon=data.mon;
+		var lop=data.lop;
+		var id=data.id;
+		var id_user=data.id_user;
+
+		var query="select *,"+'"'+"BAIHOC"+'"'+'.'+'"'+"ID"+'" as '+'"'+"ID_BAIHOC"+'"'+",to_char("+'"'+"THOIGIAN"+'"'+","+ tempDate+") from "+'"'+"BAIHOC"+'"'+","+'"'+"USER"+'"'+
+		 " where "+'"'+"BAIHOC"+'"'+'.'+'"'+"ID_TACGIA"+'"'+" = "+'"'+"USER"+'"'+'.'+'"'+"ID"+'"';
+		if(mon!="all")
+			query+=" and "+'"'+"MON"+'"'+"= '"+mon+"' ";
+		if(lop!="all")
+			query+=" and "+'"'+"PHANLOP"+'"'+"= '"+lop+"' ";
+		if(id!="all")
+			query+=" and "+'"'+"BAIHOC"+'"'+'.'+'"'+"BAI"+'"'+"= '"+id+"' ";
+		if(id_user!="all")
+			query+=" and "+'"'+"BAIHOC"+'"'+'.'+'"'+"ID_TACGIA"+'"'+"= '"+id_user+"' ";
+		query+=" order by "+'"'+"BAI"+'"'+" asc ";
+
+		pool.connect(function(err, client, done) {
+			if(err) {
+			    return console.error('error fetching client from pool', err);
+			}
+
+			client.query("LISTEN realtimebaihoc");
+
+			client.on('notification', function(msg) {
+		        console.log("realtime baihoc");
+				client.query(query, function(err, result) {
+				    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+				    done(err);
+
+				    if(err) {
+				      return console.error('error running query', err);
+				    }
+				    var data1 = result.rows;
+				    io.sockets.emit('s2c_Baihoc',data1);
+				   	//console.log(data1);
+				});
+		    });
+			client.query(query, function(err, result) {
+			    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+			    done(err);
+
+			    if(err) {
+			      return console.error('error running query', err);
+			    }
+			    var data1 = result.rows;
+			    socket.emit('s2c_Baihoc',data1);
+			   	//console.log(data1);
+			});
+		});
+
 	});
 });
 // app.post("/Hoidap_lichsu/lop:lop/id:id", function(req,res){
@@ -870,3 +989,201 @@ app.post("/:mon/lop:lop/baihoc_tip", function(req,res){
 	  });
 	});
 })
+
+///get bai hoc video :mon :lop :bai
+app.post("/:mon/lop:lop/baihoc_video/:bai", function(req,res){
+	var tempDate="'"+"HH24:MI DD-MM-YYYY"+"'";
+	var mon ="'"+ req.params.mon+"'";
+	var lop ="'"+ req.params.lop+"'";
+	var bai ="'"+ req.params.bai+"'";
+	pool.connect(function(err, client, done) {
+	  	if(err) {
+	    	return console.error('error fetching client from pool', err);
+	  	}	  
+	  	client.query('select *,"VIDEO"."LOP" as "PHANLOP","VIDEO"."ID" as "ID_VIDEO",to_char("THOIGIAN",'+ tempDate+') from "VIDEO", "USER" WHERE "VIDEO"."ID_TACGIA"="USER"."ID" and "MON"='+mon+' and "VIDEO"."LOP"='+lop+' and "VIDEO"."ID_BAIHOC"='+bai+' order by cast("ID_BAIHOC" as int) asc'
+  		, function(err, result) {
+	    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+	    done(err);
+
+	    if(err) {
+	      return console.error('error running query', err);
+	    }
+	   	res.send(result.rows);
+	  });
+	});
+})
+
+///get bai tap trac nghiem va dap an
+app.post("/:mon/lop:lop/baitap_tracnghiem_chitiet_cauhoi/:id", function(req,res){
+	var tempDate="'"+"HH24:MI DD-MM-YYYY"+"'";
+	var mon ="'"+ req.params.mon+"'";
+	var lop ="'"+ req.params.lop+"'";
+	var id ="'"+ req.params.id+"'";
+	pool.connect(function(err, client, done) {
+	  	if(err) {
+	    	return console.error('error fetching client from pool', err);
+	  	}	  
+	  	client.query('select * from "TRACNGHIEM" WHERE "ID_BAIHOC"='+id
+  		, function(err, result) {
+	    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+	    done(err);
+
+	    if(err) {
+	      return console.error('error running query', err);
+	    }
+	   	res.send(result.rows);
+	  });
+	});
+})
+app.post("/getDapan", function(req,res){
+	var id ="'"+ req.body.id+"'";
+
+	pool.connect(function(err, client, done) {
+	  	if(err) {
+	    	return console.error('error fetching client from pool', err);
+	  	}	  
+	  	client.query('select * from "DAPAN_TRACNGHIEM" WHERE "ID_TRACNGHIEM"='+id
+  		, function(err, result) {
+	    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+	    done(err);
+
+	    if(err) {
+	      return console.error('error running query', err);
+	    }
+
+	   	res.send(result.rows);
+	  });
+	});
+})
+/// them tieu de bai hoc moi
+app.post('/themBaihoc', function(req, res){	
+
+	var maxid;
+	var id_user="'"+JSON.parse(JSON.stringify(req.body.id))+"'";
+	var tieude="'"+JSON.parse(JSON.stringify(req.body.tieude))+"'";
+	var bai="'"+JSON.parse(JSON.stringify(req.body.bai))+"'";
+	var lop="'"+JSON.parse(JSON.stringify(req.body.lop))+"'";
+	var thoigian="'"+JSON.parse(JSON.stringify(req.body.thoigian))+"'";
+	var mon="'"+JSON.parse(JSON.stringify(req.body.mon))+"'";
+
+	pool.connect(function(err, client, donedb) {
+		if(err) {
+	    	return console.error('error fetching client from pool', err);
+		}	
+	  	client.query('SELECT * FROM "BAIHOC" order by cast("ID" as int) desc limit 1',
+	  		function(err, result) {
+	  			donedb(err);
+			    if(err) {
+			      return console.error('error running query', err);
+			    }
+
+			    maxid=parseInt(result.rows[0].ID);
+			    id=maxid+1;
+
+			    maxid="'"+id+"'";
+			  	client.query('INSERT INTO "BAIHOC" VALUES ('+maxid+','+
+			  												id_user+','+
+			  												lop+','+
+			  												0+','+
+			  												mon+','+
+			  												bai+','+
+			  												tieude+','+
+			  												thoigian+')',
+			  		function(err, result) {
+			  			donedb(err);
+					    if(err) {
+					      return console.error('error running query', err);
+					    }
+					    else{
+			    		   	res.end();
+			    		   	return;
+					    }
+			  	});
+	  		}
+	  	);
+	});
+});
+/// them video bai hoc moi
+app.post('/themVideo', function(req, res){	
+
+	var maxid;
+	var id_user="'"+JSON.parse(JSON.stringify(req.body.id))+"'";
+	var tieude="'"+JSON.parse(JSON.stringify(req.body.tieude))+"'";
+	var noidung="'"+JSON.parse(JSON.stringify(req.body.noidung))+"'";
+	var link="'"+JSON.parse(JSON.stringify(req.body.link))+"'";
+	var bai="'"+JSON.parse(JSON.stringify(req.body.bai))+"'";
+	var lop="'"+JSON.parse(JSON.stringify(req.body.lop))+"'";
+	var thoigian="'"+JSON.parse(JSON.stringify(req.body.thoigian))+"'";
+	var mon="'"+JSON.parse(JSON.stringify(req.body.mon))+"'";
+
+	pool.connect(function(err, client, donedb) {
+		if(err) {
+	    	return console.error('error fetching client from pool', err);
+		}	
+	  	client.query('SELECT * FROM "VIDEO" order by cast("ID" as int) desc limit 1',
+	  		function(err, result) {
+	  			donedb(err);
+			    if(err) {
+			      return console.error('error running query', err);
+			    }
+
+			    maxid=parseInt(result.rows[0].ID);
+			    id=maxid+1;
+
+			    maxid="'"+id+"'";
+			  	client.query('INSERT INTO "VIDEO" VALUES ('+maxid+','+
+			  												bai+','+
+			  												tieude+','+
+			  												noidung+','+
+			  												link+','+
+			  												thoigian+','+
+			  												mon+','+
+			  												lop+','+
+			  												id_user+')',
+			  		function(err, result) {
+			  			donedb(err);
+					    if(err) {
+					      return console.error('error running query', err);
+					    }
+					    else{
+			    		   	res.end();
+			    		   	return;
+					    }
+			  	});
+	  		}
+	  	);
+	});
+});
+//xoa video
+app.post("/delete_video", function(req,res){
+
+	var id_video="'"+JSON.parse(JSON.stringify(req.body.id_video))+"'";
+
+	pool.connect(function(err, client, done) {
+	  	if(err) {
+	    	return console.error('error fetching client from pool', err);
+	  	}
+	  
+	  	// client.query('DELETE FROM "BINHLUAN" WHERE "ID_CAUHOI"='+id_cauhoi
+  		// , function(err, result) {
+	   //  //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+	   //  done(err);
+
+	   //  if(err) {
+	   //    return console.error('error running query', err);
+	   //  }
+	    client.query('DELETE FROM "VIDEO" WHERE "ID"='+id_video,
+	  		function(err, result) {
+	  			done(err);
+			    if(err) {
+			      return console.error('error running query', err);
+			    }
+			    else{
+			    	res.end();
+			    	return;
+			    }
+	  	});
+	   	
+	  	//});
+	});
+});

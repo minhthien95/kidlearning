@@ -1,4 +1,15 @@
 import React from 'react';
+import io from 'socket.io-client';
+let socket = io('http://localhost:3000');
+
+var data = document.querySelector('#maincontent');
+
+var id_user=data.dataset.id;
+var check=true;
+var mon,phanlop;
+var url1,url2;
+var temp_username=data.dataset.username;
+var type_username=data.dataset.type;
 
 export class baihoc extends React.Component{
 	constructor(props) {
@@ -17,172 +28,247 @@ export class baihoc extends React.Component{
 							<li><a href="#"><i className="icon-home2 position-left"></i> Trang chủ</a></li>
 							<li className="active" id="link_pre" ></li>
 						</ul>
-
 						<ul className="breadcrumb-elements">
-							<li><a href="#"><i className="icon-comment-discussion position-left"></i> Support</a></li>
-							<li className="dropdown">
-								<a href="#" className="dropdown-toggle" data-toggle="dropdown">
-									<i className="icon-gear position-left"></i>
-									Loại bài học
-									<span className="caret"></span>
-								</a>
-
-								<ul className="dropdown-menu dropdown-menu-right">
-									<li><a href={"/sachgiaokhoa/"+this.props.params.lop+"/"+this.props.params.lop} target="_blank" href="#abc"><i className="icon-book"></i> Sách giáo khoa</a></li>
-									<li><a href="#Lichsu_lop6_video"><i className="icon-book-play"></i> Video </a></li>
-									<li><a href="#Lichsu_lop6_tuongtac"><i className="icon-reading"></i> Tương tác</a></li>
-								</ul>
-							</li>
+							<li ><a id="thembaihoc" ><i className="icon-plus-circle2 position-left"></i>Thêm bài học</a></li>
 						</ul>
 					</div>
 				</div>
 				{/* /page header */}
 
-
 				{/* Content area */}
 				<div className="content">
+					<div id="formadd" className="panel panel-flat blog-horizontal blog-horizontal-2">
+						<div className="panel-body">
+							<div className="blog-preview">
+								<div className="panel-body">
+									<div className="form-group">
+										<label className="control-label col-lg-2">Thông tin bài mới</label>
+										<div className="col-lg-12">
+											<div className="row">
+												<div className="col-md-2" style={{paddingRight: '0px'}}>
+													<input id="sobai" type="number" placeholder="Số thứ tự bài" className="form-control"/>
+													<span className="help-block"></span>
+												</div>
 
-					{/* Main charts */}
-					<div className="panel panel-flat">
-						<div className="panel-heading">
-							<h6 className="panel-title">Bài học</h6>
-							<hr/>
-						</div>
-						{/* SGK */}
-						<div className="content">
-							<div className="panel-heading">
-								<h6 className="panel-title">Sách giáo khoa<a className="heading-elements-toggle"><i className="icon-more"></i></a></h6>
-								<div className="heading-elements">
-									<ul className="icons-list">
-				                		<li><a data-action="collapse"></a></li>
-				                		<li><a data-action="reload"></a></li>
-				                		<li><a data-action="close"></a></li>
-				                	</ul>
-			                	</div>
-			            	</div>
-
-							<div className="panel-body text-center">
-								<div className="icon-object border-success text-success"><i className="icon-book"></i></div>
-								<h5 className="text-semibold">Sách giáo khoa lớp 6</h5>
-								<a href={"/sachgiaokhoa/lichsu/"+this.props.params.lop} target="_blank" className="btn bg-success-400">Học ngay</a>
+												<div className="col-md-10" style={{paddingRight: '0px'}}>
+													<input id="tieudebai" type="text" placeholder="Tiêu đề bài" className="form-control"/>
+													<span className="help-block"></span>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div className="text-right">
+										<button id="addcauhoi" type="submit" className="btn bg-teal-400">Đăng bài học <i className="icon-arrow-right14 position-right"></i></button>
+									</div>
+								</div>
 							</div>
 						</div>
-						{/* /SGK */}
+					</div>	
+					<div id="formCauhoi" className="timeline timeline-left content-group">
+						<div className="timeline-container">
 
-						{/* Video */}
-						<div className="content">
-							<div className="panel-heading">
-								<h6 className="panel-title">Videos<a className="heading-elements-toggle"><i className="icon-more"></i></a></h6>
-								<div className="heading-elements">
-									<ul className="icons-list">
-				                		<li><a data-action="collapse"></a></li>
-				                		<li><a data-action="reload"></a></li>
-				                		<li><a data-action="close"></a></li>
-				                	</ul>
-			                	</div>
-			            	</div>
-
-							<div className="panel-body">
-								<ul className="media-list content-group">
-									{this.state.listbaihoc.map(function(abc,index){
-										return (
-											<li key={index} className="media stack-media-on-mobile">
-			                					<div className="media-left">
-													<div className="thumb">
-														<a href="#">
-															<img src="assets/images/placeholder.jpg" className="img-responsive img-rounded media-preview" alt=""/>
-															<span className="zoom-image"><i className="icon-play3"></i></span>
-														</a>
+							{/* List bai hoc */}
+							{this.state.listbaihoc.map(function(data1,index){
+								return (
+									data1.ID_BAIHOC<3 || type_username=="trogiang" || type_username=="admin"? (
+										data1.ID_BAIHOC==2 ? (
+									        <div key={index} className="timeline-row">
+												<div className="timeline-icon">
+													<div className="bg-primary">
+														<i className="icon-pencil6"></i>
 													</div>
 												</div>
 
-			                					<div className="media-body">
-													<h6 className="media-heading" ><a href={"#/bai" + abc.ID} target="_blank">Bai {abc.ID} - {abc.LOAIBAIHOC}</a></h6>
-						                    		<ul className="list-inline list-inline-separate text-muted mb-5">
-						                    			<li><i className="icon-book-play position-left"></i> Video tutorials</li>
-						                    			<li>14 minutes ago</li>
-						                    		</ul>
-													The him father parish looked has sooner. Attachment frequently gay terminated son...
+												<div className="panel panel-flat timeline-content">
+													<div className="panel-heading">
+														<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_chitiet/"+data1.ID_BAIHOC} className="text-default"><a>Bài {data1.BAI}:</a>  {data1.TIEUDE}</a></h6>
+														<div className="heading-elements">
+															<span className="heading-text">{data1.USERNAME} - {data1.to_char}</span>
+									                	</div>
+													</div>
+
+													<div className="panel-body">
+														
+														<div className="row glyphs">
+															<div className="col-md-2 col-sm-3"><i className="icon-book "></i><a href={"/sachgiaokhoa/"+data1.MON+"/"+data1.PHANLOP} target="_blank" ><span>Sách giáo khoa</span></a></div>
+															<div className="col-md-2 col-sm-3"><i className="icon-tree7"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_tip_chitiet/"+data1.ID_BAIHOC}><span>Tóm tắt kiến thức</span></a></div>
+															<div className="col-md-2 col-sm-3"><i className="icon-book-play"></i><a  href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_video/"+data1.ID_BAIHOC}><span>Video</span></a></div>
+															<div className="col-md-2 col-sm-3"><i className="icon-file-text"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baitap_tracnghiem_chitiet/"+data1.ID_BAIHOC}><span>Bài tập</span></a></div>
+
+														</div>
+												
+													</div>
 												</div>
-											</li>
+											</div>
+										):(
+											<div key={index} className="timeline-row">
+												<div className="timeline-icon">
+													<div className="bg-success">
+														<i className="icon-checkmark"></i>
+													</div>
+												</div>
+
+												<div className="panel panel-flat timeline-content">
+													<div className="panel-heading">
+														<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_chitiet/"+data1.ID_BAIHOC} className="text-default"><a>Bài {data1.BAI}:</a>  {data1.TIEUDE}</a></h6>
+														<div className="heading-elements">
+															<span className="heading-text">{data1.USERNAME} - {data1.to_char}</span>
+									                	</div>
+													</div>
+
+													<div className="panel-body">
+														
+														<div className="row glyphs">
+															<div className="col-md-2 col-sm-3"><i className="icon-book "></i><a href={"/sachgiaokhoa/"+data1.MON+"/"+data1.PHANLOP} target="_blank" ><span>Sách giáo khoa</span></a></div>
+															<div className="col-md-2 col-sm-3"><i className="icon-tree7"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_tip_chitiet/"+data1.ID_BAIHOC}><span>Tóm tắt kiến thức</span></a></div>
+															<div className="col-md-2 col-sm-3"><i className="icon-book-play"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_video/"+data1.ID_BAIHOC}><span>Video</span></a></div>
+															<div className="col-md-2 col-sm-3"><i className="icon-file-text"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baitap_tracnghiem_chitiet/"+data1.ID_BAIHOC}><span>Bài tập</span></a></div>
+
+														</div>
+												
+													</div>
+												</div>
+											</div>
 										)
-									})}
-								</ul>
-							</div>
+							        ) : (
+								        <div key={index} className="timeline-row">
+											<div className="timeline-icon">
+												<div className="bg-grey-300">
+													<i className="icon-checkmark"></i>
+												</div>
+											</div>
+
+											<div className="panel panel-flat timeline-content">
+												<div className="panel-heading">
+													<h6 className="panel-title text-semibold no-margin"><a  className="text-grey ">Bài {data1.BAI}: {data1.TIEUDE}</a></h6>
+													<div className="heading-elements">
+														<span className="heading-text">{data1.USERNAME} - {data1.to_char}</span>
+								                	</div>
+												</div>
+											</div>
+										</div>
+							      	)
+									
+								)
+							})}
+							{/* List bai hoc */}
+
 						</div>
-						{/* /video */}
-
-					</div>
-					{/* /main charts */}
-
-					{/* Footer */}
-					<div className="footer text-muted">
-						&copy; 2015. <a href="#">Limitless Web App Kit</a> by <a href="http://themeforest.net/user/Kopyov" target="_blank">Eugene Kopyov</a>
-					</div>
-					{/* /footer */}
+				    </div>
 
 				</div>
 				{/* /content area */}
 			</div>
 		)
 	}
-	// componentWillUpdate(){
-	// 	console.log("lay du lieu bai hoc 0");
-	// 	var that=this;
+	componentDidMount(){
+		
+		url1=window.location.href;
+		url1=url1.split('#');
+		mon=url1[1].split('/');
+		url2=window.location.href;
+		url2=url2.split('lop');
+		phanlop=url2[1].split('/');
 
-	// 	$.post("/Lichsu_baihoc/lop"+this.props.params.lop, function(data){
-	// 		//that.setState({noidung: data})
-	// 		console.log("lay du lieu bai hoc 1");
-	// 		that.setState({listbaihoc: data});
-	// 	});
-	// }
+		if (type_username!="trogiang") {
+            $("#thembaihoc").hide();
+        }
+        if (type_username=="admin") {
+            $("#thembaihoc").show();
+        }
+		$("#formadd").hide();
+		$('#thembaihoc').click(function (event) {
+			console.log("click");
+	        if (check) {
+	            check=false;
+	            $("#formadd").show();
+	        } else {
+	            check=true;
+	            $("#formadd").hide();
+	        }
+	    });
+	    $('#addcauhoi').click(function () {
+	    	if($("#sobai").val()=="")
+				return;
+			if($("#tieudebai").val()=="")
+				return;
+			var currentdate = new Date();
+			var datetime =currentdate.getFullYear() + "-"
+			    + (currentdate.getMonth()+1)  + "-" 
+			    + currentdate.getDate() +" "
+			    + currentdate.getHours() + ":"  
+			    + currentdate.getMinutes() + ":" 
+			    + currentdate.getSeconds();
+
+			var data={
+		        id:       id_user,
+		        bai: $("#sobai").val(),
+				tieude: $("#tieudebai").val(),
+				lop: phanlop[0],
+				mon: mon[1],
+				thoigian: datetime
+
+			};
+			console.log(data);
+	        $.post("themBaihoc", data, function(){
+	        	$("#sobai").val("");
+	        	$("#tieudebai").val("");
+	        	$("#formadd").hide();
+	        	//window.location = "#/trangcanhan";
+            	//Trangcanhan.dispatch(location.getCurrentPath(), null);
+    		});
+	    });
+	}
 	componentWillMount(){
+		console.log("componentWillMount");
+
 		var that=this;
 
-		var url1=window.location.href;
+		url1=window.location.href;
 		url1=url1.split('#');
-		var mon=url1[1].split('/');
-		var url2=window.location.href;
+		mon=url1[1].split('/');
+		url2=window.location.href;
 		url2=url2.split('lop');
-		var phanlop=url2[1].split('/');
+		phanlop=url2[1].split('/');
 
-		var mon1;
-		if(mon[1]=="lichsu")
+		var data1={
+			mon: this.props.params.mon,
+			lop: this.props.params.lop,
+			id: "all",
+			id_user: "all"
+		}
+		console.log(data1);
+		socket.emit('c2s_Baihoc',data1);
+		socket.on('s2c_Baihoc', function(data){
+			console.log(data);
+			var mon1;
+			if(mon[1]=="lichsu")
 				mon1="Lịch sử";
 			if(mon[1]=="diali")
 				mon1="Địa lí";
-		var name_link="Thảo luận "+mon1+" lớp "+phanlop[0]; 
 
-		$.post("/Lichsu_baihoc/lop"+this.props.params.lop, function(data){
-			//that.setState({noidung: data})
-			console.log("lay du lieu bai hoc 1");
+			var name_link="Bài học "+mon1+" lớp "+that.props.params.lop; 
 			$("#link_pre").text(name_link);
+
 			that.setState({listbaihoc: data});
 		});
+		////
 	}
 	componentWillReceiveProps(newProps)
 	{
-		var that=this;
-
-		var url1=window.location.href;
-		url1=url1.split('#');
-		var mon=url1[1].split('/');
-		var url2=window.location.href;
-		url2=url2.split('lop');
-		var phanlop=url2[1].split('/');
-
+		console.log("componentWillReceiveProps");
 		var mon1;
-		if(mon[1]=="lichsu")
-				mon1="Lịch sử";
-		if(mon[1]=="diali")
-				mon1="Địa lí";
-		var name_link="Thảo luận "+mon1+" lớp "+phanlop[0]; 
-
-		$.post("/Lichsu_baihoc/lop"+newProps.params.lop, function(data){
-			//that.setState({noidung: data})
-			console.log("lay du lieu bai hoc 2");
-			$("#link_pre").text(name_link);
-			that.setState({listbaihoc: data});
-		});
+		if(newProps.params.mon=="lichsu")
+			mon1="Lịch sử";
+		if(newProps.params.mon=="diali")
+			mon1="Địa lí";
+		var name_link="Bài học "+mon1+" lớp "+newProps.params.lop; 
+		var data1={
+			mon: newProps.params.mon,
+			lop: newProps.params.lop,
+			id: "all",
+			id_user: "all"
+		}
+		socket.emit('c2s_Baihoc',data1);
 	}
 }
