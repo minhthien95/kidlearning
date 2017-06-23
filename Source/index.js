@@ -591,7 +591,7 @@ io.sockets.on('connection', function(socket){
 			query+=" and "+'"'+"BAIHOC"+'"'+'.'+'"'+"BAI"+'"'+"= '"+id+"' ";
 		if(id_user!="all")
 			query+=" and "+'"'+"BAIHOC"+'"'+'.'+'"'+"ID_TACGIA"+'"'+"= '"+id_user+"' ";
-		query+=" order by "+'"'+"BAI"+'"'+" asc ";
+		query+=" order by cast("+'"'+"BAI"+'"'+"as int) asc ";
 
 		pool.connect(function(err, client, done) {
 			if(err) {
@@ -1012,7 +1012,30 @@ app.post("/:mon/lop:lop/baihoc_video/:bai", function(req,res){
 	  });
 	});
 })
+///get bai hoc video :mon :lop :bai :id video
+app.post("/:mon/lop:lop/baihoc_video_chitiet/:bai/:video", function(req,res){
+	var tempDate="'"+"HH24:MI DD-MM-YYYY"+"'";
+	var mon ="'"+ req.params.mon+"'";
+	var lop ="'"+ req.params.lop+"'";
+	var bai ="'"+ req.params.bai+"'";
+	var video ="'"+ req.params.video+"'";
 
+	pool.connect(function(err, client, done) {
+	  	if(err) {
+	    	return console.error('error fetching client from pool', err);
+	  	}	  
+	  	client.query('select *,"VIDEO"."LOP" as "PHANLOP","VIDEO"."ID" as "ID_VIDEO",to_char("THOIGIAN",'+ tempDate+') from "VIDEO", "USER" WHERE "VIDEO"."ID_TACGIA"="USER"."ID" and "MON"='+mon+' and "VIDEO"."LOP"='+lop+' and "VIDEO"."ID_BAIHOC"='+bai+'and "VIDEO"."ID"='+video+' order by cast("ID_BAIHOC" as int) asc'
+  		, function(err, result) {
+	    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+	    done(err);
+
+	    if(err) {
+	      return console.error('error running query', err);
+	    }
+	   	res.send(result.rows);
+	  });
+	});
+})
 ///get bai tap trac nghiem va dap an
 app.post("/:mon/lop:lop/baitap_tracnghiem_chitiet_cauhoi/:id", function(req,res){
 	var tempDate="'"+"HH24:MI DD-MM-YYYY"+"'";
@@ -1023,7 +1046,7 @@ app.post("/:mon/lop:lop/baitap_tracnghiem_chitiet_cauhoi/:id", function(req,res)
 	  	if(err) {
 	    	return console.error('error fetching client from pool', err);
 	  	}	  
-	  	client.query('select * from "TRACNGHIEM" WHERE "ID_BAIHOC"='+id
+	  	client.query('select *,"TRACNGHIEM"."ID" as "ID_TRACNGHIEM" from "TRACNGHIEM","BAIHOC" WHERE "ID_BAIHOC"='+id+' and "ID_BAIHOC"="BAIHOC"."ID"'
   		, function(err, result) {
 	    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
 	    done(err);
@@ -1185,5 +1208,94 @@ app.post("/delete_video", function(req,res){
 	  	});
 	   	
 	  	//});
+	});
+});
+/// them bài tap trac nghiem va dapan
+app.post('/themTracnghiem', function(req, res){	
+	var maxid,maxid1,maxid2,maxid3,maxid4;
+	var noidung="'"+JSON.parse(JSON.stringify(req.body.noidung))+"'";
+	var cau1="'"+JSON.parse(JSON.stringify(req.body.cau1))+"'";
+	var cau2="'"+JSON.parse(JSON.stringify(req.body.cau2))+"'";
+	var cau3="'"+JSON.parse(JSON.stringify(req.body.cau3))+"'";
+	var cau4="'"+JSON.parse(JSON.stringify(req.body.cau4))+"'";
+	var da1="'"+JSON.parse(JSON.stringify(req.body.da1))+"'";
+	var da2="'"+JSON.parse(JSON.stringify(req.body.da2))+"'";
+	var da3="'"+JSON.parse(JSON.stringify(req.body.da3))+"'";
+	var da4="'"+JSON.parse(JSON.stringify(req.body.da4))+"'";
+	var id="'"+JSON.parse(JSON.stringify(req.body.id))+"'";
+	var lop="'"+JSON.parse(JSON.stringify(req.body.lop))+"'";
+	var bai="'"+JSON.parse(JSON.stringify(req.body.bai))+"'";
+	var mon="'"+JSON.parse(JSON.stringify(req.body.mon))+"'";
+
+	pool.connect(function(err, client, donedb) {
+		if(err) {
+	    	return console.error('error fetching client from pool', err);
+		}	
+	  	client.query('SELECT * FROM "TRACNGHIEM" order by cast("ID" as int) desc limit 1',
+	  		function(err, result) {
+	  			donedb(err);
+			    if(err) {
+			      return console.error('error running query', err);
+			    }
+
+			    maxid=parseInt(result.rows[0].ID);
+			    id1=maxid+1;
+
+			    maxid="'"+id1+"'";
+			  	client.query('INSERT INTO "TRACNGHIEM" VALUES ('+maxid+','+
+			  												bai+','+
+			  												mon+','+
+			  												lop+','+
+			  												noidung+')',
+			  		function(err, result) {
+			  			donedb(err);
+					    if(err) {
+					      return console.error('error running query', err);
+					    }
+					    else{
+					    	//them dapan
+					    	client.query('SELECT * FROM "DAPAN_TRACNGHIEM" order by cast("ID" as int) desc limit 1',
+					  		function(err, result) {
+					  			donedb(err);
+							    if(err) {
+							      return console.error('error running query', err);
+							    }
+
+							    maxid1=parseInt(result.rows[0].ID);
+							    console.log(maxid1);
+							    var id2=maxid1+1;
+
+							    maxid1="'"+id2+"'";
+							    console.log(maxid1);
+							  	client.query('INSERT INTO "DAPAN_TRACNGHIEM" VALUES ('+maxid1+','+
+							  												maxid+','+
+							  												cau1+','+
+							  												da1+')',function(){return;});
+							  	var id3=id2+1;
+							  	maxid2="'"+id3+"'";
+							  	client.query('INSERT INTO "DAPAN_TRACNGHIEM" VALUES ('+maxid2+','+
+							  												maxid+','+
+							  												cau2+','+
+							  												da2+')',function(){return;});
+							  	var id4=id3+1;
+							  	maxid3="'"+id4+"'";
+							  	client.query('INSERT INTO "DAPAN_TRACNGHIEM" VALUES ('+maxid3+','+
+							  												maxid+','+
+							  												cau3+','+
+							  												da3+')',function(){return;});
+							  	var id5=id4+1;
+							  	maxid4="'"+id5+"'";
+							  	client.query('INSERT INTO "DAPAN_TRACNGHIEM" VALUES ('+maxid4+','+
+							  												maxid+','+
+							  												cau4+','+
+							  												da4+')',function(){return;});
+						  		}
+						  	);
+			    		   	res.end();
+			    		   	return;
+					    }
+			  	});
+	  		}
+	  	);
 	});
 });

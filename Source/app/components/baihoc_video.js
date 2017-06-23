@@ -58,7 +58,7 @@ export class baihoc_video extends React.Component{
 											</div>
 										</div>
 										<div className="col-md-12" style={{paddingRight: '0px'}}>
-											<input id="add_noidung" type="text" placeholder="Tóm tắc nội dung" className="form-control"/>
+											<input id="add_noidung" type="text" placeholder="Mô tả video" className="form-control"/>
 											<span className="help-block"></span>
 										</div>
 									</div>
@@ -81,7 +81,7 @@ export class baihoc_video extends React.Component{
 								<tr>
 									<th>Bài</th>
 									<th>Tiêu đề</th>
-									<th>Nội dung</th>
+									<th>Mô tả</th>
 									<th>video</th>
 									<th>Người đăng</th>
 									<th>Ngày đăng</th>
@@ -201,9 +201,9 @@ export class baihoc_video extends React.Component{
 			mon1="Lịch sử";
 		if(this.props.params.mon=="diali")
 			mon1="Địa lí";
-		var name_link="Bài học "+mon1+" lớp "+this.props.params.lop; 
+		var name_link="Bài học "+mon1+" lớp "+this.props.params.lop+" bài "+this.props.params.bai; 
 		var link_pre="#"+this.props.params.mon+"/lop"+this.props.params.lop+"/baihoc_chitiet/"+this.props.params.bai;
-		var name_link1="Bài học video "+mon1+" lớp "+this.props.params.lop;
+		var name_link1="Bài học video";
 		
 			    // Table setup
 	    // ------------------------------
@@ -252,14 +252,14 @@ export class baihoc_video extends React.Component{
                     {"aTargets": [ 6 ], "bSortable": false }
                 ],
 		        "aoColumns": [
-			        { "mDataProp": "ID_BAIHOC" },
+			        { "mDataProp": "ID_VIDEO" },
 			        { "mDataProp": "TIEUDE" },
 			        { "mDataProp": "NOIDUNG" },
 			        { "mRender": function(data1, type, full, meta){
 			        	console.log(full);
                         var tool_bar = '<div class="media-left">'+
 											'<div class="thumb">'+
-												'<a href="#/'+full.MON+'/lop'+full.PHANLOP+'/baihoc_video_chitiet/'+full.ID+'">'+
+												'<a href="#/'+full.MON+'/lop'+full.PHANLOP+'/baihoc_video_chitiet/'+full.ID_BAIHOC+'/'+full.ID_VIDEO+'">'+
 													'<img src="http://img.youtube.com/vi/'+full.LINK_VIDEO+'/0.jpg" class="img-responsive img-rounded media-preview" alt=""/>'+
 													'<span class="zoom-image"><i class="icon-play3"></i></span>'+
 												'</a>'+
@@ -271,14 +271,14 @@ export class baihoc_video extends React.Component{
 			        { "mDataProp": "USERNAME" },
 			        { "mDataProp": "to_char" },
 			        { "mRender": function(data, type, full, meta){
-			        	if(full.USERNAME==temp_username){
+			        	if(full.USERNAME==temp_username || type_username=="admin"){
 		                        var tool_bar = '<div class="hidden-sm hidden-xs action-buttons">'+
 		                                        '<a name="'+full.ID_VIDEO+'" class="text-danger-400" data-popup="tooltip" data-toggle="modal" data-target="#confirm1">'+
 		                                            '<i class="icon-x"></i>'+
 		                                        '</a>'+
 		                                    '</div>'
 		                        return tool_bar;
-	                    	}
+                    	}
 	                    else{
 	                    		var tool_bar = '<div class="hidden-sm hidden-xs action-buttons">'+
 		                                    '</div>'

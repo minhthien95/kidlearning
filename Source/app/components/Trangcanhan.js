@@ -1,6 +1,6 @@
 import React from 'react';
 import io from 'socket.io-client';
-let socket = io('http://localhost:3000');
+let socket = io('http://localhost:3000'||'http://kid-learning.herokuapp.com:3000'||'https://kid-learning.herokuapp.com:3000');
 
 var data = document.querySelector('#maincontent');
 var url1,url2;
@@ -45,7 +45,7 @@ export class Trangcanhan extends React.Component{
 						<div className="navbar-collapse collapse" id="navbar-filter">
 							<ul className="nav navbar-nav">
 								<li className="active"><a href="#activity" data-toggle="tab"><i className="icon-menu7 position-left"></i> Hoạt động</a></li>
-								<li><a href="#schedule" data-toggle="tab"><i className="icon-calendar3 position-left"></i> Quá trình <span className="badge badge-success badge-inline position-right">32</span></a></li>
+								<li><a id="scheduletab" href="#schedule" data-toggle="tab"><i className="icon-calendar3 position-left"></i> Quá trình </a></li>
 								<li><a href="#settings" data-toggle="tab"><i className="icon-cog3 position-left"></i> Cài đặt</a></li>
 								<li><a id="tag_listuser" href="#listuser" data-toggle="tab"><i className="icon-users4 position-left"></i> Quản lý học sinh</a></li>
 								<li><a id="tag_listsup" href="#listsup" data-toggle="tab"><i className=" icon-users2 position-left"></i> Quản lý trợ giảng</a></li>
@@ -128,21 +128,20 @@ export class Trangcanhan extends React.Component{
 
 									<div className="tab-pane fade" id="schedule">
 
-										{/* Available hours */}
+										{/* Ket qua diem */}
 										<div className="panel panel-flat">
 											<div className="panel-heading">
-												<h5 className="panel-title">Available hours</h5>
+												<h5 className="panel-title">Kết quả học tập</h5>
 												<div className="heading-elements">
 													<ul className="icons-list">
 								                		<li><a data-action="collapse"></a></li>
-								                		<li><a data-action="reload"></a></li>
 								                	</ul>
 							                	</div>
 											</div>
 
 											<div className="panel-body">
 												<div className="chart-container">
-													<div className="chart has-fixed-height" id="plans"></div>
+													<div className="chart has-fixed-height" id="stacked_lines"></div>	
 												</div>
 											</div>
 										</div>
@@ -151,12 +150,10 @@ export class Trangcanhan extends React.Component{
 										{/* Calendar */}
 										<div className="panel panel-flat">
 											<div className="panel-heading">
-												<h6 className="panel-title">My schedule</h6>
+												<h6 className="panel-title">Điểm</h6>
 												<div className="heading-elements">
 													<ul className="icons-list">
 								                		<li><a data-action="collapse"></a></li>
-								                		<li><a data-action="reload"></a></li>
-								                		<li><a data-action="close"></a></li>
 								                	</ul>
 							                	</div>
 											</div>
@@ -850,6 +847,75 @@ export class Trangcanhan extends React.Component{
 	        	return;
 	    	});
 	    });
+
+	    //chart setup
+	    var echarts = require('echarts');
+
+        var stacked_lines = echarts.init(document.getElementById('stacked_lines'));
+        var datax=[
+                        'LS-Bai 1', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
+                    ];
+        stacked_lines.setOption({
+
+                // Setup grid
+                grid: {
+                    x: 40,
+                    x2: 20,
+                    y: 35,
+                    y2: 25
+                },
+
+                // Add tooltip
+                tooltip: {
+                    trigger: 'axis'
+                },
+
+                // Add legend
+                legend: {
+                    data: ['Lịch Sử', 'Địa Lí']
+                },
+
+                // Enable drag recalculate
+                calculable: true,
+
+                // Hirozontal axis
+                xAxis: [{
+                    type: 'category',
+                    boundaryGap: false,
+                    data: datax
+                }],
+
+                // Vertical axis
+                yAxis: [{
+                    type: 'value'
+                }],
+
+                // Add series
+                series: [
+                    {
+                        name: 'Lịch Sử',
+                        type: 'line',
+                        data: [8, 9, 7, 5, 4, 6, 3]
+                    },
+                    {
+                        name: 'Địa Lí',
+                        type: 'line',
+  
+                        data: [3, 5, 3, 6, 7, 8, 8]
+                    }
+                ]
+       });
+       $('#scheduletab').on('click', function () {
+       		stacked_lines.resize();
+       	});
+       	setTimeout(function () {
+            stacked_lines.resize();
+        }, 2000);
+	    window.onresize = function () {
+            setTimeout(function () {
+                stacked_lines.resize();
+            }, 200);
+        }
 	}
 	componentWillMount()
 	{
@@ -867,7 +933,7 @@ export class Trangcanhan extends React.Component{
 		socket.emit('c2s_Thaoluan',data1);
 		socket.on('s2c_Thaoluan', function(data){
 			console.log(data);
-			if(data.length==0){
+			if(data.length==0 && $(".timeline-row").length==0){
 				console.log("chua co bai biet");
 				$("#formCauhoi").children().append(
 					'<div class="timeline-row">'+

@@ -9,6 +9,7 @@ import {Trangcanhan} from "./components/Trangcanhan";
 
 
 import {baihoc} from "./components/baihoc";
+import {baihoc_sgk} from "./components/baihoc_sgk";
 import {baihoc_chitiet} from "./components/baihoc_chitiet";
 import {baihoc_tip} from "./components/baihoc_tip";
 import {baihoc_tip_chitiet} from "./components/baihoc_tip_chitiet";
@@ -40,9 +41,10 @@ class MainContent extends React.Component {
 
 
 					<Route path=":mon/lop:lop/baihoc" component={baihoc} />
+					<Route path=":mon/lop:lop/baihoc_sgk/:bai" component={baihoc_sgk} />
 					<Route path=":mon/lop:lop/baihoc_chitiet/:id" component={baihoc_chitiet} />
 					<Route path=":mon/lop:lop/baihoc_tip" component={baihoc_tip} />
-					<Route path=":mon/lop:lop/baihoc_tip_chitiet/:id" component={baihoc_tip_chitiet} />
+					<Route path=":mon/lop:lop/baihoc_tip_chitiet/:bai/:id" component={baihoc_tip_chitiet} />
 
 				 	<Route path=":mon/lop:lop/baitap" component={baitap} />
 				 	<Route path=":mon/lop:lop/thaoluan" component={thaoluan} />
@@ -51,13 +53,13 @@ class MainContent extends React.Component {
 				 	<Route path=":mon/lop:lop/baihoc_baiviet" component={baihoc_baiviet} />
 				 	<Route path=":mon/lop:lop/baihoc_baiviet_chitiet/:id" component={baihoc_baiviet_chitiet} />
 
-				 	<Route path=":mon/lop:lop/baihoc_video/:bai" component={baihoc_video} />
-				 	<Route path=":mon/lop:lop/baihoc_video_chitiet/:id" component={baihoc_video_chitiet} />
+				 	<Route path=":mon/lop:lop/baihoc_video/:bai/:id" component={baihoc_video} />
+				 	<Route path=":mon/lop:lop/baihoc_video_chitiet/:id/:video" component={baihoc_video_chitiet} />
 
 				 	<Route path=":mon/lop:lop/baitap_tracnghiem" component={baitap_tracnghiem} />
 				 	<Route path=":mon/lop:lop/baitap_tuluan" component={baitap_tuluan} />
 
-				 	<Route path=":mon/lop:lop/baitap_tracnghiem_chitiet/:id" component={baitap_tracnghiem_chitiet} />
+				 	<Route path=":mon/lop:lop/baitap_tracnghiem_chitiet/:bai/:id" component={baitap_tracnghiem_chitiet} />
 				 	<Route path=":mon/lop:lop/baitap_tuluan_chitiet/:id" component={baitap_tuluan_chitiet} />
 
 				 	<Route path="hoidap/:mon" component={hoidap} />	

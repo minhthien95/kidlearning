@@ -1,6 +1,6 @@
 import React from 'react';
 import io from 'socket.io-client';
-let socket = io('http://localhost:3000');
+let socket = io('http://localhost:3000'||'http://kid-learning.herokuapp.com:3000'||'https://kid-learning.herokuapp.com:3000');
 
 var data = document.querySelector('#maincontent');
 var url1,url2;
@@ -90,7 +90,7 @@ export class cauhoi_chitiet extends React.Component{
 									return (
 										<li key={index1} className="media">
 											<div className="media-left">
-												<a><img id="img_user" src={"assets/images/user_"+data1.ID_NGUOITRALOI+".jpg"} onError={() => { $("#img_user").attr('src',"assets/images/user.jpg") }} className="img-circle img-sm" alt=""/></a>
+												<a><img id="img_user" src={"assets/images/user_"+data1.ID+".jpg"} onError={(e)=>{e.target.src="assets/images/user.jpg"}} className="img-circle img-sm" alt=""/></a>
 											</div>
 
 											<div className="media-body">

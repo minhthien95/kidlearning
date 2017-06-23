@@ -1,6 +1,6 @@
 import React from 'react';
 import io from 'socket.io-client';
-let socket = io('http://localhost:3000');
+let socket = io('http://localhost:3000'||'http://kid-learning.herokuapp.com:3000'||'https://kid-learning.herokuapp.com:3000');
 
 var data = document.querySelector('#maincontent');
 
@@ -61,7 +61,7 @@ export class baihoc_chitiet extends React.Component{
 
 										<div className="panel panel-flat timeline-content">
 											<div className="panel-heading">
-												<h6 className="panel-title text-semibold no-margin"> <a href={"/sachgiaokhoa/"+data1.MON+"/"+data1.PHANLOP} target="_blank" className="text-success">Sách giáo khoa</a></h6>
+												<h6 className="panel-title text-semibold no-margin"> <a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_sgk/"+data1.BAI} className="text-success">Sách giáo khoa</a></h6>
 											</div>
 										</div>
 									</div>
@@ -73,7 +73,7 @@ export class baihoc_chitiet extends React.Component{
 
 										<div className="panel panel-flat timeline-content">
 											<div className="panel-heading">
-												<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_tip_chitiet/"+data1.ID_BAIHOC} className="text-orange-800">Tóm tắt kiến thức</a></h6>
+												<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_tip_chitiet/"+data1.BAI+"/"+data1.ID_BAIHOC} className="text-orange-800">Tóm tắt kiến thức</a></h6>
 											</div>
 										</div>
 									</div>
@@ -85,7 +85,7 @@ export class baihoc_chitiet extends React.Component{
 
 										<div className="panel panel-flat timeline-content">
 											<div className="panel-heading">
-												<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_video/"+data1.ID_BAIHOC} className="text-violet">Video</a></h6>
+												<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_video/"+data1.BAI+"/"+data1.ID_BAIHOC} className="text-violet">Video</a></h6>
 											</div>
 										</div>
 									</div>
@@ -97,7 +97,7 @@ export class baihoc_chitiet extends React.Component{
 
 										<div className="panel panel-flat timeline-content">
 											<div className="panel-heading">
-												<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baitap_tracnghiem_chitiet/"+data1.ID_BAIHOC} className="text-primary-800">Bài tập</a></h6>
+												<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baitap_tracnghiem_chitiet/"+data1.BAI+"/"+data1.ID_BAIHOC} className="text-primary-800">Bài tập</a></h6>
 											</div>
 										</div>
 									</div>
@@ -145,31 +145,21 @@ export class baihoc_chitiet extends React.Component{
 			that.setState({listbaihoc: data});
 		});
 	}
-	// componentWillReceiveProps(newProps)
-	// {
-	// 	var that=this;
-
-	// 	var url1=window.location.href;
-	// 	url1=url1.split('#');
-	// 	var mon=url1[1].split('/');
-	// 	var url2=window.location.href;
-	// 	url2=url2.split('lop');
-	// 	var phanlop=url2[1].split('/');
-
-	// 	var mon1;
-	// 	if(mon[1]=="lichsu")
-	// 			mon1="Lịch sử";
-	// 		if(mon[1]=="diali")
-	// 			mon1="Địa lí";
-	// 	var name_link="Bài học "+mon1+" lớp "+phanlop[0]; 
-	// 	var link_pre="#"+mon[1]+"/lop"+phanlop[0]+"/baihoc";
-
-	// 	$.post("/"+mon[1]+"/lop"+this.props.params.lop+"/baihoc_tip", function(data){
-	// 		console.log("lay du lieu baihoc");
-	// 		console.log(data);
-	// 		$("#link_pre").text(name_link);
-	// 		$('#link_pre').attr('href', link_pre);
-	// 		that.setState({listtip: data});
-	// 	});
-	// }
+	componentWillReceiveProps(newProps)
+	{
+		console.log("componentWillReceiveProps");
+		var mon1;
+		if(newProps.params.mon=="lichsu")
+			mon1="Lịch sử";
+		if(newProps.params.mon=="diali")
+			mon1="Địa lí";
+		var name_link="Bài học "+mon1+" lớp "+newProps.params.lop; 
+		var data1={
+			mon: newProps.params.mon,
+			lop: newProps.params.lop,
+			id: newProps.params.id,
+			id_user: "all"
+		}
+		socket.emit('c2s_Baihoc',data1);
+	}
 }

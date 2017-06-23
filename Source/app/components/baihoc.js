@@ -1,6 +1,7 @@
 import React from 'react';
 import io from 'socket.io-client';
-let socket = io('http://localhost:3000');
+let socket = io('http://localhost:3000'||'http://kid-learning.herokuapp.com:3000'||'https://kid-learning.herokuapp.com:3000');
+
 
 var data = document.querySelector('#maincontent');
 
@@ -15,7 +16,9 @@ export class baihoc extends React.Component{
 	constructor(props) {
     super(props);
       this.state = {
-        listbaihoc: []
+        listbaihoc: [],
+        bai_ls: 100,
+        bai_dl: 100
       };
     }
 	render(){
@@ -70,87 +73,166 @@ export class baihoc extends React.Component{
 							{/* List bai hoc */}
 							{this.state.listbaihoc.map(function(data1,index){
 								return (
-									data1.ID_BAIHOC<3 || type_username=="trogiang" || type_username=="admin"? (
-										data1.ID_BAIHOC==2 ? (
+									data1.MON=="lichsu"?(
+										data1.BAI<this.state.bai_ls+1 || type_username=="trogiang" || type_username=="admin"? (
+											data1.BAI==this.state.bai_ls ? (
+										        <div key={index} className="timeline-row">
+													<div className="timeline-icon">
+														<div className="bg-primary">
+															<i className="icon-pencil6"></i>
+														</div>
+													</div>
+
+													<div className="panel panel-flat timeline-content">
+														<div className="panel-heading">
+															<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_chitiet/"+data1.BAI} className="text-default"><a>Bài {data1.BAI}:</a>  {data1.TIEUDE}</a></h6>
+															<div className="heading-elements">
+																<span className="heading-text">{data1.USERNAME} - {data1.to_char}</span>
+										                	</div>
+														</div>
+
+														<div className="panel-body">
+															
+															<div className="row glyphs">
+																<div className="col-md-2 col-sm-3"><i className="icon-book "></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_sgk/"+data1.BAI} ><span>Sách giáo khoa</span></a></div>
+																<div className="col-md-2 col-sm-3"><i className="icon-tree7"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_tip_chitiet/"+data1.BAI+"/"+data1.ID_BAIHOC}><span>Tóm tắt kiến thức</span></a></div>
+																<div className="col-md-2 col-sm-3"><i className="icon-book-play"></i><a  href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_video/"+data1.BAI+"/"+data1.ID_BAIHOC}><span>Video</span></a></div>
+																<div className="col-md-2 col-sm-3"><i className="icon-file-text"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baitap_tracnghiem_chitiet/"+data1.BAI+"/"+data1.ID_BAIHOC}><span>Bài tập</span></a></div>
+
+															</div>
+													
+														</div>
+													</div>
+												</div>
+											):(
+												<div key={index} className="timeline-row">
+													<div className="timeline-icon">
+														<div className="bg-success">
+															<i className="icon-checkmark"></i>
+														</div>
+													</div>
+
+													<div className="panel panel-flat timeline-content">
+														<div className="panel-heading">
+															<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_chitiet/"+data1.BAI} className="text-default"><a>Bài {data1.BAI}:</a>  {data1.TIEUDE}</a></h6>
+															<div className="heading-elements">
+																<span className="heading-text">{data1.USERNAME} - {data1.to_char}</span>
+										                	</div>
+														</div>
+
+														<div className="panel-body">
+															
+															<div className="row glyphs">
+																<div className="col-md-2 col-sm-3"><i className="icon-book "></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_sgk/"+data1.BAI} ><span>Sách giáo khoa</span></a></div>
+																<div className="col-md-2 col-sm-3"><i className="icon-tree7"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_tip_chitiet/"+data1.BAI+"/"+data1.ID_BAIHOC}><span>Tóm tắt kiến thức</span></a></div>
+																<div className="col-md-2 col-sm-3"><i className="icon-book-play"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_video/"+data1.BAI+"/"+data1.ID_BAIHOC}><span>Video</span></a></div>
+																<div className="col-md-2 col-sm-3"><i className="icon-file-text"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baitap_tracnghiem_chitiet/"+data1.BAI+"/"+data1.ID_BAIHOC}><span>Bài tập</span></a></div>
+
+															</div>
+													
+														</div>
+													</div>
+												</div>
+											)
+								        ) : (
 									        <div key={index} className="timeline-row">
 												<div className="timeline-icon">
-													<div className="bg-primary">
-														<i className="icon-pencil6"></i>
-													</div>
-												</div>
-
-												<div className="panel panel-flat timeline-content">
-													<div className="panel-heading">
-														<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_chitiet/"+data1.ID_BAIHOC} className="text-default"><a>Bài {data1.BAI}:</a>  {data1.TIEUDE}</a></h6>
-														<div className="heading-elements">
-															<span className="heading-text">{data1.USERNAME} - {data1.to_char}</span>
-									                	</div>
-													</div>
-
-													<div className="panel-body">
-														
-														<div className="row glyphs">
-															<div className="col-md-2 col-sm-3"><i className="icon-book "></i><a href={"/sachgiaokhoa/"+data1.MON+"/"+data1.PHANLOP} target="_blank" ><span>Sách giáo khoa</span></a></div>
-															<div className="col-md-2 col-sm-3"><i className="icon-tree7"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_tip_chitiet/"+data1.ID_BAIHOC}><span>Tóm tắt kiến thức</span></a></div>
-															<div className="col-md-2 col-sm-3"><i className="icon-book-play"></i><a  href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_video/"+data1.ID_BAIHOC}><span>Video</span></a></div>
-															<div className="col-md-2 col-sm-3"><i className="icon-file-text"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baitap_tracnghiem_chitiet/"+data1.ID_BAIHOC}><span>Bài tập</span></a></div>
-
-														</div>
-												
-													</div>
-												</div>
-											</div>
-										):(
-											<div key={index} className="timeline-row">
-												<div className="timeline-icon">
-													<div className="bg-success">
+													<div className="bg-grey-300">
 														<i className="icon-checkmark"></i>
 													</div>
 												</div>
 
 												<div className="panel panel-flat timeline-content">
 													<div className="panel-heading">
-														<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_chitiet/"+data1.ID_BAIHOC} className="text-default"><a>Bài {data1.BAI}:</a>  {data1.TIEUDE}</a></h6>
+														<h6 className="panel-title text-semibold no-margin"><a  className="text-grey ">Bài {data1.BAI}: {data1.TIEUDE}</a></h6>
 														<div className="heading-elements">
 															<span className="heading-text">{data1.USERNAME} - {data1.to_char}</span>
 									                	</div>
 													</div>
-
-													<div className="panel-body">
-														
-														<div className="row glyphs">
-															<div className="col-md-2 col-sm-3"><i className="icon-book "></i><a href={"/sachgiaokhoa/"+data1.MON+"/"+data1.PHANLOP} target="_blank" ><span>Sách giáo khoa</span></a></div>
-															<div className="col-md-2 col-sm-3"><i className="icon-tree7"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_tip_chitiet/"+data1.ID_BAIHOC}><span>Tóm tắt kiến thức</span></a></div>
-															<div className="col-md-2 col-sm-3"><i className="icon-book-play"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_video/"+data1.ID_BAIHOC}><span>Video</span></a></div>
-															<div className="col-md-2 col-sm-3"><i className="icon-file-text"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baitap_tracnghiem_chitiet/"+data1.ID_BAIHOC}><span>Bài tập</span></a></div>
-
+												</div>
+											</div>
+								      	)
+							        ):(
+							        	data1.BAI<this.state.bai_dl+1 || type_username=="trogiang" || type_username=="admin"? (
+											data1.BAI==this.state.bai_dl ? (
+										        <div key={index} className="timeline-row">
+													<div className="timeline-icon">
+														<div className="bg-primary">
+															<i className="icon-pencil6"></i>
 														</div>
-												
+													</div>
+
+													<div className="panel panel-flat timeline-content">
+														<div className="panel-heading">
+															<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_chitiet/"+data1.BAI} className="text-default"><a>Bài {data1.BAI}:</a>  {data1.TIEUDE}</a></h6>
+															<div className="heading-elements">
+																<span className="heading-text">{data1.USERNAME} - {data1.to_char}</span>
+										                	</div>
+														</div>
+
+														<div className="panel-body">
+															
+															<div className="row glyphs">
+																<div className="col-md-2 col-sm-3"><i className="icon-book "></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_sgk/"+data1.BAI} ><span>Sách giáo khoa</span></a></div>
+																<div className="col-md-2 col-sm-3"><i className="icon-tree7"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_tip_chitiet/"+data1.BAI+"/"+data1.ID_BAIHOC}><span>Tóm tắt kiến thức</span></a></div>
+																<div className="col-md-2 col-sm-3"><i className="icon-book-play"></i><a  href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_video/"+data1.BAI+"/"+data1.ID_BAIHOC}><span>Video</span></a></div>
+																<div className="col-md-2 col-sm-3"><i className="icon-file-text"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baitap_tracnghiem_chitiet/"+data1.BAI+"/"+data1.ID_BAIHOC}><span>Bài tập</span></a></div>
+
+															</div>
+													
+														</div>
+													</div>
+												</div>
+											):(
+												<div key={index} className="timeline-row">
+													<div className="timeline-icon">
+														<div className="bg-success">
+															<i className="icon-checkmark"></i>
+														</div>
+													</div>
+
+													<div className="panel panel-flat timeline-content">
+														<div className="panel-heading">
+															<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_chitiet/"+data1.BAI} className="text-default"><a>Bài {data1.BAI}:</a>  {data1.TIEUDE}</a></h6>
+															<div className="heading-elements">
+																<span className="heading-text">{data1.USERNAME} - {data1.to_char}</span>
+										                	</div>
+														</div>
+
+														<div className="panel-body">
+															
+															<div className="row glyphs">
+																<div className="col-md-2 col-sm-3"><i className="icon-book "></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_sgk/"+data1.BAI} ><span>Sách giáo khoa</span></a></div>
+																<div className="col-md-2 col-sm-3"><i className="icon-tree7"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_tip_chitiet/"+data1.BAI+"/"+data1.ID_BAIHOC}><span>Tóm tắt kiến thức</span></a></div>
+																<div className="col-md-2 col-sm-3"><i className="icon-book-play"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_video/"+data1.BAI+"/"+data1.ID_BAIHOC}><span>Video</span></a></div>
+																<div className="col-md-2 col-sm-3"><i className="icon-file-text"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baitap_tracnghiem_chitiet/"+data1.BAI+"/"+data1.ID_BAIHOC}><span>Bài tập</span></a></div>
+															</div>
+													
+														</div>
+													</div>
+												</div>
+											)
+								        ) : (
+									        <div key={index} className="timeline-row">
+												<div className="timeline-icon">
+													<div className="bg-grey-300">
+														<i className="icon-checkmark"></i>
+													</div>
+												</div>
+
+												<div className="panel panel-flat timeline-content">
+													<div className="panel-heading">
+														<h6 className="panel-title text-semibold no-margin"><a  className="text-grey ">Bài {data1.BAI}: {data1.TIEUDE}</a></h6>
+														<div className="heading-elements">
+															<span className="heading-text">{data1.USERNAME} - {data1.to_char}</span>
+									                	</div>
 													</div>
 												</div>
 											</div>
-										)
-							        ) : (
-								        <div key={index} className="timeline-row">
-											<div className="timeline-icon">
-												<div className="bg-grey-300">
-													<i className="icon-checkmark"></i>
-												</div>
-											</div>
-
-											<div className="panel panel-flat timeline-content">
-												<div className="panel-heading">
-													<h6 className="panel-title text-semibold no-margin"><a  className="text-grey ">Bài {data1.BAI}: {data1.TIEUDE}</a></h6>
-													<div className="heading-elements">
-														<span className="heading-text">{data1.USERNAME} - {data1.to_char}</span>
-								                	</div>
-												</div>
-											</div>
-										</div>
-							      	)
-									
+								      	)
+								   	)	
 								)
-							})}
+							}, this)}
 							{/* List bai hoc */}
 
 						</div>
@@ -188,10 +270,14 @@ export class baihoc extends React.Component{
 	        }
 	    });
 	    $('#addcauhoi').click(function () {
-	    	if($("#sobai").val()=="")
+	    	if($("#sobai").val()==""){
+	    		alert("Bạn chưa nhập số thứ tự bài học!");
 				return;
-			if($("#tieudebai").val()=="")
+	    	}
+			if($("#tieudebai").val()==""){
+				alert("Bạn chưa nhập tiêu đề bài học!");
 				return;
+			}
 			var currentdate = new Date();
 			var datetime =currentdate.getFullYear() + "-"
 			    + (currentdate.getMonth()+1)  + "-" 
@@ -223,7 +309,14 @@ export class baihoc extends React.Component{
 		console.log("componentWillMount");
 
 		var that=this;
-
+		$.get("getUserInfo/"+id_user,function( data ){
+			console.log("lay data");
+			if(data.LOP==that.props.params.lop){
+				console.log("bai hoc hien tai");
+				that.setState({bai_ls: data.BAI_LICHSU});
+				that.setState({bai_dl: data.BAI_DIALI});
+			}
+		});
 		url1=window.location.href;
 		url1=url1.split('#');
 		mon=url1[1].split('/');
@@ -256,6 +349,26 @@ export class baihoc extends React.Component{
 	}
 	componentWillReceiveProps(newProps)
 	{
+		url1=window.location.href;
+		url1=url1.split('#');
+		mon=url1[1].split('/');
+		url2=window.location.href;
+		url2=url2.split('lop');
+		phanlop=url2[1].split('/');
+
+		var that=this;
+		$.get("getUserInfo/"+id_user,function( data ){
+			console.log("lay data");
+			if(data.LOP==that.props.params.lop){
+				console.log("bai hoc hien tai");
+				that.setState({bai_ls: data.BAI_LICHSU});
+				that.setState({bai_dl: data.BAI_DIALI});
+			}
+			else{
+				that.setState({bai_ls: 100});
+				that.setState({bai_dl: 100});
+			}
+		});
 		console.log("componentWillReceiveProps");
 		var mon1;
 		if(newProps.params.mon=="lichsu")

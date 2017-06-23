@@ -1,6 +1,6 @@
 import React from 'react';
 import io from 'socket.io-client';
-let socket = io('http://localhost:3000');
+let socket = io('http://localhost:3000'||'http://kid-learning.herokuapp.com:3000'||'https://kid-learning.herokuapp.com:3000');
 
 var data = document.querySelector('#maincontent');
 var url1,url2;

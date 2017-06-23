@@ -1,12 +1,11 @@
 import React from 'react';
 import io from 'socket.io-client';
-let socket = io('http://localhost:3000');
+let socket = io('http://localhost:3000'||'http://kid-learning.herokuapp.com:3000'||'https://kid-learning.herokuapp.com:3000');
 var data = document.querySelector('#maincontent');
 
 var id_user=data.dataset.id;
 var check=true;
-var mon,phanlop;
-var url1,url2;
+var mon,phanlop,baihoc;
 var temp_username=data.dataset.username;
 var type_username=data.dataset.type;
 export class baitap_tracnghiem_chitiet extends React.Component{
@@ -25,7 +24,7 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 						<ul className="breadcrumb">
 							<li><a href="#"><i className="icon-home2 position-left"></i> Trang chủ</a></li>
 							<li ><a id="link_pre" ></a></li>
-							<li className="active" >Bài {this.props.params.id}</li>
+							<li className="active" >Bài tập trắc nghiệm</li>
 						</ul>
 						<ul className="breadcrumb-elements">
 							<li ><a id="thembaitap" ><i className="icon-plus-circle2 position-left"></i>Thêm bài tập</a></li>
@@ -40,40 +39,37 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 							<div className="blog-preview">
 								<div className="panel-body">
 									<div className="form-group">
-										<label className="control-label col-lg-2">Câu hỏi</label>
+										<label className="text-semibold">Câu hỏi:</label>
 										<div style={{paddingRight: '0px'}}>
-											<input id="tieudebai" type="text" placeholder="Nhập câu hỏi..." className="form-control"/>
+											<input id="noidung" type="text" placeholder="Nhập câu hỏi..." className="form-control"/>
 											<span className="help-block"></span>
 										</div>
 									</div>
 									<div id="list_dapan"className="form-group">
-										<label class="text-semibold">Câu trả lời:</label>
-										<div className="radio">
-											<div className="col-lg-1 radio-inline control-label" >
-												<input type="radio" name="stacked-radio-left" className="styled"/>
-											</div>
-											<div className="col-lg-11">
-												<input type="text" className="form-control" placeholder="Enter your username..."/>
-											</div>
+										<label className="text-semibold">Câu trả lời:</label>
+										<div className="input-group">
+											<span className="input-group-addon">
+												<input id="rd_cau1" name="addon-radio"  type="radio" className="styled"/>
+											</span>
+											<input id="te_cau1" type="text" className="form-control" placeholder="Câu trả lời 1"/>
 										</div>
-										<div className="radio">
-											<label className="radio-inline control-label">
-												<input type="radio" name="stacked-radio-left" className="styled"/>
-												
-											</label>
-											<input type="text" className="form-control" placeholder="Enter your username..."/>
+										<div className="input-group">
+											<span className="input-group-addon">
+												<input id="rd_cau2" name="addon-radio"  type="radio" className="styled" />
+											</span>
+											<input id="te_cau2" type="text" className="form-control" placeholder="Câu trả lời 2"/>
 										</div>
-										<div className="radio">
-											<label>
-												<input type="radio" name="stacked-radio-left" className="styled"/>
-												Unselected styled
-											</label>
+										<div className="input-group">
+											<span className="input-group-addon">
+												<input id="rd_cau3" name="addon-radio"  type="radio" className="styled"/>
+											</span>
+											<input id="te_cau3" type="text" className="form-control" placeholder="Câu trả lời 3"/>
 										</div>
-										<div className="radio">
-											<label>
-												<input type="radio" name="stacked-radio-left" className="styled"/>
-												Unselected styled
-											</label>
+										<div className="input-group">
+											<span className="input-group-addon">
+												<input id="rd_cau4" name="addon-radio"  type="radio" className="styled"/>
+											</span>
+											<input id="te_cau4" type="text" className="form-control" placeholder="Câu trả lời 4"/>
 										</div>
 									</div>
 									<div className="text-right">
@@ -115,7 +111,7 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 									return (
 										<li key={index1} className="media">
 											<div className="media-left">
-												<a><img id="img_user" src={"assets/images/user_"+data1.ID_NGUOITRALOI+".jpg"} onError={() => { $("#img_user").attr('src',"assets/images/user.jpg") }} className="img-circle img-sm" alt=""/></a>
+												<a><img id="img_user" src={"assets/images/user_"+data1.ID_NGUOITRALOI+".jpg"} onError={(e)=>{e.target.src="assets/images/user.jpg"}} className="img-circle img-sm" alt=""/></a>
 											</div>
 
 											<div className="media-body">
@@ -182,9 +178,12 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 			mon1="Lịch sử";
 		if(this.props.params.mon=="diali")
 			mon1="Địa lí";
-		var name_link="Bài học "+mon1+" lớp "+this.props.params.lop; 
+		var name_link="Bài học "+mon1+" lớp "+this.props.params.lop+" bài "+this.props.params.bai; 
 		var link_pre="#"+this.props.params.mon+"/lop"+this.props.params.lop+"/baihoc_chitiet/"+this.props.params.id;
 
+		mon=this.props.params.mon;
+		phanlop=this.props.params.lop;
+		baihoc=this.props.params.id;
 		///them bai tap
 
 		if (type_username!="trogiang") {
@@ -204,37 +203,86 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 	            $("#formadd").hide();
 	        }
 	    });
-	  //   $('#addcauhoi').click(function () {
-	  //   	if($("#sobai").val()=="")
-			// 	return;
-			// if($("#tieudebai").val()=="")
-			// 	return;
-			// var currentdate = new Date();
-			// var datetime =currentdate.getFullYear() + "-"
-			//     + (currentdate.getMonth()+1)  + "-" 
-			//     + currentdate.getDate() +" "
-			//     + currentdate.getHours() + ":"  
-			//     + currentdate.getMinutes() + ":" 
-			//     + currentdate.getSeconds();
 
-			// var data={
-		 //        id:       id_user,
-		 //        bai: $("#sobai").val(),
-			// 	tieude: $("#tieudebai").val(),
-			// 	lop: phanlop[0],
-			// 	mon: mon[1],
-			// 	thoigian: datetime
+	    //them bai tap
+	    $('#add_baitap').click(function () {
+			var checkChecked = $("input").parent("span").attr("class");
+			var check_temp;
+	    	if($("#noidung").val()==""){
+	    		alert("Bạn chưa nhập câu hỏi!");
+				return;
+	    	}
+			if($("#te_cau1").val()==""){
+				alert("Bạn chưa nhập đáp án!");
+				return;
+			}
+			if($("#te_cau2").val()==""){
+				alert("Bạn chưa nhập đáp án!");
+				return;
+			}
+			if($("#te_cau3").val()==""){
+				alert("Bạn chưa nhập đáp án!");
+				return;
+			}
+			if($("#te_cau4").val()==""){
+				alert("Bạn chưa nhập đáp án!");
+				return;
+			}
+			
+			if($("#rd_cau1").parent().attr("class")!="checked" && $("#rd_cau2").parent().attr("class")!="checked" && $("#rd_cau3").parent().attr("class")!="checked" && $("#rd_cau4").parent().attr("class")!="checked"){
+				alert("Bạn chưa chọn đáp án đúng!");
+				return;
+			}else{
+				if($("#rd_cau1").parent().attr("class")=="checked")
+					check_temp=1;
+				if($("#rd_cau2").parent().attr("class")=="checked")
+					check_temp=2;
+				if($("#rd_cau3").parent().attr("class")=="checked")
+					check_temp=3;
+				if($("#rd_cau4").parent().attr("class")=="checked")
+					check_temp=4;
+				console.log(check_temp);
+			}
+			var da1=0,da2=0,da3=0,da4=0;
+			if(check_temp==1)
+				da1=1;
+			if(check_temp==2)
+				da2=1;
+			if(check_temp==3)
+				da3=1;
+			if(check_temp==4)
+				da4=1;
 
-			// };
-			// console.log(data);
-	  //       $.post("themBaihoc", data, function(){
-	  //       	$("#sobai").val("");
-	  //       	$("#tieudebai").val("");
-	  //       	$("#formadd").hide();
-	  //       	//window.location = "#/trangcanhan";
-   //          	//Trangcanhan.dispatch(location.getCurrentPath(), null);
-   //  		});
-	  //   });
+			var data={
+		        id:  id_user,
+				lop: phanlop,
+				mon: mon,
+		        bai: baihoc,
+				noidung: $("#noidung").val(),
+				cau1: $("#te_cau1").val(),
+				cau2: $("#te_cau2").val(),
+				cau3: $("#te_cau3").val(),
+				cau4: $("#te_cau4").val(),
+				da1: da1,
+				da2: da2,
+				da3: da3,
+				da4: da4
+			};
+
+			console.log(data);
+
+	        $.post("themTracnghiem", data, function(){
+				$("#noidung").val("");
+				$("#te_cau1").val("");
+				$("#te_cau2").val("");
+				$("#te_cau3").val("");
+				$("#te_cau4").val("");
+				$("#rd_cau"+check_temp).parent().removeClass();
+				$("#formadd").hide();
+	        	//window.location = "#/trangcanhan";
+            	//Trangcanhan.dispatch(location.getCurrentPath(), null);
+    		});
+	    });
 	    //them bai tap
 
 
@@ -292,90 +340,203 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 
 	}
 	componentWillMount(){
-		var that= this;
+		var that=this;
+		var ht_lop;
+		var ht_bai;
+
 		var id_cauhoi=this.props.params.mon+this.props.params.lop+this.props.params.id;
 
 		var count1=1;
 		$.post("/"+this.props.params.mon+"/lop"+this.props.params.lop+"/baitap_tracnghiem_chitiet_cauhoi/"+this.props.params.id, function(data){
 			console.log("lay trac nghiem");
 			console.log(data);
-			for(var i=0;i<data.length;i++){
-				var count=i+1;
-				console.log("tren"+count);
 
-				$("#xxx").append('<h6>Câu '+count+'</h6>'+
-									'<fieldset>'+
-										'<p class="content-group text-semibold">'+data[i].NOIDUNG+'</p>'+
-										'<div id="cau'+count+'"class="form-group pt-5">'+
-											'<label class="text-semibold">Chọn câu trả lời:</label>'+
-										'</div>'+
-									'</fieldset>'
-									);
-				var idCauhoi=data[i].ID_BAIHOC;																
-				$.post("/getDapan",{id: data[i].ID},function(data1){
-					console.log("duoi"+count);
-					console.log(data1);
-					for(var j=0;j<data1.length;j++)
-					{
-						$("#cau"+count1).append('<div class="radio">'+
-													'<label>'+
-														'<input type="radio" id="'+ data1[j].CHECK+'" alt="'+j+'" name="'+count1+'" class="styled" />'+
-														data1[j].DAPAN+
-													'</label>'+
-												'</div>'
-										);
-					}
-					count1++;
-					// Default initialization Radió
-					$(".styled, .multiselect-container input").uniform({
-					    radioClass: 'choice'
-					});
+			if(data.length==0)
+			{
+				console.log("chua co bai tap");
+				$("#xxx").append('<center class="text-bold">Chưa có bài tập nào!.</center>'
+								);
+				// Default initialization Radió
+				$(".styled, .multiselect-container input").uniform({
+				    radioClass: 'choice'
 				});
+				return;
 			}
+			$.get("getUserInfo/"+id_user,function( data1 ){
+				console.log("lay data");
+			
+				ht_lop=data1.LOP;
+				if(that.props.params.mon=="lichsu")
+					ht_bai=data1.BAI_LICHSU;
+				else
+					ht_bai=data1.BAI_DIALI;
+				
+				//hoc qua bai hoc roi
+				if(that.props.params.lop<ht_lop || (that.props.params.lop==ht_lop && data[0].BAI<ht_bai)){
+					$("#baitap_binhluan").show();
+					for(var i=0;i<data.length;i++){
+						var count=i+1;
 
-			// Basic wizard setup
-		    $(".steps-basic").steps({
-		        headerTag: "h6",
-		        bodyTag: "fieldset",
-		        transitionEffect: "fade",	
-		        titleTemplate: '<span class="number">#index#</span> #title#',
-		        labels: {
-		            finish: 'Xong',
-		            previous: 'Quay lại',
-		            next: 'Tiếp theo'
-		        },
-		        onStepChanging: function (event, currentIndex, newIndex) {
-		        	console.log("onStepChanging");
-		        	var test=currentIndex+1;
-		        	var temtem3='input[name='+test+']';
-		        	console.log(test);
+						$("#xxx").append('<h6>Câu '+count+'</h6>'+
+											'<fieldset>'+
+												'<p class="content-group text-semibold">'+data[i].NOIDUNG+'</p>'+
+												'<div id="cau'+count+'"class="form-group pt-5">'+
+													'<label class="text-semibold">Chọn câu trả lời:</label>'+
+												'</div>'+
+											'</fieldset>'
+											);
+						var idCauhoi=data[i].ID_BAIHOC;																
+						$.post("/getDapan",{id: data[i].ID_TRACNGHIEM},function(data1){
+							console.log("duoi"+count);
+							console.log(data1);
+							for(var j=0;j<data1.length;j++)
+							{
+								if(data1[j].CHECK==0){
+									$("#cau"+count1).append('<div class="radio">'+
+																'<label>'+
+																	'<input type="radio" id="'+ data1[j].CHECK+'" alt="'+j+'" name="'+count1+'" class="styled" />'+
+																	data1[j].DAPAN+
+																'</label>'+
+															'</div>'
+															);
+								}else{
+									$("#cau"+count1).append('<div class="radio">'+
+																'<label>'+
+																		'<input type="radio" id="'+ data1[j].CHECK+'" alt="'+j+'" name="'+count1+'" class="styled" checked="checked"/>'+
+																		data1[j].DAPAN+
+																'</label>'+
+															'</div>'
+															);
+								}
+							}
+							count1++;
+							// Default initialization Radió
+							$(".styled, .multiselect-container input").uniform({
+							    radioClass: 'choice'
+							});
+						});
+					}
+					// Basic wizard setup
+				    $(".steps-basic").steps({
+				        headerTag: "h6",
+				        bodyTag: "fieldset",
+				        startIndex: data.length-1,
+				        transitionEffect: "fade",	
+				        titleTemplate: '<span class="number">#index#</span> #title#',
+				        labels: {
+				            finish: 'Xong',
+				            previous: 'Quay lại',
+				            next: 'Tiếp theo'
+				        },
+				        onStepChanging: function (event, currentIndex, newIndex) {
+				        	console.log("onStepChanging");
+				        	var test=currentIndex+1;
+				        	var temtem3='input[name='+test+']';
+				        	console.log(test);
 
-		        	var iddapan=$(temtem3).closest('.checked').children().attr("id");
-		        	console.log(iddapan);
-		        	
-		        	if(iddapan=="1"){
-		        		return true;
-		        	}
-		        },
-		        onFinishing: function (event, currentIndex) {
-		            var test=currentIndex+1;
-		        	var temtem3='input[name='+test+']';
-		        	console.log(test);
+				        	var iddapan=$(temtem3).closest('.checked').children().attr("id");
+				        	console.log(iddapan);
+				        	
+				        	if(iddapan=="1"){
+				        		return true;
+				        	}
+				        },
+				        onFinishing: function (event, currentIndex) {
+				            var test=currentIndex+1;
+				        	var temtem3='input[name='+test+']';
+				        	console.log(test);
 
-		        	var iddapan=$(temtem3).closest('.checked').children().attr("id");
-		        	console.log(iddapan);
-		        	
-		        	if(iddapan=="1"){
-		        		return true;
-		        	}
-		        },
-		        onFinished: function (event, currentIndex) {
-		        	alert("Bạn đã hoà thành bài tập");
-	        		$("#baitap_binhluan").show();
-		            
-		        }
-		    });
+				        	var iddapan=$(temtem3).closest('.checked').children().attr("id");
+				        	console.log(iddapan);
+				        	
+				        	if(iddapan=="1"){
+				        		return true;
+				        	}
+				        },
+				        onFinished: function (event, currentIndex) {
+				        	alert("Bạn đã hoàn thành bài tập");
+			        		$("#baitap_binhluan").show();
+				            
+				        }
+				    });
+				}
+				else{
+					for(var i=0;i<data.length;i++){
+						var count=i+1;
 
+						$("#xxx").append('<h6>Câu '+count+'</h6>'+
+											'<fieldset>'+
+												'<p class="content-group text-semibold">'+data[i].NOIDUNG+'</p>'+
+												'<div id="cau'+count+'"class="form-group pt-5">'+
+													'<label class="text-semibold">Chọn câu trả lời:</label>'+
+												'</div>'+
+											'</fieldset>'
+											);
+						var idCauhoi=data[i].ID_BAIHOC;																
+						$.post("/getDapan",{id: data[i].ID},function(data1){
+							console.log("duoi"+count);
+							console.log(data1);
+							for(var j=0;j<data1.length;j++)
+							{
+								$("#cau"+count1).append('<div class="radio">'+
+															'<label>'+
+																'<input type="radio" id="'+ data1[j].CHECK+'" alt="'+j+'" name="'+count1+'" class="styled" />'+
+																data1[j].DAPAN+
+															'</label>'+
+														'</div>'
+														);
+							}
+							count1++;
+							// Default initialization Radió
+							$(".styled, .multiselect-container input").uniform({
+							    radioClass: 'choice'
+							});
+						});
+					}
+					// Basic wizard setup
+				    $(".steps-basic").steps({
+				        headerTag: "h6",
+				        bodyTag: "fieldset",
+				        transitionEffect: "fade",	
+				        titleTemplate: '<span class="number">#index#</span> #title#',
+				        labels: {
+				            finish: 'Xong',
+				            previous: 'Quay lại',
+				            next: 'Tiếp theo'
+				        },
+				        onStepChanging: function (event, currentIndex, newIndex) {
+				        	console.log("onStepChanging");
+				        	var test=currentIndex+1;
+				        	var temtem3='input[name='+test+']';
+				        	console.log(test);
+
+				        	var iddapan=$(temtem3).closest('.checked').children().attr("id");
+				        	console.log(iddapan);
+				        	
+				        	if(iddapan=="1"){
+				        		return true;
+				        	}
+				        },
+				        onFinishing: function (event, currentIndex) {
+				            var test=currentIndex+1;
+				        	var temtem3='input[name='+test+']';
+				        	console.log(test);
+
+				        	var iddapan=$(temtem3).closest('.checked').children().attr("id");
+				        	console.log(iddapan);
+				        	
+				        	if(iddapan=="1"){
+				        		return true;
+				        	}
+				        },
+				        onFinished: function (event, currentIndex) {
+				        	alert("Bạn đã hoà thành bài tập");
+			        		$("#baitap_binhluan").show();
+				            
+				        }
+				    });
+				}
+			});
 		    //lay binh luan
     		socket.emit('c2s_Binhluan',{id: id_cauhoi });
 			socket.on('s2c_Binhluan', function(data){
