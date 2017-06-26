@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Kid Learning</title>
+
+	<!-- Global stylesheets -->
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+	<link href="assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
+	<link href="assets/css/bootstrap.css" rel="stylesheet" type="text/css">
+	<link href="assets/css/core.css" rel="stylesheet" type="text/css">
+	<link href="assets/css/components.css" rel="stylesheet" type="text/css">
+	<link href="assets/css/colors.css" rel="stylesheet" type="text/css">
+	<link rel="icon" href="http://findicons.com/files/icons/1508/sketchcons_x/128/globe.png" type="image/x-icon"/>
+	<!-- /global stylesheets -->
+
+	<!-- Core JS files -->
+	<script type="text/javascript" src="assets/js/plugins/loaders/pace.min.js"></script>
+	<script type="text/javascript" src="assets/js/core/libraries/jquery.min.js"></script>
+	<script type="text/javascript" src="assets/js/core/libraries/bootstrap.min.js"></script>
+	<script type="text/javascript" src="assets/js/plugins/loaders/blockui.min.js"></script>
+	<script type="text/javascript" src="assets/js/plugins/forms/validation/validate.min.js"></script>
+	<!-- /core JS files -->
+
+	<!-- Theme JS files -->
+	<script type="text/javascript" src="assets/js/plugins/forms/styling/uniform.min.js"></script>
+
+	<script type="text/javascript" src="assets/js/core/app.js"></script>
+	<script type="text/javascript" src="assets/js/pages/login.js"></script>
+	<!-- /theme JS files -->
+
+</head>
+
+<body class="login-container"  background="assets/images/diali_bg.jpg">
+
+	<!-- Main navbar -->
+	<div class="navbar navbar-inverse">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="/"><img src="assets/images/logo_light.png" alt=""></a>
+
+			<ul class="nav navbar-nav pull-right visible-xs-block">
+				<li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-tree5"></i></a></li>
+			</ul>
+		</div>
+
+		<div class="navbar-collapse collapse" id="navbar-mobile">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://www.facebook.com/kid.learning.hcmus" target="_blank">
+						<i class="icon-facebook2"></i> <span class="visible-xs-inline-block position-right"> Trang facebook</span>
+					</a>
+				</li>
+
+				<li>
+					<a href="#">
+						<i class="icon-user-tie"></i> <span class="visible-xs-inline-block position-right"> Contact admin</span>
+					</a>
+				</li>
+
+				<li class="dropdown">
+					<a class="dropdown-toggle" data-toggle="dropdown">
+						<i class="icon-cog3"></i>
+						<span class="visible-xs-inline-block position-right"> Options</span>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<!-- /main navbar -->
+
+
+	<!-- Page container -->
+	<div class="page-container">
+
+		<!-- Page content -->
+		<div class="page-content">
+
+			<!-- Main content -->
+			<div class="content-wrapper">
+
+				<!-- Content area -->
+				<div class="content">
+
+					<!-- Registration form -->
+					<form id="login_form" >
+						<div class="row">
+							<div class="col-lg-6 col-lg-offset-3">
+								<div class="panel registration-form">
+									<div class="panel-body">
+										<div class="text-center">
+											<div class="icon-object border-success text-success"><i class="icon-plus3"></i></div>
+											<h5 class="content-group-lg">Đăng ký tài khoản<small class="display-block">Điền đầy đủ thông tin vào mẫu sau</small></h5>
+										</div>
+
+										<div class="form-group has-feedback">
+											<label >Tên đăng nhập:</label>
+											<input id="username" name="username" type="text" class="form-control" placeholder="Tên đăng nhập" required>
+											<div class="form-control-feedback">
+												<i class="icon-user-plus text-muted"></i>
+											</div>
+
+										</div>
+										<div class="form-group has-feedback">
+											<label>Tên đầy đủ:</label>
+											<input id="fullname" name="fullname" type="text" class="form-control" placeholder="Tên dầy đủ" required>
+											<div class="form-control-feedback">
+												<i class="icon-user-check text-muted"></i>
+											</div>
+
+										</div>
+<!-- 										<div class="row">
+											<div class="col-md-6">
+												<label>Họ:</label>
+												<div class="form-group has-feedback">
+													<input id="lastname" name="lastname" type="text" class="form-control" placeholder="Họ và tên đệm" required>
+													<div class="form-control-feedback">
+														<i class="icon-user-check text-muted"></i>
+													</div>
+												</div>
+											</div>
+
+											<div class="col-md-6">
+												<label>Tên:</label>
+												<div class="form-group has-feedback">
+													<input id="firstname" name="firstname" type="text" class="form-control" placeholder="Tên" required>
+													<div class="form-control-feedback">
+														<i class="icon-user-check text-muted"></i>
+													</div>
+												</div>
+											</div>
+										</div> -->
+
+										<div class="row">
+											<div class="col-md-6">
+												<label>Ngày sinh:</label>
+												<div class="form-group has-feedback">
+													<input id="birthday" name="birthday" type="date" class="form-control" placeholder="Ngày sinh của bạn" required>
+													<div class="form-control-feedback">
+														<i class="icon-calendar text-muted"></i>
+													</div>
+												</div>
+											</div>
+
+											<div class="col-md-6">
+												<label>Địa chỉ email:</label>
+												<div class="form-group has-feedback">
+													<input id="email" name="email" type="email" class="form-control" placeholder="Email của bạn" required>
+													<div class="form-control-feedback">
+														<i class="icon-mention text-muted"></i>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-md-6">
+												<label>Trường:</label>
+												<div class="form-group has-feedback">
+													<input id="truong" name="truong" type="text" class="form-control" placeholder="Trường hiện tại của bạn" required>
+													<div class="form-control-feedback">
+														<i class="icon-office text-muted"></i>
+													</div>
+												</div>
+											</div>
+
+											<div class="col-md-6">
+												<label>Lớp(6->9):</label>
+												<div class="form-group has-feedback">
+													<input id="lop" name="lop" type="number" class="form-control" placeholder="Cấp lớp bạn đang học" required>
+													<div class="form-control-feedback">
+														<i class="icon-pen2 text-muted"></i>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-md-6">
+												<label>Mật khẩu:</label>
+												<div class="form-group has-feedback">
+													<input id="password1" name="password1" type="password" class="form-control" placeholder="Mật khẩu mới" required>
+													<div class="form-control-feedback">
+														<i class="icon-lock text-muted"></i>
+													</div>
+												</div>
+											</div>
+
+											<div class="col-md-6">
+												<label>Nhập lại mật khẩu:</label>
+												<div class="form-group has-feedback">
+													<input id="password2" name="password2" type="password" class="form-control" placeholder="Nhập lại mật khẩu" required>
+													<div class="form-control-feedback">
+														<i class="icon-lock text-muted"></i>
+													</div>
+												</div>
+											</div>
+										</div>
+
+
+<!-- 										<div class="form-group">
+											<div class="checkbox">
+												<label>
+													<input type="checkbox" class="styled" checked="checked">
+													Send me <a href="#">test account settings</a>
+												</label>
+											</div>
+
+											<div class="checkbox">
+												<label>
+													<input type="checkbox" class="styled" checked="checked">
+													Subscribe to monthly newsletter
+												</label>
+											</div>
+
+											<div class="checkbox">
+												<label>
+													<input type="checkbox" class="styled">
+													Accept <a href="#">terms of service</a>
+												</label>
+											</div>
+										</div> -->
+
+										<div class="text-right">
+											<button type="submit" class="btn btn-link"><a href="dangnhap"><i class="icon-arrow-left13 position-left"></i> Quay lại trang đăng nhập</a></button>
+											<button id="submit" type="submit" class="btn bg-teal-400 btn-labeled btn-labeled-right ml-10"><b><i class="icon-plus3"></i></b><a style="color: white"> Tạo tài khoản mới</a></button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
+					<!-- /registration form -->
+
+
+				</div>
+				<!-- /content area -->
+
+			</div>
+			<!-- /main content -->
+
+		</div>
+		<!-- /page content -->
+
+	</div>
+	<!-- /page container -->
+	
+<script src="trangdangky.js"></script>
+</body>
+</html>

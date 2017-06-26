@@ -1,0 +1,1 @@
+﻿positionForPages[107]={page:107,positions:[{word:"Bài 34 : ",left:0.235327,top:0.090881,width:0.089031,height:0.023618},{word:"THỰC HÀNH",left:0.324395,top:0.090881,width:0.143693,height:0.023618},{word:"SO SÁNH NỀN KINH TẾ CỦA BA KHU VỰC CHÂU PHI",left:0.235327,top:0.121033,width:0.583087,height:0.023617}]};
