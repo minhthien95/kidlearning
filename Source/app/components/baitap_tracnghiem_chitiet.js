@@ -1,9 +1,7 @@
 import React from 'react';
 import io from 'socket.io-client';
-//let socket = io('http://localhost:3000'||'http://kid-learning.herokuapp.com:3000'||'https://kid-learning.herokuapp.com:3000');
-//let socket = io('http://kid-learning.herokuapp.com:3000');
 let socket = io('http://'+window.location.hostname+':3000');
-
+//let socket = io('http://'+window.location.hostname);
 var data = document.querySelector('#maincontent');
 
 var id_user=data.dataset.id;
@@ -90,11 +88,6 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 		            <div className="panel panel-white">
 						<div className="panel-heading">
 							<h6 className="panel-title">Bài tập </h6>
-							<div className="heading-elements">
-								<ul className="icons-list">
-			                		<li><a data-action="collapse"></a></li>
-			                	</ul>
-		                	</div>
 						</div>
 	                	<form id="xxx" className="steps-basic" action="#">
 							

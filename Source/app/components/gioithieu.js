@@ -44,7 +44,7 @@ export class gioithieu extends React.Component{
 								<div className="col-lg-3 col-md-6">
 									<div className="thumbnail no-padding">
 										<div className="thumbnail">
-											<img src="assets/images/user_n.jpg" alt=""/>
+											<img src="assets/images/user_8.jpg" alt=""/>
 										</div>
 									
 								    	<div className="caption text-center">

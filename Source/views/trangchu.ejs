@@ -33,6 +33,8 @@
 	<script type="text/javascript" src="assets/js/plugins/ui/moment/moment.min.js"></script>
 	<script type="text/javascript" src="assets/js/plugins/pickers/daterangepicker.js"></script>
 	<script type="text/javascript" src="assets/js/core/app.js"></script>
+	<script type="text/javascript" src="assets/js/plugins/ui/nicescroll.min.js"></script>
+	<script type="text/javascript" src="assets/js/pages/layout_fixed_custom.js"></script>
 	<!-- <script type="text/javascript" src="assets/js/pages/dashboard.js"></script> -->
 	<!-- /theme JS files -->
 		<!-- Theme JS files -->
@@ -42,17 +44,21 @@
 	<script type="text/javascript" src="assets/js/plugins/forms/selects/select2.min.js"></script>
 	<script type="text/javascript" src="assets/js/plugins/forms/wizards/steps.min.js"></script>
 	<script type="text/javascript" src="assets/js/plugins/forms/styling/uniform.min.js"></script>
-	<script type="text/javascript" src="assets/js/plugins/visualization/echarts/world.js"></script>
+	<script type="text/javascript" src="assets/js/plugins/media/fancybox.min.js"></script>
 	<!-- /theme JS files -->
-	<!-- sgk -->
-	
-	<!-- sgk -->
-	
+
+	<link rel="stylesheet" href="timeliner-master/css/timeliner.css" type="text/css" media="screen">
+	<link rel="stylesheet" href="timeliner-master/css/responsive.css" type="text/css" media="screen">
+		<!-- GLOBAL CORE SCRIPTS -->
+	<script type="text/javascript" src="timeliner-master/js/colorbox.js"></script>
+	<script type="text/javascript" src="timeliner-master/js/timeliner.js"></script>
+
+	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 </head>
 
-<body>
+<body class="navbar-top">
 	<!-- Main navbar -->
-	<div class="navbar navbar-inverse">
+	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div id="statusbar" data-username=<%= user.username%> data-lop=<%= user.lop%> data-type=<%= user.type%> data-id=<%= user.id%>></div>
 	</div>
 	<!-- /main navbar -->
@@ -65,14 +71,15 @@
 		<div class="page-content">
 
 			<!-- Main sidebar -->
-			<div class="sidebar sidebar-main" >
+			<div class="sidebar sidebar-main sidebar-fixed" >
 				<div id="slidebar" data-username=<%= user.username%> data-lop=<%= user.lop%> data-type=<%= user.type%> data-id=<%= user.id%> ></div>
 			</div>
 			<!-- /main sidebar -->
-
-			<!-- Main content -->
-			<div id="maincontent" data-username=<%= user.username%> data-lop=<%= user.lop%> data-type=<%= user.type%> data-id=<%= user.id%>></div>
 			
+			<!-- Main content -->
+			<div class="content-wrapper">
+				<div id="maincontent" data-username=<%= user.username%> data-lop=<%= user.lop%> data-type=<%= user.type%> data-id=<%= user.id%>></div>
+			</div>
 			<!-- /main content -->
 
 		</div>

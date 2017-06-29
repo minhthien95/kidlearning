@@ -48418,6 +48418,8 @@ var _thaoluan = __webpack_require__(309);
 
 var _cauhoi_chitiet = __webpack_require__(306);
 
+var _baithi = __webpack_require__(751);
+
 var _hoidap = __webpack_require__(308);
 
 var _tuongtac_lichsu = __webpack_require__(749);
@@ -48478,6 +48480,7 @@ var MainContent = function (_React$Component) {
 																				_react2.default.createElement(_reactRouter.Route, { path: ":mon/lop:lop/baitap", component: _baitap.baitap }),
 																				_react2.default.createElement(_reactRouter.Route, { path: ":mon/lop:lop/thaoluan", component: _thaoluan.thaoluan }),
 																				_react2.default.createElement(_reactRouter.Route, { path: ":mon/lop:lop/cauhoi:id", component: _cauhoi_chitiet.cauhoi_chitiet }),
+																				_react2.default.createElement(_reactRouter.Route, { path: ":mon/lop:lop/baithi", component: _baithi.baithi }),
 																				_react2.default.createElement(_reactRouter.Route, { path: ":mon/lop:lop/baihoc_baiviet", component: _baihoc_baiviet.baihoc_baiviet }),
 																				_react2.default.createElement(_reactRouter.Route, { path: ":mon/lop:lop/baihoc_baiviet_chitiet/:id", component: _baihoc_baiviet_chitiet.baihoc_baiviet_chitiet }),
 																				_react2.default.createElement(_reactRouter.Route, { path: ":mon/lop:lop/baihoc_video/:bai/:id", component: _baihoc_video.baihoc_video }),
@@ -49471,8 +49474,8 @@ var Statusbar = function (_React$Component) {
 					{ className: "navbar-header" },
 					_react2.default.createElement(
 						"a",
-						{ className: "navbar-brand", href: "index.html" },
-						_react2.default.createElement("img", { src: "assets/images/logo_light.png", alt: "" })
+						{ className: "navbar-brand", href: "#" },
+						_react2.default.createElement("img", { src: "assets/images/logoo.png", alt: "" })
 					),
 					_react2.default.createElement(
 						"ul",
@@ -49510,6 +49513,15 @@ var Statusbar = function (_React$Component) {
 								"a",
 								{ className: "sidebar-control sidebar-main-toggle hidden-xs" },
 								_react2.default.createElement("i", { className: "icon-paragraph-justify3" })
+							)
+						),
+						_react2.default.createElement(
+							"li",
+							null,
+							_react2.default.createElement(
+								"a",
+								{ href: "https://www.facebook.com/kid.learning.hcmus", target: "_blank" },
+								_react2.default.createElement("i", { className: "icon-facebook2" })
 							)
 						)
 					),
@@ -49678,8 +49690,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-//let socket = io('http://localhost:3000'||'http://kid-learning.herokuapp.com:3000'||'https://kid-learning.herokuapp.com:3000');
 var socket = (0, _socket2.default)('http://' + window.location.hostname + ':3000');
+//let socket = io('http://'+window.location.hostname);
 
 var data = document.querySelector('#maincontent');
 var url1, url2;
@@ -50247,7 +50259,7 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 															null,
 															_react2.default.createElement(
 																'a',
-																{ href: '#', className: 'btn bg-success-400 btn-icon btn-xs', 'data-popup': 'lightbox' },
+																{ 'data-popup': 'tooltip', 'data-toggle': 'modal', 'data-target': '#confirm2', className: 'btn bg-success-400 btn-icon btn-xs' },
 																_react2.default.createElement('i', { className: 'icon-plus2' })
 															)
 														)
@@ -50583,6 +50595,31 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 								)
 							)
 						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ id: 'confirm2', className: 'modal fade' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'modal-dialog modal-xs' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'modal-content' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'thumbnail no-border no-margin' },
+									_react2.default.createElement(
+										'div',
+										{ className: 'caption text-center' },
+										_react2.default.createElement(
+											'h6',
+											{ id: 'uploadfile', className: 'text-semibold no-margin-top content-group' },
+											'Th\xEAm \u1EA3nh \u0111\u1EA1i di\u1EC7n '
+										)
+									)
+								)
+							)
+						)
 					)
 				)
 			);
@@ -50593,6 +50630,12 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 
 			var id_user = data.dataset.id;
 			var check = false;
+
+			// $("#uploadfile").append('<form class="fileupload" action="upload" method="post" enctype="multipart/form-data">'+
+			// 							      '<input type="file" name="upfile" value=""/>'+
+			// 							     '<input type="submit" />'+
+			// 							    '</form>');
+			$("#uploadfile").append('<form class="fileupload" action="uploadAnh" method="post" enctype="multipart/form-data">' + '<input type="file" id_user="5" name="upfile" class="file-styled"/>' + '<input hidden name="file_name" value="' + id_user + '"/>' + '<br/>' + '<button type="submit">Đăng ảnh</button>' + '</form>');
 
 			$('#tag_listuser').hide();
 			$('#tag_listsup').hide();
@@ -50977,7 +51020,7 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 				series: [{
 					name: 'Lịch Sử',
 					type: 'line',
-					data: [8, 9, 7, 5, 4, 6, 3]
+					data: [8, 9, 7, 5]
 				}, {
 					name: 'Địa Lí',
 					type: 'line',
@@ -51239,6 +51282,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 //let socket = io('http://kid-learning.herokuapp.com:3000'||'https://kid-learning.herokuapp.com:3000' || 'http://localhost:3000');
 var socket = (0, _socket2.default)('http://' + window.location.hostname + ':3000');
+//let socket = io('http://'+window.location.hostname);
+
 var data = document.querySelector('#maincontent');
 console.log('http://' + window.location.hostname + ':3000');
 var id_user = data.dataset.id;
@@ -51302,6 +51347,16 @@ var baihoc = exports.baihoc = function (_React$Component) {
 									{ id: 'thembaihoc' },
 									_react2.default.createElement('i', { className: 'icon-plus-circle2 position-left' }),
 									'Th\xEAm b\xE0i h\u1ECDc'
+								)
+							),
+							_react2.default.createElement(
+								'li',
+								null,
+								_react2.default.createElement(
+									'a',
+									{ id: 'themsgk', 'data-popup': 'tooltip', 'data-toggle': 'modal', 'data-target': '#confirm2' },
+									_react2.default.createElement('i', { className: 'icon-plus-circle2 position-left' }),
+									'Th\xEAm S\xE1ch Gi\xE1o Khoa'
 								)
 							)
 						)
@@ -51913,7 +51968,68 @@ var baihoc = exports.baihoc = function (_React$Component) {
 										)
 									)
 								);
-							}, this)
+							}, this),
+							_react2.default.createElement(
+								'div',
+								{ className: 'timeline-row' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'timeline-icon' },
+									_react2.default.createElement(
+										'div',
+										{ className: 'bg-orange' },
+										_react2.default.createElement('i', { className: 'icon-graduation2' })
+									)
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'panel panel-flat timeline-content' },
+									_react2.default.createElement(
+										'div',
+										{ className: 'panel-heading' },
+										_react2.default.createElement(
+											'h6',
+											{ className: 'panel-title text-semibold no-margin' },
+											_react2.default.createElement(
+												'a',
+												{ href: "#" + this.props.params.mon + "/lop" + this.props.params.lop + "/baithi/", className: 'text-default' },
+												_react2.default.createElement(
+													'a',
+													null,
+													'B\xE0i Thi:'
+												),
+												'  B\xE0i thi cu\u1ED1i m\xF4n'
+											)
+										)
+									),
+									_react2.default.createElement('div', { className: 'panel-body' })
+								)
+							)
+						)
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ id: 'confirm2', className: 'modal fade' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'modal-dialog modal-xs' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'modal-content' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'thumbnail no-border no-margin' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'caption text-center' },
+									_react2.default.createElement(
+										'h6',
+										{ id: 'uploadfile', className: 'text-semibold no-margin-top content-group' },
+										'Th\xEAm S\xE1ch Gi\xE1o Khoa '
+									)
+								)
+							)
 						)
 					)
 				)
@@ -51922,6 +52038,8 @@ var baihoc = exports.baihoc = function (_React$Component) {
 	}, {
 		key: 'componentDidMount',
 		value: function componentDidMount() {
+
+			$("#uploadfile").append('<form class="fileupload" action="uploadSGK" method="post" enctype="multipart/form-data">' + '<input type="file" id_user="5" name="upfile" class="file-styled"/>' + '<br/>' + '<button type="submit">Đăng Sách Giáo Khoa</button>' + '</form>');
 
 			url1 = window.location.href;
 			url1 = url1.split('#');
@@ -51932,9 +52050,11 @@ var baihoc = exports.baihoc = function (_React$Component) {
 
 			if (type_username != "trogiang") {
 				$("#thembaihoc").hide();
+				$("#themsgk").hide();
 			}
 			if (type_username == "admin") {
 				$("#thembaihoc").show();
+				$("#themsgk").hide();
 			}
 			$("#formadd").hide();
 			$('#thembaihoc').click(function (event) {
@@ -52011,6 +52131,7 @@ var baihoc = exports.baihoc = function (_React$Component) {
 				id_user: "all"
 			};
 			console.log(data1);
+			console.log("socket -->> " + socket);
 			socket.emit('c2s_Baihoc', data1);
 			socket.on('s2c_Baihoc', function (data) {
 				console.log(data);
@@ -52097,6 +52218,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 //let socket = io('http://localhost:3000'||'http://kid-learning.herokuapp.com:3000'||'https://kid-learning.herokuapp.com:3000');
 var socket = (0, _socket2.default)('http://' + window.location.hostname + ':3000');
+//let socket = io('http://'+window.location.hostname);
+
 var data = document.querySelector('#maincontent');
 
 var id_user = data.dataset.id;
@@ -52568,7 +52691,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 //let socket = io('http://localhost:3000'||'http://kid-learning.herokuapp.com:3000'||'https://kid-learning.herokuapp.com:3000');
 var socket = (0, _socket2.default)('http://' + window.location.hostname + ':3000');
-
+//let socket = io('http://'+window.location.hostname);
 var data = document.querySelector('#maincontent');
 var url1, url2;
 var id_cauhoi;
@@ -53004,6 +53127,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var socket = (0, _socket2.default)('http://' + window.location.hostname + ':3000');
+//let socket = io('http://'+window.location.hostname);
 var data = document.querySelector('#maincontent');
 
 var id_user = data.dataset.id;
@@ -53139,7 +53263,7 @@ var baihoc_chitiet = exports.baihoc_chitiet = function (_React$Component) {
 													' ',
 													_react2.default.createElement(
 														'a',
-														{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/baihoc_sgk/" + data1.BAI, className: 'text-success' },
+														{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/baihoc_sgk/" + data1.BAI + "/" + data1.TRANGSACH, className: 'text-success' },
 														'S\xE1ch gi\xE1o khoa'
 													)
 												)
@@ -53323,6 +53447,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 //let socket = io('http://kid-learning.herokuapp.com:3000'||'https://kid-learning.herokuapp.com:3000' || 'http://localhost:3000');
 var socket = (0, _socket2.default)('http://' + window.location.hostname + ':3000');
+//let socket = io('http://'+window.location.hostname);
 
 var data = document.querySelector('#maincontent');
 
@@ -54276,6 +54401,10 @@ var _react = __webpack_require__(7);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _socket = __webpack_require__(32);
+
+var _socket2 = _interopRequireDefault(_socket);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -54283,6 +54412,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var socket = (0, _socket2.default)('http://' + window.location.hostname + ':3000');
+//let socket = io('http://'+window.location.hostname);
+var data = document.querySelector('#maincontent');
+
+var id_user = data.dataset.id;
+var check = true;
+var mon, phanlop, baihoc;
+var temp_username = data.dataset.username;
+var type_username = data.dataset.type;
 
 var baihoc_video_chitiet = exports.baihoc_video_chitiet = function (_React$Component) {
 	_inherits(baihoc_video_chitiet, _React$Component);
@@ -54293,113 +54432,307 @@ var baihoc_video_chitiet = exports.baihoc_video_chitiet = function (_React$Compo
 		var _this = _possibleConstructorReturn(this, (baihoc_video_chitiet.__proto__ || Object.getPrototypeOf(baihoc_video_chitiet)).call(this, props));
 
 		_this.state = {
-			listvideo: []
+			listvideo: [],
+			listbinhluan: []
 		};
 		return _this;
 	}
 
 	_createClass(baihoc_video_chitiet, [{
-		key: "render",
+		key: 'render',
 		value: function render() {
 			return _react2.default.createElement(
-				"div",
+				'div',
 				null,
 				_react2.default.createElement(
-					"div",
-					{ className: "page-header page-header-default" },
+					'div',
+					{ className: 'page-header page-header-default' },
 					_react2.default.createElement(
-						"div",
-						{ className: "breadcrumb-line" },
+						'div',
+						{ className: 'breadcrumb-line' },
 						_react2.default.createElement(
-							"ul",
-							{ className: "breadcrumb" },
+							'ul',
+							{ className: 'breadcrumb' },
 							_react2.default.createElement(
-								"li",
+								'li',
 								null,
 								_react2.default.createElement(
-									"a",
-									{ href: "#" },
-									_react2.default.createElement("i", { className: "icon-home2 position-left" }),
-									" Trang ch\u1EE7"
+									'a',
+									{ href: '#' },
+									_react2.default.createElement('i', { className: 'icon-home2 position-left' }),
+									' Trang ch\u1EE7'
 								)
 							),
 							_react2.default.createElement(
-								"li",
+								'li',
 								null,
-								_react2.default.createElement("a", { id: "link_pre" })
+								_react2.default.createElement('a', { id: 'link_pre' })
 							),
 							_react2.default.createElement(
-								"li",
+								'li',
 								null,
-								_react2.default.createElement("a", { id: "link_pre1" })
+								_react2.default.createElement('a', { id: 'link_pre1' })
 							),
 							_react2.default.createElement(
-								"li",
-								{ className: "active" },
-								"Video ",
+								'li',
+								{ className: 'active' },
+								'Video ',
 								this.props.params.video
 							)
 						)
 					)
 				),
 				_react2.default.createElement(
-					"div",
-					{ className: "content" },
+					'div',
+					{ className: 'content' },
 					this.state.listvideo.map(function (data, index) {
 						return _react2.default.createElement(
-							"div",
-							{ className: "panel panel-flat" },
+							'div',
+							{ className: 'panel panel-flat' },
 							_react2.default.createElement(
-								"div",
-								{ className: "panel-heading" },
+								'div',
+								{ className: 'panel-heading' },
 								_react2.default.createElement(
-									"h5",
-									{ className: "panel-title text-semibold text-primary-800" },
+									'h5',
+									{ className: 'panel-title text-semibold text-primary-800' },
 									data.TIEUDE
 								)
 							),
 							_react2.default.createElement(
-								"div",
-								{ className: "content", style: { paddingBottom: '0px' } },
-								_react2.default.createElement("iframe", { width: "100%", height: "500", frameBorder: "0", allowFullScreen: true,
+								'div',
+								{ className: 'content', style: { paddingBottom: '0px' } },
+								_react2.default.createElement('iframe', { width: '100%', height: '500', frameBorder: '0', allowFullScreen: true,
 									src: "https://www.youtube.com/embed/" + data.LINK_VIDEO })
 							),
 							_react2.default.createElement(
-								"div",
-								{ className: "panel-body" },
+								'div',
+								{ className: 'panel-body' },
 								_react2.default.createElement(
-									"a",
-									{ className: "text-semibold" },
-									"M\xF4 t\u1EA3:"
+									'a',
+									{ className: 'text-semibold' },
+									'M\xF4 t\u1EA3:'
 								),
-								" ",
+								' ',
 								data.NOIDUNG,
-								_react2.default.createElement("br", null),
+								_react2.default.createElement('br', null),
 								_react2.default.createElement(
-									"a",
-									{ className: "text-semibold" },
-									"\u0110\u0103ng b\u1EDFi:"
+									'a',
+									{ className: 'text-semibold' },
+									'\u0110\u0103ng b\u1EDFi:'
 								),
-								" ",
+								' ',
 								data.USERNAME,
-								_react2.default.createElement("br", null),
+								_react2.default.createElement('br', null),
 								_react2.default.createElement(
-									"a",
-									{ className: "text-semibold" },
-									"Ng\xE0y \u0111\u0103ng:"
+									'a',
+									{ className: 'text-semibold' },
+									'Ng\xE0y \u0111\u0103ng:'
 								),
-								" ",
+								' ',
 								data.to_char
 							)
 						);
-					})
+					}),
+					_react2.default.createElement(
+						'div',
+						{ id: 'baitap_binhluan', className: 'panel panel-flat' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel-heading' },
+							_react2.default.createElement(
+								'h5',
+								{ className: 'panel-title text-semiold' },
+								_react2.default.createElement('i', { className: 'icon-bubbles4 position-left' }),
+								' Th\u1EA3o lu\u1EADn'
+							)
+						),
+						_react2.default.createElement(
+							'div',
+							{ id: 'formBinhluan', className: 'panel-body' },
+							_react2.default.createElement(
+								'ul',
+								{ className: 'media-list content-group-lg stack-media-on-mobile' },
+								this.state.listbinhluan.map(function (data1, index1) {
+									return _react2.default.createElement(
+										'li',
+										{ key: index1, className: 'media' },
+										_react2.default.createElement(
+											'div',
+											{ className: 'media-left' },
+											_react2.default.createElement(
+												'a',
+												null,
+												_react2.default.createElement('img', { id: 'img_user', src: "assets/images/user_" + data1.ID_NGUOITRALOI + ".jpg", onError: function onError(e) {
+														e.target.src = "assets/images/user.jpg";
+													}, className: 'img-circle img-sm', alt: '' })
+											)
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'media-body' },
+											data1.USERNAME == data.dataset.username ? _react2.default.createElement(
+												'ul',
+												{ className: 'list-inline list-inline-separate heading-text pull-right' },
+												_react2.default.createElement(
+													'li',
+													null,
+													_react2.default.createElement(
+														'a',
+														{ id: data1.USERNAME, name: data1.ID_BINHLUAN, className: 'text-danger-400' },
+														'Xo\xE1'
+													)
+												)
+											) : _react2.default.createElement('div', null),
+											_react2.default.createElement(
+												'div',
+												{ className: 'media-heading' },
+												_react2.default.createElement(
+													'a',
+													{ id: 'username', className: 'text-semibold' },
+													data1.USERNAME
+												),
+												_react2.default.createElement(
+													'span',
+													{ className: 'media-annotation dotted' },
+													data1.to_char
+												)
+											),
+											_react2.default.createElement(
+												'p',
+												null,
+												data1.NOIDUNG
+											),
+											data1.USERNAME == data.dataset.username ? _react2.default.createElement(
+												'ul',
+												{ className: 'list-inline list-inline-separate text-size-small' },
+												_react2.default.createElement(
+													'li',
+													null,
+													'\u0110\xE1nh gi\xE1:\xA0 ',
+													data1.MUCDANHGIA
+												)
+											) : _react2.default.createElement(
+												'ul',
+												{ className: 'list-inline list-inline-separate text-size-small' },
+												_react2.default.createElement(
+													'li',
+													null,
+													'\u0110\xE1nh gi\xE1:\xA0 ',
+													data1.MUCDANHGIA,
+													_react2.default.createElement(
+														'a',
+														{ id: data1.USERNAME, name: data1.ID_BINHLUAN },
+														_react2.default.createElement('i', { className: 'icon-arrow-up22 text-success' })
+													),
+													_react2.default.createElement(
+														'a',
+														{ id: data1.USERNAME, name: data1.ID_BINHLUAN },
+														_react2.default.createElement('i', { className: 'icon-arrow-down22 text-danger' })
+													)
+												)
+											)
+										),
+										_react2.default.createElement('hr', null)
+									);
+								})
+							),
+							_react2.default.createElement(
+								'h6',
+								{ className: 'text-semibold' },
+								_react2.default.createElement('i', { className: 'icon-pencil7 position-left' }),
+								' B\xECnh lu\u1EADn c\u1EE7a b\u1EA1n'
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'input-group content-group' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'has-feedback has-feedback-left' },
+									_react2.default.createElement('input', { id: 'binhluan_cauhoi', type: 'text', className: 'form-control input-xlg', placeholder: 'Nh\u1EADp b\xECnh lu\u1EADn c\u1EE7a b\u1EA1n' }),
+									_react2.default.createElement(
+										'div',
+										{ className: 'form-control-feedback' },
+										_react2.default.createElement('i', { className: 'icon-plus22 text-muted text-size-base' })
+									)
+								),
+								_react2.default.createElement(
+									'div',
+									{ className: 'input-group-btn' },
+									_react2.default.createElement(
+										'button',
+										{ id: 'gui_binhluan', type: 'submit', className: 'btn btn-primary btn-xlg' },
+										_react2.default.createElement('i', { className: 'icon-plus22' }),
+										'B\xECnh lu\u1EADn'
+									)
+								)
+							)
+						)
+					)
 				)
 			);
 		}
 	}, {
-		key: "componentWillMount",
+		key: 'componentDidMount',
+		value: function componentDidMount() {
+			var that = this;
+			var monkh;
+			if (this.props.params.mon == "lichsu") monkh = "ls";
+			if (this.props.params.mon == "diali") monkh = "dl";
+			//id_cauhoi v+ls+idvideo
+			var id_cauhoi = "v" + monkh + this.props.params.video;
+
+			mon = this.props.params.mon;
+			phanlop = this.props.params.lop;
+			baihoc = this.props.params.id;
+			///binh luan
+			$('#gui_binhluan').click(function (event) {
+				var currentdate = new Date();
+				var datetime = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate() + " " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+
+				if ($("#binhluan_cauhoi").val() == "") return;
+				var data = {
+					id: id_user,
+					id_cauhoi: id_cauhoi,
+					noidung: $("#binhluan_cauhoi").val(),
+					thoigian: datetime
+				};
+				console.log(data);
+				$.post("themBinhluan", data, function () {
+					$("#binhluan_cauhoi").val("");
+					//window.location = "#/trangcanhan";
+					//Trangcanhan.dispatch(location.getCurrentPath(), null);
+				});
+			});
+			$('#formBinhluan').on('click', '.text-success,.text-danger,.text-danger-400', function (e) {
+				var usernameClick = $(this).parent().attr('id');
+				var idBinhluanClick = $(this).parent().attr('name');
+				var type = $(this).attr('class');
+
+				if (type == "text-danger-400") {
+					console.log("click xoa");
+					$.post("delete_binhluan", { id_binhluan: $(this).attr('name'), id_cauhoi: id_cauhoi });
+					return;
+				}
+				if (usernameClick == temp_username) return;
+				console.log("click binh luan 2");
+				var data = {
+					id_binhluan: idBinhluanClick,
+					type: type
+				};
+				console.log(data);
+				$.post("rate_binhluan", data, function () {});
+			});
+		}
+	}, {
+		key: 'componentWillMount',
 		value: function componentWillMount() {
 			var that = this;
+
+			var monkh;
+			if (this.props.params.mon == "lichsu") monkh = "ls";
+			if (this.props.params.mon == "diali") monkh = "dl";
+			//id_cauhoi v+ls+idvideo
+			var id_cauhoi = "v" + monkh + this.props.params.video;
 
 			var url1 = window.location.href;
 			url1 = url1.split('#');
@@ -54425,6 +54758,12 @@ var baihoc_video_chitiet = exports.baihoc_video_chitiet = function (_React$Compo
 				$("#link_pre1").text(name_link1);
 				$('#link_pre1').attr('href', link_pre1);
 				that.setState({ listvideo: data });
+			});
+
+			//lay binh luan
+			socket.emit('c2s_Binhluan', { id: id_cauhoi });
+			socket.on('s2c_Binhluan', function (data) {
+				that.setState({ listbinhluan: data });
 			});
 		}
 	}]);
@@ -55068,10 +55407,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-//let socket = io('http://localhost:3000'||'http://kid-learning.herokuapp.com:3000'||'https://kid-learning.herokuapp.com:3000');
-//let socket = io('http://kid-learning.herokuapp.com:3000');
 var socket = (0, _socket2.default)('http://' + window.location.hostname + ':3000');
-
+//let socket = io('http://'+window.location.hostname);
 var data = document.querySelector('#maincontent');
 
 var id_user = data.dataset.id;
@@ -55253,19 +55590,6 @@ var baitap_tracnghiem_chitiet = exports.baitap_tracnghiem_chitiet = function (_R
 								'h6',
 								{ className: 'panel-title' },
 								'B\xE0i t\u1EADp '
-							),
-							_react2.default.createElement(
-								'div',
-								{ className: 'heading-elements' },
-								_react2.default.createElement(
-									'ul',
-									{ className: 'icons-list' },
-									_react2.default.createElement(
-										'li',
-										null,
-										_react2.default.createElement('a', { 'data-action': 'collapse' })
-									)
-								)
 							)
 						),
 						_react2.default.createElement('form', { id: 'xxx', className: 'steps-basic', action: '#' })
@@ -56245,8 +56569,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-//let socket = io('http://localhost:3000'||'http://kid-learning.herokuapp.com:3000'||'https://kid-learning.herokuapp.com:3000');
 var socket = (0, _socket2.default)('http://' + window.location.hostname + ':3000');
+//let socket = io('http://'+window.location.hostname);
 
 var data = document.querySelector('#maincontent');
 var url1, url2;
@@ -56789,7 +57113,7 @@ var gioithieu = exports.gioithieu = function (_React$Component) {
 										_react2.default.createElement(
 											"div",
 											{ className: "thumbnail" },
-											_react2.default.createElement("img", { src: "assets/images/user_n.jpg", alt: "" })
+											_react2.default.createElement("img", { src: "assets/images/user_8.jpg", alt: "" })
 										),
 										_react2.default.createElement(
 											"div",
@@ -57130,8 +57454,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-//let socket = io('http://localhost:3000'||'http://kid-learning.herokuapp.com:3000'||'https://kid-learning.herokuapp.com:3000');
 var socket = (0, _socket2.default)('http://' + window.location.hostname + ':3000');
+//let socket = io('http://'+window.location.hostname);
 
 var data = document.querySelector('#maincontent');
 
@@ -57643,8 +57967,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-//let socket = io('http://localhost:3000'||'http://kid-learning.herokuapp.com:3000'||'https://kid-learning.herokuapp.com:3000');
 var socket = (0, _socket2.default)('http://' + window.location.hostname + ':3000');
+//let socket = io('http://'+window.location.hostname);
 
 var data = document.querySelector('#maincontent');
 
@@ -119989,10 +120313,6 @@ var _react = __webpack_require__(7);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _socket = __webpack_require__(32);
-
-var _socket2 = _interopRequireDefault(_socket);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -120000,9 +120320,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-//let socket = io('http://localhost:3000'||'http://kid-learning.herokuapp.com:3000'||'https://kid-learning.herokuapp.com:3000');
-var socket = (0, _socket2.default)('http://' + window.location.hostname + ':3000');
 
 var data = document.querySelector('#maincontent');
 
@@ -120057,7 +120374,136 @@ var tuongtac_lichsu = exports.tuongtac_lichsu = function (_React$Component) {
 				_react2.default.createElement(
 					'div',
 					{ className: 'content' },
-					'abc'
+					_react2.default.createElement(
+						'div',
+						{ className: 'panel panel-flat' },
+						_react2.default.createElement(
+							'h1',
+							null,
+							'D\xF2ng s\u1EF1 ki\u1EC7n trong L\u1ECBch s\u1EED'
+						),
+						_react2.default.createElement(
+							'div',
+							{ id: 'timeline', className: 'timeline-container1' },
+							_react2.default.createElement(
+								'button',
+								{ className: 'timeline-toggle1' },
+								'+ Hi\u1EC3n th\u1ECB'
+							),
+							_react2.default.createElement('br', { className: 'clear1' }),
+							_react2.default.createElement(
+								'div',
+								{ className: 'timeline-wrapper1' },
+								_react2.default.createElement(
+									'h3',
+									{ className: 'timeline-time1' },
+									_react2.default.createElement(
+										'span',
+										null,
+										'1954'
+									)
+								),
+								_react2.default.createElement(
+									'dl',
+									{ className: 'timeline-series1' },
+									_react2.default.createElement(
+										'dt',
+										{ id: '19540517', className: 'timeline-event1' },
+										_react2.default.createElement(
+											'a',
+											null,
+											'Brown v. Board of Education'
+										)
+									),
+									_react2.default.createElement(
+										'dd',
+										{ className: 'timeline-event-content1', id: '19540517EX' },
+										_react2.default.createElement(
+											'h3',
+											null,
+											'May 17, 1954'
+										),
+										_react2.default.createElement(
+											'p',
+											null,
+											'The U.S. Supreme Court hands down a unanimous 9-0 decision in the Brown v. Board of Education of Topeka case, opening the door for the civil rights movement and ultimately racial integration in all aspects of U.S. society. In overturning Plessy v. Ferguson (1896), the court rules that \u201Cseparate educational facilities are inherently unequal.\u201D'
+										),
+										_react2.default.createElement('br', { className: 'clear1' })
+									)
+								),
+								_react2.default.createElement(
+									'dl',
+									{ className: 'timeline-series1' },
+									_react2.default.createElement(
+										'dt',
+										{ id: '195405172', className: 'timeline-event1' },
+										_react2.default.createElement(
+											'a',
+											null,
+											'Brown v. Board of Education'
+										)
+									),
+									_react2.default.createElement(
+										'dd',
+										{ className: 'timeline-event-content1', id: '195405172EX' },
+										_react2.default.createElement(
+											'h3',
+											null,
+											'May 17, 1954'
+										),
+										_react2.default.createElement(
+											'p',
+											null,
+											'The U.S. Supreme Court hands down a unanimous 9-0 decision in the Brown v. Board of Education of Topeka case, opening the door for the civil rights movement and ultimately racial integration in all aspects of U.S. society. In overturning Plessy v. Ferguson (1896), the court rules that \u201Cseparate educational facilities are inherently unequal.\u201D'
+										),
+										_react2.default.createElement('br', { className: 'clear1' })
+									)
+								)
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'timeline-wrapper1' },
+								_react2.default.createElement(
+									'h3',
+									{ className: 'timeline-time1' },
+									_react2.default.createElement(
+										'span',
+										null,
+										'1954'
+									)
+								),
+								_react2.default.createElement(
+									'dl',
+									{ className: 'timeline-series1' },
+									_react2.default.createElement(
+										'dt',
+										{ id: '195405171', className: 'timeline-event1' },
+										_react2.default.createElement(
+											'a',
+											null,
+											'Brown v. Board of Education'
+										)
+									),
+									_react2.default.createElement(
+										'dd',
+										{ className: 'timeline-event-content1', id: '195405171EX' },
+										_react2.default.createElement(
+											'h3',
+											null,
+											'May 17, 1954'
+										),
+										_react2.default.createElement(
+											'p',
+											null,
+											'The U.S. Supreme Court hands down a unanimous 9-0 decision in the Brown v. Board of Education of Topeka case, opening the door for the civil rights movement and ultimately racial integration in all aspects of U.S. society. In overturning Plessy v. Ferguson (1896), the court rules that \u201Cseparate educational facilities are inherently unequal.\u201D'
+										),
+										_react2.default.createElement('br', { className: 'clear1' })
+									)
+								)
+							),
+							_react2.default.createElement('br', { className: 'clear1' })
+						)
+					)
 				)
 			);
 		}
@@ -120065,6 +120511,19 @@ var tuongtac_lichsu = exports.tuongtac_lichsu = function (_React$Component) {
 		key: 'componentDidMount',
 		value: function componentDidMount() {
 			console.log("componentDidMount");
+			//$("#contentSGK1").attr("src", "timeliner-master/timeliner.html");
+
+			$.timeliner({});
+			$.timeliner({
+				timelineContainer: '#timeline-js',
+				timelineSectionMarker: '.milestone',
+				oneOpen: true,
+				startState: 'flat',
+				expandAllText: '+ Show All',
+				collapseAllText: '- Hide All'
+			});
+			// Colorbox Modal
+			$(".CBmodal").colorbox({ inline: true, initialWidth: 100, maxWidth: 682, initialHeight: 100, transition: "elastic", speed: 750 });
 		}
 	}, {
 		key: 'componentWillMount',
@@ -120102,14 +120561,6 @@ var _react = __webpack_require__(7);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _echarts = __webpack_require__(317);
-
-var _echarts2 = _interopRequireDefault(_echarts);
-
-var _socket = __webpack_require__(32);
-
-var _socket2 = _interopRequireDefault(_socket);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -120117,9 +120568,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-//let socket = io('http://localhost:3000'||'http://kid-learning.herokuapp.com:3000'||'https://kid-learning.herokuapp.com:3000');
-var socket = (0, _socket2.default)('http://' + window.location.hostname + ':3000');
 
 var data = document.querySelector('#maincontent');
 
@@ -120166,7 +120614,7 @@ var tuongtac_diali = exports.tuongtac_diali = function (_React$Component) {
 							_react2.default.createElement(
 								'li',
 								{ className: 'active' },
-								' T\u01B0\u01A1ng t\xE1c m\xF4n \u0110\u1ECBa L\xED'
+								'T\u01B0\u01A1ng t\xE1c m\xF4n \u0110\u1ECBa L\xED'
 							)
 						)
 					)
@@ -120180,32 +120628,45 @@ var tuongtac_diali = exports.tuongtac_diali = function (_React$Component) {
 						_react2.default.createElement(
 							'div',
 							{ className: 'content', style: { paddingBottom: '0px' } },
-							_react2.default.createElement('iframe', { id: 'contentSGK1', width: '100%', height: '450', allowFullScreen: true }),
-							_react2.default.createElement('iframe', { id: 'contentSGK2', width: '100%', height: '450', allowFullScreen: true })
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'panel-body' },
 							_react2.default.createElement(
-								'a',
-								{ className: 'text-semibold' },
-								'M\xF4 t\u1EA3:'
+								'div',
+								{ className: 'page-title' },
+								_react2.default.createElement(
+									'h4',
+									null,
+									_react2.default.createElement(
+										'span',
+										{ className: 'text-semibold' },
+										'B\u1EA3n \u0111\u1ED3 c\xE1c qu\u1ED1c gia tr\xEAn th\u1EBF gi\u1EDBi'
+									)
+								),
+								_react2.default.createElement(
+									'a',
+									{ className: 'heading-elements-toggle' },
+									_react2.default.createElement('i', { className: 'icon-more' })
+								)
 							),
-							' abc',
+							_react2.default.createElement('iframe', { id: 'contentSGK1', width: '100%', height: '450', allowFullScreen: true, frameBorder: '0' }),
 							_react2.default.createElement('br', null),
 							_react2.default.createElement(
-								'a',
-								{ className: 'text-semibold' },
-								'\u0110\u0103ng b\u1EDFi:'
+								'div',
+								{ className: 'page-title' },
+								_react2.default.createElement(
+									'h4',
+									null,
+									_react2.default.createElement(
+										'span',
+										{ className: 'text-semibold' },
+										'B\u1EA3n \u0111\u1ED3 d\xE2n s\u1ED1 c\u1EE7a c\xE1c qu\u1ED1c gia tr\xEAn th\u1EBF gi\u1EDBi(2010)'
+									)
+								),
+								_react2.default.createElement(
+									'a',
+									{ className: 'heading-elements-toggle' },
+									_react2.default.createElement('i', { className: 'icon-more' })
+								)
 							),
-							' cba',
-							_react2.default.createElement('br', null),
-							_react2.default.createElement(
-								'a',
-								{ className: 'text-semibold' },
-								'Ng\xE0y \u0111\u0103ng:'
-							),
-							' acb'
+							_react2.default.createElement('iframe', { id: 'contentSGK2', width: '100%', height: '450', allowFullScreen: true, frameBorder: '0' })
 						)
 					)
 				)
@@ -120217,6 +120678,10 @@ var tuongtac_diali = exports.tuongtac_diali = function (_React$Component) {
 			console.log("componentDidMount");
 			$("#contentSGK1").attr("src", "map/bandothegioi-quocgia.html");
 			$("#contentSGK2").attr("src", "map/bandothegioi-danso.html");
+			// Initialize lightbox
+			$('[data-popup=lightbox]').fancybox({
+				padding: 3
+			});
 		}
 	}, {
 		key: 'componentWillMount',
@@ -120234,6 +120699,347 @@ var tuongtac_diali = exports.tuongtac_diali = function (_React$Component) {
 	}]);
 
 	return tuongtac_diali;
+}(_react2.default.Component);
+
+/***/ }),
+/* 751 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.baithi = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(7);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _socket = __webpack_require__(32);
+
+var _socket2 = _interopRequireDefault(_socket);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var data = document.querySelector('#maincontent');
+
+var id_user = data.dataset.id;
+var check = true;
+var mon, phanlop;
+var url1, url2;
+var temp_username = data.dataset.username;
+var type_username = data.dataset.type;
+
+var socaude;
+
+var baithi = exports.baithi = function (_React$Component) {
+	_inherits(baithi, _React$Component);
+
+	function baithi(props) {
+		_classCallCheck(this, baithi);
+
+		var _this = _possibleConstructorReturn(this, (baithi.__proto__ || Object.getPrototypeOf(baithi)).call(this, props));
+
+		_this.state = {
+			listdapan: []
+		};
+		return _this;
+	}
+
+	_createClass(baithi, [{
+		key: 'render',
+		value: function render() {
+			return _react2.default.createElement(
+				'div',
+				null,
+				_react2.default.createElement(
+					'div',
+					{ className: 'page-header page-header-default' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'page-header-content' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'page-title' },
+							_react2.default.createElement(
+								'h4',
+								null,
+								_react2.default.createElement('i', { className: 'icon-arrow-left52 position-left' }),
+								' ',
+								_react2.default.createElement(
+									'span',
+									{ className: 'text-semibold' },
+									'Home'
+								),
+								' - Dashboard'
+							),
+							_react2.default.createElement(
+								'a',
+								{ className: 'heading-elements-toggle' },
+								_react2.default.createElement('i', { className: 'icon-more' })
+							)
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'heading-elements' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'heading-btn-group' },
+								_react2.default.createElement(
+									'a',
+									{ href: '#', className: 'btn btn-link btn-float has-text' },
+									_react2.default.createElement('i', { className: 'icon-bars-alt text-primary' }),
+									_react2.default.createElement(
+										'span',
+										null,
+										'Statistics'
+									)
+								),
+								_react2.default.createElement(
+									'a',
+									{ href: '#', className: 'btn btn-link btn-float has-text' },
+									_react2.default.createElement('i', { className: 'icon-calculator text-primary' }),
+									' ',
+									_react2.default.createElement(
+										'span',
+										null,
+										'Invoices'
+									)
+								),
+								_react2.default.createElement(
+									'a',
+									{ href: '#', className: 'btn btn-link btn-float has-text' },
+									_react2.default.createElement('i', { className: 'icon-calendar5 text-primary' }),
+									' ',
+									_react2.default.createElement(
+										'span',
+										null,
+										'Schedule'
+									)
+								)
+							)
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'breadcrumb-line' },
+						_react2.default.createElement(
+							'ul',
+							{ className: 'breadcrumb' },
+							_react2.default.createElement(
+								'li',
+								null,
+								_react2.default.createElement(
+									'a',
+									{ href: '#' },
+									_react2.default.createElement('i', { className: 'icon-home2 position-left' }),
+									' Trang ch\u1EE7'
+								)
+							),
+							_react2.default.createElement(
+								'li',
+								null,
+								_react2.default.createElement('a', { id: 'link_pre' })
+							),
+							_react2.default.createElement('li', { className: 'active', id: 'link_pre1' })
+						)
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'content' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'panel panel-flat' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel-heading' },
+							_react2.default.createElement(
+								'h5',
+								{ className: 'panel-title' },
+								'B\xE0i thi'
+							),
+							_react2.default.createElement(
+								'div',
+								{ className: 'heading-elements' },
+								_react2.default.createElement(
+									'ul',
+									{ className: 'icons-list' },
+									_react2.default.createElement(
+										'li',
+										null,
+										_react2.default.createElement('a', { 'data-action': 'collapse' })
+									)
+								)
+							)
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'panel-body' },
+							_react2.default.createElement('div', { id: 'xxx', className: 'form-group pt-15' })
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'text-right' },
+							_react2.default.createElement(
+								'button',
+								{ 'data-popup': 'tooltip', 'data-toggle': 'modal', 'data-target': '#confirm', id: 'nopbai', type: 'submit', className: 'btn bg-teal-400' },
+								'N\u1ED9p b\xE0i ',
+								_react2.default.createElement('i', { className: 'icon-arrow-right14 position-right' })
+							)
+						)
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ id: 'confirm', className: 'modal fade' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'modal-dialog modal-xs' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'modal-content' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'thumbnail no-border no-margin' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'caption text-center' },
+									_react2.default.createElement('h6', { id: 'hienkq', className: 'text-semibold no-margin-top content-group' }),
+									_react2.default.createElement(
+										'ul',
+										{ className: 'list-inline list-inline-condensed no-margin' },
+										_react2.default.createElement(
+											'li',
+											null,
+											_react2.default.createElement(
+												'a',
+												{ className: 'btn btn-success btn-float', 'data-dismiss': 'modal' },
+												'Xem \u0111\xE1p \xE1n'
+											)
+										)
+									)
+								)
+							)
+						)
+					)
+				)
+			);
+		}
+	}, {
+		key: 'componentDidMount',
+		value: function componentDidMount() {
+
+			var url1 = window.location.href;
+			url1 = url1.split('#');
+			var mon = url1[1].split('/');
+			var url2 = window.location.href;
+			url2 = url2.split('lop');
+			var phanlop = url2[1].split('/');
+
+			var mon1;
+			if (mon[1] == "lichsu") mon1 = "Lịch sử";
+			if (mon[1] == "diali") mon1 = "Địa lí";
+			var name_link = "Bài học " + mon1 + " lớp " + this.props.params.lop;
+			var link_pre = "#" + this.props.params.mon + "/lop" + this.props.params.lop + "/baihoc";
+			var name_link1 = "Bài thi cuối môn";
+			$("#link_pre").text(name_link);
+			$('#link_pre').attr('href', link_pre);
+			$("#link_pre1").text(name_link1);
+
+			//show dap an
+			$('#nopbai').click(function (event) {
+				var socaudung = 0;
+				for (var i = 1; i <= socaude; i++) {
+					var temtem3 = 'input[name=' + i + ']';
+					var iddapan = $(temtem3).closest('.checked').children().attr("id");
+					if (iddapan == '1') socaudung++;
+					//var iddapan=$("span").closest('.checked').children().attr("id");
+				}
+
+				console.log("xet ket qua " + socaudung);
+
+				var currentdate = new Date();
+				var datetime = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate() + " " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
+				var data = {
+					id: id_user,
+					lop: phanlop[0],
+					diem: (Math.round(parseFloat(socaudung * 10 / socaude) * 4) / 4).toFixed(2),
+					heso: '2',
+					mon: mon[1],
+					bai: 'thi',
+					thoigian: datetime
+				};
+				console.log(data);
+				$.post("themKetquahoctap", data, function () {
+					$('#hienkq').text("Bạn đã hoàn thành bài thi với số điểm: " + (Math.round(parseFloat(socaudung * 10 / socaude) * 4) / 4).toFixed(2) + " điểm");
+					socaudung = 0;
+					$('#nopbai').hide();
+					$("div").closest("#uniform-1").parent().parent().addClass("alpha-info no-border");
+				});
+			});
+		}
+	}, {
+		key: 'componentWillMount',
+		value: function componentWillMount() {
+			console.log("componentWillMount");
+			var ketqua = [];
+			var count1 = 1;
+			$.post("/" + this.props.params.mon + "/lop" + this.props.params.lop + "/baithi", function (data) {
+				console.log("lay bai thi");
+				console.log(data);
+				socaude = data.length;
+				if (data.length == 0) {
+					console.log("chua co bai tap");
+					$("#xxx").append('<center class="text-bold">Chưa có câu hỏi nào!.</center>');
+					// Default initialization Radió
+					$(".styled, .multiselect-container input").uniform({
+						radioClass: 'choice'
+					});
+					return;
+				}
+
+				for (var i = 0; i < data.length; i++) {
+					var count = i + 1;
+
+					$("#xxx").append('<div>' + '<p class=" text-semibold" style="margin-bottom: 0">' + 'Câu ' + count + ': ' + data[i].NOIDUNG + '</p>' + '<div id="cau' + count + '"class="form-group pt-5">' + '</div>' + '</div>' + '<br/>');
+
+					var idCauhoi = data[i].ID_BAIHOC;
+					$.post("/getDapan", { id: data[i].ID }, function (data1) {
+						console.log("duoi" + count);
+						console.log(data1);
+						for (var j = 0; j < data1.length; j++) {
+							if (data1[j].CHECK == 1) {
+								//console.log("cau "+count1+" ket qua "+(j+1));
+								var kqtemp = { cau: count1, dapan: j + 1 };
+								ketqua.push(kqtemp);
+								console.log(kqtemp);
+							}
+							$("#cau" + count1).append('<div class="radio">' + '<label>' + '<input type="radio" id="' + data1[j].CHECK + '" alt="' + j + '" name="' + count1 + '" class="styled" />' + data1[j].DAPAN + '</label>' + '</div>');
+						}
+						count1++;
+						// Default initialization Radió
+						$(".styled, .multiselect-container input").uniform({
+							radioClass: 'choice'
+						});
+					});
+				};
+				console.log(ketqua);
+			});
+		}
+	}]);
+
+	return baithi;
 }(_react2.default.Component);
 
 /***/ })

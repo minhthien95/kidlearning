@@ -10,6 +10,9 @@ var passportHttp   = require('passport-http');
 
 var parser         = bodyParser.urlencoded({extended: false});
 
+var upload = require('express-fileupload');
+var zip = require('machinepack-zip');
+
 var app            = express();
 var server         = require('http').Server(app);
 var io             = require('socket.io')(server);
@@ -17,7 +20,7 @@ var io             = require('socket.io')(server);
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 app.set('views', './views');
-
+app.use(upload()); // configure middleware
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
@@ -656,8 +659,12 @@ app.post('/themBinhluan', function(req, res){
 			      return console.error('error running query', err);
 			    }
 
-			    maxid=parseInt(result.rows[0].ID);
-			    id=maxid+1;
+			    if(result.rowCount==0)
+			    	id=1;
+			    else{
+			    	maxid=parseInt(result.rows[0].ID);
+			    	id=maxid+1;
+				}
 
 			    maxid="'"+id+"'";
 		    	pool.connect(function(err, client, donedb) {
@@ -715,15 +722,19 @@ app.post('/themCauhoi', function(req, res){
 		if(err) {
 	    	return console.error('error fetching client from pool', err);
 		}	
-	  	client.query('SELECT * FROM "CAUHOI" order by cast("ID" as int) desc limit 1',
+	  	client.query('SELECT * FROM "CAUHOI" WHERE "MON" IS NOT NULL order by cast("ID" as int) desc limit 1',
 	  		function(err, result) {
 	  			donedb(err);
 			    if(err) {
 			      return console.error('error running query', err);
 			    }
-
-			    maxid=parseInt(result.rows[0].ID);
-			    id=maxid+1;
+			    console.log("row count them cau hoi "+result.rowCount);
+			    if(result.rowCount==0)
+			    	id=1;
+			    else{
+			    	maxid=parseInt(result.rows[0].ID);
+			    	id=maxid+1;
+				}
 
 			    maxid="'"+id+"'";
 			  	client.query('INSERT INTO "CAUHOI" VALUES ('+maxid+','+
@@ -1015,6 +1026,25 @@ app.post("/:mon/lop:lop/baitap_tracnghiem_chitiet_cauhoi/:id", function(req,res)
 	  });
 	});
 })
+app.post("/:mon/lop:lop/baithi", function(req,res){
+	var mon ="'"+ req.params.mon+"'";
+	var lop ="'"+ req.params.lop+"'";
+	pool.connect(function(err, client, done) {
+	  	if(err) {
+	    	return console.error('error fetching client from pool', err);
+	  	}	  
+	  	client.query('select * from "TRACNGHIEM" where "MON"='+mon+' and "LOP"='+lop+' ORDER BY RANDOM() LIMIT 20'
+  		, function(err, result) {
+	    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+	    done(err);
+
+	    if(err) {
+	      return console.error('error running query', err);
+	    }
+	   	res.send(result.rows);
+	  });
+	});
+})
 app.post("/getDapan", function(req,res){
 	var id ="'"+ req.body.id+"'";
 
@@ -1091,48 +1121,60 @@ app.post('/themBaihoc', function(req, res){
 	pool.connect(function(err, client, donedb) {
 		if(err) {
 	    	return console.error('error fetching client from pool', err);
-		}	
-	  	client.query('SELECT * FROM "BAIHOC" order by cast("ID" as int) desc limit 1',
+		}
+		client.query('SELECT * FROM "BAIHOC" where "MON"='+mon+' and "PHANLOP"='+lop+' and "BAI"='+bai,
 	  		function(err, result) {
 	  			donedb(err);
-			    if(err) {
+			    if(err || result.rowCount!=0) {
 			      return console.error('error running query', err);
 			    }
+			    else{
+		   		  	client.query('SELECT * FROM "BAIHOC" order by cast("ID" as int) desc limit 1',
+				  		function(err, result) {
+				  			donedb(err);
+						    if(err) {
+						      return console.error('error running query', err);
+						    }
 
-			    maxid=parseInt(result.rows[0].ID);
-			    id=maxid+1;
-
-			    maxid="'"+id+"'";
-			  	client.query('INSERT INTO "BAIHOC" VALUES ('+maxid+','+
-			  												id_user+','+
-			  												lop+','+
-			  												0+','+
-			  												mon+','+
-			  												bai+','+
-			  												tieude+','+
-			  												thoigian+','+
-			  												sotrang+')',
-			  		function(err, result) {
-			  			donedb(err);
-					    if(err) {
-					      return console.error('error running query', err);
-					    }
-					    else{
-			    		   	client.query('INSERT INTO "CAUHOI" VALUES ('+id_cauhoi+')',
+						    if(result.rowCount==0)
+						    	id=1;
+						    else{
+						    	maxid=parseInt(result.rows[0].ID);
+						    	id=maxid+1;
+							}
+						    maxid="'"+id+"'";
+						  	client.query('INSERT INTO "BAIHOC" VALUES ('+maxid+','+
+						  												id_user+','+
+						  												lop+','+
+						  												0+','+
+						  												mon+','+
+						  												bai+','+
+						  												tieude+','+
+						  												thoigian+','+
+						  												sotrang+')',
 						  		function(err, result) {
 						  			donedb(err);
 								    if(err) {
 								      return console.error('error running query', err);
 								    }
 								    else{
-						    		   	res.end();
-						    		   	return;
+						    		   	client.query('INSERT INTO "CAUHOI" VALUES ('+id_cauhoi+')',
+									  		function(err, result) {
+									  			donedb(err);
+											    if(err) {
+											      return console.error('error running query', err);
+											    }
+											    else{
+									    		   	res.end();
+									    		   	return;
+											    }
+									  	});
 								    }
 						  	});
-					    }
-			  	});
-	  		}
-	  	);
+				  		}
+				  	);
+			    }
+	  	});	
 	});
 });
 /// them video bai hoc moi
@@ -1178,8 +1220,23 @@ app.post('/themVideo', function(req, res){
 					      return console.error('error running query', err);
 					    }
 					    else{
-			    		   	res.end();
-			    		   	return;
+					    	var mon1;
+					    	if(mon=="lichsu")
+					    		mon1="ls";
+					    	else
+					    		mon1="dl"
+					    	var id_cauhoi="'"+"v"+mon1+id+"'";
+			    		   	client.query('INSERT INTO "CAUHOI" VALUES ('+id_cauhoi+')',
+						  		function(err, result) {
+						  			donedb(err);
+								    if(err) {
+								      return console.error('error running query', err);
+								    }
+								    else{
+						    		   	res.end();
+						    		   	return;
+								    }
+						  	});
 					    }
 			  	});
 	  		}
@@ -1247,8 +1304,12 @@ app.post('/themTracnghiem', function(req, res){
 			      return console.error('error running query', err);
 			    }
 
-			    maxid=parseInt(result.rows[0].ID);
-			    id1=maxid+1;
+			   	if(result.rowCount==0)
+			    	id=1;
+			    else{
+			    	maxid=parseInt(result.rows[0].ID);
+			    	id=maxid+1;
+				}
 
 			    maxid="'"+id1+"'";
 			  	client.query('INSERT INTO "TRACNGHIEM" VALUES ('+maxid+','+
@@ -1308,3 +1369,138 @@ app.post('/themTracnghiem', function(req, res){
 	  	);
 	});
 });
+
+/// them ket qua hoc tap
+app.post('/themKetquahoctap', function(req, res){	
+
+	var maxid;
+	var id_user="'"+JSON.parse(JSON.stringify(req.body.id))+"'";
+	var diem="'"+JSON.parse(JSON.stringify(req.body.diem))+"'";
+	var heso="'"+JSON.parse(JSON.stringify(req.body.heso))+"'";
+	var lop="'"+JSON.parse(JSON.stringify(req.body.lop))+"'";
+	var thoigian="'"+JSON.parse(JSON.stringify(req.body.thoigian))+"'";
+	var mon="'"+JSON.parse(JSON.stringify(req.body.mon))+"'";
+	var bai="'"+JSON.parse(JSON.stringify(req.body.bai))+"'";
+
+	pool.connect(function(err, client, donedb) {
+		if(err) {
+	    	return console.error('error fetching client from pool', err);
+		}	
+	  	client.query('SELECT * FROM "KETQUAHOCTAP" order by cast("ID" as int) desc limit 1',
+	  		function(err, result) {
+	  			donedb(err);
+			    if(err) {
+			      return console.error('error running query', err);
+			    }
+
+			    console.log(result.rowCount);
+			    if(result.rowCount==0)
+			    	id=1;
+			    else{
+			    	maxid=parseInt(result.rows[0].ID);
+			    	id=maxid+1;
+				}
+			    maxid="'"+id+"'";
+			  	client.query('INSERT INTO "KETQUAHOCTAP" VALUES ('+maxid+','+
+			  												id+','+
+			  												mon+','+
+			  												lop+','+
+			  												heso+','+
+			  												diem+','+
+			  												bai+','+
+			  												thoigian+')',
+			  		function(err, result) {
+			  			donedb(err);
+					    if(err) {
+					      return console.error('error running query', err);
+					    }
+					    else{
+					    	res.end();
+			    		   	return;
+					    }
+			  	});
+	  		}
+	  	);
+	});
+});
+
+///up file
+app.post('/uploadAnh',function(req,res){
+  console.log("xxx "+req.body.file_name);
+  var file_name=req.body.file_name;
+  if(req.files.upfile){
+    var file = req.files.upfile,
+      name = file.name,
+      type = file.mimetype;
+    var uploadpath = __dirname + '/public/assets/images/' + 'user_'+file_name+'.jpg';
+    file.mv(uploadpath,function(err){
+      if(err){
+        console.log("File Upload Failed",name,err);
+        res.redirect("/#/trangcanhan");
+      }
+      else {
+        console.log("File Uploaded",name);
+        res.redirect("/#/trangcanhan");
+        zip.unzip({
+          source: __dirname + '/uploads/' + name,
+          destination: __dirname + '/extracted/'
+        }).exec({
+          error: function (err) {
+            console.log(err);
+          },
+          success: function () {
+            console.log("extracted successfully");
+          }
+        })
+      }
+    });
+  }
+  else {
+    res.send("No File selected !");
+    res.end();
+  };
+})
+
+///up sgk
+app.post('/uploadSGK', function(req, res) {
+    console.log(req.files);
+    if (req.files.upfile) {
+        var file = req.files.upfile,
+            name = file.name,
+            type = file.mimetype;
+        var uploadpath = __dirname + '/uploads/' + name;
+
+        var extension = name.split('.').pop();
+
+        file.mv(uploadpath, function(err) {
+            if (err) {
+                console.log("File Upload Failed", name, err);
+                res.send("Error Occured!")
+            } else {
+              if (extension !== 'zip') {
+                console.log("Invalid file type. Cannot upload");
+                res.send('This file is not a .zip file')
+              }
+              else {
+                console.log("File Uploaded : ", name);
+                
+                res.redirect("/");
+                zip.unzip({
+                    source: __dirname + '/uploads/' + name,
+                    destination: __dirname +'/public/sgk/'
+                }).exec({
+                    error: function(err) {
+                        console.log(err);
+                    },
+                    success: function() {
+                        console.log("extracted successfully");
+                    }
+                })
+              }  
+            }
+        });
+    } else {
+        res.send("No File selected !");
+        res.end();
+    };
+})

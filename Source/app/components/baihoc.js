@@ -2,6 +2,8 @@ import React from 'react';
 import io from 'socket.io-client';
 //let socket = io('http://kid-learning.herokuapp.com:3000'||'https://kid-learning.herokuapp.com:3000' || 'http://localhost:3000');
 let socket = io('http://'+window.location.hostname+':3000');
+//let socket = io('http://'+window.location.hostname);
+
 var data = document.querySelector('#maincontent');
 console.log('http://'+window.location.hostname+':3000');
 var id_user=data.dataset.id;
@@ -23,6 +25,7 @@ export class baihoc extends React.Component{
 	render(){
 		return(
 			<div>
+
 				{/* Page header */}
 				<div className="page-header page-header-default">
 					<div className="breadcrumb-line">
@@ -32,6 +35,7 @@ export class baihoc extends React.Component{
 						</ul>
 						<ul className="breadcrumb-elements">
 							<li ><a id="thembaihoc" ><i className="icon-plus-circle2 position-left"></i>Thêm bài học</a></li>
+							<li ><a id="themsgk" data-popup="tooltip" data-toggle="modal" data-target="#confirm2"><i className="icon-plus-circle2 position-left"></i>Thêm Sách Giáo Khoa</a></li>
 						</ul>
 					</div>
 				</div>
@@ -238,16 +242,56 @@ export class baihoc extends React.Component{
 							}, this)}
 							{/* List bai hoc */}
 
+							<div className="timeline-row">
+								<div className="timeline-icon">
+									<div className="bg-orange">
+										<i className="icon-graduation2"></i>
+									</div>
+								</div>
+
+								<div className="panel panel-flat timeline-content">
+									<div className="panel-heading">
+										<h6 className="panel-title text-semibold no-margin"><a href={"#"+this.props.params.mon+"/lop"+this.props.params.lop+"/baithi/"} className="text-default"><a>Bài Thi:</a>  Bài thi cuối môn</a></h6>
+									</div>
+
+									<div className="panel-body">
+										
+
+								
+									</div>
+								</div>
+							</div>
 						</div>
 				    </div>
 
 				</div>
 				{/* /content area */}
+				{/* confirm */}
+				<div id="confirm2" className="modal fade">
+					<div className="modal-dialog modal-xs">
+						<div className="modal-content">
+							<div className="thumbnail no-border no-margin">								
+						    	<div className="caption text-center">
+						    		<h6 id="uploadfile" className="text-semibold no-margin-top content-group">Thêm Sách Giáo Khoa </h6>
+						    		
+			                    	
+						    	</div>
+					    	</div>
+						</div>
+					</div>
+				</div>
+				{/* /confirm */}
 			</div>
 		)
 	}
 	componentDidMount(){
 		
+		$("#uploadfile").append('<form class="fileupload" action="uploadSGK" method="post" enctype="multipart/form-data">'+
+					                    		'<input type="file" id_user="5" name="upfile" class="file-styled"/>'+
+					                    		'<br/>'+
+					                    	'<button type="submit">Đăng Sách Giáo Khoa</button>'+
+				                    	'</form>');
+
 		url1=window.location.href;
 		url1=url1.split('#');
 		mon=url1[1].split('/');
@@ -257,9 +301,11 @@ export class baihoc extends React.Component{
 
 		if (type_username!="trogiang") {
             $("#thembaihoc").hide();
+            $("#themsgk").hide();
         }
         if (type_username=="admin") {
             $("#thembaihoc").show();
+            $("#themsgk").hide();
         }
 		$("#formadd").hide();
 		$('#thembaihoc').click(function (event) {
@@ -339,6 +385,7 @@ export class baihoc extends React.Component{
 			id_user: "all"
 		}
 		console.log(data1);
+		console.log("socket -->> "+socket);
 		socket.emit('c2s_Baihoc',data1);
 		socket.on('s2c_Baihoc', function(data){
 			console.log(data);

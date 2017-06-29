@@ -1,10 +1,21 @@
 import React from 'react';
+import io from 'socket.io-client';
 
+let socket = io('http://'+window.location.hostname+':3000');
+//let socket = io('http://'+window.location.hostname);
+var data = document.querySelector('#maincontent');
+
+var id_user=data.dataset.id;
+var check=true;
+var mon,phanlop,baihoc;
+var temp_username=data.dataset.username;
+var type_username=data.dataset.type;
 export class baihoc_video_chitiet extends React.Component{
 	constructor(props) {
     super(props);
       this.state = {
-        listvideo: []
+        listvideo: [],
+        listbinhluan: []
       };
     }
 	render(){
@@ -53,13 +64,150 @@ export class baihoc_video_chitiet extends React.Component{
 					})}
 					{/* /main charts */}
 
+					{/* Comments */}
+					<div id="baitap_binhluan" className="panel panel-flat">
+						<div className="panel-heading">
+							<h5 className="panel-title text-semiold"><i className="icon-bubbles4 position-left"></i> Thảo luận</h5>
+						</div>
+
+						<div id="formBinhluan" className="panel-body">
+							<ul className="media-list content-group-lg stack-media-on-mobile">
+								{this.state.listbinhluan.map(function(data1,index1){
+									return (
+										<li key={index1} className="media">
+											<div className="media-left">
+												<a><img id="img_user" src={"assets/images/user_"+data1.ID_NGUOITRALOI+".jpg"} onError={(e)=>{e.target.src="assets/images/user.jpg"}} className="img-circle img-sm" alt=""/></a>
+											</div>
+
+											<div className="media-body">
+												{data1.USERNAME==data.dataset.username ? (
+											        <ul className="list-inline list-inline-separate heading-text pull-right">
+													<li><a id={data1.USERNAME} name={data1.ID_BINHLUAN} className="text-danger-400">Xoá</a></li>
+												</ul>) : (
+											        <div/>
+										      	)}
+												
+												<div className="media-heading">
+													<a id="username" className="text-semibold">{data1.USERNAME}</a>
+													<span className="media-annotation dotted">{data1.to_char}</span>
+												</div>
+
+												<p>{data1.NOIDUNG}</p>
+
+												{data1.USERNAME==data.dataset.username ? (
+											        <ul className="list-inline list-inline-separate text-size-small">
+														<li>Đánh giá:&nbsp; {data1.MUCDANHGIA}
+														</li>
+													</ul>) : (
+											        <ul className="list-inline list-inline-separate text-size-small">
+														<li>Đánh giá:&nbsp; {data1.MUCDANHGIA} 
+														<a id={data1.USERNAME} name={data1.ID_BINHLUAN}><i className="icon-arrow-up22 text-success"></i></a>
+														<a id={data1.USERNAME} name={data1.ID_BINHLUAN}><i className="icon-arrow-down22 text-danger"></i></a>
+														
+														</li>
+													</ul>
+										      	)}
+							
+											</div>
+											<hr/>
+										</li>
+									)
+								})}
+							</ul>
+
+							<h6 className="text-semibold"><i className="icon-pencil7 position-left"></i> Bình luận của bạn</h6>
+							<div className="input-group content-group">
+								<div className="has-feedback has-feedback-left">
+									<input id="binhluan_cauhoi" type="text" className="form-control input-xlg" placeholder="Nhập bình luận của bạn"/>
+									<div className="form-control-feedback"><i className="icon-plus22 text-muted text-size-base"></i></div>
+								</div>
+
+								<div className="input-group-btn">
+									<button id="gui_binhluan" type="submit" className="btn btn-primary btn-xlg"><i className="icon-plus22"></i>Bình luận</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					{/* /comments */}
+
 				</div>
 				{/* /content area */}
 			</div>
 		)
 	}
+	componentDidMount(){
+		var that=this;
+				var monkh;
+		if(this.props.params.mon=="lichsu")
+			monkh="ls";
+		if(this.props.params.mon=="diali")
+			monkh="dl";
+		//id_cauhoi v+ls+idvideo
+		var id_cauhoi="v"+monkh+this.props.params.video;
+
+		mon=this.props.params.mon;
+		phanlop=this.props.params.lop;
+		baihoc=this.props.params.id;
+				///binh luan
+		$('#gui_binhluan').click(function (event){
+			var currentdate = new Date(); 
+			var datetime =currentdate.getFullYear() + "-"
+		            + (currentdate.getMonth()+1)  + "-" 
+		            + currentdate.getDate() +" "
+		            + currentdate.getHours() + ":"  
+		            + currentdate.getMinutes() + ":" 
+		            + currentdate.getSeconds();
+
+			if($("#binhluan_cauhoi").val()=="")
+				return;
+			var data={
+		        id:       id_user,
+		        id_cauhoi: id_cauhoi,
+				noidung: $("#binhluan_cauhoi").val(),
+				thoigian: datetime
+			};
+			console.log(data);
+	        $.post("themBinhluan", data, function(){
+	        	$("#binhluan_cauhoi").val("");
+	        	//window.location = "#/trangcanhan";
+            	//Trangcanhan.dispatch(location.getCurrentPath(), null);
+    		});
+		});
+	    $('#formBinhluan').on('click', '.text-success,.text-danger,.text-danger-400', function (e) {
+	        var usernameClick = $(this).parent().attr('id');
+	        var idBinhluanClick = $(this).parent().attr('name');
+	        var type = $(this).attr('class');
+
+	        if(type=="text-danger-400"){
+	        	console.log("click xoa");
+				$.post("delete_binhluan",{id_binhluan: $(this).attr('name'),id_cauhoi: id_cauhoi});
+				return;
+	        }	
+	        if(usernameClick==temp_username)
+	  			return;
+	        console.log("click binh luan 2");
+	        var data={
+		        id_binhluan: idBinhluanClick,
+		        type: type
+			};
+			console.log(data);
+	        $.post("rate_binhluan", data, function(){
+	        	
+    		});
+	    });
+
+
+	}
 	componentWillMount(){
 		var that=this;
+
+		var monkh;
+		if(this.props.params.mon=="lichsu")
+			monkh="ls";
+		if(this.props.params.mon=="diali")
+			monkh="dl";
+		//id_cauhoi v+ls+idvideo
+		var id_cauhoi="v"+monkh+this.props.params.video;
 
 		var url1=window.location.href;
 		url1=url1.split('#');
@@ -87,6 +235,12 @@ export class baihoc_video_chitiet extends React.Component{
 			$("#link_pre1").text(name_link1);
 			$('#link_pre1').attr('href', link_pre1);
 			that.setState({listvideo: data});
+		});
+
+			    //lay binh luan
+		socket.emit('c2s_Binhluan',{id: id_cauhoi });
+		socket.on('s2c_Binhluan', function(data){
+			that.setState({listbinhluan: data});
 		});
 	}
 }

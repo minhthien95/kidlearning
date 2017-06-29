@@ -1,7 +1,7 @@
 import React from 'react';
 import io from 'socket.io-client';
-//let socket = io('http://localhost:3000'||'http://kid-learning.herokuapp.com:3000'||'https://kid-learning.herokuapp.com:3000');
 let socket = io('http://'+window.location.hostname+':3000');
+//let socket = io('http://'+window.location.hostname);
 
 var data = document.querySelector('#maincontent');
 var url1,url2;
@@ -240,6 +240,7 @@ export class Trangcanhan extends React.Component{
 																</div>
 															</div>
 														</div>
+
 								                        <div className="text-right">
 								                        	<button type="submit" className="btn btn-primary">Lưu lại <i className="icon-arrow-right14 position-right"></i></button>
 								                        </div>
@@ -255,8 +256,8 @@ export class Trangcanhan extends React.Component{
 													<img src={this.state.id_user} onError={() => {this.setState({id_user : "assets/images/user.jpg"}) }} alt=""/>
 													<div className="caption">
 														<span>
-															<a href="#" className="btn bg-success-400 btn-icon btn-xs" data-popup="lightbox"><i className="icon-plus2"></i></a>
-														</span>
+															<a data-popup="tooltip" data-toggle="modal" data-target="#confirm2" className="btn bg-success-400 btn-icon btn-xs" ><i className="icon-plus2"></i></a>
+													    </span>
 													</div>
 												</div>
 											
@@ -387,6 +388,8 @@ export class Trangcanhan extends React.Component{
 						</div>
 					</div>
 					{/* /confirm */}
+
+														
 					{/* confirm */}
 					<div id="confirm1" className="modal fade">
 						<div className="modal-dialog modal-xs">
@@ -404,6 +407,21 @@ export class Trangcanhan extends React.Component{
 						</div>
 					</div>
 					{/* /confirm */}
+					{/* confirm */}
+					<div id="confirm2" className="modal fade">
+						<div className="modal-dialog modal-xs">
+							<div className="modal-content">
+								<div className="thumbnail no-border no-margin">								
+							    	<div className="caption text-center">
+							    		<h6 id="uploadfile" className="text-semibold no-margin-top content-group">Thêm ảnh đại diện </h6>
+							    		
+				                    	
+							    	</div>
+						    	</div>
+							</div>
+						</div>
+					</div>
+					{/* /confirm */}
 				</div>
 				{/* /content area */}
 			</div>
@@ -414,6 +432,17 @@ export class Trangcanhan extends React.Component{
 
 		var id_user=data.dataset.id;
 		var check=false;
+
+		// $("#uploadfile").append('<form class="fileupload" action="upload" method="post" enctype="multipart/form-data">'+
+		// 							      '<input type="file" name="upfile" value=""/>'+
+		// 							     '<input type="submit" />'+
+		// 							    '</form>');
+		$("#uploadfile").append('<form class="fileupload" action="uploadAnh" method="post" enctype="multipart/form-data">'+
+					                    		'<input type="file" id_user="5" name="upfile" class="file-styled"/>'+
+					                    		'<input hidden name="file_name" value="'+id_user+'"/>'+
+					                    		'<br/>'+
+					                    	'<button type="submit">Đăng ảnh</button>'+
+				                    	'</form>');
 
 		$('#tag_listuser').hide();
 		$('#tag_listsup').hide();
@@ -882,7 +911,7 @@ export class Trangcanhan extends React.Component{
                     {
                         name: 'Lịch Sử',
                         type: 'line',
-                        data: [8, 9, 7, 5, 4, 6, 3]
+                        data: [8, 9, 7, 5]
                     },
                     {
                         name: 'Địa Lí',

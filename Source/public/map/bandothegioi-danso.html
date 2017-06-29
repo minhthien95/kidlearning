@@ -52,12 +52,6 @@
         };
 
         option = {
-          title: {
-              text: 'Bản đồ dân số trên thế giới (2010)',
-              subtext: 'Bản đồ dân số trên thế giới (2010)',
-              left: 'center',
-              top: 'top'
-          },
           tooltip: {
               trigger: 'item',
               formatter: function (params) {
@@ -280,7 +274,13 @@
         };
         if (option && typeof option === "object") {
             myChart.setOption(option, true);
-        }
+        };
+        window.onresize = function () {
+          console.log("thay doi");
+            setTimeout(function () {
+                myChart.resize();
+            }, 200);
+        };
        </script>
   </body>
 </html>

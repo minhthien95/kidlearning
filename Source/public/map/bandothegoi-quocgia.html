@@ -82,13 +82,13 @@
         };
         if (option && typeof option === "object") {
             myChart.setOption(option, true);
-        }
-        // window.onresize = function () {
-        //   console.log("thay doi");
-        //     setTimeout(function () {
-        //         myChart.resize();
-        //     }, 200);
-        // }
+        };
+        window.onresize = function () {
+          console.log("thay doi");
+            setTimeout(function () {
+                myChart.resize();
+            }, 200);
+        };
        </script>
   </body>
 </html>

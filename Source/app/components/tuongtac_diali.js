@@ -1,9 +1,4 @@
 import React from 'react';
-import echarts from 'echarts';
-import io from 'socket.io-client';
-//let socket = io('http://localhost:3000'||'http://kid-learning.herokuapp.com:3000'||'https://kid-learning.herokuapp.com:3000');
-let socket = io('http://'+window.location.hostname+':3000');
-
 var data = document.querySelector('#maincontent');
 
 var id_user=data.dataset.id;
@@ -21,7 +16,7 @@ export class tuongtac_diali extends React.Component{
 					<div className="breadcrumb-line">
 						<ul className="breadcrumb">
 							<li><a href="#"><i className="icon-home2 position-left"></i> Trang chủ</a></li>
-							<li className="active"> Tương tác môn Địa Lí</li>
+							<li className="active">Tương tác môn Địa Lí</li>
 							
 						</ul>
 					</div>
@@ -34,19 +29,24 @@ export class tuongtac_diali extends React.Component{
 
 					{/* Main charts */}
 					<div className="panel panel-flat">
-						{/* SGK */}
+						{/* tuong tac */}
+
+
 						<div className="content" style={{paddingBottom: '0px'}}>
-		 					<iframe id="contentSGK1"  width="100%" height="450" allowFullScreen/>
-		 					<iframe id="contentSGK2"  width="100%" height="450" allowFullScreen/>
+							<div className="page-title">
+								<h4><span className="text-semibold">Bản đồ các quốc gia trên thế giới</span></h4>
+								<a className="heading-elements-toggle"><i className="icon-more"></i></a>
+							</div>
+		 					<iframe id="contentSGK1"  width="100%" height="450" allowFullScreen frameBorder="0"/>
+		 					<br/>
+		 					<div className="page-title">
+								<h4><span className="text-semibold">Bản đồ dân số của các quốc gia trên thế giới(2010)</span></h4>
+								<a className="heading-elements-toggle"><i className="icon-more"></i></a>
+							</div>
+		 					<iframe id="contentSGK2"  width="100%" height="450" allowFullScreen frameBorder="0"/>
 						</div>
-						{/* /SGK */}
-						<div className="panel-body">
-							<a className="text-semibold">Mô tả:</a> abc
-							<br/>
-							<a className="text-semibold">Đăng bởi:</a> cba
-							<br/>
-							<a className="text-semibold">Ngày đăng:</a> acb
-						</div>
+						{/* /tuon tac */}
+
 					</div>
 					{/* /main charts */}
 
@@ -61,6 +61,10 @@ export class tuongtac_diali extends React.Component{
 		console.log("componentDidMount");
 		$("#contentSGK1").attr("src", "map/bandothegioi-quocgia.html");
 		$("#contentSGK2").attr("src", "map/bandothegioi-danso.html");
+		 // Initialize lightbox
+	    $('[data-popup=lightbox]').fancybox({
+	        padding: 3
+	    });
 	}
 	componentWillMount()
 	{

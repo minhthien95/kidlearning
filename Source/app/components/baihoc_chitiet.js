@@ -1,6 +1,7 @@
 import React from 'react';
 import io from 'socket.io-client';
 let socket = io('http://'+window.location.hostname+':3000');
+//let socket = io('http://'+window.location.hostname);
 var data = document.querySelector('#maincontent');
 
 var id_user=data.dataset.id;
@@ -60,7 +61,7 @@ export class baihoc_chitiet extends React.Component{
 
 										<div className="panel panel-flat timeline-content">
 											<div className="panel-heading">
-												<h6 className="panel-title text-semibold no-margin"> <a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_sgk/"+data1.BAI} className="text-success">Sách giáo khoa</a></h6>
+												<h6 className="panel-title text-semibold no-margin"> <a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_sgk/"+data1.BAI+"/"+data1.TRANGSACH} className="text-success">Sách giáo khoa</a></h6>
 											</div>
 										</div>
 									</div>

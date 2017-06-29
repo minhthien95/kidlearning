@@ -1,0 +1,10 @@
+Danh sach username password
+---------------admin-----------------------------
+leminhthien 12345678
+admin 1234
+---------------GiaoVien--------------------------
+dinhtrangthanhgiang 1234
+giaovien1 12345678
+---------------HocSinh--------------------------
+abc 1234
+nguyenthia 1234
