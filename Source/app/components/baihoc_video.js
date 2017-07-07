@@ -144,12 +144,18 @@ export class baihoc_video extends React.Component{
 	        }
 	    });
 	    $('#add_video').click(function () {
-	    	if($("#add_tieude").val()=="")
+	    	if($("#add_tieude").val()==""){
+	    		alert("Bạn chưa nhập tiêu đề video!");
 				return;
-			if($("#add_noidung").val()=="")
+	    	}
+			if($("#add_noidung").val()==""){
+				alert("Bạn chưa nhập mô tả video!");
 				return;
-			if($("#add_link").val()=="")
+			}
+			if($("#add_link").val()==""){
+				alert("Bạn chưa nhập đường dẫn youtube video!");
 				return;
+			}
 			var currentdate = new Date();
 			var datetime =currentdate.getFullYear() + "-"
 			    + (currentdate.getMonth()+1)  + "-" 
@@ -176,6 +182,7 @@ export class baihoc_video extends React.Component{
 	        	$("#add_link").val("");
 	        	$("#formadd").hide();
 	        	alert("Video đã được thêm, làm mới trang để xem kết quả");
+	        	$("#formadd").hide();
 	        	//window.location = "#/trangcanhan";
             	//Trangcanhan.dispatch(location.getCurrentPath(), null);
     		});

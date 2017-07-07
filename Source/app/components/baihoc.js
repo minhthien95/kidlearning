@@ -74,7 +74,7 @@ export class baihoc extends React.Component{
 							</div>
 						</div>
 					</div>	
-					<div id="formCauhoi" className="timeline timeline-left content-group">
+					<div id="listbaihoc" className="timeline timeline-left content-group">
 						<div className="timeline-container">
 
 							{/* List bai hoc */}
@@ -92,7 +92,7 @@ export class baihoc extends React.Component{
 
 													<div className="panel panel-flat timeline-content">
 														<div className="panel-heading">
-															<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_chitiet/"+data1.BAI} className="text-default"><a>Bài {data1.BAI}:</a>  {data1.TIEUDE}</a></h6>
+															<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_chitiet/"+data1.BAI} className="text-default"><span className="text-primary">Bài {data1.BAI}:</span> {data1.TIEUDE}</a></h6>
 															<div className="heading-elements">
 																<span className="heading-text">{data1.USERNAME} - {data1.to_char}</span>
 										                	</div>
@@ -105,7 +105,14 @@ export class baihoc extends React.Component{
 																<div className="col-md-2 col-sm-3"><i className="icon-tree7"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_tip_chitiet/"+data1.BAI+"/"+data1.ID_BAIHOC}><span>Tóm tắt kiến thức</span></a></div>
 																<div className="col-md-2 col-sm-3"><i className="icon-book-play"></i><a  href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_video/"+data1.BAI+"/"+data1.ID_BAIHOC}><span>Video</span></a></div>
 																<div className="col-md-2 col-sm-3"><i className="icon-file-text"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baitap_tracnghiem_chitiet/"+data1.BAI+"/"+data1.ID_BAIHOC}><span>Bài tập</span></a></div>
-
+																{data1.BAITHI=='1' ? (
+															       <div className="col-md-2 col-sm-3">
+															       <i className="icon-clipboard2"></i>
+															       <a  href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baikiemtra/"+data1.BAI}><span>Bài kiểm tra</span></a>
+															       </div>															    
+															       ) : (
+															       null
+														      	)}
 															</div>
 													
 														</div>
@@ -121,7 +128,7 @@ export class baihoc extends React.Component{
 
 													<div className="panel panel-flat timeline-content">
 														<div className="panel-heading">
-															<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_chitiet/"+data1.BAI} className="text-default"><a>Bài {data1.BAI}:</a>  {data1.TIEUDE}</a></h6>
+															<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_chitiet/"+data1.BAI} className="text-default"><span className="text-primary">Bài {data1.BAI}:</span>  {data1.TIEUDE}</a></h6>
 															<div className="heading-elements">
 																<span className="heading-text">{data1.USERNAME} - {data1.to_char}</span>
 										                	</div>
@@ -134,7 +141,11 @@ export class baihoc extends React.Component{
 																<div className="col-md-2 col-sm-3"><i className="icon-tree7"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_tip_chitiet/"+data1.BAI+"/"+data1.ID_BAIHOC}><span>Tóm tắt kiến thức</span></a></div>
 																<div className="col-md-2 col-sm-3"><i className="icon-book-play"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_video/"+data1.BAI+"/"+data1.ID_BAIHOC}><span>Video</span></a></div>
 																<div className="col-md-2 col-sm-3"><i className="icon-file-text"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baitap_tracnghiem_chitiet/"+data1.BAI+"/"+data1.ID_BAIHOC}><span>Bài tập</span></a></div>
-
+																{data1.BAITHI=='1' ? (
+															       <div className="col-md-2 col-sm-3"><i className="icon-clipboard2"></i><a  href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baikiemtra/"+data1.BAI}><span>Bài kiểm tra</span></a></div>
+															    ) : (
+															       null
+														      	)}
 															</div>
 													
 														</div>
@@ -171,7 +182,7 @@ export class baihoc extends React.Component{
 
 													<div className="panel panel-flat timeline-content">
 														<div className="panel-heading">
-															<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_chitiet/"+data1.BAI} className="text-default"><a>Bài {data1.BAI}:</a>  {data1.TIEUDE}</a></h6>
+															<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_chitiet/"+data1.BAI} className="text-default"><span className="text-primary">Bài {data1.BAI}:</span>  {data1.TIEUDE}</a></h6>
 															<div className="heading-elements">
 																<span className="heading-text">{data1.USERNAME} - {data1.to_char}</span>
 										                	</div>
@@ -184,6 +195,11 @@ export class baihoc extends React.Component{
 																<div className="col-md-2 col-sm-3"><i className="icon-tree7"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_tip_chitiet/"+data1.BAI+"/"+data1.ID_BAIHOC}><span>Tóm tắt kiến thức</span></a></div>
 																<div className="col-md-2 col-sm-3"><i className="icon-book-play"></i><a  href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_video/"+data1.BAI+"/"+data1.ID_BAIHOC}><span>Video</span></a></div>
 																<div className="col-md-2 col-sm-3"><i className="icon-file-text"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baitap_tracnghiem_chitiet/"+data1.BAI+"/"+data1.ID_BAIHOC}><span>Bài tập</span></a></div>
+																{data1.BAITHI=='1' ? (
+															       <div className="col-md-2 col-sm-3"><i className="icon-clipboard2"></i><a  href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baikiemtra/"+data1.BAI}><span>Bài kiểm tra</span></a></div>
+															    ) : (
+															      null
+														      	)}
 
 															</div>
 													
@@ -200,7 +216,7 @@ export class baihoc extends React.Component{
 
 													<div className="panel panel-flat timeline-content">
 														<div className="panel-heading">
-															<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_chitiet/"+data1.BAI} className="text-default"><a>Bài {data1.BAI}:</a>  {data1.TIEUDE}</a></h6>
+															<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_chitiet/"+data1.BAI} className="text-default"><span className="text-primary">Bài {data1.BAI}:</span>  {data1.TIEUDE}</a></h6>
 															<div className="heading-elements">
 																<span className="heading-text">{data1.USERNAME} - {data1.to_char}</span>
 										                	</div>
@@ -213,8 +229,14 @@ export class baihoc extends React.Component{
 																<div className="col-md-2 col-sm-3"><i className="icon-tree7"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_tip_chitiet/"+data1.BAI+"/"+data1.ID_BAIHOC}><span>Tóm tắt kiến thức</span></a></div>
 																<div className="col-md-2 col-sm-3"><i className="icon-book-play"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_video/"+data1.BAI+"/"+data1.ID_BAIHOC}><span>Video</span></a></div>
 																<div className="col-md-2 col-sm-3"><i className="icon-file-text"></i><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baitap_tracnghiem_chitiet/"+data1.BAI+"/"+data1.ID_BAIHOC}><span>Bài tập</span></a></div>
+																{data1.BAITHI=='1' ? (
+															       <div className="col-md-2 col-sm-3"><i className="icon-clipboard2"></i><a  href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baikiemtra/"+data1.BAI}><span>Bài kiểm tra</span></a></div>
+															    ) : (
+															       null
+														      	)}
+
 															</div>
-													
+															
 														</div>
 													</div>
 												</div>
@@ -251,7 +273,7 @@ export class baihoc extends React.Component{
 
 								<div className="panel panel-flat timeline-content">
 									<div className="panel-heading">
-										<h6 className="panel-title text-semibold no-margin"><a href={"#"+this.props.params.mon+"/lop"+this.props.params.lop+"/baithi/"} className="text-default"><a>Bài Thi:</a>  Bài thi cuối môn</a></h6>
+										<h6 className="panel-title text-semibold no-margin"><a href={"#"+this.props.params.mon+"/lop"+this.props.params.lop+"/baithi/thi"} className="text-default"><span className="text-primary">Bài thi:</span>  Bài thi cuối môn</a></h6>
 									</div>
 
 									<div className="panel-body">
@@ -305,7 +327,7 @@ export class baihoc extends React.Component{
         }
         if (type_username=="admin") {
             $("#thembaihoc").show();
-            $("#themsgk").hide();
+            $("#themsgk").show();
         }
 		$("#formadd").hide();
 		$('#thembaihoc').click(function (event) {
@@ -353,6 +375,7 @@ export class baihoc extends React.Component{
 	        $.post("themBaihoc", data, function(){
 	        	$("#sobai").val("");
 	        	$("#tieudebai").val("");
+	        	$("#sotrangsach").val("");
 	        	$("#formadd").hide();
 	        	//window.location = "#/trangcanhan";
             	//Trangcanhan.dispatch(location.getCurrentPath(), null);
@@ -363,14 +386,7 @@ export class baihoc extends React.Component{
 		console.log("componentWillMount");
 
 		var that=this;
-		$.get("getUserInfo/"+id_user,function( data ){
-			console.log("lay data");
-			if(data.LOP==that.props.params.lop){
-				console.log("bai hoc hien tai");
-				that.setState({bai_ls: data.BAI_LICHSU});
-				that.setState({bai_dl: data.BAI_DIALI});
-			}
-		});
+
 		url1=window.location.href;
 		url1=url1.split('#');
 		mon=url1[1].split('/');
@@ -378,6 +394,22 @@ export class baihoc extends React.Component{
 		url2=url2.split('lop');
 		phanlop=url2[1].split('/');
 
+		$.get("getUserInfo/"+id_user,function( data ){
+			console.log("lay data");
+			if(data.LOP<that.props.params.lop){
+				console.log("khong duoc");
+				$("#listbaihoc").hide();
+				return;
+			}
+			else{
+				$("#listbaihoc").show();
+			}
+			if(data.LOP==that.props.params.lop){
+				console.log("bai hoc hien tai");
+				that.setState({bai_ls: data.BAI_LICHSU});
+				that.setState({bai_dl: data.BAI_DIALI});
+			}
+		});
 		var data1={
 			mon: this.props.params.mon,
 			lop: this.props.params.lop,
@@ -385,7 +417,7 @@ export class baihoc extends React.Component{
 			id_user: "all"
 		}
 		console.log(data1);
-		console.log("socket -->> "+socket);
+
 		socket.emit('c2s_Baihoc',data1);
 		socket.on('s2c_Baihoc', function(data){
 			console.log(data);
@@ -414,6 +446,14 @@ export class baihoc extends React.Component{
 		var that=this;
 		$.get("getUserInfo/"+id_user,function( data ){
 			console.log("lay data");
+			if(data.LOP<that.props.params.lop){
+				console.log("khong duoc");
+				$("#listbaihoc").hide();
+				return;
+			}
+			else{
+				$("#listbaihoc").show();
+			}
 			if(data.LOP==that.props.params.lop){
 				console.log("bai hoc hien tai");
 				that.setState({bai_ls: data.BAI_LICHSU});

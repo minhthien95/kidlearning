@@ -144,11 +144,6 @@ export class cauhoi_chitiet extends React.Component{
 						</div>
 					</div>
 					{/* /comments */}
-					{/* Footer */}
-					<div className="footer text-muted">
-						&copy; 2015. <a href="#">Limitless Web App Kit</a> by <a href="http://themeforest.net/user/Kopyov" target="_blank">Eugene Kopyov</a>
-					</div>
-					{/* /footer */}
 				</div>
 				{/* /content area */}
 			</div>
@@ -156,20 +151,12 @@ export class cauhoi_chitiet extends React.Component{
 	}
 	componentDidMount()
 	{
-		var currentdate = new Date(); 
-		var datetime =currentdate.getFullYear() + "-"
-		            + (currentdate.getMonth()+1)  + "-" 
-		            + currentdate.getDate() +" "
-		            + currentdate.getHours() + ":"  
-		            + currentdate.getMinutes() + ":" 
-		            + currentdate.getSeconds();
-
-
 		urlid=window.location.href;
 		urlid=urlid.split('cauhoi');
 		id_cauhoi=urlid[1].split('?');
 
 		$('#gui_binhluan').click(function (event){
+			var currentdate = new Date(); 
 			var datetime =currentdate.getFullYear() + "-"
 		            + (currentdate.getMonth()+1)  + "-" 
 		            + currentdate.getDate() +" "
@@ -187,6 +174,7 @@ export class cauhoi_chitiet extends React.Component{
 			};
 			console.log(data);
 	        $.post("themBinhluan", data, function(){
+    			//socket.emit('c2s_Binhluan',{id: id_cauhoi[0]});
 	        	$("#binhluan_cauhoi").val("");
 	        	//window.location = "#/trangcanhan";
             	//Trangcanhan.dispatch(location.getCurrentPath(), null);
@@ -294,13 +282,47 @@ export class cauhoi_chitiet extends React.Component{
 		});
 
 	}
-	// componentWillReceiveProps(newProps)
-	// {
-	// 	var that=this;
-	// 	urlid=window.location.href;
-	// 	urlid=urlid.split('cauhoi');
-	// 	id_cauhoi=urlid[1].split('?');
+	componentWillReceiveProps(newProps)
+	{
+		console.log("componentWillReceiveProps cauhoi_chitiet");
+		urlmon=window.location.href;
+		urlmon=urlmon.split('#');
+		mon=urlmon[1].split('/');
 
-	// 	socket.emit('c2s_Binhluan',{id: id_cauhoi[0]});
-	// }
+		
+		urllop=window.location.href;
+		urllop=urllop.split('lop');
+		phanlop=urllop[1].split('/');
+
+		urlid=window.location.href;
+		urlid=urlid.split('cauhoi');
+		id_cauhoi=urlid[1].split('?'); 
+
+		var data1={
+			mon: mon[1],
+			lop: phanlop[0],
+			id: id_cauhoi[0],
+			id_user: "all"
+		}
+		socket.emit('c2s_Thaoluan',data1);
+		socket.emit('c2s_Binhluan',{id: id_cauhoi[0]});
+	}
+	componentWillUnmount(){
+		console.log("componentWillUnmount cauhoi_chitiet");
+	}
+	shouldComponentUpdate(nextProps, nextState){
+		return true;
+		console.log("shouldComponentUpdate cauhoi_chitiet");
+	}
+	componentWillUpdate(nextProps, nextState){
+		console.log("cmponentWillUpdate cauhoi_chitiet");
+	}
+	componentDidUpdate(prevProps, prevState){
+		console.log("componentDidUpdate cauhoi_chitiet");
+	}
+	onChange(state) {
+	   	if(this.refs.root) {
+	     	this.setState(state);
+	    }
+	}
 }

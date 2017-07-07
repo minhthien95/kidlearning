@@ -45,9 +45,9 @@ export class Trangcanhan extends React.Component{
 
 						<div className="navbar-collapse collapse" id="navbar-filter">
 							<ul className="nav navbar-nav">
-								<li className="active"><a href="#activity" data-toggle="tab"><i className="icon-menu7 position-left"></i> Hoạt động</a></li>
+								<li className="active"><a id="hoatdong" href="#activity" data-toggle="tab"><i className="icon-menu7 position-left"></i> Hoạt động</a></li>
 								<li><a id="scheduletab" href="#schedule" data-toggle="tab"><i className="icon-calendar3 position-left"></i> Quá trình </a></li>
-								<li><a href="#settings" data-toggle="tab"><i className="icon-cog3 position-left"></i> Cài đặt</a></li>
+								<li><a id="caidat" href="#settings" data-toggle="tab"><i className="icon-cog3 position-left"></i> Cài đặt</a></li>
 								<li><a id="tag_listuser" href="#listuser" data-toggle="tab"><i className="icon-users4 position-left"></i> Quản lý học sinh</a></li>
 								<li><a id="tag_listsup" href="#listsup" data-toggle="tab"><i className=" icon-users2 position-left"></i> Quản lý trợ giảng</a></li>
 								<li><a id="tag_listadmin" href="#listadmin" data-toggle="tab"><i className="icon-user-tie position-left"></i>Admin</a></li>
@@ -130,22 +130,44 @@ export class Trangcanhan extends React.Component{
 									<div className="tab-pane fade" id="schedule">
 
 										{/* Ket qua diem */}
-										<div className="panel panel-flat">
-											<div className="panel-heading">
-												<h5 className="panel-title">Kết quả học tập</h5>
-												<div className="heading-elements">
-													<ul className="icons-list">
-								                		<li><a data-action="collapse"></a></li>
-								                	</ul>
-							                	</div>
-											</div>
+										<div className="row">
+											<div className="col-md-6">
+												<div className="panel panel-flat">
+													<div className="panel-heading">
+														<h5 className="panel-title">Kết quả học tập môn Lịch Sử</h5>
+														<div className="heading-elements">
+															<ul className="icons-list">
+										                		<li><a data-action="collapse"></a></li>
+										                	</ul>
+									                	</div>
+													</div>
 
-											<div className="panel-body">
-												<div className="chart-container">
-													<div className="chart has-fixed-height" id="stacked_lines"></div>	
+													<div className="panel-body">
+														<div className="chart-container">
+															<div className="chart has-fixed-height" id="stacked_lines_ls"></div>	
+														</div>
+													</div>
 												</div>
 											</div>
-										</div>
+											<div className="col-md-6">
+												<div className="panel panel-flat">
+													<div className="panel-heading">
+														<h5 className="panel-title">Kết quả học tập môn Địa Lí</h5>
+														<div className="heading-elements">
+															<ul className="icons-list">
+										                		<li><a data-action="collapse"></a></li>
+										                	</ul>
+									                	</div>
+													</div>
+
+													<div className="panel-body">
+														<div className="chart-container">
+															<div className="chart has-fixed-height" id="stacked_lines_dl"></div>	
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>	
 										{/* /available hours */}
 
 										{/* Calendar */}
@@ -176,8 +198,6 @@ export class Trangcanhan extends React.Component{
 													<div className="heading-elements">
 														<ul className="icons-list">
 									                		<li><a data-action="collapse"></a></li>
-									                		<li><a data-action="reload"></a></li>
-									                		{/*<li><a data-action="close"></a></li>*/}
 									                	</ul>
 								                	</div>
 												</div>
@@ -210,7 +230,7 @@ export class Trangcanhan extends React.Component{
 															<div className="row">
 																<div className="col-md-12">
 																	<label>Họ và Tên:</label>
-																	<input id="fullname" name="fullname" type="text" placeholder="Họ và tên của bạn" className="form-control"/>
+																	<input id="fullname1" name="fullname" type="text" placeholder="Họ và tên của bạn" className="form-control"/>
 																</div>
 															</div>
 														</div>
@@ -236,7 +256,7 @@ export class Trangcanhan extends React.Component{
 
 																<div className="col-md-6 form-group">
 																	<label>Lớp:</label>
-																	<input id="lop" name="lop" type="text" placeholder="Cấp lớp hiện tại của bạn"  className="form-control" disabled/>
+																	<input id="lop" name="lop" type="text" placeholder="Cấp lớp hiện tại của bạn"  className="form-control"/>
 																</div>
 															</div>
 														</div>
@@ -429,14 +449,14 @@ export class Trangcanhan extends React.Component{
 	}
 	componentDidMount()
 	{
-
+		//chuyen tab caidat
+		if(this.props.params.tab=="caidat"){
+			console.log("caidat");
+			$("#caidat").click();
+		}
 		var id_user=data.dataset.id;
 		var check=false;
 
-		// $("#uploadfile").append('<form class="fileupload" action="upload" method="post" enctype="multipart/form-data">'+
-		// 							      '<input type="file" name="upfile" value=""/>'+
-		// 							     '<input type="submit" />'+
-		// 							    '</form>');
 		$("#uploadfile").append('<form class="fileupload" action="uploadAnh" method="post" enctype="multipart/form-data">'+
 					                    		'<input type="file" id_user="5" name="upfile" class="file-styled"/>'+
 					                    		'<input hidden name="file_name" value="'+id_user+'"/>'+
@@ -452,6 +472,9 @@ export class Trangcanhan extends React.Component{
 			$('#tag_listsup').show();
 			$('#tag_listadmin').show();
 		}
+		if(type_user=="trogiang"){
+			$('#tag_listuser').show();
+		}
 
 		console.log("validate edit info form");
 		if(this.state.id_user)
@@ -466,7 +489,7 @@ export class Trangcanhan extends React.Component{
 			console.log("lay data");
 			console.log(data);
 			$("#username").val(data.USERNAME),
-			$("#fullname").val(data.HOTEN),
+			$("#fullname1").val(data.HOTEN),
 			$("#email").val(data.EMAIL),
 		    $("#lop").val(data.LOP),
 		    $("#truong").val(data.TRUONG),
@@ -642,7 +665,7 @@ export class Trangcanhan extends React.Component{
 	        		var data={
 				        id:       id_user,
 						username: $("#username").val(),
-						fullname: $("#fullname").val(),
+						fullname: $("#fullname1").val(),
 						password: $("#password").val(),
 						email: 	  $("#email").val(),
 			            lop:      $("#lop").val(),
@@ -653,7 +676,7 @@ export class Trangcanhan extends React.Component{
 					console.log(data);
 			        $.post("updateUserInfo", data, function(){
 			        	alert("Đã thay đổi thông tin thành công!");
-			        	window.location = "#/trangcanhan";
+			        	window.location = "#/trangcanhan/caidat";
 	                	//Trangcanhan.dispatch(location.getCurrentPath(), null);
             		});
 	        	}
@@ -662,7 +685,7 @@ export class Trangcanhan extends React.Component{
 					var data={
 				        id:       id_user,
 						username: $("#username").val(),
-						fullname: $("#fullname").val(),
+						fullname: $("#fullname1").val(),
 						password: $("#password1").val(),
 						email: 	  $("#email").val(),
 			            lop:      $("#lop").val(),
@@ -855,7 +878,9 @@ export class Trangcanhan extends React.Component{
 	        console.log(id);
 	        $('#confirm li').on('click', '.btn-success', function (e) {
 	        	console.log("xac nhan xoa user");
-	        	$.post("delete_user",{id: id});
+	        	$.post("delete_user",{id: id},function(){
+	        		window.location.reload(true);
+	        	});
 	        	//userTable.ajax.reload();
 	        	//userTable.clear();
 				//userTable.fnAddData(data);
@@ -866,12 +891,33 @@ export class Trangcanhan extends React.Component{
 
 	    //chart setup
 	    var echarts = require('echarts');
-
-        var stacked_lines = echarts.init(document.getElementById('stacked_lines'));
+        var datals=[8,7.5,9];
+        var datadl=[8,6.5];
+        var dataxls=['Bài 1', 'Bài 2', 'Bài 3'];
+        var dataxdl=['Bài 1', 'Bài 2'];
         var datax=[
                         'LS-Bai 1', 'LS-Bai 2', 'LS-Bai 3', 'LS-Bai 4', 'LS-Bai 5', 'LS-Bai 6', 'LS-Bai 7'
                     ];
-        stacked_lines.setOption({
+        var stacked_lines_ls = echarts.init(document.getElementById('stacked_lines_ls'));
+        var stacked_lines_dl = echarts.init(document.getElementById('stacked_lines_dl'));
+        $.post("layKetqua",{id: id_user},function(dataa){
+        	console.log("ket qua ");
+        	console.log(dataa);
+        	for(var i=0;i<dataa.length;i++){
+        		//datay.push(dataa[i].ID_BAIHOC)
+        		if(dataa[i].MON=="lichsu")
+        		{
+        			dataxls.push("Bài "+dataa[i].ID_BAIHOC);
+        			datals.push(dataa[i].DIEM);
+        		}
+        		if(dataa[i].MON=="diali")
+        		{
+        			dataxdl.push(dataa[i].ID_BAIHOC);
+        			datadl.push(dataa[i].DIEM);
+        		}
+        	}
+        	console.log(datals);
+	        stacked_lines_ls.setOption({
 
                 // Setup grid
                 grid: {
@@ -888,7 +934,7 @@ export class Trangcanhan extends React.Component{
 
                 // Add legend
                 legend: {
-                    data: ['Lịch Sử', 'Địa Lí']
+                    data: ['Lịch Sử']
                 },
 
                 // Enable drag recalculate
@@ -898,7 +944,7 @@ export class Trangcanhan extends React.Component{
                 xAxis: [{
                     type: 'category',
                     boundaryGap: false,
-                    data: datax
+                    data: dataxls
                 }],
 
                 // Vertical axis
@@ -911,26 +957,80 @@ export class Trangcanhan extends React.Component{
                     {
                         name: 'Lịch Sử',
                         type: 'line',
-                        data: [8, 9, 7, 5]
-                    },
-                    {
-                        name: 'Địa Lí',
-                        type: 'line',
-  
-                        data: [3, 5, 3, 6, 7, 8, 8]
+                        data: datals
                     }
                 ]
+	       	});
+	       	stacked_lines_dl.setOption({
+
+                // Setup grid
+                grid: {
+                    x: 40,
+                    x2: 20,
+                    y: 35,
+                    y2: 25
+                },
+
+                // Add tooltip
+                tooltip: {
+                    trigger: 'axis'
+                },
+
+                // Add legend
+                legend: {
+                    data: ['Địa lí']
+                },
+
+                // Enable drag recalculate
+                calculable: true,
+
+                // Hirozontal axis
+                xAxis: [{
+                    type: 'category',
+                    boundaryGap: false,
+                    data: dataxdl
+                }],
+
+                // Vertical axis
+                yAxis: [{
+                    type: 'value'
+                }],
+
+                // Add series
+                series: [
+                    {
+                        name: 'Địa lí',
+                        type: 'line',
+                        data: datadl
+                    }
+                ]
+	       	});
+ 
+	       	setTimeout(function () {
+	            stacked_lines_ls.resize();
+	            stacked_lines_dl.resize();
+	        }, 2000);
+    	    window.onresize = function () {
+            setTimeout(function () {
+                stacked_lines_ls.resize();
+                stacked_lines_dl.resize();
+            }, 2000);
+        }
+        });
+
+   		$('#scheduletab').on('click', function () {
+       		stacked_lines_ls.resize();
+            stacked_lines_dl.resize();
        	});
-       	$('#scheduletab').on('click', function () {
-       		stacked_lines.resize();
+       	$('#scheduletab').hover( function () {
+       		stacked_lines_ls.resize();
+            stacked_lines_dl.resize();
        	});
-       	setTimeout(function () {
-            stacked_lines.resize();
-        }, 2000);
 	    window.onresize = function () {
             setTimeout(function () {
-                stacked_lines.resize();
-            }, 200);
+                stacked_lines_ls.resize();
+                stacked_lines_dl.resize();
+            }, 2000);
         }
 	}
 	componentWillMount()
@@ -975,5 +1075,14 @@ export class Trangcanhan extends React.Component{
 			that.setState({listCauhoi: data});
 		});
 		////
+	}
+	componentWillReceiveProps(newProps){
+		//chuyen tab caidat
+		if(newProps.params.tab=="caidat"){
+			$("#caidat").click();
+		}
+		else if(newProps.params.tab=="hoatdong"){
+				$("#hoatdong").click();
+		}
 	}
 }

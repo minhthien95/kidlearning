@@ -5,25 +5,31 @@ objects = [{
     "fill": "rgb(0, 139, 139)",
     "branches": [{
         "id": "br1",
-        "text": "Vận động của Trái Đất quanh Mặt Trời",
+        "text": "Sự chuyển động của Trái Đất quanh Mặt Trời",
         "type": "left",
         "fill": "rgb(30, 30, 113)",
         "branches": [{
             "id": "subbr1",
-            "text": "Hướng quay : từ Tây sang Đông",
-            "type": "left",
+            "text": "Trái Đất chuyển động quanh Mặt Trời theo hướng quỹ đạo có hình elip gần tròn",
+            "type": "subleft",
             "fill": "rgb(30, 30, 113)",
             "branches": []
         }, {
             "id": "subbr2",
-            "text": "Trái Đất tự quay quanh 1 trục tưởng tượng nối liền 2 cực trên mặt phẳng quỹ đạo",
-            "type": "left",
+            "text": "Hướng chuyển động từ Tây sang Đông",
+            "type": "subleft",
             "fill": "rgb(30, 30, 113)",
             "branches": []
         }, {
             "id": "subbr3",
-            "text": "Thời gian tự quay quanh vòng là 24 giờ (1 ngày đêm). Vì vậy bề mặt Trái Đất được chia thành 24 múi giờ",
-            "type": "left",
+            "text": "Thời gian Trái Đất chuyển động quanh Mặt Trời một vòng là 365 ngày và 6 giờ",
+            "type": "subleft",
+            "fill": "rgb(30, 30, 113)",
+            "branches": []
+        }, {
+            "id": "subbr4",
+            "text": "Trong khi chuyển động trên quỹ đạo quanh Mặt Trời, trục Trái Đất luôn giữ độ nghiêng trên mặt phẳng quỹ đạo và hướng nghiêng của trục không đổi. Đó là chuyển động tịnh tiến.",
+            "type": "subleft",
             "fill": "rgb(30, 30, 113)",
             "branches": []
         }]
@@ -33,18 +39,18 @@ objects = [{
         "type": "right",
         "fill": "rgb(30, 30, 113)",
         "branches": [{
-            "id": "subbr4",
+            "id": "subbr5",
             "text": "Hai nửa cầu luân phiên nhau ngả gần và chếch xa Mặt Trời, sinh ra các mùa",
             "type": "subright",
             "fill": "rgb(30, 30, 113)",
             "branches": [{
-                "id": "subbr5",
+                "id": "subbr6",
                 "text": "Ngày 22/6 (Hạ Chí) : Nửa cầu Bắc ngả về Mặt Trời nhiều hơn",
                 "type": "subright",
                 "fill": "rgb(30, 30, 113)",
                 "branches": []
             }, {
-                "id": "subbr6",
+                "id": "subbr7",
                 "text": "Ngày 22/12 (Đông Chí) : Nửa cầu Nam ngả về Mặt Trời nhiều hơn",
                 "type": "subright",
                 "fill": "rgb(30, 30, 113)",

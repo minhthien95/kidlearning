@@ -1,6 +1,5 @@
-root = null;
-
 // Inializing objects from serialized string
+
 var nodes = [];
 var connectors = [];
 var root = null;
@@ -103,7 +102,8 @@ function updateRightSideMap(diagram) {
             //right side layout
             for (var i = 0; i < diagram.nodes().length; i++) {
                 var node = diagram.nodes()[i];
-                if (node.branch == "right" || node.branch == "subright" || node.branch == "root"){ 
+                if (node.branch == "right" || node.branch == "subright" || node.branch == "root") { 
+                    console.log(node.branch);
                     node.excludeFromLayout = false; 
                 }
                 else { 
@@ -122,14 +122,15 @@ function updateLeftSideMap(diagram) {
             //left side layout
             for (var i = 0; i < diagram.nodes().length; i++) {
                 var node = diagram.nodes()[i];
-                if (node.branch == "left" || node.branch == "subleft" || node.branch == "root")
-                { node.excludeFromLayout = false; }
+                if (node.branch == "left" || node.branch == "subleft" || node.branch == "root") { 
+                    console.log(node.branch);
+                    node.excludeFromLayout = false;
+                }
                 else
                 { node.excludeFromLayout = true; }
             }
             diagram.model.layout.orientation = "righttoleft";
             diagram.layout();
-
         }
     }
 }
@@ -156,7 +157,7 @@ if (!(ej.browserInfo().name === "msie" && Number(ej.browserInfo().version) < 9))
         connectors: connectors, 
         nodes: nodes, 
         width: "100%",
-        height: "600px", 
+        height: "700px", 
         layout: layoutdetails,
         selectedItems: {
             userHandles: userHandles,
@@ -172,7 +173,6 @@ if (!(ej.browserInfo().name === "msie" && Number(ej.browserInfo().version) < 9))
     updateLeftSideMap(diagram);
     updateRightSideMap(diagram);
     updateLabels();
-    console.log('cld');
 }
 else {
     alert("Diagram will not be supported in IE Version < 9");

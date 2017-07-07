@@ -95,8 +95,13 @@ export class baihoc_sgk extends React.Component{
 				mon1="Lịch sử";
 		if(mon[1]=="diali")
 			mon1="Địa lí";
-		var name_link="Bài học "+mon1+" lớp "+this.props.params.lop+" bài "+this.props.params.bai; 
-		var link_pre="#"+this.props.params.mon+"/lop"+this.props.params.lop+"/baihoc_chitiet/"+this.props.params.bai;
+		if(this.props.params.bai=='0'){
+			var name_link="Bài học "+mon1+" lớp "+this.props.params.lop; 
+			var link_pre="#"+this.props.params.mon+"/lop"+this.props.params.lop+"/baihoc";
+		}else{
+			var name_link="Bài học "+mon1+" lớp "+this.props.params.lop+" bài "+this.props.params.bai; 
+			var link_pre="#"+this.props.params.mon+"/lop"+this.props.params.lop+"/baihoc_chitiet/"+this.props.params.bai;
+		}
 		var name_link1="Sách giáo khoa";
 		$("#link_pre").text(name_link);
 		$('#link_pre').attr('href', link_pre);

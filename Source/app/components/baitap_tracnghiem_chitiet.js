@@ -36,7 +36,6 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 				<div className="content" style={{paddingBottom: '0px'}}>
 					<div id="formadd"  className="panel panel-flat blog-horizontal blog-horizontal-2">
 						<div className="panel-body">
-
 							<div className="blog-preview">
 								<div className="panel-body">
 									<div className="form-group">
@@ -251,6 +250,7 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 
 			var data={
 		        id:  id_user,
+		        loai: 'baitap',
 				lop: phanlop,
 				mon: mon,
 		        bai: baihoc,
@@ -265,9 +265,7 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 				da4: da4
 			};
 
-			console.log(data);
-
-	        $.post("themTracnghiem", data, function(){
+	        $.post("themTracnghiem", data, function(data){
 				$("#noidung").val("");
 				$("#te_cau1").val("");
 				$("#te_cau2").val("");
@@ -275,7 +273,9 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 				$("#te_cau4").val("");
 				$("#rd_cau"+check_temp).parent().removeClass();
 				$("#formadd").hide();
-	        	//window.location = "#/trangcanhan";
+				//alert("Thêm bài tập hoàn tất!\nLàm mới trang để xem kết quả");
+				window.location.reload(true);
+	        	//window.location = window.location.href;
             	//Trangcanhan.dispatch(location.getCurrentPath(), null);
     		});
 	    });
@@ -343,7 +343,7 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 		var id_cauhoi=this.props.params.mon+this.props.params.lop+this.props.params.id;
 
 		var count1=1;
-		$.post("/"+this.props.params.mon+"/lop"+this.props.params.lop+"/baitap_tracnghiem_chitiet_cauhoi/"+this.props.params.id, function(data){
+		$.post("/"+this.props.params.mon+"/lop"+this.props.params.lop+"/baitap_tracnghiem_chitiet_cauhoi/"+this.props.params.id,{loai: "baitap"}, function(data){
 			console.log("lay trac nghiem");
 			console.log(data);
 
@@ -474,13 +474,15 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 							console.log(data1);
 							for(var j=0;j<data1.length;j++)
 							{
-								$("#cau"+count1).append('<div class="radio">'+
-															'<label>'+
-																'<input type="radio" id="'+ data1[j].CHECK+'" alt="'+j+'" name="'+count1+'" class="styled" />'+
-																data1[j].DAPAN+
-															'</label>'+
-														'</div>'
-														);
+								
+									$("#cau"+count1).append('<div class="radio">'+
+																'<label>'+
+																	'<input type="radio" id="'+ data1[j].CHECK+'" alt="'+j+'" name="'+count1+'" class="styled" />'+
+																	data1[j].DAPAN+
+																'</label>'+
+															'</div>'
+															);
+								
 							}
 							count1++;
 							// Default initialization Radió
@@ -543,6 +545,11 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 
 		});
 
+	}
+	onChange(state) {
+	   	if(this.refs.root) {
+	     	this.setState(state);
+	    }
 	}
 	componentWillReceiveProps(newProps)
 	{

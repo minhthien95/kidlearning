@@ -1,6 +1,6 @@
 import React from "react";
 import {render} from "react-dom";
-import PropTypes from 'prop-types'; 
+
 import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 
 import {Trangchu} from "./components/Trangchu";
@@ -18,6 +18,7 @@ import {thaoluan} from './components/thaoluan';
 import {cauhoi_chitiet} from './components/cauhoi_chitiet';
 
 import {baithi} from './components/baithi';
+import {baikiemtra} from './components/baikiemtra';
 
 import {hoidap} from './components/hoidap';
 import {tuongtac_lichsu} from './components/tuongtac_lichsu';
@@ -42,7 +43,7 @@ class MainContent extends React.Component {
 	    	<Router history={hashHistory}>
 		    	<div>
 				  	<Route path="/" component={Trangchu}/>
-				  	<Route path="Trangcanhan" component={Trangcanhan}/>
+				  	<Route path="Trangcanhan/:tab" component={Trangcanhan}/>
 
 
 					<Route path=":mon/lop:lop/baihoc" component={baihoc} />
@@ -55,7 +56,8 @@ class MainContent extends React.Component {
 				 	<Route path=":mon/lop:lop/thaoluan" component={thaoluan} />
 				 	<Route path=":mon/lop:lop/cauhoi:id" component={cauhoi_chitiet} />
 
-				 	<Route path=":mon/lop:lop/baithi" component={baithi} />
+				 	<Route path=":mon/lop:lop/baithi/:id" component={baithi} />
+				 	<Route path=":mon/lop:lop/baikiemtra/:id" component={baikiemtra} />
 
 				 	<Route path=":mon/lop:lop/baihoc_baiviet" component={baihoc_baiviet} />
 				 	<Route path=":mon/lop:lop/baihoc_baiviet_chitiet/:id" component={baihoc_baiviet_chitiet} />

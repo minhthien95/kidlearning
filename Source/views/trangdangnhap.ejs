@@ -51,17 +51,9 @@
 						<i class="icon-facebook2"></i> <span class="visible-xs-inline-block position-right"> Trang facebook</span>
 					</a>
 				</li>
-
 				<li>
-					<a href="#">
-						<i class="icon-user-tie"></i> <span class="visible-xs-inline-block position-right"> Contact admin</span>
-					</a>
-				</li>
-
-				<li class="dropdown">
-					<a class="dropdown-toggle" data-toggle="dropdown">
-						<i class="icon-cog3"></i>
-						<span class="visible-xs-inline-block position-right"> Options</span>
+					<a data-popup="tooltip" data-toggle="modal" data-target="#confirm">
+						<i class="icon-user-tie"></i> <span class="visible-xs-inline-block position-right"> Liên hệ admin</span>
 					</a>
 				</li>
 			</ul>
@@ -113,7 +105,7 @@
  -->									</div>
 
 									<div class="col-sm-6 text-right">
-										<a href="login_password_recover.html">Quên mật khẩu?</a>
+										<a href="quenmatkhau">Quên mật khẩu?</a>
 									</div>
 								</div>
 							</div>
@@ -155,7 +147,47 @@
 
 	</div>
 	<!-- /page container -->
+			<!-- {/* confirm */} -->
+		<div id="confirm" class="modal fade">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close " data-dismiss="modal">&times;</button>
+						<h6 class="modal-title">Liên hệ với chung tôi</h6>
+					</div>
 
-	<script src="trangdangnhap.js"></script>
+					<div class="modal-body">
+						<div  class="panel-body">
+							<div class="row">
+								<div class="col-lg-6">
+									<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3771.5589691242003!2d106.68039831027157!3d10.763143934428191!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x43900f1d4539a3d!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBLaG9hIGjhu41jIFThu7Egbmhpw6puIFRQSENN!5e0!3m2!1svi!2s!4v1498100090396" width="400" height="400" frameBorder="0" style={{border:"0"}} allowFullScreen></iframe>
+								</div>
+								<div class="col-lg-6">
+									<div class="media-body">
+										<h6 class="media-heading"><a href="http://www.hcmus.edu.vn" target="_blank">Trường Đại Học Khoa Học Tự Nhiên Thành Phố Hồ Chí Minh</a></h6>
+			                    		<br/>
+			                    		<ul class="list-inline list-inline-separate mb-5">
+			                    			<li><i class="icon-location4 position-left"></i> 227 Nguyễn Văn Cừ, Nguyễn Văn Cừ, Quận 5, Hồ Chí Minh, Việt Nam</li>
+			                    			<li><i class="icon-mail5 position-left"></i> minhthien1995@gmail.com - thanhgiang.hcmus@gmail.com</li>
+			                    			<li><i class="icon-phone2 position-left"></i> +84 167 965 1768 (Thiện) - +84 937 245 440 (Giang)</li>
+			                    			<li><a href="https://www.facebook.com/kid.learning.hcmus" target="_blank"><i class=" icon-facebook2 position-left"></i> Fanpage Facebook</a></li>
+			                    		</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- {/* /confirm */} -->
+	<script type="text/javascript">
+
+
+		// $.post("dangnhap",function(data){
+		// 	console.log(" sai đăng nhâp ");
+		// 	//alert("dan nhap sai");
+		// })
+	</script>
 </body>
 </html>

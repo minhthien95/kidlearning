@@ -37,13 +37,11 @@ export class hoidap extends React.Component{
 				</div>
 				{/* /page header */}
 
-
 				{/* Content area */}
 				<div id="formCauhoi" className="content">
 					<div id="formadd" className="col-lg-12">
 						<div className="panel panel-flat blog-horizontal blog-horizontal-2">
 							<div className="panel-body">
-
 								<div className="blog-preview">
 									<div className="panel-body">
 										<div className="form-group">
@@ -63,11 +61,55 @@ export class hoidap extends React.Component{
 												<option value ="8" >8</option>
 												<option value ="9" >9</option>
 											</select>
-											
 										</div>
 										<div className="text-right">
 											<button id="addcauhoi" type="submit" className="btn bg-teal-400">Đăng câu hỏi <i className="icon-arrow-right14 position-right"></i></button>
 										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div className="col-lg-12">
+						<div className="panel panel-flat blog-horizontal blog-horizontal-2">
+							<div className="panel-heading">
+								<h6 className="panel-title text-primary-800">Tìm kiếm<a className="heading-elements-toggle"><i className="icon-more"></i></a></h6>
+								<div className="heading-elements">
+									<ul className="icons-list">
+				                		<li><a data-action="collapse"></a></li>
+				                	</ul>
+			                	</div>
+							</div>
+							<div className="panel-body">
+								<div className="main-search">
+									<div className="input-group content-group">
+										<div className="has-feedback has-feedback-left">
+											<input id="keyword" type="text" className="form-control input-xlg"/>
+											<div className="form-control-feedback">
+												<i className="icon-search4 text-muted text-size-base"></i>
+											</div>
+										</div>
+										<div className="input-group-btn">
+											<button id="findcauhoi" className="btn btn-primary btn-xlg">Tìm kiếm</button>
+										</div>
+									</div>
+									<div className="row search-option-buttons">
+										<ul className="list-inline list-inline-condensed no-margin-bottom">
+											<li className="dropdown">
+												<a id="dropdownLop" className="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+													<i className="icon-stack2 position-left"></i> Lớp: Tất cả <span className="caret"></span>
+												</a>
+
+												<ul className="dropdown-menu">
+													<li><a id="loptc" value="6"><i className="icon-chevron-right"></i> Lớp Tất cả</a></li>
+													<li><a id="lop6" value="6"><i className="icon-chevron-right"></i> Lớp 6</a></li>
+													<li><a id="lop7" value="7"><i className="icon-chevron-right"></i> Lớp 7</a></li>
+													<li><a id="lop8" value="8"><i className="icon-chevron-right"></i> Lớp 8</a></li>
+													<li><a id="lop9" value="9"><i className="icon-chevron-right"></i> Lớp 9</a></li>
+												</ul>
+											</li>
+											<li><a id="findall" className="btn btn-link"><i className="icon-reload-alt position-left"></i>Tất cả</a></li>
+										</ul>
 									</div>
 								</div>
 							</div>
@@ -88,10 +130,10 @@ export class hoidap extends React.Component{
 														</ul>) : (
 												        <div/>
 											      	)}
-													<h5 className="text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/cauhoi"+data1.ID_CAUHOI} className="text-default"><a>{data1.MON=="lichsu" ? (
-																																													        <a className="text-success">Lịch sử {data1.PHANLOP} - </a>) : (
-																																													        <a>Địa lí {data1.PHANLOP} - </a>
-																																												      	)}</a>{data1.TIEUDE}</a></h5>
+													<h5 className="text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/cauhoi"+data1.ID_CAUHOI} className="text-default"><span>{data1.MON=="lichsu" ? (
+																																													        <span className="text-success">Lịch sử {data1.PHANLOP} - </span>) : (
+																																													        <span className="text-primary">Địa lí {data1.PHANLOP} - </span>
+																																												      	)}</span>{data1.TIEUDE}</a></h5>
 
 													<ul className="list-inline list-inline-separate no-margin text-muted">
 														<li>Đăng bởi: <a >{data1.USERNAME}</a></li>
@@ -107,16 +149,27 @@ export class hoidap extends React.Component{
 
 									<div className="panel-footer panel-footer-condensed"><a className="heading-elements-toggle"><i className="icon-more"></i></a>
 										<div className="heading-elements">
-											<ul className="list-inline list-inline-separate heading-text">
-												<li><i className="icon-comment-discussion position-left"></i> {data1.SOTRALOI} trả lời</li>
-												<li>
-													Đánh giá:&nbsp;
-													<span className="text-muted position-right">{data1.DANHGIA}&nbsp;</span>
-													<i className="icon-star-full2 text-size-base text-warning-300"></i>
-													<a id="up_cauhoi" name={data1.ID_CAUHOI} alt={data1.USERNAME}><i className="icon-arrow-up22 text-success"></i></a>
-													<a id="down_cauhoi" name={data1.ID_CAUHOI} alt={data1.USERNAME}><i className="icon-arrow-down22 text-danger"></i></a>
-												</li>
-											</ul>
+											{data1.USERNAME==data.dataset.username ? (
+										        <ul className="list-inline list-inline-separate heading-text">
+													<li><i className="icon-comment-discussion position-left"></i> {data1.SOTRALOI} trả lời</li>
+													<li>
+														Đánh giá:&nbsp;
+														<span className="text-muted position-right">{data1.DANHGIA}&nbsp;</span>
+														<i className="icon-star-full2 text-size-base text-warning-300"></i>
+													
+													</li>
+												</ul>) : (
+										        <ul className="list-inline list-inline-separate heading-text">
+													<li><i className="icon-comment-discussion position-left"></i> {data1.SOTRALOI} trả lời</li>
+													<li>
+														Đánh giá:&nbsp;
+														<span className="text-muted position-right">{data1.DANHGIA}&nbsp;</span>
+														<i className="icon-star-full2 text-size-base text-warning-300"></i>
+														<a id="up_cauhoi" name={data1.ID_CAUHOI} alt={data1.USERNAME}><i className="icon-arrow-up22 text-success"></i></a>
+														<a id="down_cauhoi" name={data1.ID_CAUHOI} alt={data1.USERNAME}><i className="icon-arrow-down22 text-danger"></i></a>
+													</li>
+												</ul>
+									      	)}
 											
 											<a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/cauhoi"+data1.ID_CAUHOI} className="heading-text pull-right">Chi tiết <i className="icon-arrow-right14 position-right"></i></a>
 										</div>
@@ -150,7 +203,7 @@ export class hoidap extends React.Component{
 	componentDidMount()
 	{
 		console.log("componentDidMount");
-
+    	var tklop="all";
 		var currentdate = new Date();
 		var datetime =currentdate.getFullYear() + "-"
 		    + (currentdate.getMonth()+1)  + "-" 
@@ -228,6 +281,57 @@ export class hoidap extends React.Component{
 	    		});
 		    }
 	    });
+
+	    $('#loptc').on('click', function () {
+	    	tklop="all";
+	    	$('#dropdownLop').empty();
+	    	$('#dropdownLop').append('<i class="icon-stack2 position-left"></i> Lớp: Tất cả <span class="caret"></span>');
+	    });
+	    $('#lop6').on('click', function () {
+	    	tklop='6';
+	    	$('#dropdownLop').empty();
+	    	$('#dropdownLop').append('<i class="icon-stack2 position-left"></i> Lớp: 6 <span class="caret"></span>');
+	    });
+	    $('#lop7').on('click', function () {
+	    	tklop='7';
+    		$('#dropdownLop').empty();
+	    	$('#dropdownLop').append('<i class="icon-stack2 position-left"></i> Lớp: 7 <span class="caret"></span>');
+	    });
+	    $('#lop8').on('click', function () {
+	    	tklop='8';
+	    	$('#dropdownLop').empty();
+	    	$('#dropdownLop').append('<i class="icon-stack2 position-left"></i> Lớp: 8 <span class="caret"></span>');
+	    });
+	    $('#lop9').on('click', function () {
+	    	tklop='9';
+	    	$('#dropdownLop').empty();
+	    	$('#dropdownLop').append('<i class="icon-stack2 position-left"></i> Lớp: 9 <span class="caret"></span>');
+	    });
+
+	    $('#findcauhoi').on('click', function (e) {
+	    	var key;
+	    	if($("#keyword").val()!=""){
+	    		key=$("#keyword").val();
+	    	}
+	    	var data1={
+	    		mon: mon[1],
+				lop: tklop,
+				id: "all",
+				id_user: "all",
+				key: key
+	    	};
+	    	socket.emit('c2s_Thaoluan',data1);
+	    });
+	    $('#findall').on('click', function() {
+    		$("#keyword").val("");
+	    	var data1={
+	    		mon: mon[1],
+				lop: "all",
+				id: "all",
+				id_user: "all"
+	    	};
+	    	socket.emit('c2s_Thaoluan',data1);
+	    });
 	}
 	componentWillMount()
 	{
@@ -260,6 +364,19 @@ export class hoidap extends React.Component{
 			that.setState({listCauhoi: data});
 		});
 		////
+	}
+	componentWillUnmount(){
+		console.log("componentWillUnmount");
+	}
+	shouldComponentUpdate(nextProps, nextState){
+		return true;
+		console.log("shouldComponentUpdate");
+	}
+	componentWillUpdate(nextProps, nextState){
+		console.log("cmponentWillUpdate");
+	}
+	componentDidUpdate(prevProps, prevState){
+		console.log("componentDidUpdate");
 	}
 	componentWillReceiveProps(newProps)
 	{

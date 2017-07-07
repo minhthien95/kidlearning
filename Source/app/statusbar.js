@@ -1,6 +1,8 @@
 import React from "react";
-import {render} from "react-dom";
-import PropTypes from 'prop-types'; 
+import {render} from "react-dom"; 
+import io from 'socket.io-client';
+let socket = io('http://'+window.location.hostname+':3000');
+//let socket = io('http://'+window.location.hostname);
 
 var data = document.querySelector('#statusbar');
 
@@ -10,7 +12,9 @@ class Statusbar extends React.Component {
 	constructor(props) {
     super(props);
       this.state = {
-        id_user: "assets/images/user_"+data.dataset.id+".jpg"
+        id_user: "assets/images/user_"+data.dataset.id+".jpg",
+        listThongbao: [],
+        sothongbao: 0
       };
     }
  	render() {
@@ -30,26 +34,17 @@ class Statusbar extends React.Component {
 						<li><a className="sidebar-control sidebar-main-toggle hidden-xs"><i className="icon-paragraph-justify3"></i></a></li>
 						<li><a href="https://www.facebook.com/kid.learning.hcmus" target="_blank"><i className="icon-facebook2"></i></a></li>
 					</ul>
-					{/*<div className="col-sm-4 text-right">								
-						<div className="input-group content-group">
-							<div className="has-feedback has-feedback-left">
-								<input type="text" className="form-control input-xlg" value="" placeholder="Nhập nội dung tìm kiếm"/>
-								<div className="form-control-feedback">
-									<i className="icon-search4 text-muted text-size-base"></i>
-								</div>
-							</div>
-
-							<div className="input-group-btn">
-								<button type="submit" className="btn btn-primary btn-xlg">Tìm kiếm</button>
-							</div>
-						</div>
-					</div>*/}
 					<ul className="nav navbar-nav navbar-right">
-						{/*<li className="dropdown">
+						<li className="dropdown">
 							<a href="#" className="dropdown-toggle" data-toggle="dropdown">
 								<i className="glyphicon glyphicon-bell"></i>
 								<span className="visible-xs-inline-block position-right">Thông báo</span>
-								<span className="badge bg-warning-400">9</span>						
+								{this.state.sothongbao=='0' ? (
+									null
+							        ) : (
+							        <span className="badge bg-warning-400">{this.state.sothongbao}</span>
+						      	)}
+														
 							</a>
 							
 							<div className="dropdown-menu dropdown-content width-350">
@@ -61,80 +56,35 @@ class Statusbar extends React.Component {
 								</div>
 
 								<ul className="media-list dropdown-content-body">
-									<li className="media">
-										<div className="media-left">
-											<img src="assets/images/placeholder.jpg" className="img-circle img-sm" alt=""/>
-											<span className="badge bg-danger-400 media-badge">5</span>
-										</div>
-
-										<div className="media-body">
-											<a href="#" className="media-heading">
-												<span className="text-semibold">James Alexander</span>
-												<span className="media-annotation pull-right">04:58</span>
-											</a>
-
-											<span className="text-muted">who knows, maybe that would be the best thing for me...</span>
-										</div>
-									</li>
-
-									<li className="media">
-										<div className="media-left">
-											<img src="assets/images/placeholder.jpg" className="img-circle img-sm" alt=""/>
-											<span className="badge bg-danger-400 media-badge">4</span>
-										</div>
-
-										<div className="media-body">
-											<a href="#" className="media-heading">
-												<span className="text-semibold">Margo Baker</span>
-												<span className="media-annotation pull-right">12:16</span>
-											</a>
-
-											<span className="text-muted">That was something he was unable to do because...</span>
-										</div>
-									</li>
-
-									<li className="media">
-										<div className="media-left"><img src="assets/images/placeholder.jpg" className="img-circle img-sm" alt=""/></div>
-										<div className="media-body">
-											<a href="#" className="media-heading">
-												<span className="text-semibold">Jeremy Victorino</span>
-												<span className="media-annotation pull-right">22:48</span>
-											</a>
-
-											<span className="text-muted">But that would be extremely strained and suspicious...</span>
-										</div>
-									</li>
-
-									<li className="media">
-										<div className="media-left"><img src="assets/images/placeholder.jpg" className="img-circle img-sm" alt=""/></div>
-										<div className="media-body">
-											<a href="#" className="media-heading">
-												<span className="text-semibold">Beatrix Diaz</span>
-												<span className="media-annotation pull-right">Tue</span>
-											</a>
-
-											<span className="text-muted">What a strenuous career it is that I've chosen...</span>
-										</div>
-									</li>
-
-									<li className="media">
-										<div className="media-left"><img src="assets/images/placeholder.jpg" className="img-circle img-sm" alt=""/></div>
-										<div className="media-body">
-											<a href="#" className="media-heading">
-												<span className="text-semibold">Richard Vango</span>
-												<span className="media-annotation pull-right">Mon</span>
-											</a>
-											
-											<span className="text-muted">Other travelling salesmen live a life of luxury...</span>
-										</div>
-									</li>
+									{this.state.sothongbao=='0' ? (
+										<li className="media">
+											<div className="media-body">
+												<span className="text-muted">Không có thông báo nào</span>
+											</div>
+										</li>
+								        ) : (
+								        	null
+								        )}
+							        {this.state.listThongbao.map(function(data,index){
+										return (
+											<li key={index} id={data.ID_THONGBAO} className="media">
+												<a href={"#/"+data.MON+"/lop"+data.LOP_CAUHOI+"/cauhoi"+data.ID_CAUHOI}>
+													<div className="media-left"><img src={"assets/images/user_"+data.ID_KHACH+".jpg"} onError={() => {this.setState({id_user : "assets/images/user.jpg"}) }} className="img-circle img-sm" alt=""/></div>
+													<div className="media-body">
+														<a  className="media-heading">
+															<span className="text-semibold">{data.HOTEN}</span>
+															<span className="media-annotation pull-right">{data.to_char}</span>
+														</a>
+														<span className="text-muted">Bình luận trong bài viết {data.TIEUDE}</span>
+													</div>
+												</a>
+											</li>
+										)
+									})}
+							      		
 								</ul>
-
-								<div className="dropdown-content-footer">
-									<a href="#" data-popup="tooltip" title="All messages"><i className="icon-menu display-block"></i></a>
-								</div>
 							</div>
-						</li>*/}
+						</li>
 
 						<li className="dropdown dropdown-user">
 							<a className="dropdown-toggle" data-toggle="dropdown">
@@ -144,9 +94,9 @@ class Statusbar extends React.Component {
 							</a>
 
 							<ul className="dropdown-menu dropdown-menu-right">
-								<li><a href="#trangcanhan"><i className="icon-user-plus"></i> Trang cá nhân</a></li>
+								<li><a href="#trangcanhan/hoatdong"><i className="icon-user-plus"></i> Trang cá nhân</a></li>
 								<li className="divider"></li>
-								<li><a href="#trangcanhan"><i className="icon-cog5"></i> Cài đặt tài khoản</a></li>
+								<li><a href="#trangcanhan/caidat"><i className="icon-cog5"></i> Cài đặt tài khoản</a></li>
 								<li><a href="/dangxuat"><i className="icon-switch2"></i> Đăng xuất</a></li>
 							</ul>
 						</li>
@@ -154,6 +104,36 @@ class Statusbar extends React.Component {
 				</div>
 		    </div>
     	);
-  }
+  	}
+  	componentDidMount(){
+  		$("li").on("click",'.media',function(){
+  			console.log("xoa thong bao");
+  			$('.glyphicon-bell').parent().parent().removeClass("open");
+  			$('.glyphicon-bell').parent().attr('aria-expanded',false);
+  			$.post("delete_thongbao",{id: $(this).attr('id')});
+  		})
+  	}
+  	componentWillMount()
+	{
+		console.log("componentWillMount statusbar");
+
+		var that=this;
+
+		socket.emit('c2s_Thongbao',{id: data.dataset.id});
+		socket.on('s2c_Thongbao', function(data){
+			console.log(data);
+			console.log(data.length);
+			that.setState({sothongbao: data.length});
+			that.setState({listThongbao: data});
+		});
+		////
+	}
+	componentWillReceiveProps(newProps)
+	{
+		socket.emit('c2s_Thongbao',{id: data.dataset.id});
+	}
+	componentWillUpdate(nextProps, nextState){
+		console.log("cmponentWillUpdate statusbar");
+	}
 }
 render(<Statusbar/>, root);

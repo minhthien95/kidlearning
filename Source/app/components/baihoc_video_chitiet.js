@@ -41,7 +41,7 @@ export class baihoc_video_chitiet extends React.Component{
 					{/* Main charts */}
 					{this.state.listvideo.map(function(data,index){
 						return (
-							<div className="panel panel-flat">
+							<div key={index} className="panel panel-flat">
 								<div className="panel-heading">
 									<h5 className="panel-title text-semibold text-primary-800">{data.TIEUDE}</h5>
 								</div>
@@ -242,5 +242,10 @@ export class baihoc_video_chitiet extends React.Component{
 		socket.on('s2c_Binhluan', function(data){
 			that.setState({listbinhluan: data});
 		});
+	}
+	onChange(state) {
+	   	if(this.refs.root) {
+	     	this.setState(state);
+	    }
 	}
 }

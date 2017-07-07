@@ -30,23 +30,24 @@ export class tuongtac_diali extends React.Component{
 					{/* Main charts */}
 					<div className="panel panel-flat">
 						{/* tuong tac */}
-
-
 						<div className="content" style={{paddingBottom: '0px'}}>
 							<div className="page-title">
 								<h4><span className="text-semibold">Bản đồ các quốc gia trên thế giới</span></h4>
 								<a className="heading-elements-toggle"><i className="icon-more"></i></a>
 							</div>
 		 					<iframe id="contentSGK1"  width="100%" height="450" allowFullScreen frameBorder="0"/>
-		 					<br/>
-		 					<div className="page-title">
+		 					<br/>	
+						</div>
+						{/* /tuon tac */}
+					</div>
+					<div className="panel panel-flat">
+						<div className="content" style={{paddingBottom: '0px'}}>
+							<div className="page-title">
 								<h4><span className="text-semibold">Bản đồ dân số của các quốc gia trên thế giới(2010)</span></h4>
 								<a className="heading-elements-toggle"><i className="icon-more"></i></a>
 							</div>
 		 					<iframe id="contentSGK2"  width="100%" height="450" allowFullScreen frameBorder="0"/>
 						</div>
-						{/* /tuon tac */}
-
 					</div>
 					{/* /main charts */}
 

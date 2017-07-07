@@ -23,19 +23,6 @@ export class baithi extends React.Component{
 			<div>
 				{/* Page header */}
 				<div className="page-header page-header-default">
-					<div className="page-header-content">
-						<div className="page-title">
-							<h4><i className="icon-arrow-left52 position-left"></i> <span className="text-semibold">Home</span> - Dashboard</h4>
-						<a className="heading-elements-toggle"><i className="icon-more"></i></a></div>
-
-						<div className="heading-elements">
-							<div className="heading-btn-group">
-								<a href="#" className="btn btn-link btn-float has-text"><i className="icon-bars-alt text-primary"></i><span>Statistics</span></a>
-								<a href="#" className="btn btn-link btn-float has-text"><i className="icon-calculator text-primary"></i> <span>Invoices</span></a>
-								<a href="#" className="btn btn-link btn-float has-text"><i className="icon-calendar5 text-primary"></i> <span>Schedule</span></a>
-							</div>
-						</div>
-					</div>
 					<div className="breadcrumb-line">
 						<ul className="breadcrumb">
 							<li><a href="#"><i className="icon-home2 position-left"></i> Trang chủ</a></li>
@@ -138,7 +125,7 @@ export class baithi extends React.Component{
 				diem: (Math.round(parseFloat(socaudung*10/socaude) * 4) / 4).toFixed(2),
 				heso: '2',
 				mon: mon[1],
-				bai: 'thi',
+				bai: this.props.params.id,
 				thoigian: datetime
 			};
 			console.log(data);
@@ -155,7 +142,7 @@ export class baithi extends React.Component{
 		console.log("componentWillMount");
 		var ketqua=[];
 		var count1=1;
-		$.post("/"+this.props.params.mon+"/lop"+this.props.params.lop+"/baithi", function(data){
+		$.post("/"+this.props.params.mon+"/lop"+this.props.params.lop+"/baithi/"+this.props.params.id, function(data){
 			console.log("lay bai thi");
 			console.log(data);
 			socaude=data.length;

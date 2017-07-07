@@ -260,8 +260,8 @@ export class thaoluan extends React.Component{
 
 			var name_link="Thảo luận "+mon1+" lớp "+phanlop[0]; 
 			$("#link_pre").text(name_link);
-
-			if(data.length==0){
+			$(".timeline-row").remove();
+			if(data.length==0 && $(".timeline-row").length==0){
 				console.log("chua co bai biet");
 				$("#formadd").parent().append(
 					'<div id="note_emty" class="timeline-row">'+

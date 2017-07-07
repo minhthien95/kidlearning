@@ -12,6 +12,7 @@ var parser         = bodyParser.urlencoded({extended: false});
 
 var upload = require('express-fileupload');
 var zip = require('machinepack-zip');
+var nodemailer = require('nodemailer');
 
 var app            = express();
 var server         = require('http').Server(app);
@@ -130,6 +131,59 @@ app.get('/dangxuat', function (req, res) {
 });
 //dang xuat
 
+//quen mat khau
+app.get('/quenmatkhau', function (req, res) {
+    res.render('quenmatkhau');
+});
+app.post('/laymatkhau', function (req, res) {
+    var username="'"+JSON.parse(JSON.stringify(req.body.username))+"'";
+	var email="'"+JSON.parse(JSON.stringify(req.body.email))+"'";
+	pool.connect(function(err, client, donedb) {
+		if(err) {
+	    return console.error('error fetching client from pool', err);
+		}
+	  	client.query('select * from "USER" where "USERNAME"='+username+' and "EMAIL"='+email, function(err, result) {
+		    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+		    donedb(err);
+		    
+		    if(err) {
+		      return console.error('error running query', err);
+		    }
+		    var number=result.rowCount;
+		    if(number==0)
+		    	res.send(false);
+		   	else{
+		   		var decoded = jwt.verify(result.rows[0].PASSWORD, 'thiendeptrai');
+		   		var transporter = nodemailer.createTransport({
+					  service: 'gmail',
+					  auth: {
+					    user: 'kidlearning.hcmus@gmail.com',
+					    pass: 'leminhthien'
+					  }
+				});
+
+				var mailOptions = {
+					  from: 'kidlearning.hcmus@gmail.com',
+					  to: JSON.parse(JSON.stringify(req.body.email)),
+					  subject: '[Kid Learning] Lấy lại mật khẩu ',
+					  text: 'Mật khẩu tài khoản của bạn là: '+decoded+'. \nVui lòng đăng nhập lại tại: http://kid-learning.herokuapp.com.\nNếu bạn không phải là chủ nhân tại khoản này vui lòng bỏ qua tin nhắn này'
+				};
+
+				transporter.sendMail(mailOptions, function(error, info){
+					  if (error) {
+					    console.log(error);
+					  } else {
+					    console.log('Email sent: ' + info.response +email);
+					  }
+					  res.end();
+				});
+		    	
+		   	}
+	  });
+	});
+});
+//quen mat khau
+
 //dang ky
 app.get('/dangky', function (req, res) {
     res.render('trangdangky');
@@ -159,9 +213,12 @@ app.post('/dangky', function(req, res){
 			    if(err) {
 			      return console.error('error running query', err);
 			    }
-
-			    maxid=parseInt(result.rows[0].ID);
-			    id=maxid+1;
+			    if(result.rowCount==0)
+			    	id=1;
+			    else{
+			    	maxid=parseInt(result.rows[0].ID);
+			    	id=maxid+1;
+				}
 
 			    maxid="'"+id+"'";
 		    	pool.connect(function(err, client, donedb) {
@@ -361,25 +418,7 @@ app.get("/sachgiaokhoa/:mon/:lop", function(req,res){
 	res.render(path);
 });
 
-// app.post("/Lichsu_cauhoi/:id", function(req,res){
-// 	pool.connect(function(err, client, done) {
-// 	  if(err) {
-// 	    return console.error('error fetching client from pool', err);
-// 	  }
-// 	  client.query('select * from "CAUHOI" where "PHANLOP"='+"'"+req.params.id+"'", function(err, result) {
-// 	    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
-// 	    done(err);
 
-// 	    if(err) {
-// 	      return console.error('error running query', err);
-// 	    }
-// 	    var data = result.rows;
-// 	   	res.send(data);
-// 	   	res.end();
-// 	  });
-// 	});
-// });
-	///tes
 //----------------------------realtime code-----------------------------------
 io.sockets.on('connection', function(socket){
 	console.log("io connection");
@@ -391,7 +430,8 @@ io.sockets.on('connection', function(socket){
 		var lop=data.lop;
 		var id=data.id;
 		var id_user=data.id_user;
-
+		var key=data.key;
+		console.log("key "+key);
 		var query="select *,"+'"'+"CAUHOI"+'"'+'.'+'"'+"ID"+'" as '+'"'+"ID_CAUHOI"+'"'+",to_char("+'"'+"THOIGIAN"+'"'+","+ tempDate+") from "+'"'+"CAUHOI"+'"'+","+'"'+"USER"+'"'+
 		 " where "+'"'+"CAUHOI"+'"'+'.'+'"'+"ID_TACGIA"+'"'+" = "+'"'+"USER"+'"'+'.'+'"'+"ID"+'"';
 		if(mon!="all")
@@ -402,6 +442,8 @@ io.sockets.on('connection', function(socket){
 			query+=" and "+'"'+"CAUHOI"+'"'+'.'+'"'+"ID"+'"'+"= '"+id+"' ";
 		if(id_user!="all")
 			query+=" and "+'"'+"CAUHOI"+'"'+'.'+'"'+"ID_TACGIA"+'"'+"= '"+id_user+"' ";
+		if(key!=undefined)
+			query+=" and "+'"'+"CAUHOI"+'"'+'.'+'"'+"NOIDUNG"+'"'+"~* '"+key+"' ";
 		query+=" order by "+'"'+"THOIGIAN"+'"'+" desc ";
 
 		pool.connect(function(err, client, done) {
@@ -421,7 +463,7 @@ io.sockets.on('connection', function(socket){
 				      return console.error('error running query', err);
 				    }
 				    var data1 = result.rows;
-				    io.sockets.emit('s2c_Thaoluan',data1);
+				    socket.emit('s2c_Thaoluan',data1);
 				   	//console.log(data1);
 				});
 		    });
@@ -451,8 +493,9 @@ io.sockets.on('connection', function(socket){
 		  	client.query("LISTEN realtimebinhluan");
 
 			client.on('notification', function(msg) {
-		        console.log("realtime binhluan");
-				client.query('select *,to_char("THOIGIAN",'+ tempDate +'),"BINHLUAN"."ID" as "ID_BINHLUAN" from "BINHLUAN","USER" where "BINHLUAN"."ID_NGUOITRALOI"="USER"."ID" and "ID_CAUHOI"='+id+'order by "BINHLUAN"."THOIGIAN" desc', function(err, result) {
+		        console.log("realtime binhluan "+id);
+		        //console.log(id);
+				client.query('select *,to_char("THOIGIAN",'+ tempDate +'),"BINHLUAN"."ID" as "ID_BINHLUAN" from "BINHLUAN","USER" where "BINHLUAN"."ID_NGUOITRALOI"="USER"."ID" and "ID_CAUHOI"='+id+'order by "BINHLUAN"."THOIGIAN" asc', function(err, result) {
 				    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
 				    done(err);
 
@@ -460,11 +503,11 @@ io.sockets.on('connection', function(socket){
 				      return console.error('error running query', err);
 				    }
 				    var data1 = result.rows;
-				    io.sockets.emit('s2c_Binhluan',data1);
+				    socket.emit('s2c_Binhluan',data1);
 				   	//console.log(data1);
 				});
 		    });
-		  	client.query('select *,to_char("THOIGIAN",'+ tempDate +'),"BINHLUAN"."ID" as "ID_BINHLUAN" from "BINHLUAN","USER" where "BINHLUAN"."ID_NGUOITRALOI"="USER"."ID" and "ID_CAUHOI"='+id+'order by "BINHLUAN"."THOIGIAN" desc', function(err, result) {
+		  	client.query('select *,to_char("THOIGIAN",'+ tempDate +'),"BINHLUAN"."ID" as "ID_BINHLUAN" from "BINHLUAN","USER" where "BINHLUAN"."ID_NGUOITRALOI"="USER"."ID" and "ID_CAUHOI"='+id+'order by "BINHLUAN"."THOIGIAN" asc', function(err, result) {
 		    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
 		    	done(err);
 
@@ -514,7 +557,7 @@ io.sockets.on('connection', function(socket){
 				      return console.error('error running query', err);
 				    }
 				    var data1 = result.rows;
-				    io.sockets.emit('s2c_Thaoluan',data1);
+				    socket.emit('s2c_Thaoluan',data1);
 				   	//console.log(data1);
 				});
 		    });
@@ -570,7 +613,7 @@ io.sockets.on('connection', function(socket){
 				      return console.error('error running query', err);
 				    }
 				    var data1 = result.rows;
-				    io.sockets.emit('s2c_Baihoc',data1);
+				    socket.emit('s2c_Baihoc',data1);
 				   	//console.log(data1);
 				});
 		    });
@@ -588,62 +631,50 @@ io.sockets.on('connection', function(socket){
 		});
 
 	});
+	///show lists thong bao
+	socket.on('c2s_Thongbao', function(data){// param{mon,lop,id_cauhoi}
+		console.log("Thong bao");
+		var id = "'"+data.id+"'";
+		var tempDate="'"+"HH24:MI DD-MM-YYYY"+"'";
+		pool.connect(function(err, client, done) {
+		  	if(err) {
+		    	return console.error('error fetching client from pool', err);
+		  	}
+		  	client.query("LISTEN realtimethongbao");
+
+			client.on('notification', function(msg) {
+		        console.log("realtime thongbao ");
+				client.query('select *,to_char("THOIGIAN",'+ tempDate +'),"THONGBAO"."ID" as "ID_THONGBAO","THONGBAO"."LOP" as "LOP_CAUHOI" from "THONGBAO","USER" where "THONGBAO"."ID_KHACH"="USER"."ID" and "ID_USER"='+id+'order by "THONGBAO"."THOIGIAN" desc', function(err, result) {
+				    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+				    done(err);
+
+				    if(err) {
+				      return console.error('error running query', err);
+				    }
+				    var data1 = result.rows;
+				    socket.emit('s2c_Thongbao',data1);
+				   	//console.log(data1);
+				});
+		    });
+		  	client.query('select *,to_char("THOIGIAN",'+ tempDate +'),"THONGBAO"."ID" as "ID_THONGBAO","THONGBAO"."LOP" as "LOP_CAUHOI" from "THONGBAO","USER" where "THONGBAO"."ID_KHACH"="USER"."ID" and "ID_USER"='+id+'order by "THONGBAO"."THOIGIAN" desc', function(err, result) {
+		    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+		    	done(err);
+
+			    if(err) {
+			      return console.error('error running query', Errorr);
+			    }
+			    var data1 = result.rows;
+			   	socket.emit('s2c_Thongbao',data1);
+		  	});
+		});
+	});
+
 });
-// app.post("/Hoidap_lichsu/lop:lop/id:id", function(req,res){
-
-// 	var tempDate="'"+"HH24:MI DD-MM-YYYY"+"'";
-// 	var lop=req.params.lop;
-// 	var id=req.params.id;
-// 	var query="select *,"+'"'+"CAUHOI"+'"'+'.'+'"'+"ID"+'" as '+'"'+"ID_CAUHOI"+'"'+",to_char("+'"'+"THOIGIAN"+'"'+","+ tempDate+") from "+'"'+"CAUHOI"+'"'+","+'"'+"USER"+'"'+
-// 	 " where "+'"'+"CAUHOI"+'"'+'.'+'"'+"ID_TACGIA"+'"'+" = "+'"'+"USER"+'"'+'.'+'"'+"ID"+'"';
-// 	if(lop!="all")
-// 		query+=" and "+'"'+"PHANLOP"+'"'+"= '"+lop+"' ";
-// 	if(id!="all")
-// 		query+=" and "+'"'+"CAUHOI"+'"'+'.'+'"'+"ID"+'"'+"= '"+id+"' ";
-// 	query+=" order by "+'"'+"THOIGIAN"+'"'+" desc ";
-
-// 	pool.connect(function(err, client, done) {
-// 	  if(err) {
-// 	    return console.error('error fetching client from pool', err);
-// 	  }
-// 	  client.query(query, function(err, result) {
-// 	    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
-// 	    done(err);
-
-// 	    if(err) {
-// 	      return console.error('error running query', err);
-// 	    }
-// 	    var data = result.rows;
-// 	   	res.send(data);
-// 	   	res.end();
-// 	  });
-// 	});
-// });
-
-// app.post("/Binhluan/id:id", function(req,res){
-// 	var id = "'"+req.params.id+"'";
-// 	var tempDate="'"+"HH24:MI DD-MM-YYYY"+"'";
-// 	pool.connect(function(err, client, done) {
-// 	  if(err) {
-// 	    return console.error('error fetching client from pool', err);
-// 	  }
-// 	  client.query('select *,to_char("THOIGIAN",'+ tempDate +'),"BINHLUAN"."ID" as "ID_BINHLUAN" from "BINHLUAN","USER" where "BINHLUAN"."ID_NGUOITRALOI"="USER"."ID" and "ID_CAUHOI"='+id+'order by "BINHLUAN"."THOIGIAN" desc', function(err, result) {
-// 	    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
-// 	    done(err);
-
-// 	    if(err) {
-// 	      return console.error('error running query', err);
-// 	    }
-// 	    var data = result.rows;
-// 	   	res.send(data);
-// 	   	res.end();
-// 	  });
-// 	});
-// });
 app.post('/themBinhluan', function(req, res){	
 
 	var id_cauhoi ="'"+JSON.parse(JSON.stringify(req.body.id_cauhoi))+"'";
 	var maxid;
+	var maxid2;
 	var id_user="'"+JSON.parse(JSON.stringify(req.body.id))+"'";
 	var noidung="'"+JSON.parse(JSON.stringify(req.body.noidung))+"'";
 	var thoigian="'"+JSON.parse(JSON.stringify(req.body.thoigian))+"'";
@@ -691,20 +722,73 @@ app.post('/themBinhluan', function(req, res){
 									      return console.error('error running query', err);
 									    }
 									    else{
-									    	console.log("them xong");
-									    	// console.log(result);
-									    	//res.setHeader("Content-Type", "text/html");
-									    	res.end();
-									    	//res.send(result);
-									    	return;
+									    	client.query('SELECT * FROM "THONGBAO" order by cast("ID" as int) desc limit 1',
+										  		function(err, result) {
+										  			donedb(err);
+												    if(err) {
+												      return console.error('error running query', err);
+												    }
+
+												    if(result.rowCount==0)
+												    	id2=1;
+												    else{
+												    	maxid2=parseInt(result.rows[0].ID);
+												    	id2=maxid2+1;
+													}
+
+												    maxid2="'"+id2+"'";
+											    	pool.connect(function(err, client, donedb) {
+														if(err) {
+													    	return console.error('error fetching client from pool', err);
+														}
+														client.query('select "ID_TACGIA" from "CAUHOI" where "ID"='+id_cauhoi,
+													  		function(err, resulttg) {
+													  			donedb(err);
+															    if(err) {
+															      return console.error('error running query', err);
+															    }
+															    else{
+															    	console.log(resulttg.rows[0].ID_TACGIA)
+															    	if(resulttg.rows[0].ID_TACGIA==JSON.parse(JSON.stringify(req.body.id))){
+															    		res.end();
+															    		return;
+															    	}
+															    	else{
+	    															  	client.query('INSERT INTO "THONGBAO" VALUES ('+maxid2+','+
+													  												'(select "ID_TACGIA" from "CAUHOI" where "ID"='+id_cauhoi+') ,'+
+													  												thoigian+','+
+													  												id_user+','+
+													  												'(select "TIEUDE" from "CAUHOI" where "ID"='+id_cauhoi+') ,'+
+													  												id_cauhoi+','+
+													  												'(select "MON" from "CAUHOI" where "ID"='+id_cauhoi+') ,'+
+													  												'(select "PHANLOP" from "CAUHOI" where "ID"='+id_cauhoi+') '+
+													  												')',
+																	  		function(err, result) {
+																	  			donedb(err);
+																			    if(err) {
+																			      return console.error('error running query', err);
+																			    }
+																			    else{
+																			    	res.end();
+																			    	return;
+
+																			    }
+																  		});
+															    	}
+
+															    }
+												  		});
+
+												});
+									  		});
+
 									    }
 							  	});
 
 						    }
 				  	});
 				});
-	  		}
-	  	);
+	  		});
 	});
 
 });
@@ -1010,11 +1094,13 @@ app.post("/:mon/lop:lop/baitap_tracnghiem_chitiet_cauhoi/:id", function(req,res)
 	var mon ="'"+ req.params.mon+"'";
 	var lop ="'"+ req.params.lop+"'";
 	var id ="'"+ req.params.id+"'";
+	var loai ="'"+ req.body.loai+"'";
+
 	pool.connect(function(err, client, done) {
 	  	if(err) {
 	    	return console.error('error fetching client from pool', err);
 	  	}	  
-	  	client.query('select *,"TRACNGHIEM"."ID" as "ID_TRACNGHIEM" from "TRACNGHIEM","BAIHOC" WHERE "ID_BAIHOC"='+id+' and "ID_BAIHOC"="BAIHOC"."ID"'
+	  	client.query('select *,"TRACNGHIEM"."ID" as "ID_TRACNGHIEM" from "TRACNGHIEM","BAIHOC" WHERE "ID_BAIHOC"='+id+' and "ID_BAIHOC"="BAIHOC"."ID" and "LOAI"='+loai
   		, function(err, result) {
 	    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
 	    done(err);
@@ -1026,9 +1112,10 @@ app.post("/:mon/lop:lop/baitap_tracnghiem_chitiet_cauhoi/:id", function(req,res)
 	  });
 	});
 })
-app.post("/:mon/lop:lop/baithi", function(req,res){
+app.post("/:mon/lop:lop/baithi/:id", function(req,res){
 	var mon ="'"+ req.params.mon+"'";
 	var lop ="'"+ req.params.lop+"'";
+	var id ="'"+ req.params.id+"'";
 	pool.connect(function(err, client, done) {
 	  	if(err) {
 	    	return console.error('error fetching client from pool', err);
@@ -1292,6 +1379,7 @@ app.post('/themTracnghiem', function(req, res){
 	var lop="'"+JSON.parse(JSON.stringify(req.body.lop))+"'";
 	var bai="'"+JSON.parse(JSON.stringify(req.body.bai))+"'";
 	var mon="'"+JSON.parse(JSON.stringify(req.body.mon))+"'";
+	var loai="'"+JSON.parse(JSON.stringify(req.body.loai))+"'";
 
 	pool.connect(function(err, client, donedb) {
 		if(err) {
@@ -1305,10 +1393,10 @@ app.post('/themTracnghiem', function(req, res){
 			    }
 
 			   	if(result.rowCount==0)
-			    	id=1;
+			    	id1=1;
 			    else{
 			    	maxid=parseInt(result.rows[0].ID);
-			    	id=maxid+1;
+			    	id1=maxid+1;
 				}
 
 			    maxid="'"+id1+"'";
@@ -1316,7 +1404,8 @@ app.post('/themTracnghiem', function(req, res){
 			  												bai+','+
 			  												mon+','+
 			  												lop+','+
-			  												noidung+')',
+			  												noidung+','+
+			  												loai+')',
 			  		function(err, result) {
 			  			donedb(err);
 					    if(err) {
@@ -1361,15 +1450,30 @@ app.post('/themTracnghiem', function(req, res){
 							  												da4+')',function(){return;});
 						  		}
 						  	);
-			    		   	res.end();
-			    		   	return;
+					    	if(JSON.parse(JSON.stringify(req.body.loai))=="kiemtra"){
+					    		client.query('UPDATE "BAIHOC" SET "BAITHI" = '+"'"+1+"'"+' WHERE "MON"='+mon+' and "PHANLOP"='+lop+' and "BAI" ='+bai,
+							  		function(err, result) {
+							  			donedb(err);
+									    if(err) {
+									      return console.error('error running query', err);
+									    }
+									    else{
+									    	console.log("them xong");
+									    	res.end();
+									    	return;
+									    }
+							  	});
+					    	}
+					    	else{
+					    		res.end();
+						    	return;
+					    	}
 					    }
 			  	});
 	  		}
 	  	);
 	});
 });
-
 /// them ket qua hoc tap
 app.post('/themKetquahoctap', function(req, res){	
 
@@ -1402,7 +1506,7 @@ app.post('/themKetquahoctap', function(req, res){
 				}
 			    maxid="'"+id+"'";
 			  	client.query('INSERT INTO "KETQUAHOCTAP" VALUES ('+maxid+','+
-			  												id+','+
+			  												id_user+','+
 			  												mon+','+
 			  												lop+','+
 			  												heso+','+
@@ -1504,3 +1608,127 @@ app.post('/uploadSGK', function(req, res) {
         res.end();
     };
 })
+/// lay su kien lich su
+app.post('/dongsukien', function(req, res){
+	var tempDate="'"+"YYYY-MM-DD"+"'";
+	var tempDate1="'"+"DD/MM/YYYY"+"'";
+	pool.connect(function(err, client, donedb) {
+		if(err) {
+	    	return console.error('error fetching client from pool', err);
+		}
+	  	client.query('select *, to_char("THOIGIAN",'+ tempDate+') as "START", to_char("END",'+ tempDate+') as "END", to_char("THOIGIAN",'+ tempDate1+') as "DATE" from "SUKIEN"', function(err, result) {
+		    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+		    donedb(err);
+		    
+		    if(err) {
+		      return console.error('error running query', err);
+		    }
+		    res.send(result.rows);
+	  });
+	});
+});
+app.post('/themsukien', function(req, res){
+	var id_user="'"+JSON.parse(JSON.stringify(req.body.id))+"'";
+	var thoigian="'"+JSON.parse(JSON.stringify(req.body.thoigian))+"'";
+	var tieude="'"+JSON.parse(JSON.stringify(req.body.tieude))+"'";
+	var noidung="'"+JSON.parse(JSON.stringify(req.body.noidung))+"'";
+	pool.connect(function(err, client, donedb) {
+		if(err) {
+	    	return console.error('error fetching client from pool', err);
+		}	
+	  	client.query('SELECT * FROM "SUKIEN" order by cast("ID" as int) desc limit 1',
+	  		function(err, result) {
+	  			donedb(err);
+			    if(err) {
+			      return console.error('error running query', err);
+			    }
+
+			    console.log(result.rowCount);
+			    if(result.rowCount==0)
+			    	id=1;
+			    else{
+			    	maxid=parseInt(result.rows[0].ID);
+			    	id=maxid+1;
+				}
+			    maxid="'"+id+"'";
+			  	client.query('INSERT INTO "SUKIEN" VALUES ('+maxid+','+
+			  												tieude+','+
+			  												noidung+','+
+			  												thoigian+','+
+			  												id_user+')',
+			  		function(err, result) {
+			  			donedb(err);
+					    if(err) {
+					      return console.error('error running query', err);
+					    }
+					    else{
+					    	res.end();
+			    		   	return;
+					    }
+			  	});
+	  		}
+	  	);
+	});
+});
+app.post('/laysukien', function(req, res){
+	var tempDate="'"+"YYYY-MM-DD"+"'";
+	var tempDate1="'"+"DD/MM/YYYY"+"'";
+	var id="'"+JSON.parse(JSON.stringify(req.body.id))+"'";
+
+	pool.connect(function(err, client, donedb) {
+		if(err) {
+	    	return console.error('error fetching client from pool', err);
+		}
+	  	client.query('select *, to_char("THOIGIAN",'+ tempDate+') as "START", to_char("THOIGIAN",'+ tempDate1+') as "DATE" from "SUKIEN" where "ID"='+id, function(err, result) {
+		    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+		    donedb(err);
+		    
+		    if(err) {
+		      return console.error('error running query', err);
+		    }
+		    res.send(result.rows);
+	  	});
+	});
+});
+///lay ket qua hoc tap
+app.post('/layKetqua', function(req, res){
+	var tempDate="'"+"YYYY-MM-DD"+"'";
+	var tempDate1="'"+"DD/MM/YYYY"+"'";
+	var id="'"+JSON.parse(JSON.stringify(req.body.id))+"'";
+	pool.connect(function(err, client, donedb) {
+		if(err) {
+	    	return console.error('error fetching client from pool', err);
+		}
+	  	client.query('select *, to_char("THOIGIAN",'+ tempDate+') as "THOIGIAN",CAST("DIEM" AS FLOAT) from "KETQUAHOCTAP" where "ID_USER"='+id+' order by "ID_BAIHOC" asc', function(err, result) {
+		    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+		    donedb(err);
+		    
+		    if(err) {
+		      return console.error('error running query', err);
+		    }
+		    res.send(result.rows);
+	  	});
+	});
+});
+//xoa thong bao
+app.post("/delete_thongbao", function(req,res){
+
+	var id="'"+JSON.parse(JSON.stringify(req.body.id))+"'";
+
+	pool.connect(function(err, client, done) {
+	  if(err) {
+	    return console.error('error fetching client from pool', err);
+	  }
+	  client.query('DELETE FROM "THONGBAO" WHERE "ID"='+id
+  		, function(err, result) {
+	    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+	    done(err);
+
+	    if(err) {
+	      return console.error('error running query', err);
+	    }
+	   	res.end();
+    	return;
+	  });
+	});
+});
