@@ -1,6 +1,6 @@
 import React from 'react';
 import io from 'socket.io-client';
-let socket = io('http://'+window.location.hostname+':3000');
+let socket = io('https://'+window.location.hostname+':3000');
 //let socket = io('http://'+window.location.hostname);
 var data = document.querySelector('#maincontent');
 
@@ -43,6 +43,9 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 										<div style={{paddingRight: '0px'}}>
 											<input id="noidung" type="text" placeholder="Nhập câu hỏi..." className="form-control"/>
 											<span className="help-block"></span>
+										</div>
+										<div id="formanh" style={{paddingRight: '0px'}}>
+
 										</div>
 									</div>
 									<div id="list_dapan"className="form-group">
@@ -106,7 +109,7 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 									return (
 										<li key={index1} className="media">
 											<div className="media-left">
-												<a><img id="img_user" src={"assets/images/user_"+data1.ID_NGUOITRALOI+".jpg"} onError={(e)=>{e.target.src="assets/images/user.jpg"}} className="img-circle img-sm" alt=""/></a>
+												<a><img id="img_user" src={"assets/images/user/user_"+data1.ID_NGUOITRALOI+".jpg"} onError={(e)=>{e.target.src="assets/images/user/user.jpg"}} className="img-circle img-sm" alt=""/></a>
 											</div>
 
 											<div className="media-body">
@@ -236,7 +239,7 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 					check_temp=3;
 				if($("#rd_cau4").parent().attr("class")=="checked")
 					check_temp=4;
-				console.log(check_temp);
+				//console.log(check_temp);
 			}
 			var da1=0,da2=0,da3=0,da4=0;
 			if(check_temp==1)
@@ -248,6 +251,16 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 			if(check_temp==4)
 				da4=1;
 
+			var currentdate = new Date(); 
+			var datetime =currentdate.getFullYear() + "_" 
+		            + (currentdate.getMonth()+1)  + "_" 
+		            + currentdate.getDate() +"_" 
+		            + currentdate.getHours() + "_"   
+		            + currentdate.getMinutes() + "_"  
+		            + currentdate.getSeconds();
+
+		    $(".fileupload").append('<input hidden name="file_name" value="'+datetime+'"/>');
+		    $("#themAnh").click();
 			var data={
 		        id:  id_user,
 		        loai: 'baitap',
@@ -262,7 +275,8 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 				da1: da1,
 				da2: da2,
 				da3: da3,
-				da4: da4
+				da4: da4,
+				link_anh: datetime
 			};
 
 	        $.post("themTracnghiem", data, function(data){
@@ -303,7 +317,7 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 				noidung: $("#binhluan_cauhoi").val(),
 				thoigian: datetime
 			};
-			console.log(data);
+			//console.log(data);
 	        $.post("themBinhluan", data, function(){
 	        	$("#binhluan_cauhoi").val("");
 	        	//window.location = "#/trangcanhan";
@@ -327,13 +341,35 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 		        id_binhluan: idBinhluanClick,
 		        type: type
 			};
-			console.log(data);
+			//console.log(data);
 	        $.post("rate_binhluan", data, function(){
 	        	
     		});
 	    });
+	    $("#formanh").append('<form class="fileupload" action="uploadCauhoi" method="post" enctype="multipart/form-data">'+
+	    									'<label for="imgInp" class="btn btn-primary btn-block btn-outlined">Thêm ảnh</label>'+
+					                    	'<input style="display:none" type="file" id="imgInp" name="upfile" class="file-styled"/>'+
+					                    	'<button id="themAnh" hidden type="submit">Đăng ảnh</button>'+
+				                    	'</form>'+
+				                    	'<p style="text-align:center"><img id="blah" src="#" style="display:none"/></p>');
 
-
+	    function readURL(input) {
+	        if (input.files && input.files[0]) {
+	            var reader = new FileReader();
+	            
+	            reader.onload = function (e) {
+	                $('#blah').attr('src', e.target.result);
+	               // $('#blah').attr('style', "height:150px");
+	                $('#blah').attr('style', "display:0;height:150px");
+	            }
+	            
+	            reader.readAsDataURL(input.files[0]);
+	        }
+	    }
+	    
+	    $("#imgInp").change(function(){
+	        readURL(this);
+	    });
 	}
 	componentWillMount(){
 		var that=this;
@@ -373,18 +409,28 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 					for(var i=0;i<data.length;i++){
 						var count=i+1;
 
-						$("#xxx").append('<h6>Câu '+count+'</h6>'+
-											'<fieldset>'+
-												'<p class="content-group text-semibold">'+data[i].NOIDUNG+'</p>'+
-												'<div id="cau'+count+'"class="form-group pt-5">'+
-													'<label class="text-semibold">Chọn câu trả lời:</label>'+
-												'</div>'+
-											'</fieldset>'
-											);
+						if(data[i].LINK_ANH!=null)
+							$("#xxx").append('<h6>Câu '+count+'</h6>'+
+												'<fieldset>'+
+													'<p class="content-group text-semibold">'+data[i].NOIDUNG+'</p>'+
+													'<p style="text-align:center"><img src="/assets/images/cauhoi/'+data[i].LINK_ANH+'.jpg" alt="Hình ảnh câu hỏi" style="width:autopx;height:300px;"/></p>'+
+													'<div id="cau'+count+'"class="form-group pt-5">'+
+														'<label class="text-semibold">Chọn câu trả lời:</label>'+
+													'</div>'+
+												'</fieldset>'
+												);
+						else
+							$("#xxx").append('<h6>Câu '+count+'</h6>'+
+												'<fieldset>'+
+													'<p class="content-group text-semibold">'+data[i].NOIDUNG+'</p>'+
+													'<div id="cau'+count+'"class="form-group pt-5">'+
+														'<label class="text-semibold">Chọn câu trả lời:</label>'+
+													'</div>'+
+												'</fieldset>'
+												);
 						var idCauhoi=data[i].ID_BAIHOC;																
 						$.post("/getDapan",{id: data[i].ID_TRACNGHIEM},function(data1){
-							console.log("duoi"+count);
-							console.log(data1);
+							//console.log(data1);
 							for(var j=0;j<data1.length;j++)
 							{
 								if(data1[j].CHECK==0){
@@ -428,11 +474,8 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 				        	console.log("onStepChanging");
 				        	var test=currentIndex+1;
 				        	var temtem3='input[name='+test+']';
-				        	console.log(test);
 
 				        	var iddapan=$(temtem3).closest('.checked').children().attr("id");
-				        	console.log(iddapan);
-				        	
 				        	if(iddapan=="1"){
 				        		return true;
 				        	}
@@ -440,10 +483,7 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 				        onFinishing: function (event, currentIndex) {
 				            var test=currentIndex+1;
 				        	var temtem3='input[name='+test+']';
-				        	console.log(test);
-
 				        	var iddapan=$(temtem3).closest('.checked').children().attr("id");
-				        	console.log(iddapan);
 				        	
 				        	if(iddapan=="1"){
 				        		return true;
@@ -460,18 +500,28 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 					for(var i=0;i<data.length;i++){
 						var count=i+1;
 
-						$("#xxx").append('<h6>Câu '+count+'</h6>'+
-											'<fieldset>'+
-												'<p class="content-group text-semibold">'+data[i].NOIDUNG+'</p>'+
-												'<div id="cau'+count+'"class="form-group pt-5">'+
-													'<label class="text-semibold">Chọn câu trả lời:</label>'+
-												'</div>'+
-											'</fieldset>'
-											);
+						if(data[i].LINK_ANH!=null)
+							$("#xxx").append('<h6>Câu '+count+'</h6>'+
+												'<fieldset>'+
+													'<p class="content-group text-semibold">'+data[i].NOIDUNG+'</p>'+
+													'<p style="text-align:center"><img src="/assets/images/cauhoi/'+data[i].LINK_ANH+'.jpg" alt="Hình ảnh câu hỏi" style="width:autopx;height:300px;"/></p>'+
+													'<div id="cau'+count+'"class="form-group pt-5">'+
+														'<label class="text-semibold">Chọn câu trả lời:</label>'+
+													'</div>'+
+												'</fieldset>'
+												);
+						else
+							$("#xxx").append('<h6>Câu '+count+'</h6>'+
+												'<fieldset>'+
+													'<p class="content-group text-semibold">'+data[i].NOIDUNG+'</p>'+
+													'<div id="cau'+count+'"class="form-group pt-5">'+
+														'<label class="text-semibold">Chọn câu trả lời:</label>'+
+													'</div>'+
+												'</fieldset>'
+												);
 						var idCauhoi=data[i].ID_BAIHOC;																
 						$.post("/getDapan",{id: data[i].ID_TRACNGHIEM},function(data1){
-							console.log("duoi"+count);
-							console.log(data1);
+
 							for(var j=0;j<data1.length;j++)
 							{
 								
@@ -506,10 +556,8 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 				        	console.log("onStepChanging");
 				        	var test=currentIndex+1;
 				        	var temtem3='input[name='+test+']';
-				        	console.log(test);
 
 				        	var iddapan=$(temtem3).closest('.checked').children().attr("id");
-				        	console.log(iddapan);
 				        	
 				        	if(iddapan=="1"){
 				        		return true;
@@ -518,10 +566,8 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 				        onFinishing: function (event, currentIndex) {
 				            var test=currentIndex+1;
 				        	var temtem3='input[name='+test+']';
-				        	console.log(test);
 
 				        	var iddapan=$(temtem3).closest('.checked').children().attr("id");
-				        	console.log(iddapan);
 				        	
 				        	if(iddapan=="1"){
 				        		return true;
@@ -544,7 +590,14 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 			});
 
 		});
-
+		///
+		function loop(){
+			setTimeout(function () {
+	            socket.emit('c2s_Binhluan',{id: id_cauhoi });
+	            loop();
+	        }, 30000);
+		}
+		loop();
 	}
 	onChange(state) {
 	   	if(this.refs.root) {

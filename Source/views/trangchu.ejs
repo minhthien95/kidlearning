@@ -88,7 +88,15 @@
 
 	</div>
 	<!-- /page container -->
-	
+<script type="text/javascript">
+	console.log(" link "+window.location.hash);
+	var url=window.location.hash;
+	var url1=url.split('?');
+	console.log("url[0] "+url1[0]);
+	if (url1[0] == '#_=_') {
+        window.location.hash = '#/';
+    }
+</script>
 	<!-- bundle -->
 	<script src="bundle.js"></script>
 	<!-- bundle -->

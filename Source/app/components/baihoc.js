@@ -5,7 +5,7 @@ let socket = io('http://'+window.location.hostname+':3000');
 //let socket = io('http://'+window.location.hostname);
 
 var data = document.querySelector('#maincontent');
-console.log('http://'+window.location.hostname+':3000');
+
 var id_user=data.dataset.id;
 var check=true;
 var mon,phanlop;
@@ -95,6 +95,12 @@ export class baihoc extends React.Component{
 															<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_chitiet/"+data1.BAI} className="text-default"><span className="text-primary">Bài {data1.BAI}:</span> {data1.TIEUDE}</a></h6>
 															<div className="heading-elements">
 																<span className="heading-text">{data1.USERNAME} - {data1.to_char}</span>
+											                	{data1.USERNAME==data.dataset.username ? (
+															        <ul className="list-inline list-inline-separate heading-text pull-right">
+																		<li><a id={data1.ID_TACGIA} name={data1.ID_BAIHOC} className="text-danger-400" data-popup="tooltip" data-toggle="modal" data-target="#confirm"><i className="icon-cross2 position-right"/></a></li>
+																	</ul>) : (
+															        null
+														      	)}
 										                	</div>
 														</div>
 
@@ -131,6 +137,12 @@ export class baihoc extends React.Component{
 															<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_chitiet/"+data1.BAI} className="text-default"><span className="text-primary">Bài {data1.BAI}:</span>  {data1.TIEUDE}</a></h6>
 															<div className="heading-elements">
 																<span className="heading-text">{data1.USERNAME} - {data1.to_char}</span>
+																{data1.USERNAME==data.dataset.username ? (
+															        <ul className="list-inline list-inline-separate heading-text pull-right">
+																		<li><a id={data1.ID_TACGIA} name={data1.ID_BAIHOC} className="text-danger-400" data-popup="tooltip" data-toggle="modal" data-target="#confirm"><i className="icon-cross2 position-right"/></a></li>
+																	</ul>) : (
+															        null
+														      	)}
 										                	</div>
 														</div>
 
@@ -185,6 +197,12 @@ export class baihoc extends React.Component{
 															<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_chitiet/"+data1.BAI} className="text-default"><span className="text-primary">Bài {data1.BAI}:</span>  {data1.TIEUDE}</a></h6>
 															<div className="heading-elements">
 																<span className="heading-text">{data1.USERNAME} - {data1.to_char}</span>
+																{data1.USERNAME==data.dataset.username ? (
+															        <ul className="list-inline list-inline-separate heading-text pull-right">
+																		<li><a id={data1.ID_TACGIA} name={data1.ID_BAIHOC} className="text-danger-400" data-popup="tooltip" data-toggle="modal" data-target="#confirm"><i className="icon-cross2 position-right"/></a></li>
+																	</ul>) : (
+															        null
+														      	)}
 										                	</div>
 														</div>
 
@@ -219,6 +237,12 @@ export class baihoc extends React.Component{
 															<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_chitiet/"+data1.BAI} className="text-default"><span className="text-primary">Bài {data1.BAI}:</span>  {data1.TIEUDE}</a></h6>
 															<div className="heading-elements">
 																<span className="heading-text">{data1.USERNAME} - {data1.to_char}</span>
+																{data1.USERNAME==data.dataset.username ? (
+															        <ul className="list-inline list-inline-separate heading-text pull-right">
+																		<li><a id={data1.ID_TACGIA} name={data1.ID_BAIHOC} className="text-danger-400" data-popup="tooltip" data-toggle="modal" data-target="#confirm"><i className="icon-cross2 position-right"/></a></li>
+																	</ul>) : (
+															        null
+														      	)}
 										                	</div>
 														</div>
 
@@ -264,30 +288,31 @@ export class baihoc extends React.Component{
 							}, this)}
 							{/* List bai hoc */}
 
-							<div className="timeline-row">
-								<div className="timeline-icon">
-									<div className="bg-orange">
-										<i className="icon-graduation2"></i>
-									</div>
-								</div>
+							<div id="checkBaithi" className="timeline-row">
 
-								<div className="panel panel-flat timeline-content">
-									<div className="panel-heading">
-										<h6 className="panel-title text-semibold no-margin"><a href={"#"+this.props.params.mon+"/lop"+this.props.params.lop+"/baithi/thi"} className="text-default"><span className="text-primary">Bài thi:</span>  Bài thi cuối môn</a></h6>
-									</div>
-
-									<div className="panel-body">
-										
-
-								
-									</div>
-								</div>
 							</div>
 						</div>
 				    </div>
 
 				</div>
 				{/* /content area */}
+				{/* confirm */}
+				<div id="confirm" className="modal fade">
+					<div className="modal-dialog modal-xs">
+						<div className="modal-content">
+							<div className="thumbnail no-border no-margin">								
+						    	<div className="caption text-center">
+						    		<h6 className="text-semibold no-margin-top content-group">Bạn có chắc muốn xoá bài học này!  Toàn bộ dữ liệu như bài tập, mindmap, bình luận của bài viết sẽ bị xoá hoàn toàn. </h6>
+						    		<ul className="list-inline list-inline-condensed no-margin">
+				                    	<li><a className="btn btn-success btn-float" data-dismiss="modal">Xoá</a></li>
+				                    	<li><a className="btn btn-danger btn-float" data-dismiss="modal">Huỷ</a></li>
+			                    	</ul>
+						    	</div>
+					    	</div>
+						</div>
+					</div>
+				</div>
+				{/* /confirm */}
 				{/* confirm */}
 				<div id="confirm2" className="modal fade">
 					<div className="modal-dialog modal-xs">
@@ -307,7 +332,7 @@ export class baihoc extends React.Component{
 		)
 	}
 	componentDidMount(){
-		
+		var that= this;
 		$("#uploadfile").append('<form class="fileupload" action="uploadSGK" method="post" enctype="multipart/form-data">'+
 					                    		'<input type="file" id_user="5" name="upfile" class="file-styled"/>'+
 					                    		'<br/>'+
@@ -371,7 +396,7 @@ export class baihoc extends React.Component{
 				thoigian: datetime
 
 			};
-			console.log(data);
+			//console.log(data);
 	        $.post("themBaihoc", data, function(){
 	        	$("#sobai").val("");
 	        	$("#tieudebai").val("");
@@ -380,6 +405,53 @@ export class baihoc extends React.Component{
 	        	//window.location = "#/trangcanhan";
             	//Trangcanhan.dispatch(location.getCurrentPath(), null);
     		});
+	    });
+
+	     $('#listbaihoc').on('click', '.text-danger-400', function (e) {
+	        var id_baihoc=$(this).attr('name');
+  			console.log("click xoa");
+  			//console.log("id bai hoc "+id_baihoc);
+  			$('#confirm li').on('click', '.btn-success', function (e) {
+	        	console.log("xac nhan xoa bai hoc");
+	        	$.post("delete_baihoc",{id_baihoc: id_baihoc});
+	        	return;
+	    	});
+	    });
+	    var datax={
+	        id:  id_user,
+			lop: phanlop[0],
+			mon: mon[1]
+		};
+	    $.post("checkBaithi", datax, function(data){
+	    	if(data==true || type_username!="hocsinh"){
+	    		$("#checkBaithi").append('<div class="timeline-icon">'+
+										'<div class="bg-orange">'+
+											'<i class="icon-graduation2"></i>'+
+										'</div>'+
+									'</div>'+
+									'<div class="panel panel-flat timeline-content">'+
+										'<div class="panel-heading">'+
+											'<h6 class="panel-title text-semibold no-margin"><a href="#'+that.props.params.mon+'/lop'+that.props.params.lop+'/baithi/thi" className="text-default"><span class="text-primary">Bài thi:</span>  Bài thi cuối môn</a></h6>'+
+										'</div>'+
+										'<div class="panel-body">'+
+
+										'</div>'+
+									'</div>');
+	    	}
+	    	else
+	    		$("#checkBaithi").append('<div class="timeline-icon">'+
+										'<div class="bg-grey-300">'+
+											'<i class="icon-graduation2"></i>'+
+										'</div>'+
+									'</div>'+
+									'<div class="panel panel-flat timeline-content">'+
+										'<div class="panel-heading">'+
+											'<h6 class="panel-title text-semibold no-margin"><a class="text-grey"><span className="text-primary">Bài thi:</span>  Bài thi cuối môn</a></h6>'+
+										'</div>'+
+										'<div class="panel-body">'+
+
+										'</div>'+
+									'</div>');
 	    });
 	}
 	componentWillMount(){
@@ -420,7 +492,7 @@ export class baihoc extends React.Component{
 
 		socket.emit('c2s_Baihoc',data1);
 		socket.on('s2c_Baihoc', function(data){
-			console.log(data);
+			//console.log(data);
 			var mon1;
 			if(mon[1]=="lichsu")
 				mon1="Lịch sử";

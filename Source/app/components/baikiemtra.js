@@ -38,22 +38,29 @@ export class baikiemtra extends React.Component{
 
 	            	<div className="panel panel-flat">
 						<div className="panel-heading">
-							<h5 className="panel-title">Bài thi</h5>
-							<div className="heading-elements">
-								<ul className="icons-list">
-			                		<li><a data-action="collapse"></a></li>
-			                	</ul>
-		                	</div>
+							<div className="text-center">
+								<div className="panel-heading bg-orange-400">
+									<h4 className="panel-title">Bài kiểm tra
+									</h4>
+									<small className="display-block">(Chọn phương án đúng nhất cho từng câu hỏi)</small>
+								</div>
+							</div>
+							{type_username=="hocsinh" ? (
+						        null) : (
+						        <ul className="list-inline list-inline-separate heading-text pull-right">
+									<li><a id="delete_kiemtra" className="text-danger-400" data-popup="tooltip" data-toggle="modal" data-target="#confirm2"><i className="icon-cross2 position-right"/>Xoá bài kiểm tra</a></li>
+								</ul>
+					      	)}
 						</div>
 
 	                	<div className="panel-body">
             				<div id="xxx" className="form-group pt-15">
 										
 
-									</div>
+							</div>
 						</div>
 						<div className="text-right">
-							<button data-popup="tooltip" data-toggle="modal" data-target="#confirm" id="nopbai" type="submit" className="btn bg-teal-400">Nộp bài <i className="icon-arrow-right14 position-right"></i></button>
+							<button data-popup="tooltip" data-toggle="modal" data-target="#confirm" id="nopbai" type="submit" className="btn bg-orange-800">Nộp bài <i className="icon-arrow-right14 position-right"></i></button>
 						</div>
 					</div>
 
@@ -75,6 +82,23 @@ export class baikiemtra extends React.Component{
 					</div>
 				</div>
 				{/* /confirm */}
+				{/* confirm */}
+				<div id="confirm2" className="modal fade">
+					<div className="modal-dialog modal-xs">
+						<div className="modal-content">
+							<div className="thumbnail no-border no-margin">								
+						    	<div className="caption text-center">
+						    		<h6 className="text-semibold no-margin-top content-group">Bạn có chắc muốn xoá toàn bộ bài kiểm tra này! </h6>
+						    		<ul className="list-inline list-inline-condensed no-margin">
+				                    	<li><a className="btn btn-success btn-float" data-dismiss="modal">Xoá</a></li>
+				                    	<li><a className="btn btn-danger btn-float" data-dismiss="modal">Huỷ</a></li>
+			                    	</ul>
+						    	</div>
+					    	</div>
+						</div>
+					</div>
+				</div>
+				{/* /confirm */}
 			</div>
 		)
 	}
@@ -87,7 +111,7 @@ export class baikiemtra extends React.Component{
 		var url2=window.location.href;
 		url2=url2.split('lop');
 		var phanlop=url2[1].split('/');
-
+		var bai=this.props.params.id;
 		var mon1;
 		if(mon[1]=="lichsu")
 				mon1="Lịch sử";
@@ -111,7 +135,7 @@ export class baikiemtra extends React.Component{
 				//var iddapan=$("span").closest('.checked').children().attr("id");
 	       }
 			
-	        console.log("xet ket qua "+socaudung);
+	        //console.log("xet ket qua "+socaudung);
 
 			var currentdate = new Date();
 			var datetime =currentdate.getFullYear() + "-"
@@ -126,18 +150,39 @@ export class baikiemtra extends React.Component{
 				diem: (Math.round(parseFloat(socaudung*10/socaude) * 4) / 4).toFixed(2),
 				heso: '1',
 				mon: mon[1],
-				bai: that.props.params.id,
+				bai: bai,
 				thoigian: datetime
 			};
 			console.log(data);
-	        $.post("themKetquahoctap", data, function(){
-		        $('#hienkq').text("Bạn đã hoàn thành bài thi với số điểm: "+(Math.round(parseFloat(socaudung*10/socaude) * 4) / 4).toFixed(2)+" điểm" );
-		        socaudung=0;
-		        $('#nopbai').hide();
-			    $("div").closest("#uniform-1").parent().parent().addClass("alpha-info no-border");
+	        $.post("themKetquahoctap", data, function(data1){
+	        	if(data1==true)
+	        	{
+	        		$('#hienkq').text("Bạn đã hoàn thành bài thi với số điểm: "+(Math.round(parseFloat(socaudung*10/socaude) * 4) / 4).toFixed(2)+" điểm. Tuy nhiên bài kiểm tra này bạn đã làm trước đó nên kết quả không được ghi nhận thêm" );
+			        socaudung=0;
+			        $('#nopbai').hide();
+				    $("div").closest("#uniform-1").parent().parent().addClass("alpha-info no-border");
+	        	}
+	        	else{
+			        $('#hienkq').text("Bạn đã hoàn thành bài thi với số điểm: "+(Math.round(parseFloat(socaudung*10/socaude) * 4) / 4).toFixed(2)+" điểm" );
+			        socaudung=0;
+			        $('#nopbai').hide();
+				    $("div").closest("#uniform-1").parent().parent().addClass("alpha-info no-border");
+				}
     		});
 		});
 		
+		$('#delete_kiemtra').click(function (event){
+			var data={
+		        lop: phanlop[0],
+				mon: mon[1],
+				bai: bai
+			};
+			$('#confirm2 li').on('click', '.btn-success', function (e) {
+				$.post("deleteKiemtra", data, function(data1){
+					window.location.reload(true);
+				});
+	    	});
+		});
 	}
 	componentWillMount(){
 		console.log("componentWillMount");
@@ -145,7 +190,7 @@ export class baikiemtra extends React.Component{
 		var count1=1;
 		$.post("/"+this.props.params.mon+"/lop"+this.props.params.lop+"/baitap_tracnghiem_chitiet_cauhoi/"+this.props.params.id,{loai: "kiemtra"}, function(data){
 			console.log("lay kiem tra");
-			console.log(data);
+			//console.log(data);
 			socaude=data.length;
 			if(data.length==0)
 			{
@@ -173,15 +218,15 @@ export class baikiemtra extends React.Component{
 
 				var idCauhoi=data[i].ID_BAIHOC;																
 				$.post("/getDapan",{id: data[i].ID_TRACNGHIEM},function(data1){
-					console.log("duoi"+count);
-					console.log(data1);
+					//console.log("duoi"+count);
+					//console.log(data1);
 					for(var j=0;j<data1.length;j++)
 					{
 						if(data1[j].CHECK==1){
 							//console.log("cau "+count1+" ket qua "+(j+1));
 							var kqtemp={cau: count1,dapan: (j+1)};
 							ketqua.push(kqtemp);
-							console.log(kqtemp);
+							//console.log(kqtemp);
 						}
 						$("#cau"+count1).append('<div class="radio">'+
 													'<label>'+
@@ -198,7 +243,7 @@ export class baikiemtra extends React.Component{
 					});
 				});
 			};
-			console.log(ketqua);
+			//console.log(ketqua);
 		});
 		
 	}

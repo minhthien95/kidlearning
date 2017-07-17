@@ -2,7 +2,6 @@ import React from 'react';
 import io from 'socket.io-client';
 let socket = io('http://'+window.location.hostname+':3000');
 //let socket = io('http://'+window.location.hostname);
-
 var data = document.querySelector('#maincontent');
 
 var id_user=data.dataset.id;
@@ -128,7 +127,7 @@ export class hoidap extends React.Component{
 												        <ul className="list-inline list-inline-separate heading-text pull-right">
 															<li><a id={data1.USERNAME} name={data1.ID_CAUHOI} className="text-danger-400" data-popup="tooltip" data-toggle="modal" data-target="#confirm"><i className="icon-cross2 position-right"/></a></li>
 														</ul>) : (
-												        <div/>
+												        null
 											      	)}
 													<h5 className="text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/cauhoi"+data1.ID_CAUHOI} className="text-default"><span>{data1.MON=="lichsu" ? (
 																																													        <span className="text-success">Lịch sử {data1.PHANLOP} - </span>) : (
@@ -246,7 +245,7 @@ export class hoidap extends React.Component{
 				thoigian: datetime
 
 			};
-			console.log(data);
+			//console.log(data);
 	        $.post("themCauhoi", data, function(){
 	        	$("#add_tieude").val("");
 	        	$("#add_noidung").val("");
@@ -349,10 +348,10 @@ export class hoidap extends React.Component{
 			id: "all",
 			id_user: "all"
 		}
-		console.log(data1);
+		//console.log(data1);
 		socket.emit('c2s_Thaoluan',data1);
 		socket.on('s2c_Thaoluan', function(data){
-			console.log(data);
+			//console.log(data);
 				var mon1;
 			if(mon[1]=="lichsu")
 				mon1="Lịch sử";
@@ -364,19 +363,6 @@ export class hoidap extends React.Component{
 			that.setState({listCauhoi: data});
 		});
 		////
-	}
-	componentWillUnmount(){
-		console.log("componentWillUnmount");
-	}
-	shouldComponentUpdate(nextProps, nextState){
-		return true;
-		console.log("shouldComponentUpdate");
-	}
-	componentWillUpdate(nextProps, nextState){
-		console.log("cmponentWillUpdate");
-	}
-	componentDidUpdate(prevProps, prevState){
-		console.log("componentDidUpdate");
 	}
 	componentWillReceiveProps(newProps)
 	{

@@ -44,7 +44,7 @@ export class gioithieu extends React.Component{
 								<div className="col-lg-3 col-md-6">
 									<div className="thumbnail no-padding">
 										<div className="thumbnail">
-											<img src="assets/images/user_8.jpg" alt=""/>
+											<img src="assets/images/user/user_8.jpg" alt=""/>
 										</div>
 									
 								    	<div className="caption text-center">
@@ -60,7 +60,7 @@ export class gioithieu extends React.Component{
 								<div className="col-lg-3 col-md-6">
 									<div className="thumbnail no-padding">
 										<div className="thumbnail">
-											<img src="assets/images/user_3.jpg" alt=""/>
+											<img src="assets/images/user/user_3.jpg" alt=""/>
 										</div>
 									
 								    	<div className="caption text-center">
@@ -76,7 +76,7 @@ export class gioithieu extends React.Component{
 								<div className="col-lg-3 col-md-6">
 									<div className="thumbnail no-padding">
 										<div className="thumbnail">
-											<img src="assets/images/user_1.jpg" alt=""/>
+											<img src="assets/images/user/user_1.jpg" alt=""/>
 										</div>
 									
 								    	<div className="caption text-center">
@@ -93,7 +93,7 @@ export class gioithieu extends React.Component{
 								<div className="col-lg-3 col-md-6">
 									<div className="thumbnail no-padding">
 										<div className="thumbnail">
-											<img src="assets/images/user_2.jpg" alt=""/>
+											<img src="assets/images/user/user_2.jpg" alt=""/>
 										</div>
 									
 								    	<div className="caption text-center">

@@ -181,8 +181,8 @@ export class baihoc_video extends React.Component{
 	        	$("#add_noidung").val("");
 	        	$("#add_link").val("");
 	        	$("#formadd").hide();
-	        	alert("Video đã được thêm, làm mới trang để xem kết quả");
 	        	$("#formadd").hide();
+	        	window.location.reload(true);
 	        	//window.location = "#/trangcanhan";
             	//Trangcanhan.dispatch(location.getCurrentPath(), null);
     		});
@@ -193,7 +193,9 @@ export class baihoc_video extends React.Component{
 	        console.log(idVideo);
 	        $('#confirm1 li').on('click', '.btn-success', function (e) {
 	        	console.log("xac nhan xoa video");
-	        	$.post("delete_video",{id_video:idVideo });
+	        	$.post("delete_video",{id_video:idVideo,mon: mon[1] },function(){
+	        		window.location.reload(true);
+	        	});
 	        	return;
 	    	});
 			

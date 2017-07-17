@@ -1,6 +1,5 @@
 import React from 'react';
 import io from 'socket.io-client';
-
 let socket = io('http://'+window.location.hostname+':3000');
 //let socket = io('http://'+window.location.hostname);
 var data = document.querySelector('#maincontent');
@@ -76,7 +75,7 @@ export class baihoc_video_chitiet extends React.Component{
 									return (
 										<li key={index1} className="media">
 											<div className="media-left">
-												<a><img id="img_user" src={"assets/images/user_"+data1.ID_NGUOITRALOI+".jpg"} onError={(e)=>{e.target.src="assets/images/user.jpg"}} className="img-circle img-sm" alt=""/></a>
+												<a><img id="img_user" src={"assets/images/user/user_"+data1.ID_NGUOITRALOI+".jpg"} onError={(e)=>{e.target.src="assets/images/user/user.jpg"}} className="img-circle img-sm" alt=""/></a>
 											</div>
 
 											<div className="media-body">
@@ -166,7 +165,7 @@ export class baihoc_video_chitiet extends React.Component{
 				noidung: $("#binhluan_cauhoi").val(),
 				thoigian: datetime
 			};
-			console.log(data);
+			//console.log(data);
 	        $.post("themBinhluan", data, function(){
 	        	$("#binhluan_cauhoi").val("");
 	        	//window.location = "#/trangcanhan";
@@ -190,7 +189,7 @@ export class baihoc_video_chitiet extends React.Component{
 		        id_binhluan: idBinhluanClick,
 		        type: type
 			};
-			console.log(data);
+			//console.log(data);
 	        $.post("rate_binhluan", data, function(){
 	        	
     		});
@@ -229,7 +228,7 @@ export class baihoc_video_chitiet extends React.Component{
 
 		$.post("/"+mon[1]+"/lop"+this.props.params.lop+"/baihoc_video_chitiet/"+this.props.params.id+"/"+this.props.params.video, function(data){
 			console.log("lay video");
-			console.log(data);
+			//console.log(data);
 			$("#link_pre").text(name_link);
 			$('#link_pre').attr('href', link_pre);
 			$("#link_pre1").text(name_link1);
@@ -242,6 +241,14 @@ export class baihoc_video_chitiet extends React.Component{
 		socket.on('s2c_Binhluan', function(data){
 			that.setState({listbinhluan: data});
 		});
+		///
+		function loop(){
+			setTimeout(function () {
+	            socket.emit('c2s_Binhluan',{id: id_cauhoi});
+	            loop();
+	        }, 30000);
+		}
+		loop();
 	}
 	onChange(state) {
 	   	if(this.refs.root) {

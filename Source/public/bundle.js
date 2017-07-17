@@ -8958,6 +8958,106 @@ module.exports = invariant;
 /* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
+
+/**
+ * Module dependencies.
+ */
+
+var url = __webpack_require__(705);
+var parser = __webpack_require__(158);
+var Manager = __webpack_require__(261);
+var debug = __webpack_require__(108)('socket.io-client');
+
+/**
+ * Module exports.
+ */
+
+module.exports = exports = lookup;
+
+/**
+ * Managers cache.
+ */
+
+var cache = exports.managers = {};
+
+/**
+ * Looks up an existing `Manager` for multiplexing.
+ * If the user summons:
+ *
+ *   `io('http://localhost/a');`
+ *   `io('http://localhost/b');`
+ *
+ * We reuse the existing instance based on same scheme/port/host,
+ * and we initialize sockets for each namespace.
+ *
+ * @api public
+ */
+
+function lookup (uri, opts) {
+  if (typeof uri === 'object') {
+    opts = uri;
+    uri = undefined;
+  }
+
+  opts = opts || {};
+
+  var parsed = url(uri);
+  var source = parsed.source;
+  var id = parsed.id;
+  var path = parsed.path;
+  var sameNamespace = cache[id] && path in cache[id].nsps;
+  var newConnection = opts.forceNew || opts['force new connection'] ||
+                      false === opts.multiplex || sameNamespace;
+
+  var io;
+
+  if (newConnection) {
+    debug('ignoring socket cache for %s', source);
+    io = Manager(source, opts);
+  } else {
+    if (!cache[id]) {
+      debug('new io instance for %s', source);
+      cache[id] = Manager(source, opts);
+    }
+    io = cache[id];
+  }
+  if (parsed.query && !opts.query) {
+    opts.query = parsed.query;
+  }
+  return io.socket(parsed.path, opts);
+}
+
+/**
+ * Protocol version.
+ *
+ * @api public
+ */
+
+exports.protocol = parser.protocol;
+
+/**
+ * `connect`.
+ *
+ * @param {String} uri
+ * @api public
+ */
+
+exports.connect = lookup;
+
+/**
+ * Expose constructors for standalone build.
+ *
+ * @api public
+ */
+
+exports.Manager = __webpack_require__(261);
+exports.Socket = __webpack_require__(263);
+
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {/**
  * Copyright 2016-present, Facebook, Inc.
@@ -9338,106 +9438,6 @@ var ReactComponentTreeHook = {
 
 module.exports = ReactComponentTreeHook;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-/**
- * Module dependencies.
- */
-
-var url = __webpack_require__(705);
-var parser = __webpack_require__(158);
-var Manager = __webpack_require__(261);
-var debug = __webpack_require__(108)('socket.io-client');
-
-/**
- * Module exports.
- */
-
-module.exports = exports = lookup;
-
-/**
- * Managers cache.
- */
-
-var cache = exports.managers = {};
-
-/**
- * Looks up an existing `Manager` for multiplexing.
- * If the user summons:
- *
- *   `io('http://localhost/a');`
- *   `io('http://localhost/b');`
- *
- * We reuse the existing instance based on same scheme/port/host,
- * and we initialize sockets for each namespace.
- *
- * @api public
- */
-
-function lookup (uri, opts) {
-  if (typeof uri === 'object') {
-    opts = uri;
-    uri = undefined;
-  }
-
-  opts = opts || {};
-
-  var parsed = url(uri);
-  var source = parsed.source;
-  var id = parsed.id;
-  var path = parsed.path;
-  var sameNamespace = cache[id] && path in cache[id].nsps;
-  var newConnection = opts.forceNew || opts['force new connection'] ||
-                      false === opts.multiplex || sameNamespace;
-
-  var io;
-
-  if (newConnection) {
-    debug('ignoring socket cache for %s', source);
-    io = Manager(source, opts);
-  } else {
-    if (!cache[id]) {
-      debug('new io instance for %s', source);
-      cache[id] = Manager(source, opts);
-    }
-    io = cache[id];
-  }
-  if (parsed.query && !opts.query) {
-    opts.query = parsed.query;
-  }
-  return io.socket(parsed.path, opts);
-}
-
-/**
- * Protocol version.
- *
- * @api public
- */
-
-exports.protocol = parser.protocol;
-
-/**
- * `connect`.
- *
- * @param {String} uri
- * @api public
- */
-
-exports.connect = lookup;
-
-/**
- * Expose constructors for standalone build.
- *
- * @api public
- */
-
-exports.Manager = __webpack_require__(261);
-exports.Socket = __webpack_require__(263);
-
 
 /***/ }),
 /* 28 */
@@ -43991,7 +43991,7 @@ module.exports = REACT_ELEMENT_TYPE;
 
 
 var ReactCurrentOwner = __webpack_require__(37);
-var ReactComponentTreeHook = __webpack_require__(26);
+var ReactComponentTreeHook = __webpack_require__(27);
 var ReactElement = __webpack_require__(56);
 
 var checkReactTypeSpec = __webpack_require__(700);
@@ -48137,6 +48137,8 @@ var _tuongtac_diali = __webpack_require__(311);
 
 var _gioithieu = __webpack_require__(308);
 
+var _trochoi = __webpack_require__(752);
+
 var _baihoc_baiviet = __webpack_require__(292);
 
 var _baihoc_baiviet_chitiet = __webpack_require__(293);
@@ -48202,7 +48204,8 @@ var MainContent = function (_React$Component) {
 																				_react2.default.createElement(_reactRouter.Route, { path: "hoidap/:mon", component: _hoidap.hoidap }),
 																				_react2.default.createElement(_reactRouter.Route, { path: "tuongtac/lichsu", component: _tuongtac_lichsu.tuongtac_lichsu }),
 																				_react2.default.createElement(_reactRouter.Route, { path: "tuongtac/diali", component: _tuongtac_diali.tuongtac_diali }),
-																				_react2.default.createElement(_reactRouter.Route, { path: "gioithieu", component: _gioithieu.gioithieu })
+																				_react2.default.createElement(_reactRouter.Route, { path: "gioithieu", component: _gioithieu.gioithieu }),
+																				_react2.default.createElement(_reactRouter.Route, { path: "trochoi", component: _trochoi.trochoi })
 																)
 												);
 								}
@@ -48268,7 +48271,7 @@ var Slidebar = function (_React$Component) {
 		var _this = _possibleConstructorReturn(this, (Slidebar.__proto__ || Object.getPrototypeOf(Slidebar)).call(this, props));
 
 		_this.state = {
-			id_user: "assets/images/user_" + data.dataset.id + ".jpg"
+			id_user: "assets/images/user/user_" + data.dataset.id + ".jpg"
 		};
 		return _this;
 	}
@@ -48297,7 +48300,7 @@ var Slidebar = function (_React$Component) {
 									"a",
 									{ id: "avatar", href: "#trangcanhan/hoatdong", className: "media-left" },
 									_react2.default.createElement("img", { src: this.state.id_user, onError: function onError() {
-											_this2.setState({ id_user: "assets/images/user.jpg" });
+											_this2.setState({ id_user: "assets/images/user/user.jpg" });
 										}, className: "img-circle img-sm", alt: "" })
 								),
 								_react2.default.createElement(
@@ -48880,6 +48883,21 @@ var Slidebar = function (_React$Component) {
 								),
 								_react2.default.createElement(
 									"li",
+									{ id: "Trochoi" },
+									_react2.default.createElement(
+										"a",
+										{ href: "#trochoi" },
+										_react2.default.createElement("i", { className: "icon-puzzle3" }),
+										" ",
+										_react2.default.createElement(
+											"span",
+											null,
+											"Tr\xF2 ch\u01A1i"
+										)
+									)
+								),
+								_react2.default.createElement(
+									"li",
 									{ id: "Gioithieu" },
 									_react2.default.createElement(
 										"a",
@@ -48902,73 +48920,74 @@ var Slidebar = function (_React$Component) {
 	}, {
 		key: "componentDidMount",
 		value: function componentDidMount() {
-			// console.log("hihi slidebar");
-			// if(data.dataset.lop<6)
-			// 	$("#Lichsu_lop6").addClass("disabled");
-			// if(data.dataset.lop<7)
-			// 	$("#Lichsu_lop7").addClass("disabled");
-			// if(data.dataset.lop<8)
-			// 	$("#Lichsu_lop8").addClass("disabled");
-			// if(data.dataset.lop<9)
-			// 	$("#Lichsu_lop9").addClass("disabled");
-
-			// if(data.dataset.lop<6)
-			// 	$("#Diali_lop6").addClass("disabled");
-			// if(data.dataset.lop<7)
-			// 	$("#Diali_lop7").addClass("disabled");
-			// if(data.dataset.lop<8)
-			// 	$("#Diali_lop8").addClass("disabled");
-			// if(data.dataset.lop<9)
-			// 	$("#Diali_lop9").addClass("disabled");
-
 
 			$("#Trangchu").click(function () {
 				$("li").removeClass("active");
 				$("li").closest("ul").removeAttr('style');
-				$("#Trangchu").addClass("active");
 				$('#Lichsu').children('ul').get(0).style.display = 'none';
 				$('#Diali').children('ul').get(0).style.display = 'none';
+				$('#Lichsu').children('ul').children('li').children('ul').get(0).style.display = 'none';
+				$('#Diali').children('ul').children('li').children('ul').get(0).style.display = 'none';
 				$('#Hoidap').children('ul').get(0).style.display = 'none';
 				$('#Tuongtac').children('ul').get(0).style.display = 'none';
 				$("#nguoidung").removeClass("bg-teal-400");
+				$("#Trangchu").addClass("active");
 			});
 			$("#Gioithieu").click(function () {
 				$("li").removeClass("active");
-				$("#Trangchu").removeClass("active");
-				$("#Gioithieu").addClass("active");
+				$("li").closest("ul").removeAttr('style');
 				$('#Lichsu').children('ul').get(0).style.display = 'none';
 				$('#Diali').children('ul').get(0).style.display = 'none';
+				$('#Lichsu').children('ul').children('li').children('ul').get(0).style.display = 'none';
+				$('#Diali').children('ul').children('li').children('ul').get(0).style.display = 'none';
 				$('#Hoidap').children('ul').get(0).style.display = 'none';
 				$('#Tuongtac').children('ul').get(0).style.display = 'none';
 				$("#nguoidung").removeClass("bg-teal-400");
+				$("#Gioithieu").addClass("active");
+			});
+			$("#Trochoi").click(function () {
+				$("li").removeClass("active");
+				$("li").closest("ul").removeAttr('style');
+				$('#Lichsu').children('ul').get(0).style.display = 'none';
+				$('#Diali').children('ul').get(0).style.display = 'none';
+				$('#Lichsu').children('ul').children('li').children('ul').get(0).style.display = 'none';
+				$('#Diali').children('ul').children('li').children('ul').get(0).style.display = 'none';
+				$('#Hoidap').children('ul').get(0).style.display = 'none';
+				$('#Tuongtac').children('ul').get(0).style.display = 'none';
+				$("#nguoidung").removeClass("bg-teal-400");
+				$("#Trochoi").addClass("active");
 			});
 			$("#Lichsu").click(function () {
 				$("#Trangchu").removeClass("active");
 				$("#Gioithieu").removeClass("active");
+				$("#Trochoi").removeClass("active");
 				$("#nguoidung").removeClass("bg-teal-400");
 			});
 			$("#Diali").click(function () {
 				$("#Trangchu").removeClass("active");
 				$("#Gioithieu").removeClass("active");
+				$("#Trochoi").removeClass("active");
 				$("#nguoidung").removeClass("bg-teal-400");
 			});
 			$("#Hoidap").click(function () {
 				$("#Trangchu").removeClass("active");
 				$("#Gioithieu").removeClass("active");
+				$("#Trochoi").removeClass("active");
 				$("#nguoidung").removeClass("bg-teal-400");
 			});
 			$("#Tuongtac").click(function () {
 				$("#Trangchu").removeClass("active");
 				$("#Gioithieu").removeClass("active");
+				$("#Trochoi").removeClass("active");
 				$("#nguoidung").removeClass("bg-teal-400");
 			});
 			$("#avatar, .icon-cog3").click(function () {
 				$("li").removeClass("active");
 				$("li").closest("ul").removeAttr('style');
-				$("#Trangchu").removeClass("active");
-				$("#Gioithieu").removeClass("active");
 				$('#Lichsu').children('ul').get(0).style.display = 'none';
 				$('#Diali').children('ul').get(0).style.display = 'none';
+				$('#Lichsu').children('ul').children('li').children('ul').get(0).style.display = 'none';
+				$('#Diali').children('ul').children('li').children('ul').get(0).style.display = 'none';
 				$('#Hoidap').children('ul').get(0).style.display = 'none';
 				$('#Tuongtac').children('ul').get(0).style.display = 'none';
 				$("#nguoidung").addClass("bg-teal-400");
@@ -48981,6 +49000,8 @@ var Slidebar = function (_React$Component) {
 			var urlb = urla[1].split('?');
 			if (urlb[0] == "gioithieu") {
 				$("#Gioithieu").addClass("active");
+			} else if (urlb[0] == "trochoi") {
+				$("#Trochoi").addClass("active");
 			} else if (urla[1] == "lichsu") {
 				console.log("Lich su");
 				var url2 = window.location.href;
@@ -49059,21 +49080,6 @@ var Slidebar = function (_React$Component) {
 				$('#Tuongtac').children('ul').get(0).style.display = 'none';
 			}
 		}
-	}, {
-		key: "shouldComponentUpdate",
-		value: function shouldComponentUpdate() {
-			return true;
-		}
-	}, {
-		key: "componentWillUpdate",
-		value: function componentWillUpdate() {
-			console.log("newProps");
-		}
-	}, {
-		key: "componentDidUpdate",
-		value: function componentDidUpdate(prevProps, prevState) {
-			console.log("newProps");
-		}
 	}]);
 
 	return Slidebar;
@@ -49096,7 +49102,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactDom = __webpack_require__(135);
 
-var _socket = __webpack_require__(27);
+var _socket = __webpack_require__(26);
 
 var _socket2 = _interopRequireDefault(_socket);
 
@@ -49112,7 +49118,7 @@ var socket = (0, _socket2.default)('http://' + window.location.hostname + ':3000
 //let socket = io('http://'+window.location.hostname);
 
 var data = document.querySelector('#statusbar');
-
+var type_user = data.dataset.type;
 var root = window.document.getElementById("statusbar");
 
 var Statusbar = function (_React$Component) {
@@ -49124,7 +49130,7 @@ var Statusbar = function (_React$Component) {
 		var _this = _possibleConstructorReturn(this, (Statusbar.__proto__ || Object.getPrototypeOf(Statusbar)).call(this, props));
 
 		_this.state = {
-			id_user: "assets/images/user_" + data.dataset.id + ".jpg",
+			id_user: "assets/images/user/user_" + data.dataset.id + ".jpg",
 			listThongbao: [],
 			sothongbao: 0
 		};
@@ -49134,7 +49140,7 @@ var Statusbar = function (_React$Component) {
 	_createClass(Statusbar, [{
 		key: "render",
 		value: function render() {
-			var _this3 = this;
+			var _this2 = this;
 
 			return _react2.default.createElement(
 				"div",
@@ -49231,8 +49237,8 @@ var Statusbar = function (_React$Component) {
 											null,
 											_react2.default.createElement(
 												"a",
-												{ href: "#" },
-												_react2.default.createElement("i", { className: "icon-compose" })
+												{ id: "delallnoti" },
+												_react2.default.createElement("i", { className: " icon-database-remove" })
 											)
 										)
 									)
@@ -49254,8 +49260,6 @@ var Statusbar = function (_React$Component) {
 										)
 									) : null,
 									this.state.listThongbao.map(function (data, index) {
-										var _this2 = this;
-
 										return _react2.default.createElement(
 											"li",
 											{ key: index, id: data.ID_THONGBAO, className: "media" },
@@ -49265,8 +49269,8 @@ var Statusbar = function (_React$Component) {
 												_react2.default.createElement(
 													"div",
 													{ className: "media-left" },
-													_react2.default.createElement("img", { src: "assets/images/user_" + data.ID_KHACH + ".jpg", onError: function onError() {
-															_this2.setState({ id_user: "assets/images/user.jpg" });
+													_react2.default.createElement("img", { src: "assets/images/user/user_" + data.ID_KHACH + ".jpg", onError: function onError(e) {
+															e.target.src = "assets/images/user/user.jpg";
 														}, className: "img-circle img-sm", alt: "" })
 												),
 												_react2.default.createElement(
@@ -49306,7 +49310,7 @@ var Statusbar = function (_React$Component) {
 								"a",
 								{ className: "dropdown-toggle", "data-toggle": "dropdown" },
 								_react2.default.createElement("img", { src: this.state.id_user, onError: function onError() {
-										_this3.setState({ id_user: "assets/images/user.jpg" });
+										_this2.setState({ id_user: "assets/images/user/user.jpg" });
 									}, alt: "" }),
 								_react2.default.createElement(
 									"span",
@@ -49324,8 +49328,28 @@ var Statusbar = function (_React$Component) {
 									_react2.default.createElement(
 										"a",
 										{ href: "#trangcanhan/hoatdong" },
-										_react2.default.createElement("i", { className: "icon-user-plus" }),
+										_react2.default.createElement("i", { className: "icon-user" }),
 										" Trang c\xE1 nh\xE2n"
+									)
+								),
+								_react2.default.createElement(
+									"li",
+									null,
+									_react2.default.createElement(
+										"a",
+										{ id: "thongke", href: "#trangcanhan/quatrinh" },
+										_react2.default.createElement("i", { className: "icon-stats-dots" }),
+										"Th\xF4ng k\xEA"
+									)
+								),
+								_react2.default.createElement(
+									"li",
+									null,
+									_react2.default.createElement(
+										"a",
+										{ id: "quanlyuser", href: "#trangcanhan/quanlyuser" },
+										_react2.default.createElement("i", { className: "icon-users4" }),
+										"Qu\u1EA3n l\xFD h\u1ECDc sinh"
 									)
 								),
 								_react2.default.createElement("li", { className: "divider" }),
@@ -49345,7 +49369,7 @@ var Statusbar = function (_React$Component) {
 									_react2.default.createElement(
 										"a",
 										{ href: "/dangxuat" },
-										_react2.default.createElement("i", { className: "icon-switch2" }),
+										_react2.default.createElement("i", { className: "icon-switch2 text-danger" }),
 										" \u0110\u0103ng xu\u1EA5t"
 									)
 								)
@@ -49358,11 +49382,20 @@ var Statusbar = function (_React$Component) {
 	}, {
 		key: "componentDidMount",
 		value: function componentDidMount() {
+			if (type_user == "hocsinh") {
+				$("#quanlyuser").hide();
+			}
 			$("li").on("click", '.media', function () {
 				console.log("xoa thong bao");
 				$('.glyphicon-bell').parent().parent().removeClass("open");
 				$('.glyphicon-bell').parent().attr('aria-expanded', false);
-				$.post("delete_thongbao", { id: $(this).attr('id') });
+				$.post("delete_thongbao", { id: $(this).attr('id'), id_user: "all" });
+			});
+			$("#delallnoti").on("click", function () {
+				console.log("xoa hết thong bao");
+				$('.glyphicon-bell').parent().parent().removeClass("open");
+				$('.glyphicon-bell').parent().attr('aria-expanded', false);
+				$.post("delete_thongbao", { id: "all", id_user: data.dataset.id });
 			});
 		}
 	}, {
@@ -49372,6 +49405,13 @@ var Statusbar = function (_React$Component) {
 
 			var that = this;
 
+			function loop() {
+				setTimeout(function () {
+					console.log("loop thong bao");
+					socket.emit('c2s_Thongbao', { id: data.dataset.id });
+					loop();
+				}, 30000);
+			}
 			socket.emit('c2s_Thongbao', { id: data.dataset.id });
 			socket.on('s2c_Thongbao', function (data) {
 				console.log(data);
@@ -49380,16 +49420,12 @@ var Statusbar = function (_React$Component) {
 				that.setState({ listThongbao: data });
 			});
 			////
+			loop();
 		}
 	}, {
 		key: "componentWillReceiveProps",
 		value: function componentWillReceiveProps(newProps) {
 			socket.emit('c2s_Thongbao', { id: data.dataset.id });
-		}
-	}, {
-		key: "componentWillUpdate",
-		value: function componentWillUpdate(nextProps, nextState) {
-			console.log("cmponentWillUpdate statusbar");
 		}
 	}]);
 
@@ -49485,7 +49521,7 @@ var _react = __webpack_require__(5);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _socket = __webpack_require__(27);
+var _socket = __webpack_require__(26);
 
 var _socket2 = _interopRequireDefault(_socket);
 
@@ -49518,7 +49554,7 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 		var _this = _possibleConstructorReturn(this, (Trangcanhan.__proto__ || Object.getPrototypeOf(Trangcanhan)).call(this, props));
 
 		_this.state = {
-			id_user: "assets/images/user_" + data.dataset.id + ".jpg",
+			id_user: "assets/images/user/user_" + data.dataset.id + ".jpg",
 			listCauhoi: []
 		};
 		return _this;
@@ -49601,7 +49637,7 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 										'a',
 										{ id: 'scheduletab', href: '#schedule', 'data-toggle': 'tab' },
 										_react2.default.createElement('i', { className: 'icon-calendar3 position-left' }),
-										' Qu\xE1 tr\xECnh '
+										' Th\u1ED1ng k\xEA '
 									)
 								),
 								_react2.default.createElement(
@@ -49697,22 +49733,18 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 																	_react2.default.createElement(
 																		'a',
 																		{ href: "#" + data1.MON + "/lop" + data1.PHANLOP + "/cauhoi" + data1.ID_CAUHOI, className: 'text-default' },
-																		_react2.default.createElement(
-																			'a',
-																			null,
-																			data1.MON == "lichsu" ? _react2.default.createElement(
-																				'a',
-																				{ className: 'text-success' },
-																				'L\u1ECBch s\u1EED ',
-																				data1.PHANLOP,
-																				' - '
-																			) : _react2.default.createElement(
-																				'a',
-																				null,
-																				'\u0110\u1ECBa l\xED ',
-																				data1.PHANLOP,
-																				' - '
-																			)
+																		data1.MON == "lichsu" ? _react2.default.createElement(
+																			'span',
+																			{ className: 'text-success' },
+																			'L\u1ECBch s\u1EED ',
+																			data1.PHANLOP,
+																			' - '
+																		) : _react2.default.createElement(
+																			'span',
+																			{ className: 'text-primary' },
+																			'\u0110\u1ECBa l\xED ',
+																			data1.PHANLOP,
+																			' - '
 																		),
 																		data1.TIEUDE
 																	)
@@ -49808,7 +49840,7 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 										{ className: 'tab-pane fade', id: 'schedule' },
 										_react2.default.createElement(
 											'div',
-											{ className: 'row' },
+											{ id: 'hoctapkq', className: 'row' },
 											_react2.default.createElement(
 												'div',
 												{ className: 'col-md-6' },
@@ -49890,33 +49922,84 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 										),
 										_react2.default.createElement(
 											'div',
-											{ className: 'panel panel-flat' },
+											{ id: 'bieudokq', className: 'row' },
 											_react2.default.createElement(
 												'div',
-												{ className: 'panel-heading' },
-												_react2.default.createElement(
-													'h6',
-													{ className: 'panel-title' },
-													'\u0110i\u1EC3m'
-												),
+												{ className: 'col-md-6' },
 												_react2.default.createElement(
 													'div',
-													{ className: 'heading-elements' },
+													{ className: 'panel panel-flat' },
 													_react2.default.createElement(
-														'ul',
-														{ className: 'icons-list' },
+														'div',
+														{ className: 'panel-heading' },
 														_react2.default.createElement(
-															'li',
-															null,
-															_react2.default.createElement('a', { 'data-action': 'collapse' })
+															'h5',
+															{ className: 'panel-title' },
+															'T\u1ED5ng h\u1EE3p s\u1ED1 h\u1ECDc sinh \u0111\u1EA1t \u0111i\u1EC3m m\xF4n L\u1ECBch S\u1EED'
+														),
+														_react2.default.createElement(
+															'div',
+															{ className: 'heading-elements' },
+															_react2.default.createElement(
+																'ul',
+																{ className: 'icons-list' },
+																_react2.default.createElement(
+																	'li',
+																	null,
+																	_react2.default.createElement('a', { 'data-action': 'collapse' })
+																)
+															)
+														)
+													),
+													_react2.default.createElement(
+														'div',
+														{ className: 'panel-body' },
+														_react2.default.createElement(
+															'div',
+															{ className: 'chart-container' },
+															_react2.default.createElement('div', { className: 'chart has-fixed-height', id: 'columns_kq_ls' })
 														)
 													)
 												)
 											),
 											_react2.default.createElement(
 												'div',
-												{ className: 'panel-body' },
-												_react2.default.createElement('div', { className: 'schedule' })
+												{ className: 'col-md-6' },
+												_react2.default.createElement(
+													'div',
+													{ className: 'panel panel-flat' },
+													_react2.default.createElement(
+														'div',
+														{ className: 'panel-heading' },
+														_react2.default.createElement(
+															'h5',
+															{ className: 'panel-title' },
+															'T\u1ED5ng h\u1EE3p s\u1ED1 h\u1ECDc sinh \u0111\u1EA1t \u0111i\u1EC3m m\xF4n \u0110\u1ECBa L\xED'
+														),
+														_react2.default.createElement(
+															'div',
+															{ className: 'heading-elements' },
+															_react2.default.createElement(
+																'ul',
+																{ className: 'icons-list' },
+																_react2.default.createElement(
+																	'li',
+																	null,
+																	_react2.default.createElement('a', { 'data-action': 'collapse' })
+																)
+															)
+														)
+													),
+													_react2.default.createElement(
+														'div',
+														{ className: 'panel-body' },
+														_react2.default.createElement(
+															'div',
+															{ className: 'chart-container' },
+															_react2.default.createElement('div', { className: 'chart has-fixed-height', id: 'columns_kq_dl' })
+														)
+													)
+												)
 											)
 										)
 									),
@@ -50098,7 +50181,7 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 													'div',
 													{ className: 'thumb thumb-rounded thumb-slide' },
 													_react2.default.createElement('img', { src: this.state.id_user, onError: function onError() {
-															_this2.setState({ id_user: "assets/images/user.jpg" });
+															_this2.setState({ id_user: "assets/images/user/user.jpg" });
 														}, alt: '' }),
 													_react2.default.createElement(
 														'div',
@@ -50219,7 +50302,7 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 														_react2.default.createElement(
 															'th',
 															null,
-															'Xo\xE1'
+															'Ch\u1EE9c n\u0103ng'
 														)
 													)
 												),
@@ -50469,6 +50552,53 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 								)
 							)
 						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ id: 'confirm3', className: 'modal fade' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'modal-dialog modal-xs' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'modal-content' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'thumbnail no-border no-margin' },
+									_react2.default.createElement(
+										'div',
+										{ className: 'caption text-center' },
+										_react2.default.createElement(
+											'h6',
+											{ className: 'text-semibold no-margin-top content-group' },
+											'B\u1EA1n c\xF3 ch\u1EAFc mu\u1ED1n chuy\u1EC3n ng\u01B0\u1EDDi d\xF9ng n\xE0y th\xE0nh lo\u1EA1i ng\u01B0\u1EDDi d\xF9ng \'Gi\xE1o Vi\xEAn\''
+										),
+										_react2.default.createElement(
+											'ul',
+											{ className: 'list-inline list-inline-condensed no-margin' },
+											_react2.default.createElement(
+												'li',
+												null,
+												_react2.default.createElement(
+													'a',
+													{ className: 'btn btn-success btn-float', 'data-dismiss': 'modal' },
+													'\u0110\u1ED3ng \xFD'
+												)
+											),
+											_react2.default.createElement(
+												'li',
+												null,
+												_react2.default.createElement(
+													'a',
+													{ className: 'btn btn-danger btn-float', 'data-dismiss': 'modal' },
+													'Hu\u1EF7'
+												)
+											)
+										)
+									)
+								)
+							)
+						)
 					)
 				)
 			);
@@ -50476,10 +50606,20 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 	}, {
 		key: 'componentDidMount',
 		value: function componentDidMount() {
-			//chuyen tab caidat
+			//chuyen tab
+			console.log("tag " + this.props.params.tab);
 			if (this.props.params.tab == "caidat") {
-				console.log("caidat");
 				$("#caidat").click();
+			} else if (this.props.params.tab == "hoatdong") {
+				$("#hoatdong").click();
+			} else if (this.props.params.tab == "quatrinh") {
+				$("#scheduletab").click();
+			} else if (this.props.params.tab == "quanlyuser") {
+				$("#tag_listuser").click();
+			} else if (this.props.params.tab == "quanlygiaovien") {
+				$("#tag_listsup").click();
+			} else if (this.props.params.tab == "quanlyadmin") {
+				$("#tag_listadmin").click();
 			}
 			var id_user = data.dataset.id;
 			var check = false;
@@ -50507,7 +50647,7 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 			//set default value
 			$.get("getUserInfo/" + id_user, function (data) {
 				console.log("lay data");
-				console.log(data);
+				//console.log(data);
 				$("#username").val(data.USERNAME), $("#fullname1").val(data.HOTEN), $("#email").val(data.EMAIL), $("#lop").val(data.LOP), $("#truong").val(data.TRUONG), $("#birthday").val(data.to_char);
 			});
 
@@ -50639,7 +50779,7 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 						min: "Lớp học phải thuộc các lớp 6, 7, 8, 9"
 					},
 					'password': {
-						required: "Xin nhập mật khẩu hiện tại",
+						required: "Xin nhập mật khẩu hiện tại (Mật khẩu mặc định là '0000' cho tài khoản chưa kích hoạt)",
 						remote: "Mật khẩu chưa đúng"
 					},
 					'password1': {
@@ -50674,7 +50814,7 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 							birthday: $("#birthday").val(),
 							type: "hocsinh"
 						};
-						console.log(data);
+						//console.log(data);
 						$.post("updateUserInfo", data, function () {
 							alert("Đã thay đổi thông tin thành công!");
 							window.location = "#/trangcanhan/caidat";
@@ -50693,7 +50833,7 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 							birthday: $("#birthday").val(),
 							type: "hocsinh"
 						};
-						console.log(data);
+						//console.log(data);
 						$.post("updateUserInfo", data, function () {
 							window.location = "/dangxuat";
 							alert("Đã thay đổi mật khẩu. Xin đăng nhập lại!");
@@ -50747,7 +50887,12 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 					"aaData": data,
 					"aoColumnDefs": [{ "aTargets": [0], "bSortable": true }, { "aTargets": [1], "bSortable": true }, { "aTargets": [2], "bSortable": true }, { "aTargets": [3], "bSortable": true }, { "aTargets": [4], "bSortable": true }, { "aTargets": [5], "bSortable": true }, { "aTargets": [6], "bSortable": false }],
 					"aoColumns": [{ "mDataProp": "ID" }, { "mDataProp": "USERNAME" }, { "mDataProp": "HOTEN" }, { "mDataProp": "to_char" }, { "mDataProp": "EMAIL" }, { "mDataProp": "LOP" }, { "render": function render(data, type, full, meta) {
-							var tool_bar = '<div class="hidden-sm hidden-xs action-buttons">' + '<a class="text-danger-400" data-popup="tooltip" data-toggle="modal" data-target="#confirm">' + '<i class="icon-x"></i>' + '</a>' + '</div>';
+							var tool_bar = '<div class="hidden-sm hidden-xs action-buttons">' + '<a class="text-danger-400" data-popup="tooltip" data-toggle="modal" data-target="#confirm">' + '<i class="icon-x"></i>' + '</a>';
+							if (type_user == "admin") {
+								tool_bar += '&nbsp;&nbsp;' + '<a class="text-success-400" data-popup="tooltip" data-toggle="modal" data-target="#confirm3">' + '<i class="icon-arrow-right16"></i>' + '</a>';
+							}
+
+							tool_bar += '</div>';
 							return tool_bar;
 						}
 					}]
@@ -50762,7 +50907,7 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 					"aaData": data,
 					"aoColumnDefs": [{ "aTargets": [0], "bSortable": true }, { "aTargets": [1], "bSortable": true }, { "aTargets": [2], "bSortable": true }, { "aTargets": [3], "bSortable": true }, { "aTargets": [4], "bSortable": true }, { "aTargets": [5], "bSortable": true }, { "aTargets": [6], "bSortable": false }],
 					"aoColumns": [{ "mDataProp": "ID" }, { "mDataProp": "USERNAME" }, { "mDataProp": "HOTEN" }, { "mDataProp": "to_char" }, { "mDataProp": "EMAIL" }, { "mDataProp": "LOP" }, { "render": function render(data, type, full, meta) {
-							var tool_bar = '<div class="hidden-sm hidden-xs action-buttons">' + '<a class="text-danger-400" data-popup="tooltip" data-toggle="modal" data-target="#call">' + '<i class="icon-x"></i>' + '</a>' + '</div>';
+							var tool_bar = '<div class="hidden-sm hidden-xs action-buttons">' + '<a class="text-danger-400" data-popup="tooltip" data-toggle="modal" data-target="#confirm">' + '<i class="icon-x"></i>' + '</a>' + '</div>';
 							return tool_bar;
 						}
 					}]
@@ -50829,40 +50974,87 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 					return;
 				});
 			});
-
+			///chuyen hoc sinh -> giao vien
+			$('#table_user tbody').on('click', '.icon-arrow-right16', function (e) {
+				var id = $(this).closest('tr').children('td:first').text();
+				console.log("chuyen user");
+				$('#confirm3 li').on('click', '.btn-success', function (e) {
+					console.log("xac nhan xoa user");
+					$.post("chuyen_user", { id: id }, function () {
+						window.location.reload(true);
+					});
+					return;
+				});
+			});
 			//chart setup
 			var echarts = __webpack_require__(320);
-			var datals = [8, 7.5, 9];
-			var datadl = [8, 6.5];
-			var dataxls = ['Bài 1', 'Bài 2', 'Bài 3'];
-			var dataxdl = ['Bài 1', 'Bài 2'];
-			var datax = ['LS-Bai 1', 'LS-Bai 2', 'LS-Bai 3', 'LS-Bai 4', 'LS-Bai 5', 'LS-Bai 6', 'LS-Bai 7'];
+			// var datals=[8,7.5,9];
+			// var datals6=[4,,8];
+			// var datadl=[8,6.5];
+			// var dataxls=['Bài 1', 'Bài 2', 'Bài 3'];
+			// var dataxdl=['Bài 1', 'Bài 2'];
+			var dataxls = [''];
+			var dataxdl = [''];
+			var datals6 = [];
+			var datals7 = [];
+			var datals8 = [];
+			var datals9 = [];
+			var datadl6 = [];
+			var datadl7 = [];
+			var datadl8 = [];
+			var datadl9 = [];
+
+			var cdatals6 = [];
+			var cdatals7 = [];
+			var cdatals8 = [];
+			var cdatals9 = [];
+			var cdatadl6 = [];
+			var cdatadl7 = [];
+			var cdatadl8 = [];
+			var cdatadl9 = [];
+
 			var stacked_lines_ls = echarts.init(document.getElementById('stacked_lines_ls'));
 			var stacked_lines_dl = echarts.init(document.getElementById('stacked_lines_dl'));
+			var basic_columns_ls = echarts.init(document.getElementById('columns_kq_ls'));
+			var basic_columns_dl = echarts.init(document.getElementById('columns_kq_dl'));
+			if (type_user == "hocsinh") {
+				$('#bieudokq').hide();
+			} else {
+				$('#hoctapkq').hide();
+			}
 			$.post("layKetqua", { id: id_user }, function (dataa) {
 				console.log("ket qua ");
 				console.log(dataa);
 				for (var i = 0; i < dataa.length; i++) {
 					//datay.push(dataa[i].ID_BAIHOC)
+
 					if (dataa[i].MON == "lichsu") {
 						dataxls.push("Bài " + dataa[i].ID_BAIHOC);
-						datals.push(dataa[i].DIEM);
+						if (dataa[i].LOP == '6') datals6.push(['Bài ' + dataa[i].ID_BAIHOC, dataa[i].DIEM]);
+						if (dataa[i].LOP == '7') datals7.push(['Bài ' + dataa[i].ID_BAIHOC, dataa[i].DIEM]);
+						if (dataa[i].LOP == '8') datals8.push(['Bài ' + dataa[i].ID_BAIHOC, dataa[i].DIEM]);
+						if (dataa[i].LOP == '9') datals9.push(['Bài ' + dataa[i].ID_BAIHOC, dataa[i].DIEM]);
+						// dataxls.push("Bài "+dataa[i].ID_BAIHOC);
+						// datals.push(dataa[i].DIEM);
 					}
 					if (dataa[i].MON == "diali") {
-						dataxdl.push(dataa[i].ID_BAIHOC);
-						datadl.push(dataa[i].DIEM);
+						dataxdl.push("Bài " + dataa[i].ID_BAIHOC);
+						if (dataa[i].LOP == '6') datadl6.push(['Bài ' + dataa[i].ID_BAIHOC, dataa[i].DIEM]);
+						if (dataa[i].LOP == '7') datadl7.push(['Bài ' + dataa[i].ID_BAIHOC, dataa[i].DIEM]);
+						if (dataa[i].LOP == '8') datadl8.push(['Bài ' + dataa[i].ID_BAIHOC, dataa[i].DIEM]);
+						if (dataa[i].LOP == '9') datadl9.push(['Bài ' + dataa[i].ID_BAIHOC, dataa[i].DIEM]);
 					}
 				}
-				console.log(datals);
+				console.log(datals6);
 				stacked_lines_ls.setOption({
 
 					// Setup grid
-					grid: {
-						x: 40,
-						x2: 20,
-						y: 35,
-						y2: 25
-					},
+					// grid: {
+					//     x: 40,
+					//     x2: 20,
+					//     y: 35,
+					//     y2: 25
+					// },
 
 					// Add tooltip
 					tooltip: {
@@ -50871,13 +51063,39 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 
 					// Add legend
 					legend: {
-						data: ['Lịch Sử']
+						data: ['Lịch Sử 6', 'Lịch Sử 7', 'Lịch Sử 8', 'Lịch Sử 9']
 					},
 
 					// Enable drag recalculate
 					calculable: true,
-
-					// Hirozontal axis
+					// Display toolbox
+					toolbox: {
+						show: true,
+						left: '20',
+						bottom: '20',
+						feature: {
+							dataView: {
+								show: true,
+								readOnly: false,
+								title: 'Xem dữ liệu',
+								lang: ['View chart data', 'Close', 'Update']
+							},
+							magicType: {
+								show: true,
+								title: {
+									line: 'Chuyển dạng đường',
+									bar: 'Chuyển dạng cột'
+								},
+								type: ['line', 'bar']
+							},
+							saveAsImage: {
+								show: true,
+								title: 'Lưu hình',
+								lang: ['Save']
+							}
+						}
+					},
+					// Hirozontal xAxis
 					xAxis: [{
 						type: 'category',
 						boundaryGap: false,
@@ -50886,25 +51104,38 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 
 					// Vertical axis
 					yAxis: [{
-						type: 'value'
+						type: 'value',
+						name: 'Điểm số'
 					}],
 
 					// Add series
 					series: [{
-						name: 'Lịch Sử',
+						name: 'Lịch Sử 6',
 						type: 'line',
-						data: datals
+						data: datals6
+					}, {
+						name: 'Lịch Sử 7',
+						type: 'line',
+						data: datals7
+					}, {
+						name: 'Lịch Sử 8',
+						type: 'line',
+						data: datals8
+					}, {
+						name: 'Lịch Sử 9',
+						type: 'line',
+						data: datals9
 					}]
 				});
 				stacked_lines_dl.setOption({
 
 					// Setup grid
-					grid: {
-						x: 40,
-						x2: 20,
-						y: 35,
-						y2: 25
-					},
+					// grid: {
+					//     x: 40,
+					//     x2: 20,
+					//     y: 35,
+					//     y2: 25
+					// },
 
 					// Add tooltip
 					tooltip: {
@@ -50913,12 +51144,38 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 
 					// Add legend
 					legend: {
-						data: ['Địa lí']
+						data: ['Địa lí 6', 'Địa lí 7', 'Địa lí 8', 'Địa lí 9']
 					},
 
 					// Enable drag recalculate
 					calculable: true,
-
+					// Display toolbox
+					toolbox: {
+						show: true,
+						left: '20',
+						bottom: '20',
+						feature: {
+							dataView: {
+								show: true,
+								readOnly: false,
+								title: 'Xem dữ liệu',
+								lang: ['View chart data', 'Close', 'Update']
+							},
+							magicType: {
+								show: true,
+								title: {
+									line: 'Chuyển dạng đường',
+									bar: 'Chuyển dạng cột'
+								},
+								type: ['line', 'bar']
+							},
+							saveAsImage: {
+								show: true,
+								title: 'Lưu hình',
+								lang: ['Save']
+							}
+						}
+					},
 					// Hirozontal axis
 					xAxis: [{
 						type: 'category',
@@ -50928,17 +51185,29 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 
 					// Vertical axis
 					yAxis: [{
-						type: 'value'
+						type: 'value',
+						name: 'Điểm số'
 					}],
 
 					// Add series
 					series: [{
-						name: 'Địa lí',
+						name: 'Địa lí 6',
 						type: 'line',
-						data: datadl
+						data: datadl6
+					}, {
+						name: 'Địa lí 7',
+						type: 'line',
+						data: datadl7
+					}, {
+						name: 'Địa lí 8',
+						type: 'line',
+						data: datadl8
+					}, {
+						name: 'Địa lí 9',
+						type: 'line',
+						data: datadl9
 					}]
 				});
-
 				setTimeout(function () {
 					stacked_lines_ls.resize();
 					stacked_lines_dl.resize();
@@ -50950,19 +51219,230 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 					}, 2000);
 				};
 			});
+			$.post("tonghopKetqua", function (dataa) {
+				console.log("ket qua tong hop");
+				console.log(dataa);
 
+				basic_columns_ls.setOption({
+
+					// Setup grid
+					grid: {
+						x: 40,
+						x2: 40,
+						y: 35,
+						y2: 25
+					},
+
+					// Add tooltip
+					tooltip: {
+						trigger: 'axis'
+					},
+
+					// Add legend
+					legend: {
+						data: ['Sử 6', 'Sử 7', 'Sử 8', 'Sử 9']
+					},
+
+					// Enable drag recalculate
+					calculable: true,
+
+					// Horizontal axis
+					xAxis: [{
+						type: 'category',
+						data: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+						name: 'Điểm số'
+					}],
+
+					// Vertical axis
+					yAxis: [{
+						type: 'value',
+						name: 'Số học sinh'
+					}],
+
+					// Add series
+					series: [{
+						name: 'Sử 6',
+						type: 'bar',
+						data: [dataa[0].diemls60, dataa[0].diemls61, dataa[0].diemls62, dataa[0].diemls63, dataa[0].diemls64, dataa[0].diemls65, dataa[0].diemls66, dataa[0].diemls67, dataa[0].diemls68, dataa[0].diemls69, dataa[0].diemls610],
+						itemStyle: {
+							normal: {
+								label: {
+									show: true,
+									textStyle: {
+										fontWeight: 500
+									}
+								}
+							}
+						}
+					}, {
+						name: 'Sử 7',
+						type: 'bar',
+						data: [dataa[0].diemls70, dataa[0].diemls71, dataa[0].diemls72, dataa[0].diemls73, dataa[0].diemls74, dataa[0].diemls75, dataa[0].diemls76, dataa[0].diemls77, dataa[0].diemls78, dataa[0].diemls79, dataa[0].diemls710],
+						itemStyle: {
+							normal: {
+								label: {
+									show: true,
+									textStyle: {
+										fontWeight: 500
+									}
+								}
+							}
+						}
+					}, {
+						name: 'Sử 8',
+						type: 'bar',
+						data: [dataa[0].diemls80, dataa[0].diemls81, dataa[0].diemls82, dataa[0].diemls83, dataa[0].diemls84, dataa[0].diemls85, dataa[0].diemls86, dataa[0].diemls87, dataa[0].diemls88, dataa[0].diemls89, dataa[0].diemls810],
+						itemStyle: {
+							normal: {
+								label: {
+									show: true,
+									textStyle: {
+										fontWeight: 500
+									}
+								}
+							}
+						}
+					}, {
+						name: 'Sử 9',
+						type: 'bar',
+						data: [dataa[0].diemls90, dataa[0].diemls91, dataa[0].diemls92, dataa[0].diemls93, dataa[0].diemls94, dataa[0].diemls95, dataa[0].diemls96, dataa[0].diemls97, dataa[0].diemls98, dataa[0].diemls99, dataa[0].diemls910],
+						itemStyle: {
+							normal: {
+								label: {
+									show: true,
+									textStyle: {
+										fontWeight: 500
+									}
+								}
+							}
+						}
+					}]
+				});
+				basic_columns_dl.setOption({
+
+					// Setup grid
+					grid: {
+						x: 40,
+						x2: 40,
+						y: 35,
+						y2: 25
+					},
+
+					// Add tooltip
+					tooltip: {
+						trigger: 'axis'
+					},
+
+					// Add legend
+					legend: {
+						data: ['Địa 6', 'Địa 7', 'Địa 8', 'Địa 9']
+					},
+
+					// Enable drag recalculate
+					calculable: true,
+
+					// Horizontal axis
+					xAxis: [{
+						type: 'category',
+						data: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+						name: 'Điểm số'
+					}],
+
+					// Vertical axis
+					yAxis: [{
+						type: 'value',
+						name: 'Số học sinh'
+					}],
+
+					// Add series
+					series: [{
+						name: 'Địa 6',
+						type: 'bar',
+						data: [dataa[0].diemdl60, dataa[0].diemdl61, dataa[0].diemdl62, dataa[0].diemdl63, dataa[0].diemdl64, dataa[0].diemdl65, dataa[0].diemdl66, dataa[0].diemdl67, dataa[0].diemdl68, dataa[0].diemdl69, dataa[0].diemdl610],
+						itemStyle: {
+							normal: {
+								label: {
+									show: true,
+									textStyle: {
+										fontWeight: 500
+									}
+								}
+							}
+						}
+					}, {
+						name: 'Địa 7',
+						type: 'bar',
+						data: [dataa[0].diemdl70, dataa[0].diemdl71, dataa[0].diemdl72, dataa[0].diemdl73, dataa[0].diemdl74, dataa[0].diemdl75, dataa[0].diemdl76, dataa[0].diemdl77, dataa[0].diemdl78, dataa[0].diemdl79, dataa[0].diemdl710],
+						itemStyle: {
+							normal: {
+								label: {
+									show: true,
+									textStyle: {
+										fontWeight: 500
+									}
+								}
+							}
+						}
+					}, {
+						name: 'Địa 8',
+						type: 'bar',
+						data: [dataa[0].diemdl80, dataa[0].diemdl81, dataa[0].diemdl82, dataa[0].diemdl83, dataa[0].diemdl84, dataa[0].diemdl85, dataa[0].diemdl86, dataa[0].diemdl87, dataa[0].diemdl88, dataa[0].diemdl89, dataa[0].diemdl810],
+						itemStyle: {
+							normal: {
+								label: {
+									show: true,
+									textStyle: {
+										fontWeight: 500
+									}
+								}
+							}
+						}
+					}, {
+						name: 'Địa 9',
+						type: 'bar',
+						data: [dataa[0].diemdl90, dataa[0].diemdl91, dataa[0].diemdl92, dataa[0].diemdl93, dataa[0].diemdl94, dataa[0].diemdl95, dataa[0].diemdl96, dataa[0].diemdl97, dataa[0].diemdl98, dataa[0].diemdl99, dataa[0].diemdl910],
+						itemStyle: {
+							normal: {
+								label: {
+									show: true,
+									textStyle: {
+										fontWeight: 500
+									}
+								}
+							}
+						}
+					}]
+				});
+				setTimeout(function () {
+					basic_columns_ls.resize();
+					basic_columns_dl.resize();
+				}, 2000);
+				window.onresize = function () {
+					setTimeout(function () {
+						basic_columns_ls.resize();
+						basic_columns_dl.resize();
+					}, 2000);
+				};
+			});
+			///
 			$('#scheduletab').on('click', function () {
 				stacked_lines_ls.resize();
 				stacked_lines_dl.resize();
+				basic_columns_ls.resize();
+				basic_columns_dl.resize();
 			});
 			$('#scheduletab').hover(function () {
 				stacked_lines_ls.resize();
 				stacked_lines_dl.resize();
+				basic_columns_ls.resize();
+				basic_columns_dl.resize();
 			});
 			window.onresize = function () {
 				setTimeout(function () {
 					stacked_lines_ls.resize();
 					stacked_lines_dl.resize();
+					basic_columns_ls.resize();
+					basic_columns_dl.resize();
 				}, 2000);
 			};
 		}
@@ -50979,10 +51459,10 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 				id: "all",
 				id_user: id_user
 			};
-			console.log(data1);
+			//console.log(data1);
 			socket.emit('c2s_Thaoluan', data1);
 			socket.on('s2c_Thaoluan', function (data) {
-				console.log(data);
+				//console.log(data);
 				if (data.length == 0 && $(".timeline-row").length == 0) {
 					console.log("chua co bai biet");
 					$("#formCauhoi").children().append('<div class="timeline-row">' + '<div class="timeline-icon">' + '<img src="assets/images/placeholder.jpg" alt=""/>' + '</div>' + '<div class="panel panel-flat timeline-content">' + '<div class="panel-heading">' + '<h6 class="panel-title text-semibold no-margin"><a class="text-default">Không có hoạt động nào!</a></h6>' + '</div>' + '<div class="panel-body">' + '<blockquote>' + '<p>Hiện tại bạn chưa có hoạt động nào</p>' + '</blockquote>' + '</div>' + '</div>' + '</div>');
@@ -50999,6 +51479,14 @@ var Trangcanhan = exports.Trangcanhan = function (_React$Component) {
 				$("#caidat").click();
 			} else if (newProps.params.tab == "hoatdong") {
 				$("#hoatdong").click();
+			} else if (newProps.params.tab == "quatrinh") {
+				$("#scheduletab").click();
+			} else if (newProps.params.tab == "quanlyuser") {
+				$("#tag_listuser").click();
+			} else if (newProps.params.tab == "quanlygiaovien") {
+				$("#tag_listsup").click();
+			} else if (newProps.params.tab == "quanlyadmin") {
+				$("#tag_listadmin").click();
 			}
 		}
 	}]);
@@ -51083,7 +51571,7 @@ var Trangchu = exports.Trangchu = function (_React$Component) {
 							_react2.default.createElement(
 								'h6',
 								{ className: 'panel-title ' },
-								'B\xE0i h\u1ECDc',
+								'B\xE0i h\u1ECDc hi\u1EC7n t\u1EA1i',
 								_react2.default.createElement(
 									'a',
 									{ className: 'heading-elements-toggle' },
@@ -51122,7 +51610,7 @@ var Trangchu = exports.Trangchu = function (_React$Component) {
 									null,
 									'\u0110\u1ECBa L\xED'
 								),
-								' th\xF4ng qua trang web c\u1EE7a ch\xFAng t\xF4i. C\xE1c b\xE0i h\u1ECDc \u0111\u01B0\u1EE3c thi\u1EBFt k\u1EBF d\u1EF1a tr\xEAn S\xE1ch Gi\xE1o Khoa b\xE1m s\xE1t v\u1EDBi ki\u1EBFn th\u1EE9c trong l\u1EDBp, c\xE1c b\xE0i h\u1ECDc \u0111\u01B0\u1EE3c ph\xE2n th\xE0nh ba d\u1EA1ng s\xE1ch gi\xE1o khoa, video, b\xE0i vi\u1EBFt h\u1ECDc thu\u1EADt.'
+								' th\xF4ng qua trang web c\u1EE7a ch\xFAng t\xF4i. C\xE1c b\xE0i h\u1ECDc \u0111\u01B0\u1EE3c thi\u1EBFt k\u1EBF d\u1EF1a tr\xEAn S\xE1ch Gi\xE1o Khoa b\xE1m s\xE1t v\u1EDBi ki\u1EBFn th\u1EE9c trong l\u1EDBp, c\xE1c b\xE0i h\u1ECDc \u0111\u01B0\u1EE3c ph\xE2n th\xE0nh ba d\u1EA1ng s\xE1ch gi\xE1o khoa, mindmap, video.'
 							)
 						),
 						_react2.default.createElement(
@@ -51143,7 +51631,7 @@ var Trangchu = exports.Trangchu = function (_React$Component) {
 									_react2.default.createElement(
 										'h5',
 										{ className: 'text-semibold' },
-										'Hoc L\u1ECBch S\u1EED Online'
+										'M\xF4n L\u1ECBch S\u1EED'
 									),
 									_react2.default.createElement(
 										'a',
@@ -51166,7 +51654,7 @@ var Trangchu = exports.Trangchu = function (_React$Component) {
 									_react2.default.createElement(
 										'h5',
 										{ className: 'text-semibold' },
-										'H\u1ECDc \u0110\u1ECBa L\xED Online'
+										'M\xF4n \u0110\u1ECBa L\xED'
 									),
 									_react2.default.createElement(
 										'a',
@@ -51527,7 +52015,7 @@ var _react = __webpack_require__(5);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _socket = __webpack_require__(27);
+var _socket = __webpack_require__(26);
 
 var _socket2 = _interopRequireDefault(_socket);
 
@@ -51544,7 +52032,7 @@ var socket = (0, _socket2.default)('http://' + window.location.hostname + ':3000
 //let socket = io('http://'+window.location.hostname);
 
 var data = document.querySelector('#maincontent');
-console.log('http://' + window.location.hostname + ':3000');
+
 var id_user = data.dataset.id;
 var check = true;
 var mon, phanlop;
@@ -51736,7 +52224,20 @@ var baihoc = exports.baihoc = function (_React$Component) {
 													data1.USERNAME,
 													' - ',
 													data1.to_char
-												)
+												),
+												data1.USERNAME == data.dataset.username ? _react2.default.createElement(
+													'ul',
+													{ className: 'list-inline list-inline-separate heading-text pull-right' },
+													_react2.default.createElement(
+														'li',
+														null,
+														_react2.default.createElement(
+															'a',
+															{ id: data1.ID_TACGIA, name: data1.ID_BAIHOC, className: 'text-danger-400', 'data-popup': 'tooltip', 'data-toggle': 'modal', 'data-target': '#confirm' },
+															_react2.default.createElement('i', { className: 'icon-cross2 position-right' })
+														)
+													)
+												) : null
 											)
 										),
 										_react2.default.createElement(
@@ -51862,7 +52363,20 @@ var baihoc = exports.baihoc = function (_React$Component) {
 													data1.USERNAME,
 													' - ',
 													data1.to_char
-												)
+												),
+												data1.USERNAME == data.dataset.username ? _react2.default.createElement(
+													'ul',
+													{ className: 'list-inline list-inline-separate heading-text pull-right' },
+													_react2.default.createElement(
+														'li',
+														null,
+														_react2.default.createElement(
+															'a',
+															{ id: data1.ID_TACGIA, name: data1.ID_BAIHOC, className: 'text-danger-400', 'data-popup': 'tooltip', 'data-toggle': 'modal', 'data-target': '#confirm' },
+															_react2.default.createElement('i', { className: 'icon-cross2 position-right' })
+														)
+													)
+												) : null
 											)
 										),
 										_react2.default.createElement(
@@ -52031,7 +52545,20 @@ var baihoc = exports.baihoc = function (_React$Component) {
 													data1.USERNAME,
 													' - ',
 													data1.to_char
-												)
+												),
+												data1.USERNAME == data.dataset.username ? _react2.default.createElement(
+													'ul',
+													{ className: 'list-inline list-inline-separate heading-text pull-right' },
+													_react2.default.createElement(
+														'li',
+														null,
+														_react2.default.createElement(
+															'a',
+															{ id: data1.ID_TACGIA, name: data1.ID_BAIHOC, className: 'text-danger-400', 'data-popup': 'tooltip', 'data-toggle': 'modal', 'data-target': '#confirm' },
+															_react2.default.createElement('i', { className: 'icon-cross2 position-right' })
+														)
+													)
+												) : null
 											)
 										),
 										_react2.default.createElement(
@@ -52157,7 +52684,20 @@ var baihoc = exports.baihoc = function (_React$Component) {
 													data1.USERNAME,
 													' - ',
 													data1.to_char
-												)
+												),
+												data1.USERNAME == data.dataset.username ? _react2.default.createElement(
+													'ul',
+													{ className: 'list-inline list-inline-separate heading-text pull-right' },
+													_react2.default.createElement(
+														'li',
+														null,
+														_react2.default.createElement(
+															'a',
+															{ id: data1.ID_TACGIA, name: data1.ID_BAIHOC, className: 'text-danger-400', 'data-popup': 'tooltip', 'data-toggle': 'modal', 'data-target': '#confirm' },
+															_react2.default.createElement('i', { className: 'icon-cross2 position-right' })
+														)
+													)
+												) : null
 											)
 										),
 										_react2.default.createElement(
@@ -52284,40 +52824,52 @@ var baihoc = exports.baihoc = function (_React$Component) {
 									)
 								);
 							}, this),
+							_react2.default.createElement('div', { id: 'checkBaithi', className: 'timeline-row' })
+						)
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ id: 'confirm', className: 'modal fade' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'modal-dialog modal-xs' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'modal-content' },
 							_react2.default.createElement(
 								'div',
-								{ className: 'timeline-row' },
+								{ className: 'thumbnail no-border no-margin' },
 								_react2.default.createElement(
 									'div',
-									{ className: 'timeline-icon' },
+									{ className: 'caption text-center' },
 									_react2.default.createElement(
-										'div',
-										{ className: 'bg-orange' },
-										_react2.default.createElement('i', { className: 'icon-graduation2' })
-									)
-								),
-								_react2.default.createElement(
-									'div',
-									{ className: 'panel panel-flat timeline-content' },
+										'h6',
+										{ className: 'text-semibold no-margin-top content-group' },
+										'B\u1EA1n c\xF3 ch\u1EAFc mu\u1ED1n xo\xE1 b\xE0i h\u1ECDc n\xE0y!  To\xE0n b\u1ED9 d\u1EEF li\u1EC7u nh\u01B0 b\xE0i t\u1EADp, mindmap, b\xECnh lu\u1EADn c\u1EE7a b\xE0i vi\u1EBFt s\u1EBD b\u1ECB xo\xE1 ho\xE0n to\xE0n. '
+									),
 									_react2.default.createElement(
-										'div',
-										{ className: 'panel-heading' },
+										'ul',
+										{ className: 'list-inline list-inline-condensed no-margin' },
 										_react2.default.createElement(
-											'h6',
-											{ className: 'panel-title text-semibold no-margin' },
+											'li',
+											null,
 											_react2.default.createElement(
 												'a',
-												{ href: "#" + this.props.params.mon + "/lop" + this.props.params.lop + "/baithi/thi", className: 'text-default' },
-												_react2.default.createElement(
-													'span',
-													{ className: 'text-primary' },
-													'B\xE0i thi:'
-												),
-												'  B\xE0i thi cu\u1ED1i m\xF4n'
+												{ className: 'btn btn-success btn-float', 'data-dismiss': 'modal' },
+												'Xo\xE1'
+											)
+										),
+										_react2.default.createElement(
+											'li',
+											null,
+											_react2.default.createElement(
+												'a',
+												{ className: 'btn btn-danger btn-float', 'data-dismiss': 'modal' },
+												'Hu\u1EF7'
 											)
 										)
-									),
-									_react2.default.createElement('div', { className: 'panel-body' })
+									)
 								)
 							)
 						)
@@ -52353,7 +52905,7 @@ var baihoc = exports.baihoc = function (_React$Component) {
 	}, {
 		key: 'componentDidMount',
 		value: function componentDidMount() {
-
+			var that = this;
 			$("#uploadfile").append('<form class="fileupload" action="uploadSGK" method="post" enctype="multipart/form-data">' + '<input type="file" id_user="5" name="upfile" class="file-styled"/>' + '<br/>' + '<button type="submit">Đăng Sách Giáo Khoa</button>' + '</form>');
 
 			url1 = window.location.href;
@@ -52408,7 +52960,7 @@ var baihoc = exports.baihoc = function (_React$Component) {
 					thoigian: datetime
 
 				};
-				console.log(data);
+				//console.log(data);
 				$.post("themBaihoc", data, function () {
 					$("#sobai").val("");
 					$("#tieudebai").val("");
@@ -52417,6 +52969,27 @@ var baihoc = exports.baihoc = function (_React$Component) {
 					//window.location = "#/trangcanhan";
 					//Trangcanhan.dispatch(location.getCurrentPath(), null);
 				});
+			});
+
+			$('#listbaihoc').on('click', '.text-danger-400', function (e) {
+				var id_baihoc = $(this).attr('name');
+				console.log("click xoa");
+				//console.log("id bai hoc "+id_baihoc);
+				$('#confirm li').on('click', '.btn-success', function (e) {
+					console.log("xac nhan xoa bai hoc");
+					$.post("delete_baihoc", { id_baihoc: id_baihoc });
+					return;
+				});
+			});
+			var datax = {
+				id: id_user,
+				lop: phanlop[0],
+				mon: mon[1]
+			};
+			$.post("checkBaithi", datax, function (data) {
+				if (data == true || type_username != "hocsinh") {
+					$("#checkBaithi").append('<div class="timeline-icon">' + '<div class="bg-orange">' + '<i class="icon-graduation2"></i>' + '</div>' + '</div>' + '<div class="panel panel-flat timeline-content">' + '<div class="panel-heading">' + '<h6 class="panel-title text-semibold no-margin"><a href="#' + that.props.params.mon + '/lop' + that.props.params.lop + '/baithi/thi" className="text-default"><span class="text-primary">Bài thi:</span>  Bài thi cuối môn</a></h6>' + '</div>' + '<div class="panel-body">' + '</div>' + '</div>');
+				} else $("#checkBaithi").append('<div class="timeline-icon">' + '<div class="bg-grey-300">' + '<i class="icon-graduation2"></i>' + '</div>' + '</div>' + '<div class="panel panel-flat timeline-content">' + '<div class="panel-heading">' + '<h6 class="panel-title text-semibold no-margin"><a class="text-grey"><span className="text-primary">Bài thi:</span>  Bài thi cuối môn</a></h6>' + '</div>' + '<div class="panel-body">' + '</div>' + '</div>');
 			});
 		}
 	}, {
@@ -52458,7 +53031,7 @@ var baihoc = exports.baihoc = function (_React$Component) {
 
 			socket.emit('c2s_Baihoc', data1);
 			socket.on('s2c_Baihoc', function (data) {
-				console.log(data);
+				//console.log(data);
 				var mon1;
 				if (mon[1] == "lichsu") mon1 = "Lịch sử";
 				if (mon[1] == "diali") mon1 = "Địa lí";
@@ -52535,7 +53108,7 @@ var _react = __webpack_require__(5);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _socket = __webpack_require__(27);
+var _socket = __webpack_require__(26);
 
 var _socket2 = _interopRequireDefault(_socket);
 
@@ -52892,7 +53465,7 @@ var baihoc_baiviet = exports.baihoc_baiviet = function (_React$Component) {
 					thoigian: datetime
 
 				};
-				console.log(data);
+				//console.log(data);
 				$.post("themBaiviet", data, function () {
 					$("#add_tieude").val("");
 					$("#add_noidung").val("");
@@ -53008,7 +53581,7 @@ var _react = __webpack_require__(5);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _socket = __webpack_require__(27);
+var _socket = __webpack_require__(26);
 
 var _socket2 = _interopRequireDefault(_socket);
 
@@ -53445,7 +54018,7 @@ var _react = __webpack_require__(5);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _socket = __webpack_require__(27);
+var _socket = __webpack_require__(26);
 
 var _socket2 = _interopRequireDefault(_socket);
 
@@ -53759,9 +54332,13 @@ var baihoc_chitiet = exports.baihoc_chitiet = function (_React$Component) {
 									'\xD7'
 								),
 								_react2.default.createElement(
-									'h6',
-									{ className: 'modal-title' },
-									'Th\xEAm c\xE2u h\u1ECFi b\xE0i ki\u1EC3m tra'
+									'div',
+									{ className: 'text-center' },
+									_react2.default.createElement(
+										'h6',
+										{ className: 'modal-title text-semibold' },
+										'Th\xEAm c\xE2u h\u1ECFi b\xE0i ki\u1EC3m tra'
+									)
 								)
 							),
 							_react2.default.createElement(
@@ -53804,42 +54381,13 @@ var baihoc_chitiet = exports.baihoc_chitiet = function (_React$Component) {
 				$("#thembaithi").show();
 			}
 
-			$('#add_video').click(function () {
-				if ($("#add_tieude").val() == "") {
-					alert("Bạn chưa nhập tiêu đề sự kiện!");
-					return;
-				}
-				if ($("#add_thoigian").val() == "") {
-					alert("Bạn chưa nhập thời gian của sự kiện!");
-					return;
-				}
-				if ($("#add_noidung").val() == "") {
-					alert("Bạn chưa nhập nội dung của sự kiện!");
-					return;
-				}
-				var data = {
-					id: id_user,
-					tieude: $("#add_tieude").val(),
-					thoigian: $("#add_thoigian").val(),
-					noidung: $("#add_noidung").val()
-				};
-				console.log(data);
-				$.post("themsukien", data, function () {
-					$("#add_tieude").val("");
-					$("#add_thoigian").val("");
-					$("#add_noidung").val("");
-					alert("Sự kiện đã được thêm, làm mới trang để xem kết quả");
-					$("#formadd").hide();
-					//window.location = "#/tuongtac/lichsu";
-					//Trangcanhan.dispatch(location.getCurrentPath(), null);
-				});
-			});
 			for (var i = 1; i <= 10; i++) {
 				$("#listcauhoi").append('<div class="form-group">' + '<h4 class="text-semibold">Câu hỏi ' + i + ':</h4>' + '<div style={{paddingRight: "0px"}}>' + '<input id="noidung' + i + '" type="text" placeholder="Nhập câu hỏi..." class="form-control"/>' + '<span class="help-block"></span>' + '</div>' + '</div>' + '<div class="form-group">' + '<label class="text-semibold">Câu trả lời:</label>' + '<div class="input-group">' + '<span class="input-group-addon">' + '<input id="ra_cau' + i + '_1" name="addon-radio-' + i + '"  type="radio" class="styled"/>' + '</span>' + '<input id="te_cau' + i + '_1" type="text" class="form-control" placeholder="Câu trả lời 1"/>' + '</div>' + '<div class="input-group">' + '<span class="input-group-addon">' + '<input id="ra_cau' + i + '_2" name="addon-radio-' + i + '"  type="radio" class="styled" />' + '</span>' + '<input  id="te_cau' + i + '_2" type="text" class="form-control" placeholder="Câu trả lời 2"/>' + '</div>' + '<div class="input-group">' + '<span class="input-group-addon">' + '<input id="ra_cau' + i + '_3" name="addon-radio-' + i + '"  type="radio" class="styled"/>' + '</span>' + '<input  id="te_cau' + i + '_3" type="text" class="form-control" placeholder="Câu trả lời 3"/>' + '</div>' + '<div class="input-group">' + '<span class="input-group-addon">' + '<input id="ra_cau' + i + '_4" name="addon-radio-' + i + '" type="radio" class="styled"/>' + '</span>' + '<input  id="te_cau' + i + '_4" type="text" class="form-control" placeholder="Câu trả lời 4"/>' + '</div>' + '</div>' + '<hr/>');
 			}
 
 			//them bai tap
 			$('#xong').click(function () {
+				var listtracnghiem = [];
 				for (var i = 1; i <= 10; i++) {
 					console.log($("#ra_cau" + i + "_1").is(':checked'));
 					var check_temp;
@@ -53869,13 +54417,20 @@ var baihoc_chitiet = exports.baihoc_chitiet = function (_React$Component) {
 						da1: da1,
 						da2: da2,
 						da3: da3,
-						da4: da4
+						da4: da4,
+						link_anh: null
 					};
-					console.log(datax);
-					$.post("themTracnghiem", datax, function () {
-						alert(" them kiem tra xong");
-					});
+					listtracnghiem.push(datax);
+					// console.log(datax);
+					// $.post("themTracnghiem",datax,function(){
+					// 	//alert(" them kiem tra xong");
+					// });
 				}
+				console.log("listtracnghiem");
+				//console.log(listtracnghiem);
+				$.post("themTracnghiemKiemtra", { list: JSON.stringify(listtracnghiem) }, function () {
+					window.location.reload(true);
+				});
 			});
 			//them bai tap
 		}
@@ -53896,7 +54451,7 @@ var baihoc_chitiet = exports.baihoc_chitiet = function (_React$Component) {
 				id: this.props.params.id,
 				id_user: "all"
 			};
-			console.log(data1);
+			//console.log(data1);
 			socket.emit('c2s_Baihoc', data1);
 			socket.on('s2c_Baihoc', function (data) {
 				console.log(data);
@@ -53906,22 +54461,24 @@ var baihoc_chitiet = exports.baihoc_chitiet = function (_React$Component) {
 				that.setState({ listbaihoc: data });
 			});
 		}
-	}, {
-		key: 'componentWillReceiveProps',
-		value: function componentWillReceiveProps(newProps) {
-			console.log("componentWillReceiveProps");
-			var mon1;
-			if (newProps.params.mon == "lichsu") mon1 = "Lịch sử";
-			if (newProps.params.mon == "diali") mon1 = "Địa lí";
-			var name_link = "Bài học " + mon1 + " lớp " + newProps.params.lop;
-			var data1 = {
-				mon: newProps.params.mon,
-				lop: newProps.params.lop,
-				id: newProps.params.id,
-				id_user: "all"
-			};
-			socket.emit('c2s_Baihoc', data1);
-		}
+		// componentWillReceiveProps(newProps)
+		// {
+		// 	console.log("componentWillReceiveProps");
+		// 	var mon1;
+		// 	if(newProps.params.mon=="lichsu")
+		// 		mon1="Lịch sử";
+		// 	if(newProps.params.mon=="diali")
+		// 		mon1="Địa lí";
+		// 	var name_link="Bài học "+mon1+" lớp "+newProps.params.lop; 
+		// 	var data1={
+		// 		mon: newProps.params.mon,
+		// 		lop: newProps.params.lop,
+		// 		id: newProps.params.id,
+		// 		id_user: "all"
+		// 	}
+		// 	socket.emit('c2s_Baihoc',data1);
+		// }
+
 	}]);
 
 	return baihoc_chitiet;
@@ -53945,7 +54502,7 @@ var _react = __webpack_require__(5);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _socket = __webpack_require__(27);
+var _socket = __webpack_require__(26);
 
 var _socket2 = _interopRequireDefault(_socket);
 
@@ -53960,7 +54517,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 //let socket = io('http://kid-learning.herokuapp.com:3000'||'https://kid-learning.herokuapp.com:3000' || 'http://localhost:3000');
 var socket = (0, _socket2.default)('http://' + window.location.hostname + ':3000');
 //let socket = io('http://'+window.location.hostname);
-
 var data = document.querySelector('#maincontent');
 
 var id_user = data.dataset.id;
@@ -54813,8 +55369,8 @@ var baihoc_video = exports.baihoc_video = function (_React$Component) {
 					$("#add_noidung").val("");
 					$("#add_link").val("");
 					$("#formadd").hide();
-					alert("Video đã được thêm, làm mới trang để xem kết quả");
 					$("#formadd").hide();
+					window.location.reload(true);
 					//window.location = "#/trangcanhan";
 					//Trangcanhan.dispatch(location.getCurrentPath(), null);
 				});
@@ -54825,7 +55381,9 @@ var baihoc_video = exports.baihoc_video = function (_React$Component) {
 				console.log(idVideo);
 				$('#confirm1 li').on('click', '.btn-success', function (e) {
 					console.log("xac nhan xoa video");
-					$.post("delete_video", { id_video: idVideo });
+					$.post("delete_video", { id_video: idVideo, mon: mon[1] }, function () {
+						window.location.reload(true);
+					});
 					return;
 				});
 			});
@@ -54928,7 +55486,7 @@ var _react = __webpack_require__(5);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _socket = __webpack_require__(27);
+var _socket = __webpack_require__(26);
 
 var _socket2 = _interopRequireDefault(_socket);
 
@@ -55089,8 +55647,8 @@ var baihoc_video_chitiet = exports.baihoc_video_chitiet = function (_React$Compo
 											_react2.default.createElement(
 												'a',
 												null,
-												_react2.default.createElement('img', { id: 'img_user', src: "assets/images/user_" + data1.ID_NGUOITRALOI + ".jpg", onError: function onError(e) {
-														e.target.src = "assets/images/user.jpg";
+												_react2.default.createElement('img', { id: 'img_user', src: "assets/images/user/user_" + data1.ID_NGUOITRALOI + ".jpg", onError: function onError(e) {
+														e.target.src = "assets/images/user/user.jpg";
 													}, className: 'img-circle img-sm', alt: '' })
 											)
 										),
@@ -55223,7 +55781,7 @@ var baihoc_video_chitiet = exports.baihoc_video_chitiet = function (_React$Compo
 					noidung: $("#binhluan_cauhoi").val(),
 					thoigian: datetime
 				};
-				console.log(data);
+				//console.log(data);
 				$.post("themBinhluan", data, function () {
 					$("#binhluan_cauhoi").val("");
 					//window.location = "#/trangcanhan";
@@ -55246,7 +55804,7 @@ var baihoc_video_chitiet = exports.baihoc_video_chitiet = function (_React$Compo
 					id_binhluan: idBinhluanClick,
 					type: type
 				};
-				console.log(data);
+				//console.log(data);
 				$.post("rate_binhluan", data, function () {});
 			});
 		}
@@ -55279,7 +55837,7 @@ var baihoc_video_chitiet = exports.baihoc_video_chitiet = function (_React$Compo
 
 			$.post("/" + mon[1] + "/lop" + this.props.params.lop + "/baihoc_video_chitiet/" + this.props.params.id + "/" + this.props.params.video, function (data) {
 				console.log("lay video");
-				console.log(data);
+				//console.log(data);
 				$("#link_pre").text(name_link);
 				$('#link_pre').attr('href', link_pre);
 				$("#link_pre1").text(name_link1);
@@ -55292,6 +55850,14 @@ var baihoc_video_chitiet = exports.baihoc_video_chitiet = function (_React$Compo
 			socket.on('s2c_Binhluan', function (data) {
 				that.setState({ listbinhluan: data });
 			});
+			///
+			function loop() {
+				setTimeout(function () {
+					socket.emit('c2s_Binhluan', { id: id_cauhoi });
+					loop();
+				}, 30000);
+			}
+			loop();
 		}
 	}, {
 		key: 'onChange',
@@ -55323,7 +55889,7 @@ var _react = __webpack_require__(5);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _socket = __webpack_require__(27);
+var _socket = __webpack_require__(26);
 
 var _socket2 = _interopRequireDefault(_socket);
 
@@ -55404,20 +55970,34 @@ var baikiemtra = exports.baikiemtra = function (_React$Component) {
 							'div',
 							{ className: 'panel-heading' },
 							_react2.default.createElement(
-								'h5',
-								{ className: 'panel-title' },
-								'B\xE0i thi'
-							),
-							_react2.default.createElement(
 								'div',
-								{ className: 'heading-elements' },
+								{ className: 'text-center' },
 								_react2.default.createElement(
-									'ul',
-									{ className: 'icons-list' },
+									'div',
+									{ className: 'panel-heading bg-orange-400' },
 									_react2.default.createElement(
-										'li',
-										null,
-										_react2.default.createElement('a', { 'data-action': 'collapse' })
+										'h4',
+										{ className: 'panel-title' },
+										'B\xE0i ki\u1EC3m tra'
+									),
+									_react2.default.createElement(
+										'small',
+										{ className: 'display-block' },
+										'(Ch\u1ECDn ph\u01B0\u01A1ng \xE1n \u0111\xFAng nh\u1EA5t cho t\u1EEBng c\xE2u h\u1ECFi)'
+									)
+								)
+							),
+							type_username == "hocsinh" ? null : _react2.default.createElement(
+								'ul',
+								{ className: 'list-inline list-inline-separate heading-text pull-right' },
+								_react2.default.createElement(
+									'li',
+									null,
+									_react2.default.createElement(
+										'a',
+										{ id: 'delete_kiemtra', className: 'text-danger-400', 'data-popup': 'tooltip', 'data-toggle': 'modal', 'data-target': '#confirm2' },
+										_react2.default.createElement('i', { className: 'icon-cross2 position-right' }),
+										'Xo\xE1 b\xE0i ki\u1EC3m tra'
 									)
 								)
 							)
@@ -55432,7 +56012,7 @@ var baikiemtra = exports.baikiemtra = function (_React$Component) {
 							{ className: 'text-right' },
 							_react2.default.createElement(
 								'button',
-								{ 'data-popup': 'tooltip', 'data-toggle': 'modal', 'data-target': '#confirm', id: 'nopbai', type: 'submit', className: 'btn bg-teal-400' },
+								{ 'data-popup': 'tooltip', 'data-toggle': 'modal', 'data-target': '#confirm', id: 'nopbai', type: 'submit', className: 'btn bg-orange-800' },
 								'N\u1ED9p b\xE0i ',
 								_react2.default.createElement('i', { className: 'icon-arrow-right14 position-right' })
 							)
@@ -55472,6 +56052,53 @@ var baikiemtra = exports.baikiemtra = function (_React$Component) {
 							)
 						)
 					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ id: 'confirm2', className: 'modal fade' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'modal-dialog modal-xs' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'modal-content' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'thumbnail no-border no-margin' },
+								_react2.default.createElement(
+									'div',
+									{ className: 'caption text-center' },
+									_react2.default.createElement(
+										'h6',
+										{ className: 'text-semibold no-margin-top content-group' },
+										'B\u1EA1n c\xF3 ch\u1EAFc mu\u1ED1n xo\xE1 to\xE0n b\u1ED9 b\xE0i ki\u1EC3m tra n\xE0y! '
+									),
+									_react2.default.createElement(
+										'ul',
+										{ className: 'list-inline list-inline-condensed no-margin' },
+										_react2.default.createElement(
+											'li',
+											null,
+											_react2.default.createElement(
+												'a',
+												{ className: 'btn btn-success btn-float', 'data-dismiss': 'modal' },
+												'Xo\xE1'
+											)
+										),
+										_react2.default.createElement(
+											'li',
+											null,
+											_react2.default.createElement(
+												'a',
+												{ className: 'btn btn-danger btn-float', 'data-dismiss': 'modal' },
+												'Hu\u1EF7'
+											)
+										)
+									)
+								)
+							)
+						)
+					)
 				)
 			);
 		}
@@ -55486,7 +56113,7 @@ var baikiemtra = exports.baikiemtra = function (_React$Component) {
 			var url2 = window.location.href;
 			url2 = url2.split('lop');
 			var phanlop = url2[1].split('/');
-
+			var bai = this.props.params.id;
 			var mon1;
 			if (mon[1] == "lichsu") mon1 = "Lịch sử";
 			if (mon[1] == "diali") mon1 = "Địa lí";
@@ -55507,7 +56134,7 @@ var baikiemtra = exports.baikiemtra = function (_React$Component) {
 					//var iddapan=$("span").closest('.checked').children().attr("id");
 				}
 
-				console.log("xet ket qua " + socaudung);
+				//console.log("xet ket qua "+socaudung);
 
 				var currentdate = new Date();
 				var datetime = currentdate.getFullYear() + "-" + (currentdate.getMonth() + 1) + "-" + currentdate.getDate() + " " + currentdate.getHours() + ":" + currentdate.getMinutes() + ":" + currentdate.getSeconds();
@@ -55517,15 +56144,35 @@ var baikiemtra = exports.baikiemtra = function (_React$Component) {
 					diem: (Math.round(parseFloat(socaudung * 10 / socaude) * 4) / 4).toFixed(2),
 					heso: '1',
 					mon: mon[1],
-					bai: that.props.params.id,
+					bai: bai,
 					thoigian: datetime
 				};
 				console.log(data);
-				$.post("themKetquahoctap", data, function () {
-					$('#hienkq').text("Bạn đã hoàn thành bài thi với số điểm: " + (Math.round(parseFloat(socaudung * 10 / socaude) * 4) / 4).toFixed(2) + " điểm");
-					socaudung = 0;
-					$('#nopbai').hide();
-					$("div").closest("#uniform-1").parent().parent().addClass("alpha-info no-border");
+				$.post("themKetquahoctap", data, function (data1) {
+					if (data1 == true) {
+						$('#hienkq').text("Bạn đã hoàn thành bài thi với số điểm: " + (Math.round(parseFloat(socaudung * 10 / socaude) * 4) / 4).toFixed(2) + " điểm. Tuy nhiên bài kiểm tra này bạn đã làm trước đó nên kết quả không được ghi nhận thêm");
+						socaudung = 0;
+						$('#nopbai').hide();
+						$("div").closest("#uniform-1").parent().parent().addClass("alpha-info no-border");
+					} else {
+						$('#hienkq').text("Bạn đã hoàn thành bài thi với số điểm: " + (Math.round(parseFloat(socaudung * 10 / socaude) * 4) / 4).toFixed(2) + " điểm");
+						socaudung = 0;
+						$('#nopbai').hide();
+						$("div").closest("#uniform-1").parent().parent().addClass("alpha-info no-border");
+					}
+				});
+			});
+
+			$('#delete_kiemtra').click(function (event) {
+				var data = {
+					lop: phanlop[0],
+					mon: mon[1],
+					bai: bai
+				};
+				$('#confirm2 li').on('click', '.btn-success', function (e) {
+					$.post("deleteKiemtra", data, function (data1) {
+						window.location.reload(true);
+					});
 				});
 			});
 		}
@@ -55537,7 +56184,7 @@ var baikiemtra = exports.baikiemtra = function (_React$Component) {
 			var count1 = 1;
 			$.post("/" + this.props.params.mon + "/lop" + this.props.params.lop + "/baitap_tracnghiem_chitiet_cauhoi/" + this.props.params.id, { loai: "kiemtra" }, function (data) {
 				console.log("lay kiem tra");
-				console.log(data);
+				//console.log(data);
 				socaude = data.length;
 				if (data.length == 0) {
 					console.log("chua co bai tap");
@@ -55556,14 +56203,14 @@ var baikiemtra = exports.baikiemtra = function (_React$Component) {
 
 					var idCauhoi = data[i].ID_BAIHOC;
 					$.post("/getDapan", { id: data[i].ID_TRACNGHIEM }, function (data1) {
-						console.log("duoi" + count);
-						console.log(data1);
+						//console.log("duoi"+count);
+						//console.log(data1);
 						for (var j = 0; j < data1.length; j++) {
 							if (data1[j].CHECK == 1) {
 								//console.log("cau "+count1+" ket qua "+(j+1));
 								var kqtemp = { cau: count1, dapan: j + 1 };
 								ketqua.push(kqtemp);
-								console.log(kqtemp);
+								//console.log(kqtemp);
 							}
 							$("#cau" + count1).append('<div class="radio">' + '<label>' + '<input type="radio" id="' + data1[j].CHECK + '" alt="' + j + '" name="' + count1 + '" class="styled" />' + data1[j].DAPAN + '</label>' + '</div>');
 						}
@@ -55574,7 +56221,7 @@ var baikiemtra = exports.baikiemtra = function (_React$Component) {
 						});
 					});
 				};
-				console.log(ketqua);
+				//console.log(ketqua);
 			});
 		}
 	}]);
@@ -55741,22 +56388,6 @@ var baitap = exports.baitap = function (_React$Component) {
 								)
 							),
 							_react2.default.createElement("div", { className: "col-md-3" })
-						)
-					),
-					_react2.default.createElement(
-						"div",
-						{ className: "footer text-muted" },
-						"\xA9 2015. ",
-						_react2.default.createElement(
-							"a",
-							{ href: "#" },
-							"Limitless Web App Kit"
-						),
-						" by ",
-						_react2.default.createElement(
-							"a",
-							{ href: "http://themeforest.net/user/Kopyov", target: "_blank" },
-							"Eugene Kopyov"
 						)
 					)
 				)
@@ -56206,7 +56837,7 @@ var _react = __webpack_require__(5);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _socket = __webpack_require__(27);
+var _socket = __webpack_require__(26);
 
 var _socket2 = _interopRequireDefault(_socket);
 
@@ -56218,7 +56849,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var socket = (0, _socket2.default)('http://' + window.location.hostname + ':3000');
+var socket = (0, _socket2.default)('https://' + window.location.hostname + ':3000');
 //let socket = io('http://'+window.location.hostname);
 var data = document.querySelector('#maincontent');
 
@@ -56322,7 +56953,8 @@ var baitap_tracnghiem_chitiet = exports.baitap_tracnghiem_chitiet = function (_R
 											{ style: { paddingRight: '0px' } },
 											_react2.default.createElement('input', { id: 'noidung', type: 'text', placeholder: 'Nh\u1EADp c\xE2u h\u1ECFi...', className: 'form-control' }),
 											_react2.default.createElement('span', { className: 'help-block' })
-										)
+										),
+										_react2.default.createElement('div', { id: 'formanh', style: { paddingRight: '0px' } })
 									),
 									_react2.default.createElement(
 										'div',
@@ -56434,8 +57066,8 @@ var baitap_tracnghiem_chitiet = exports.baitap_tracnghiem_chitiet = function (_R
 											_react2.default.createElement(
 												'a',
 												null,
-												_react2.default.createElement('img', { id: 'img_user', src: "assets/images/user_" + data1.ID_NGUOITRALOI + ".jpg", onError: function onError(e) {
-														e.target.src = "assets/images/user.jpg";
+												_react2.default.createElement('img', { id: 'img_user', src: "assets/images/user/user_" + data1.ID_NGUOITRALOI + ".jpg", onError: function onError(e) {
+														e.target.src = "assets/images/user/user.jpg";
 													}, className: 'img-circle img-sm', alt: '' })
 											)
 										),
@@ -56610,7 +57242,7 @@ var baitap_tracnghiem_chitiet = exports.baitap_tracnghiem_chitiet = function (_R
 					if ($("#rd_cau2").parent().attr("class") == "checked") check_temp = 2;
 					if ($("#rd_cau3").parent().attr("class") == "checked") check_temp = 3;
 					if ($("#rd_cau4").parent().attr("class") == "checked") check_temp = 4;
-					console.log(check_temp);
+					//console.log(check_temp);
 				}
 				var da1 = 0,
 				    da2 = 0,
@@ -56621,6 +57253,11 @@ var baitap_tracnghiem_chitiet = exports.baitap_tracnghiem_chitiet = function (_R
 				if (check_temp == 3) da3 = 1;
 				if (check_temp == 4) da4 = 1;
 
+				var currentdate = new Date();
+				var datetime = currentdate.getFullYear() + "_" + (currentdate.getMonth() + 1) + "_" + currentdate.getDate() + "_" + currentdate.getHours() + "_" + currentdate.getMinutes() + "_" + currentdate.getSeconds();
+
+				$(".fileupload").append('<input hidden name="file_name" value="' + datetime + '"/>');
+				$("#themAnh").click();
 				var data = {
 					id: id_user,
 					loai: 'baitap',
@@ -56635,7 +57272,8 @@ var baitap_tracnghiem_chitiet = exports.baitap_tracnghiem_chitiet = function (_R
 					da1: da1,
 					da2: da2,
 					da3: da3,
-					da4: da4
+					da4: da4,
+					link_anh: datetime
 				};
 
 				$.post("themTracnghiem", data, function (data) {
@@ -56670,7 +57308,7 @@ var baitap_tracnghiem_chitiet = exports.baitap_tracnghiem_chitiet = function (_R
 					noidung: $("#binhluan_cauhoi").val(),
 					thoigian: datetime
 				};
-				console.log(data);
+				//console.log(data);
 				$.post("themBinhluan", data, function () {
 					$("#binhluan_cauhoi").val("");
 					//window.location = "#/trangcanhan";
@@ -56693,8 +57331,27 @@ var baitap_tracnghiem_chitiet = exports.baitap_tracnghiem_chitiet = function (_R
 					id_binhluan: idBinhluanClick,
 					type: type
 				};
-				console.log(data);
+				//console.log(data);
 				$.post("rate_binhluan", data, function () {});
+			});
+			$("#formanh").append('<form class="fileupload" action="uploadCauhoi" method="post" enctype="multipart/form-data">' + '<label for="imgInp" class="btn btn-primary btn-block btn-outlined">Thêm ảnh</label>' + '<input style="display:none" type="file" id="imgInp" name="upfile" class="file-styled"/>' + '<button id="themAnh" hidden type="submit">Đăng ảnh</button>' + '</form>' + '<p style="text-align:center"><img id="blah" src="#" style="display:none"/></p>');
+
+			function readURL(input) {
+				if (input.files && input.files[0]) {
+					var reader = new FileReader();
+
+					reader.onload = function (e) {
+						$('#blah').attr('src', e.target.result);
+						// $('#blah').attr('style', "height:150px");
+						$('#blah').attr('style', "display:0;height:150px");
+					};
+
+					reader.readAsDataURL(input.files[0]);
+				}
+			}
+
+			$("#imgInp").change(function () {
+				readURL(this);
 			});
 		}
 	}, {
@@ -56732,11 +57389,10 @@ var baitap_tracnghiem_chitiet = exports.baitap_tracnghiem_chitiet = function (_R
 						for (var i = 0; i < data.length; i++) {
 							var count = i + 1;
 
-							$("#xxx").append('<h6>Câu ' + count + '</h6>' + '<fieldset>' + '<p class="content-group text-semibold">' + data[i].NOIDUNG + '</p>' + '<div id="cau' + count + '"class="form-group pt-5">' + '<label class="text-semibold">Chọn câu trả lời:</label>' + '</div>' + '</fieldset>');
+							if (data[i].LINK_ANH != null) $("#xxx").append('<h6>Câu ' + count + '</h6>' + '<fieldset>' + '<p class="content-group text-semibold">' + data[i].NOIDUNG + '</p>' + '<p style="text-align:center"><img src="/assets/images/cauhoi/' + data[i].LINK_ANH + '.jpg" alt="Hình ảnh câu hỏi" style="width:autopx;height:300px;"/></p>' + '<div id="cau' + count + '"class="form-group pt-5">' + '<label class="text-semibold">Chọn câu trả lời:</label>' + '</div>' + '</fieldset>');else $("#xxx").append('<h6>Câu ' + count + '</h6>' + '<fieldset>' + '<p class="content-group text-semibold">' + data[i].NOIDUNG + '</p>' + '<div id="cau' + count + '"class="form-group pt-5">' + '<label class="text-semibold">Chọn câu trả lời:</label>' + '</div>' + '</fieldset>');
 							var idCauhoi = data[i].ID_BAIHOC;
 							$.post("/getDapan", { id: data[i].ID_TRACNGHIEM }, function (data1) {
-								console.log("duoi" + count);
-								console.log(data1);
+								//console.log(data1);
 								for (var j = 0; j < data1.length; j++) {
 									if (data1[j].CHECK == 0) {
 										$("#cau" + count1).append('<div class="radio">' + '<label>' + '<input type="radio" id="' + data1[j].CHECK + '" alt="' + j + '" name="' + count1 + '" class="styled" />' + data1[j].DAPAN + '</label>' + '</div>');
@@ -56767,11 +57423,8 @@ var baitap_tracnghiem_chitiet = exports.baitap_tracnghiem_chitiet = function (_R
 								console.log("onStepChanging");
 								var test = currentIndex + 1;
 								var temtem3 = 'input[name=' + test + ']';
-								console.log(test);
 
 								var iddapan = $(temtem3).closest('.checked').children().attr("id");
-								console.log(iddapan);
-
 								if (iddapan == "1") {
 									return true;
 								}
@@ -56779,10 +57432,7 @@ var baitap_tracnghiem_chitiet = exports.baitap_tracnghiem_chitiet = function (_R
 							onFinishing: function onFinishing(event, currentIndex) {
 								var test = currentIndex + 1;
 								var temtem3 = 'input[name=' + test + ']';
-								console.log(test);
-
 								var iddapan = $(temtem3).closest('.checked').children().attr("id");
-								console.log(iddapan);
 
 								if (iddapan == "1") {
 									return true;
@@ -56797,11 +57447,10 @@ var baitap_tracnghiem_chitiet = exports.baitap_tracnghiem_chitiet = function (_R
 						for (var i = 0; i < data.length; i++) {
 							var count = i + 1;
 
-							$("#xxx").append('<h6>Câu ' + count + '</h6>' + '<fieldset>' + '<p class="content-group text-semibold">' + data[i].NOIDUNG + '</p>' + '<div id="cau' + count + '"class="form-group pt-5">' + '<label class="text-semibold">Chọn câu trả lời:</label>' + '</div>' + '</fieldset>');
+							if (data[i].LINK_ANH != null) $("#xxx").append('<h6>Câu ' + count + '</h6>' + '<fieldset>' + '<p class="content-group text-semibold">' + data[i].NOIDUNG + '</p>' + '<p style="text-align:center"><img src="/assets/images/cauhoi/' + data[i].LINK_ANH + '.jpg" alt="Hình ảnh câu hỏi" style="width:autopx;height:300px;"/></p>' + '<div id="cau' + count + '"class="form-group pt-5">' + '<label class="text-semibold">Chọn câu trả lời:</label>' + '</div>' + '</fieldset>');else $("#xxx").append('<h6>Câu ' + count + '</h6>' + '<fieldset>' + '<p class="content-group text-semibold">' + data[i].NOIDUNG + '</p>' + '<div id="cau' + count + '"class="form-group pt-5">' + '<label class="text-semibold">Chọn câu trả lời:</label>' + '</div>' + '</fieldset>');
 							var idCauhoi = data[i].ID_BAIHOC;
 							$.post("/getDapan", { id: data[i].ID_TRACNGHIEM }, function (data1) {
-								console.log("duoi" + count);
-								console.log(data1);
+
 								for (var j = 0; j < data1.length; j++) {
 
 									$("#cau" + count1).append('<div class="radio">' + '<label>' + '<input type="radio" id="' + data1[j].CHECK + '" alt="' + j + '" name="' + count1 + '" class="styled" />' + data1[j].DAPAN + '</label>' + '</div>');
@@ -56828,10 +57477,8 @@ var baitap_tracnghiem_chitiet = exports.baitap_tracnghiem_chitiet = function (_R
 								console.log("onStepChanging");
 								var test = currentIndex + 1;
 								var temtem3 = 'input[name=' + test + ']';
-								console.log(test);
 
 								var iddapan = $(temtem3).closest('.checked').children().attr("id");
-								console.log(iddapan);
 
 								if (iddapan == "1") {
 									return true;
@@ -56840,10 +57487,8 @@ var baitap_tracnghiem_chitiet = exports.baitap_tracnghiem_chitiet = function (_R
 							onFinishing: function onFinishing(event, currentIndex) {
 								var test = currentIndex + 1;
 								var temtem3 = 'input[name=' + test + ']';
-								console.log(test);
 
 								var iddapan = $(temtem3).closest('.checked').children().attr("id");
-								console.log(iddapan);
 
 								if (iddapan == "1") {
 									return true;
@@ -56864,6 +57509,14 @@ var baitap_tracnghiem_chitiet = exports.baitap_tracnghiem_chitiet = function (_R
 					that.setState({ listbinhluan: data });
 				});
 			});
+			///
+			function loop() {
+				setTimeout(function () {
+					socket.emit('c2s_Binhluan', { id: id_cauhoi });
+					loop();
+				}, 30000);
+			}
+			loop();
 		}
 	}, {
 		key: 'onChange',
@@ -57377,10 +58030,6 @@ var _react = __webpack_require__(5);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _socket = __webpack_require__(27);
-
-var _socket2 = _interopRequireDefault(_socket);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -57456,23 +58105,19 @@ var baithi = exports.baithi = function (_React$Component) {
 						{ className: 'panel panel-flat' },
 						_react2.default.createElement(
 							'div',
-							{ className: 'panel-heading' },
-							_react2.default.createElement(
-								'h5',
-								{ className: 'panel-title' },
-								'B\xE0i thi'
-							),
+							{ className: 'text-center' },
 							_react2.default.createElement(
 								'div',
-								{ className: 'heading-elements' },
+								{ className: 'panel-heading bg-orange-400' },
 								_react2.default.createElement(
-									'ul',
-									{ className: 'icons-list' },
-									_react2.default.createElement(
-										'li',
-										null,
-										_react2.default.createElement('a', { 'data-action': 'collapse' })
-									)
+									'h4',
+									{ className: 'panel-title' },
+									'B\xE0i thi'
+								),
+								_react2.default.createElement(
+									'small',
+									{ className: 'display-block' },
+									'(Ch\u1ECDn ph\u01B0\u01A1ng \xE1n \u0111\xFAng nh\u1EA5t cho t\u1EEBng c\xE2u h\u1ECFi)'
 								)
 							)
 						),
@@ -57486,7 +58131,7 @@ var baithi = exports.baithi = function (_React$Component) {
 							{ className: 'text-right' },
 							_react2.default.createElement(
 								'button',
-								{ 'data-popup': 'tooltip', 'data-toggle': 'modal', 'data-target': '#confirm', id: 'nopbai', type: 'submit', className: 'btn bg-teal-400' },
+								{ 'data-popup': 'tooltip', 'data-toggle': 'modal', 'data-target': '#confirm', id: 'nopbai', type: 'submit', className: 'btn bg-orange-800' },
 								'N\u1ED9p b\xE0i ',
 								_react2.default.createElement('i', { className: 'icon-arrow-right14 position-right' })
 							)
@@ -57570,7 +58215,7 @@ var baithi = exports.baithi = function (_React$Component) {
 					diem: (Math.round(parseFloat(socaudung * 10 / socaude) * 4) / 4).toFixed(2),
 					heso: '2',
 					mon: mon[1],
-					bai: this.props.params.id,
+					bai: 'thi',
 					thoigian: datetime
 				};
 				console.log(data);
@@ -57604,8 +58249,11 @@ var baithi = exports.baithi = function (_React$Component) {
 
 				for (var i = 0; i < data.length; i++) {
 					var count = i + 1;
+					var htmlstring = '<div>' + '<p class=" text-semibold" style="margin-bottom: 0">' + 'Câu ' + count + ': ' + data[i].NOIDUNG + '</p>';
 
-					$("#xxx").append('<div>' + '<p class=" text-semibold" style="margin-bottom: 0">' + 'Câu ' + count + ': ' + data[i].NOIDUNG + '</p>' + '<div id="cau' + count + '"class="form-group pt-5">' + '</div>' + '</div>' + '<br/>');
+					if (data[i].LINK_ANH != null) htmlstring += '<p style="text-align:center"><img src="/assets/images/cauhoi/' + data[i].LINK_ANH + '.jpg" alt="Hình ảnh câu hỏi" style="width:autopx;height:250px;"/></p>';
+					htmlstring += '<div id="cau' + count + '"class="form-group pt-5">' + '</div>' + '</div>' + '<br/>';
+					$("#xxx").append(htmlstring);
 
 					var idCauhoi = data[i].ID_BAIHOC;
 					$.post("/getDapan", { id: data[i].ID }, function (data1) {
@@ -57653,7 +58301,7 @@ var _react = __webpack_require__(5);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _socket = __webpack_require__(27);
+var _socket = __webpack_require__(26);
 
 var _socket2 = _interopRequireDefault(_socket);
 
@@ -57685,7 +58333,7 @@ var cauhoi_chitiet = exports.cauhoi_chitiet = function (_React$Component) {
 		var _this = _possibleConstructorReturn(this, (cauhoi_chitiet.__proto__ || Object.getPrototypeOf(cauhoi_chitiet)).call(this, props));
 
 		_this.state = {
-			id_user: "assets/images/user_" + data.dataset.id + ".jpg",
+			id_user: "assets/images/user/user_" + data.dataset.id + ".jpg",
 			listbinhluan: []
 		};
 		return _this;
@@ -57827,8 +58475,8 @@ var cauhoi_chitiet = exports.cauhoi_chitiet = function (_React$Component) {
 											_react2.default.createElement(
 												'a',
 												null,
-												_react2.default.createElement('img', { id: 'img_user', src: "assets/images/user_" + data1.ID + ".jpg", onError: function onError(e) {
-														e.target.src = "assets/images/user.jpg";
+												_react2.default.createElement('img', { id: 'img_user', src: "assets/images/user/user_" + data1.ID + ".jpg", onError: function onError(e) {
+														e.target.src = "assets/images/user/user.jpg";
 													}, className: 'img-circle img-sm', alt: '' })
 											)
 										),
@@ -57954,7 +58602,7 @@ var cauhoi_chitiet = exports.cauhoi_chitiet = function (_React$Component) {
 					noidung: $("#binhluan_cauhoi").val(),
 					thoigian: datetime
 				};
-				console.log(data);
+				//console.log(data);
 				$.post("themBinhluan", data, function () {
 					//socket.emit('c2s_Binhluan',{id: id_cauhoi[0]});
 					$("#binhluan_cauhoi").val("");
@@ -57963,9 +58611,6 @@ var cauhoi_chitiet = exports.cauhoi_chitiet = function (_React$Component) {
 				});
 			});
 
-			// $('#like').on('click', function (e) {
-			// 	console.log("like");
-			// });
 			$('#up_cauhoi,#down_cauhoi').click(function () {
 				// var temp_username=data.dataset.username;
 				if (temp_username == $("#nguoidang").text()) return;
@@ -57973,12 +58618,8 @@ var cauhoi_chitiet = exports.cauhoi_chitiet = function (_React$Component) {
 					id_cauhoi: id_cauhoi[0],
 					type: $(this).attr('id')
 				};
-				console.log(data);
-				$.post("rate_cauhoi", data, function () {
-					// alert("Đã rate cau hoi thành công!");
-					//window.location = "#/trangcanhan";
-					//Trangcanhan.dispatch(location.getCurrentPath(), null);
-				});
+				//console.log(data);
+				$.post("rate_cauhoi", data, function () {});
 			});
 
 			$('#formBinhluan').on('click', '.text-success,.text-danger,.text-danger-400', function (e) {
@@ -57997,7 +58638,7 @@ var cauhoi_chitiet = exports.cauhoi_chitiet = function (_React$Component) {
 					id_binhluan: idBinhluanClick,
 					type: type
 				};
-				console.log(data);
+				//console.log(data);
 				$.post("rate_binhluan", data, function () {});
 			});
 		}
@@ -58026,10 +58667,10 @@ var cauhoi_chitiet = exports.cauhoi_chitiet = function (_React$Component) {
 				id: id_cauhoi[0],
 				id_user: "all"
 			};
-			console.log(data1);
+			//console.log(data1);
 			socket.emit('c2s_Thaoluan', data1);
 			socket.on('s2c_Thaoluan', function (data) {
-				console.log(data);
+				//console.log(data);
 				var mon1;
 				if (mon[1] == "lichsu") mon1 = "Lịch sử";
 				if (mon[1] == "diali") mon1 = "Địa lí";
@@ -58056,6 +58697,14 @@ var cauhoi_chitiet = exports.cauhoi_chitiet = function (_React$Component) {
 			socket.on('s2c_Binhluan', function (data) {
 				that.setState({ listbinhluan: data });
 			});
+			///
+			function loop() {
+				setTimeout(function () {
+					socket.emit('c2s_Binhluan', { id: id_cauhoi[0] });
+					loop();
+				}, 30000);
+			}
+			loop();
 		}
 	}, {
 		key: 'componentWillReceiveProps',
@@ -58081,27 +58730,6 @@ var cauhoi_chitiet = exports.cauhoi_chitiet = function (_React$Component) {
 			};
 			socket.emit('c2s_Thaoluan', data1);
 			socket.emit('c2s_Binhluan', { id: id_cauhoi[0] });
-		}
-	}, {
-		key: 'componentWillUnmount',
-		value: function componentWillUnmount() {
-			console.log("componentWillUnmount cauhoi_chitiet");
-		}
-	}, {
-		key: 'shouldComponentUpdate',
-		value: function shouldComponentUpdate(nextProps, nextState) {
-			return true;
-			console.log("shouldComponentUpdate cauhoi_chitiet");
-		}
-	}, {
-		key: 'componentWillUpdate',
-		value: function componentWillUpdate(nextProps, nextState) {
-			console.log("cmponentWillUpdate cauhoi_chitiet");
-		}
-	}, {
-		key: 'componentDidUpdate',
-		value: function componentDidUpdate(prevProps, prevState) {
-			console.log("componentDidUpdate cauhoi_chitiet");
 		}
 	}, {
 		key: 'onChange',
@@ -58235,7 +58863,7 @@ var gioithieu = exports.gioithieu = function (_React$Component) {
 										_react2.default.createElement(
 											"div",
 											{ className: "thumbnail" },
-											_react2.default.createElement("img", { src: "assets/images/user_8.jpg", alt: "" })
+											_react2.default.createElement("img", { src: "assets/images/user/user_8.jpg", alt: "" })
 										),
 										_react2.default.createElement(
 											"div",
@@ -58293,7 +58921,7 @@ var gioithieu = exports.gioithieu = function (_React$Component) {
 										_react2.default.createElement(
 											"div",
 											{ className: "thumbnail" },
-											_react2.default.createElement("img", { src: "assets/images/user_3.jpg", alt: "" })
+											_react2.default.createElement("img", { src: "assets/images/user/user_3.jpg", alt: "" })
 										),
 										_react2.default.createElement(
 											"div",
@@ -58351,7 +58979,7 @@ var gioithieu = exports.gioithieu = function (_React$Component) {
 										_react2.default.createElement(
 											"div",
 											{ className: "thumbnail" },
-											_react2.default.createElement("img", { src: "assets/images/user_1.jpg", alt: "" })
+											_react2.default.createElement("img", { src: "assets/images/user/user_1.jpg", alt: "" })
 										),
 										_react2.default.createElement(
 											"div",
@@ -58409,7 +59037,7 @@ var gioithieu = exports.gioithieu = function (_React$Component) {
 										_react2.default.createElement(
 											"div",
 											{ className: "thumbnail" },
-											_react2.default.createElement("img", { src: "assets/images/user_2.jpg", alt: "" })
+											_react2.default.createElement("img", { src: "assets/images/user/user_2.jpg", alt: "" })
 										),
 										_react2.default.createElement(
 											"div",
@@ -58564,7 +59192,7 @@ var _react = __webpack_require__(5);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _socket = __webpack_require__(27);
+var _socket = __webpack_require__(26);
 
 var _socket2 = _interopRequireDefault(_socket);
 
@@ -58578,7 +59206,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var socket = (0, _socket2.default)('http://' + window.location.hostname + ':3000');
 //let socket = io('http://'+window.location.hostname);
-
 var data = document.querySelector('#maincontent');
 
 var id_user = data.dataset.id;
@@ -58915,7 +59542,7 @@ var hoidap = exports.hoidap = function (_React$Component) {
 															_react2.default.createElement('i', { className: 'icon-cross2 position-right' })
 														)
 													)
-												) : _react2.default.createElement('div', null),
+												) : null,
 												_react2.default.createElement(
 													'h5',
 													{ className: 'text-semibold no-margin' },
@@ -59143,7 +59770,7 @@ var hoidap = exports.hoidap = function (_React$Component) {
 					thoigian: datetime
 
 				};
-				console.log(data);
+				//console.log(data);
 				$.post("themCauhoi", data, function () {
 					$("#add_tieude").val("");
 					$("#add_noidung").val("");
@@ -59244,10 +59871,10 @@ var hoidap = exports.hoidap = function (_React$Component) {
 				id: "all",
 				id_user: "all"
 			};
-			console.log(data1);
+			//console.log(data1);
 			socket.emit('c2s_Thaoluan', data1);
 			socket.on('s2c_Thaoluan', function (data) {
-				console.log(data);
+				//console.log(data);
 				var mon1;
 				if (mon[1] == "lichsu") mon1 = "Lịch sử";
 				if (mon[1] == "diali") mon1 = "Địa lí";
@@ -59257,27 +59884,6 @@ var hoidap = exports.hoidap = function (_React$Component) {
 				that.setState({ listCauhoi: data });
 			});
 			////
-		}
-	}, {
-		key: 'componentWillUnmount',
-		value: function componentWillUnmount() {
-			console.log("componentWillUnmount");
-		}
-	}, {
-		key: 'shouldComponentUpdate',
-		value: function shouldComponentUpdate(nextProps, nextState) {
-			return true;
-			console.log("shouldComponentUpdate");
-		}
-	}, {
-		key: 'componentWillUpdate',
-		value: function componentWillUpdate(nextProps, nextState) {
-			console.log("cmponentWillUpdate");
-		}
-	}, {
-		key: 'componentDidUpdate',
-		value: function componentDidUpdate(prevProps, prevState) {
-			console.log("componentDidUpdate");
 		}
 	}, {
 		key: 'componentWillReceiveProps',
@@ -59321,7 +59927,7 @@ var _react = __webpack_require__(5);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _socket = __webpack_require__(27);
+var _socket = __webpack_require__(26);
 
 var _socket2 = _interopRequireDefault(_socket);
 
@@ -59692,7 +60298,7 @@ var thaoluan = exports.thaoluan = function (_React$Component) {
 					thoigian: datetime
 
 				};
-				console.log(data);
+				//console.log(data);
 				$.post("themCauhoi", data, function () {
 					$("#add_tieude").val("");
 					$("#add_noidung").val("");
@@ -59745,10 +60351,10 @@ var thaoluan = exports.thaoluan = function (_React$Component) {
 				id: "all",
 				id_user: "all"
 			};
-			console.log(data1);
+			//console.log(data1);
 			socket.emit('c2s_Thaoluan', data1);
 			socket.on('s2c_Thaoluan', function (data) {
-				console.log(data);
+				//console.log(data);
 				var mon1;
 				if (mon[1] == "lichsu") mon1 = "Lịch sử";
 				if (mon[1] == "diali") mon1 = "Địa lí";
@@ -59876,60 +60482,95 @@ var tuongtac_diali = exports.tuongtac_diali = function (_React$Component) {
 				),
 				_react2.default.createElement(
 					'div',
-					{ className: 'content' },
+					{ className: 'page-header' },
 					_react2.default.createElement(
 						'div',
-						{ className: 'panel panel-flat' },
+						{ className: 'navbar navbar-default navbar-component navbar-xs' },
+						_react2.default.createElement(
+							'ul',
+							{ className: 'nav navbar-nav visible-xs-block' },
+							_react2.default.createElement(
+								'li',
+								{ className: 'full-width text-center' },
+								_react2.default.createElement(
+									'a',
+									{ 'data-toggle': 'collapse', 'data-target': '#navbar-filter' },
+									_react2.default.createElement('i', { className: 'icon-menu7' })
+								)
+							)
+						),
 						_react2.default.createElement(
 							'div',
-							{ className: 'content', style: { paddingBottom: '0px' } },
+							{ className: 'navbar-collapse collapse', id: 'navbar-filter' },
 							_react2.default.createElement(
-								'div',
-								{ className: 'page-title' },
+								'ul',
+								{ className: 'nav navbar-nav' },
 								_react2.default.createElement(
-									'h4',
-									null,
+									'li',
+									{ className: 'active' },
 									_react2.default.createElement(
-										'span',
-										{ className: 'text-semibold' },
+										'a',
+										{ href: '#quocgia', 'data-toggle': 'tab' },
+										_react2.default.createElement('i', { className: 'icon-sphere3 position-left' }),
 										'B\u1EA3n \u0111\u1ED3 c\xE1c qu\u1ED1c gia tr\xEAn th\u1EBF gi\u1EDBi'
 									)
 								),
 								_react2.default.createElement(
-									'a',
-									{ className: 'heading-elements-toggle' },
-									_react2.default.createElement('i', { className: 'icon-more' })
-								)
-							),
-							_react2.default.createElement('iframe', { id: 'contentSGK1', width: '100%', height: '450', allowFullScreen: true, frameBorder: '0' }),
-							_react2.default.createElement('br', null)
-						)
-					),
-					_react2.default.createElement(
-						'div',
-						{ className: 'panel panel-flat' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'content', style: { paddingBottom: '0px' } },
-							_react2.default.createElement(
-								'div',
-								{ className: 'page-title' },
-								_react2.default.createElement(
-									'h4',
+									'li',
 									null,
 									_react2.default.createElement(
-										'span',
-										{ className: 'text-semibold' },
-										'B\u1EA3n \u0111\u1ED3 d\xE2n s\u1ED1 c\u1EE7a c\xE1c qu\u1ED1c gia tr\xEAn th\u1EBF gi\u1EDBi(2010)'
+										'a',
+										{ href: '#danso', 'data-toggle': 'tab' },
+										_react2.default.createElement('i', { className: 'icon-people position-left' }),
+										'B\u1EA3n \u0111\u1ED3 d\xE2n s\u1ED1 c\xE1c qu\u1ED1c gia tr\xEAn th\u1EBF gi\u1EDBi(2010)'
 									)
 								),
 								_react2.default.createElement(
-									'a',
-									{ className: 'heading-elements-toggle' },
-									_react2.default.createElement('i', { className: 'icon-more' })
+									'li',
+									null,
+									_react2.default.createElement(
+										'a',
+										{ href: '#chauluc', 'data-toggle': 'tab' },
+										_react2.default.createElement('i', { className: 'icon-earth position-left' }),
+										'B\u1EA3n \u0111\u1ED3 c\xE1c ch\xE2u l\u1EE5c tr\xEAn tr\xEAn th\u1EBF gi\u1EDBi'
+									)
 								)
-							),
-							_react2.default.createElement('iframe', { id: 'contentSGK2', width: '100%', height: '450', allowFullScreen: true, frameBorder: '0' })
+							)
+						)
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'content' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'tab-content' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'tab-pane fade in active', id: 'quocgia' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'panel panel-flat' },
+								_react2.default.createElement('iframe', { id: 'content1', width: '100%', height: '450', allowFullScreen: true, frameBorder: '0' })
+							)
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'tab-pane fade', id: 'danso' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'panel panel-flat' },
+								_react2.default.createElement('iframe', { id: 'content2', width: '100%', height: '450', allowFullScreen: true, frameBorder: '0' })
+							)
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'tab-pane fade', id: 'chauluc' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'panel panel-flat' },
+								_react2.default.createElement('iframe', { id: 'content3', width: '100%', height: '450', allowFullScreen: true, frameBorder: '0' })
+							)
 						)
 					)
 				)
@@ -59939,25 +60580,13 @@ var tuongtac_diali = exports.tuongtac_diali = function (_React$Component) {
 		key: 'componentDidMount',
 		value: function componentDidMount() {
 			console.log("componentDidMount");
-			$("#contentSGK1").attr("src", "map/bandothegioi-quocgia.html");
-			$("#contentSGK2").attr("src", "map/bandothegioi-danso.html");
+			$("#content1").attr("src", "map/bandothegioi-quocgia.html");
+			$("#content2").attr("src", "map/bandothegioi-danso.html");
+			$("#content3").attr("src", "interactiveGlobe/index.html");
 			// Initialize lightbox
 			$('[data-popup=lightbox]').fancybox({
 				padding: 3
 			});
-		}
-	}, {
-		key: 'componentWillMount',
-		value: function componentWillMount() {
-			console.log("componentWillMount");
-
-			////
-		}
-	}, {
-		key: 'componentWillReceiveProps',
-		value: function componentWillReceiveProps(newProps) {
-			console.log("componentWillReceiveProps");
-			// var that=this;
 		}
 	}]);
 
@@ -60057,6 +60686,55 @@ var tuongtac_lichsu = exports.tuongtac_lichsu = function (_React$Component) {
 				),
 				_react2.default.createElement(
 					'div',
+					{ className: 'page-header' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'navbar navbar-default navbar-component navbar-xs' },
+						_react2.default.createElement(
+							'ul',
+							{ className: 'nav navbar-nav visible-xs-block' },
+							_react2.default.createElement(
+								'li',
+								{ className: 'full-width text-center' },
+								_react2.default.createElement(
+									'a',
+									{ 'data-toggle': 'collapse', 'data-target': '#navbar-filter' },
+									_react2.default.createElement('i', { className: 'icon-menu7' })
+								)
+							)
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'navbar-collapse collapse', id: 'navbar-filter' },
+							_react2.default.createElement(
+								'ul',
+								{ className: 'nav navbar-nav' },
+								_react2.default.createElement(
+									'li',
+									{ className: 'active' },
+									_react2.default.createElement(
+										'a',
+										{ href: '#quocgia', 'data-toggle': 'tab' },
+										_react2.default.createElement('i', { className: 'icon-history position-left' }),
+										'D\xF2ng th\u1EDDi gian c\xE1c s\u1EF1 ki\u1EC7n L\u1ECBch s\u1EED Vi\u1EC7t Nam'
+									)
+								),
+								_react2.default.createElement(
+									'li',
+									null,
+									_react2.default.createElement(
+										'a',
+										{ href: '#danso', 'data-toggle': 'tab' },
+										_react2.default.createElement('i', { className: ' icon-chess-king position-left' }),
+										'Tri\u1EC1u \u0111\u1EA1i c\xE1c v\u1ECB vua trong L\u1ECBch s\u1EED Vi\u1EC7t Nam'
+									)
+								)
+							)
+						)
+					)
+				),
+				_react2.default.createElement(
+					'div',
 					{ className: 'content' },
 					_react2.default.createElement(
 						'div',
@@ -60075,7 +60753,7 @@ var tuongtac_lichsu = exports.tuongtac_lichsu = function (_React$Component) {
 										{ className: 'form-group' },
 										_react2.default.createElement(
 											'label',
-											{ className: 'control-label col-lg-2' },
+											{ className: 'control-label text-semibold' },
 											'Th\xF4ng tin s\u1EF1 ki\u1EC7n'
 										),
 										_react2.default.createElement(
@@ -60086,13 +60764,37 @@ var tuongtac_lichsu = exports.tuongtac_lichsu = function (_React$Component) {
 												{ className: 'row' },
 												_react2.default.createElement(
 													'div',
-													{ className: 'col-md-3', style: { paddingRight: '0px' } },
-													_react2.default.createElement('input', { id: 'add_thoigian', type: 'date', placeholder: 'Th\u1EDDi gian', className: 'form-control' }),
+													{ className: 'col-md-6', style: { paddingRight: '0px' } },
+													_react2.default.createElement(
+														'label',
+														{ className: 'control-label' },
+														'Th\u1EDDi gian b\u1EAFt \u0111\u1EA7u'
+													),
+													_react2.default.createElement('input', { id: 'add_thoigian', type: 'date', placeholder: 'Th\u1EDDi gian b\u1EAFt \u0111\u1EA7u', className: 'form-control' }),
 													_react2.default.createElement('span', { className: 'help-block' })
 												),
 												_react2.default.createElement(
 													'div',
-													{ className: 'col-md-9', style: { paddingRight: '0px' } },
+													{ className: 'col-md-6', style: { paddingRight: '0px' } },
+													_react2.default.createElement(
+														'label',
+														{ className: 'control-label' },
+														'Th\u1EDDi gian k\u1EBFt th\xFAc(kh\xF4ng b\u1EAFt bu\u1ED9c)'
+													),
+													_react2.default.createElement('input', { id: 'add_thoigian_end', type: 'date', placeholder: 'Th\u1EDDi gian k\u1EBFt th\xFAc', className: 'form-control' }),
+													_react2.default.createElement('span', { className: 'help-block' })
+												)
+											)
+										),
+										_react2.default.createElement(
+											'div',
+											{ className: 'col-lg-12' },
+											_react2.default.createElement(
+												'div',
+												{ className: 'row' },
+												_react2.default.createElement(
+													'div',
+													{ className: 'col-md-12', style: { paddingRight: '0px' } },
 													_react2.default.createElement('input', { id: 'add_tieude', type: 'text', placeholder: 'TI\xEAu \u0111\u1EC1', className: 'form-control' }),
 													_react2.default.createElement('span', { className: 'help-block' })
 												)
@@ -60129,60 +60831,36 @@ var tuongtac_lichsu = exports.tuongtac_lichsu = function (_React$Component) {
 					),
 					_react2.default.createElement(
 						'div',
-						{ className: 'panel panel-flat' },
+						{ className: 'tab-content' },
 						_react2.default.createElement(
 							'div',
-							{ className: 'content' },
+							{ className: 'tab-pane fade in active', id: 'quocgia' },
 							_react2.default.createElement(
 								'div',
-								{ className: 'page-title' },
+								{ className: 'panel panel-flat' },
 								_react2.default.createElement(
-									'h4',
-									null,
-									_react2.default.createElement(
-										'span',
-										{ className: 'text-semibold' },
-										'D\xF2ng th\u1EDDi gian c\xE1c s\u1EF1 ki\u1EC7n L\u1ECBch s\u1EED Vi\u1EC7t Nam'
-									)
-								),
-								_react2.default.createElement(
-									'a',
-									{ className: 'heading-elements-toggle' },
-									_react2.default.createElement('i', { className: 'icon-more' })
+									'div',
+									{ className: 'content' },
+									_react2.default.createElement('div', { id: 'timeline' }),
+									_react2.default.createElement('br', null),
+									_react2.default.createElement('div', { id: 'noidung' })
 								)
-							),
-							_react2.default.createElement('div', { id: 'timeline' }),
-							_react2.default.createElement('br', null),
-							_react2.default.createElement('div', { id: 'noidung' })
-						)
-					),
-					_react2.default.createElement(
-						'div',
-						{ className: 'panel panel-flat' },
+							)
+						),
 						_react2.default.createElement(
 							'div',
-							{ className: 'content' },
+							{ className: 'tab-pane fade', id: 'danso' },
 							_react2.default.createElement(
 								'div',
-								{ className: 'page-title' },
+								{ className: 'panel panel-flat' },
 								_react2.default.createElement(
-									'h4',
-									null,
-									_react2.default.createElement(
-										'span',
-										{ className: 'text-semibold' },
-										'Tri\u1EC1u \u0111\u1EA1i c\xE1c v\u1ECB vua trong L\u1ECBch s\u1EED Vi\u1EC7t Nam'
-									)
-								),
-								_react2.default.createElement(
-									'a',
-									{ className: 'heading-elements-toggle' },
-									_react2.default.createElement('i', { className: 'icon-more' })
+									'div',
+									{ className: 'content' },
+									_react2.default.createElement('div', { id: 'timeline1' }),
+									_react2.default.createElement('br', null),
+									_react2.default.createElement('div', { id: 'noidung1' })
 								)
-							),
-							_react2.default.createElement('div', { id: 'timeline1' }),
-							_react2.default.createElement('br', null),
-							_react2.default.createElement('div', { id: 'noidung1' })
+							)
 						)
 					)
 				)
@@ -60206,15 +60884,15 @@ var tuongtac_lichsu = exports.tuongtac_lichsu = function (_React$Component) {
 			var dataset1 = [];
 
 			$.post("dongsukien", function (data) {
-				console.log(data);
+				//console.log(data);
 				for (var i = 0; i < data.length; i++) {
 					if (data[i].END == null) {
 						dataset.push({ id: data[i].ID, content: data[i].DATE + ": " + data[i].TIEUDE, start: data[i].START });
 					} else {
-						dataset1.push({ id: data[i].ID, content: data[i].DATE + ": " + data[i].TIEUDE, start: data[i].START, end: data[i].END });
+						dataset1.push({ id: data[i].ID, content: data[i].DATE_START + "-" + data[i].DATE_END + ": " + data[i].TIEUDE, start: data[i].START, end: data[i].END });
 					}
 				}
-				console.log(dataset);
+				//console.log(dataset);
 				// Create a DataSet (allows two way data-binding)
 				items = new vis.DataSet(dataset);
 				items1 = new vis.DataSet(dataset1);
@@ -60249,9 +60927,6 @@ var tuongtac_lichsu = exports.tuongtac_lichsu = function (_React$Component) {
 					}
 				};
 				var options1 = {
-					margin: {
-						item: 20
-					},
 					format: {
 						minorLabels: {
 							millisecond: 'SSS',
@@ -60280,95 +60955,28 @@ var tuongtac_lichsu = exports.tuongtac_lichsu = function (_React$Component) {
 				// Create a Timeline
 				timeline = new vis.Timeline(container, items, options);
 				timeline.on('click', function (properties) {
-					console.log('click', properties.item);
 					if (properties.item == 'null') {
 						$("#noidung").empty();
 					} else {
 						$.post("laysukien", { id: properties.item }, function (data) {
-							console.log('show ', data);
 							$("#noidung").empty();
-							$("#noidung").append('<div class="media stack-media-on-mobile">' + '<div class="media-body">' + '<h6 class="media-heading text-semibold text-primary-800">' + data[0].DATE + '-' + data[0].TIEUDE + '</a></h6>' + data[0].NOIDUNG + '</div>' + '</div>');
+							$("#noidung").append('<div class="media stack-media-on-mobile">' + '<div class="media-body">' + '<h6 class="media-heading text-semibold text-primary-800">' + data[0].DATE + ': ' + data[0].TIEUDE + '</a></h6>' + data[0].NOIDUNG + '</div>' + '</div>');
 						});
 					}
 				});
 
 				timeline1 = new vis.Timeline(container1, items1, options1);
 				timeline1.on('click', function (properties) {
-					console.log('click', properties.item);
 					if (properties.item == 'null') {
 						$("#noidung").empty();
 					} else {
 						$.post("laysukien", { id: properties.item }, function (data) {
-							console.log('show ', data);
 							$("#noidung1").empty();
-							$("#noidung1").append('<div class="media stack-media-on-mobile">' + '<div class="media-body">' + '<h6 class="media-heading text-semibold text-primary-800">' + data[0].DATE + '-' + data[0].TIEUDE + '</a></h6>' + data[0].NOIDUNG + '</div>' + '</div>');
+							$("#noidung1").append('<div class="media stack-media-on-mobile">' + '<div class="media-body">' + '<h6 class="media-heading text-semibold text-primary-800">' + data[0].DATE_START + '-' + data[0].DATE_END + ': ' + data[0].TIEUDE + '</a></h6>' + data[0].NOIDUNG + '</div>' + '</div>');
 						});
 					}
 				});
 			});
-
-			// trieu dai vua
-			// $.post("dongsukien",function(data){
-			// 	console.log(data);
-			// 	for(var i=0;i<data.length;i++){
-			// 		dataset1.push({id: data[i].ID, content: data[i].DATE+": "+data[i].TIEUDE, start: data[i].START});
-			// 	}
-			// 	console.log(dataset1);
-			// 			  // Create a DataSet (allows two way data-binding)
-			// 	items1 = new vis.DataSet(dataset1);
-
-			// 	// Configuration for the Timeline
-			// 	var options = {
-			// 	    margin: {
-			// 	      item: 20
-			// 	    },
-			// 	    format: {
-			// 	      minorLabels: {
-			// 	        millisecond:'SSS',
-			// 	        second:     's',
-			// 	        minute:     'HH:mm',
-			// 	        hour:       'HH:mm',
-			// 	        weekday:    'ddd DD',
-			// 	        day:        'DD',
-			// 	        week:       'w',
-			// 	        month:      'MM',
-			// 	        year:       'YYYY'
-			// 	      },
-			// 	      majorLabels: {
-			// 	        millisecond:'HH:mm:ss',
-			// 	        second:     'DD MM HH:mm',
-			// 	        minute:     'dd DD MM',
-			// 	        hour:       'dd DD MM',
-			// 	        weekday:    'MM YYYY',
-			// 	        day:        'MM YYYY',
-			// 	        week:       'MM YYYY',
-			// 	        month:      'YYYY',
-			// 	        year:       ''
-			// 	      }
-			// 	    }
-			// 	};
-			// 	// Create a Timeline
-			//   	timeline1 = new vis.Timeline(container1, items1, options);
-			// 			timeline1.on('click', function (properties) {
-			// 	    console.log('click', properties.item);
-			// 	    if(properties.item=='null'){
-			// 	    	$("#noidung").empty();
-
-			// 	    }else{
-			// 		    $.post("laysukien",{id: properties.item},function(data){
-			// 		    	console.log('show ', data);
-			// 		    	$("#noidung").empty();
-			// 		    	$("#noidung").append('<div class="media stack-media-on-mobile">'+
-			// 		            					'<div class="media-body">'+
-			// 											'<h6 class="media-heading text-semibold text-primary-800">'+data[0].DATE+'-'+data[0].TIEUDE+'</a></h6>'+
-			// 											data[0].NOIDUNG+
-			// 										'</div>'+
-			// 									'</div>');
-			// 		    })
-			// 		}
-			// 	});
-
-			// });
 
 			if (type_username != "trogiang") {
 				$("#thembaihoc").hide();
@@ -60404,7 +61012,8 @@ var tuongtac_lichsu = exports.tuongtac_lichsu = function (_React$Component) {
 					id: id_user,
 					tieude: $("#add_tieude").val(),
 					thoigian: $("#add_thoigian").val(),
-					noidung: $("#add_noidung").val()
+					noidung: $("#add_noidung").val(),
+					thoigian_end: $("#add_thoigian_end").val()
 				};
 				console.log(data);
 				$.post("themsukien", data, function () {
@@ -60429,19 +61038,6 @@ var tuongtac_lichsu = exports.tuongtac_lichsu = function (_React$Component) {
 			// });
 			// // Colorbox Modal
 			// $(".CBmodal").colorbox({inline:true, initialWidth:100, maxWidth:682, initialHeight:100, transition:"elastic",speed:750});
-		}
-	}, {
-		key: 'componentWillMount',
-		value: function componentWillMount() {
-			console.log("componentWillMount");
-
-			////
-		}
-	}, {
-		key: 'componentWillReceiveProps',
-		value: function componentWillReceiveProps(newProps) {
-			console.log("componentWillReceiveProps");
-			// var that=this;
 		}
 	}]);
 
@@ -103619,7 +104215,7 @@ if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 't
   // https://github.com/facebook/react/issues/7240
   // Remove the inline requires when we don't need them anymore:
   // https://github.com/facebook/react/pull/7178
-  ReactComponentTreeHook = __webpack_require__(26);
+  ReactComponentTreeHook = __webpack_require__(27);
 }
 
 function instantiateChild(childInstances, child, name, selfDebugID) {
@@ -103627,7 +104223,7 @@ function instantiateChild(childInstances, child, name, selfDebugID) {
   var keyUnique = childInstances[name] === undefined;
   if (process.env.NODE_ENV !== 'production') {
     if (!ReactComponentTreeHook) {
-      ReactComponentTreeHook = __webpack_require__(26);
+      ReactComponentTreeHook = __webpack_require__(27);
     }
     if (!keyUnique) {
       process.env.NODE_ENV !== 'production' ? warning(false, 'flattenChildren(...): Encountered two children with the same key, ' + '`%s`. Child keys must be unique; when two children share a key, only ' + 'the first child will be used.%s', KeyEscapeUtils.unescape(name), ReactComponentTreeHook.getStackAddendumByID(selfDebugID)) : void 0;
@@ -106294,7 +106890,7 @@ module.exports = ReactDOMInput;
 
 
 var DOMProperty = __webpack_require__(47);
-var ReactComponentTreeHook = __webpack_require__(26);
+var ReactComponentTreeHook = __webpack_require__(27);
 
 var warning = __webpack_require__(7);
 
@@ -106392,7 +106988,7 @@ module.exports = ReactDOMInvalidARIAHook;
 
 
 
-var ReactComponentTreeHook = __webpack_require__(26);
+var ReactComponentTreeHook = __webpack_require__(27);
 
 var warning = __webpack_require__(7);
 
@@ -107264,7 +107860,7 @@ module.exports = {
 
 var DOMProperty = __webpack_require__(47);
 var EventPluginRegistry = __webpack_require__(97);
-var ReactComponentTreeHook = __webpack_require__(26);
+var ReactComponentTreeHook = __webpack_require__(27);
 
 var warning = __webpack_require__(7);
 
@@ -107383,7 +107979,7 @@ module.exports = ReactDOMUnknownPropertyHook;
 
 var ReactInvalidSetStateWarningHook = __webpack_require__(632);
 var ReactHostOperationHistoryHook = __webpack_require__(630);
-var ReactComponentTreeHook = __webpack_require__(26);
+var ReactComponentTreeHook = __webpack_require__(27);
 var ExecutionEnvironment = __webpack_require__(19);
 
 var performanceNow = __webpack_require__(588);
@@ -110717,7 +111313,7 @@ if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 't
   // https://github.com/facebook/react/issues/7240
   // Remove the inline requires when we don't need them anymore:
   // https://github.com/facebook/react/pull/7178
-  ReactComponentTreeHook = __webpack_require__(26);
+  ReactComponentTreeHook = __webpack_require__(27);
 }
 
 var loggedTypeFailures = {};
@@ -110759,7 +111355,7 @@ function checkReactTypeSpec(typeSpecs, values, location, componentName, element,
 
         if (process.env.NODE_ENV !== 'production') {
           if (!ReactComponentTreeHook) {
-            ReactComponentTreeHook = __webpack_require__(26);
+            ReactComponentTreeHook = __webpack_require__(27);
           }
           if (debugID !== null) {
             componentStackInfo = ReactComponentTreeHook.getStackAddendumByID(debugID);
@@ -110958,7 +111554,7 @@ if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 't
   // https://github.com/facebook/react/issues/7240
   // Remove the inline requires when we don't need them anymore:
   // https://github.com/facebook/react/pull/7178
-  ReactComponentTreeHook = __webpack_require__(26);
+  ReactComponentTreeHook = __webpack_require__(27);
 }
 
 /**
@@ -110974,7 +111570,7 @@ function flattenSingleChildIntoContext(traverseContext, child, name, selfDebugID
     var keyUnique = result[name] === undefined;
     if (process.env.NODE_ENV !== 'production') {
       if (!ReactComponentTreeHook) {
-        ReactComponentTreeHook = __webpack_require__(26);
+        ReactComponentTreeHook = __webpack_require__(27);
       }
       if (!keyUnique) {
         process.env.NODE_ENV !== 'production' ? warning(false, 'flattenChildren(...): Encountered two children with the same key, ' + '`%s`. Child keys must be unique; when two children share a key, only ' + 'the first child will be used.%s', KeyEscapeUtils.unescape(name), ReactComponentTreeHook.getStackAddendumByID(selfDebugID)) : void 0;
@@ -114429,7 +115025,7 @@ if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV === 't
   // https://github.com/facebook/react/issues/7240
   // Remove the inline requires when we don't need them anymore:
   // https://github.com/facebook/react/pull/7178
-  ReactComponentTreeHook = __webpack_require__(26);
+  ReactComponentTreeHook = __webpack_require__(27);
 }
 
 var loggedTypeFailures = {};
@@ -114471,7 +115067,7 @@ function checkReactTypeSpec(typeSpecs, values, location, componentName, element,
 
         if (process.env.NODE_ENV !== 'production') {
           if (!ReactComponentTreeHook) {
-            ReactComponentTreeHook = __webpack_require__(26);
+            ReactComponentTreeHook = __webpack_require__(27);
           }
           if (debugID !== null) {
             componentStackInfo = ReactComponentTreeHook.getStackAddendumByID(debugID);
@@ -122898,6 +123494,185 @@ __webpack_require__(284);
 __webpack_require__(285);
 module.exports = __webpack_require__(286);
 
+
+/***/ }),
+/* 752 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.trochoi = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(5);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var data = document.querySelector('#maincontent');
+
+var trochoi = exports.trochoi = function (_React$Component) {
+	_inherits(trochoi, _React$Component);
+
+	function trochoi() {
+		_classCallCheck(this, trochoi);
+
+		return _possibleConstructorReturn(this, (trochoi.__proto__ || Object.getPrototypeOf(trochoi)).apply(this, arguments));
+	}
+
+	_createClass(trochoi, [{
+		key: 'render',
+		value: function render() {
+			return _react2.default.createElement(
+				'div',
+				null,
+				_react2.default.createElement(
+					'div',
+					{ className: 'page-header page-header-default' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'breadcrumb-line' },
+						_react2.default.createElement(
+							'ul',
+							{ className: 'breadcrumb' },
+							_react2.default.createElement(
+								'li',
+								null,
+								_react2.default.createElement(
+									'a',
+									{ href: '#' },
+									_react2.default.createElement('i', { className: 'icon-home2 position-left' }),
+									' Trang ch\u1EE7'
+								)
+							),
+							_react2.default.createElement(
+								'li',
+								{ className: 'active' },
+								'Tr\xF2 ch\u01A1i x\u1EBFp h\xECnh'
+							)
+						)
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'page-header' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'navbar navbar-default navbar-component navbar-xs' },
+						_react2.default.createElement(
+							'ul',
+							{ className: 'nav navbar-nav visible-xs-block' },
+							_react2.default.createElement(
+								'li',
+								{ className: 'full-width text-center' },
+								_react2.default.createElement(
+									'a',
+									{ 'data-toggle': 'collapse', 'data-target': '#navbar-filter' },
+									_react2.default.createElement('i', { className: 'icon-menu7' })
+								)
+							)
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'navbar-collapse collapse', id: 'navbar-filter' },
+							_react2.default.createElement(
+								'ul',
+								{ className: 'nav navbar-nav' },
+								_react2.default.createElement(
+									'li',
+									{ className: 'active' },
+									_react2.default.createElement(
+										'a',
+										{ href: '#doanhnhan', 'data-toggle': 'tab' },
+										_react2.default.createElement('i', { className: ' icon-person position-left' }),
+										'Nh\xE2n v\u1EADt l\u1ECBch s\u1EED'
+									)
+								),
+								_react2.default.createElement(
+									'li',
+									null,
+									_react2.default.createElement(
+										'a',
+										{ href: '#kyquan', 'data-toggle': 'tab' },
+										_react2.default.createElement('i', { className: ' icon-image2 position-left' }),
+										'K\u1EF3 quan th\u1EBF gi\u1EDBi '
+									)
+								),
+								_react2.default.createElement(
+									'li',
+									null,
+									_react2.default.createElement(
+										'a',
+										{ href: '#quocki', 'data-toggle': 'tab' },
+										_react2.default.createElement('i', { className: 'icon-flag4 position-left' }),
+										'Qu\u1ED1c k\xEC tr\xEAn th\u1EBF gi\u1EDBi'
+									)
+								)
+							)
+						)
+					)
+				),
+				_react2.default.createElement(
+					'div',
+					{ className: 'content' },
+					_react2.default.createElement(
+						'div',
+						{ className: 'tab-content' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'tab-pane fade in active', id: 'doanhnhan' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'panel panel-flat' },
+								_react2.default.createElement('iframe', { id: 'content1', width: '100%', height: '700', allowFullScreen: true, frameBorder: '0' })
+							)
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'tab-pane fade', id: 'kyquan' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'panel panel-flat' },
+								_react2.default.createElement('iframe', { id: 'content2', width: '100%', height: '700', allowFullScreen: true, frameBorder: '0' })
+							)
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'tab-pane fade', id: 'quocki' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'panel panel-flat' },
+								_react2.default.createElement('iframe', { id: 'content3', width: '100%', height: '700', allowFullScreen: true, frameBorder: '0' })
+							)
+						)
+					)
+				)
+			);
+		}
+	}, {
+		key: 'componentDidMount',
+		value: function componentDidMount() {
+			console.log("componentDidMount");
+			$("#content1").attr("src", "Game/danhnhan.html");
+			$("#content2").attr("src", "Game/kyquan.html");
+			$("#content3").attr("src", "Game/quocki.html");
+		}
+	}]);
+
+	return trochoi;
+}(_react2.default.Component);
 
 /***/ })
 /******/ ]);

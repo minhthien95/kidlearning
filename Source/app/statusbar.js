@@ -5,14 +5,14 @@ let socket = io('http://'+window.location.hostname+':3000');
 //let socket = io('http://'+window.location.hostname);
 
 var data = document.querySelector('#statusbar');
-
+var type_user=data.dataset.type;
 var root = window.document.getElementById("statusbar");
 
 class Statusbar extends React.Component {
 	constructor(props) {
     super(props);
       this.state = {
-        id_user: "assets/images/user_"+data.dataset.id+".jpg",
+        id_user: "assets/images/user/user_"+data.dataset.id+".jpg",
         listThongbao: [],
         sothongbao: 0
       };
@@ -51,7 +51,7 @@ class Statusbar extends React.Component {
 								<div className="dropdown-content-heading">
 									Thông báo
 									<ul className="icons-list">
-										<li><a href="#"><i className="icon-compose"></i></a></li>
+										<li><a id="delallnoti"><i className=" icon-database-remove"></i></a></li>
 									</ul>
 								</div>
 
@@ -69,7 +69,7 @@ class Statusbar extends React.Component {
 										return (
 											<li key={index} id={data.ID_THONGBAO} className="media">
 												<a href={"#/"+data.MON+"/lop"+data.LOP_CAUHOI+"/cauhoi"+data.ID_CAUHOI}>
-													<div className="media-left"><img src={"assets/images/user_"+data.ID_KHACH+".jpg"} onError={() => {this.setState({id_user : "assets/images/user.jpg"}) }} className="img-circle img-sm" alt=""/></div>
+													<div className="media-left"><img src={"assets/images/user/user_"+data.ID_KHACH+".jpg"} onError={(e)=>{e.target.src="assets/images/user/user.jpg"}} className="img-circle img-sm" alt=""/></div>
 													<div className="media-body">
 														<a  className="media-heading">
 															<span className="text-semibold">{data.HOTEN}</span>
@@ -88,16 +88,18 @@ class Statusbar extends React.Component {
 
 						<li className="dropdown dropdown-user">
 							<a className="dropdown-toggle" data-toggle="dropdown">
-								<img src={this.state.id_user} onError={() => {this.setState({id_user : "assets/images/user.jpg"}) }} alt=""/>
+								<img src={this.state.id_user} onError={() => {this.setState({id_user : "assets/images/user/user.jpg"}) }} alt=""/>
 								<span>{data.dataset.username}</span>
 								<i className="caret"></i>
 							</a>
 
-							<ul className="dropdown-menu dropdown-menu-right">
-								<li><a href="#trangcanhan/hoatdong"><i className="icon-user-plus"></i> Trang cá nhân</a></li>
+							<ul className="dropdown-menu dropdown-menu-right"> 
+								<li><a href="#trangcanhan/hoatdong"><i className="icon-user"></i> Trang cá nhân</a></li>
+								<li><a id="thongke" href="#trangcanhan/quatrinh"><i className="icon-stats-dots"></i>Thông kê</a></li>
+								<li><a id="quanlyuser" href="#trangcanhan/quanlyuser"><i className="icon-users4"></i>Quản lý học sinh</a></li>
 								<li className="divider"></li>
 								<li><a href="#trangcanhan/caidat"><i className="icon-cog5"></i> Cài đặt tài khoản</a></li>
-								<li><a href="/dangxuat"><i className="icon-switch2"></i> Đăng xuất</a></li>
+								<li><a href="/dangxuat"><i className="icon-switch2 text-danger"></i> Đăng xuất</a></li>
 							</ul>
 						</li>
 					</ul>
@@ -106,12 +108,21 @@ class Statusbar extends React.Component {
     	);
   	}
   	componentDidMount(){
+  		if(type_user=="hocsinh"){
+  			$("#quanlyuser").hide();
+  		}
   		$("li").on("click",'.media',function(){
   			console.log("xoa thong bao");
   			$('.glyphicon-bell').parent().parent().removeClass("open");
   			$('.glyphicon-bell').parent().attr('aria-expanded',false);
-  			$.post("delete_thongbao",{id: $(this).attr('id')});
-  		})
+  			$.post("delete_thongbao",{id: $(this).attr('id'),id_user: "all"});
+  		});
+  		$("#delallnoti").on("click",function(){
+  			console.log("xoa hết thong bao");
+  			$('.glyphicon-bell').parent().parent().removeClass("open");
+  			$('.glyphicon-bell').parent().attr('aria-expanded',false);
+  			$.post("delete_thongbao",{id: "all",id_user: data.dataset.id});
+  		});
   	}
   	componentWillMount()
 	{
@@ -119,6 +130,13 @@ class Statusbar extends React.Component {
 
 		var that=this;
 
+		function loop(){
+			setTimeout(function () {
+				console.log("loop thong bao");
+	            socket.emit('c2s_Thongbao',{id: data.dataset.id});
+	            loop();
+	        }, 30000);
+		}
 		socket.emit('c2s_Thongbao',{id: data.dataset.id});
 		socket.on('s2c_Thongbao', function(data){
 			console.log(data);
@@ -127,13 +145,12 @@ class Statusbar extends React.Component {
 			that.setState({listThongbao: data});
 		});
 		////
+		loop();
 	}
 	componentWillReceiveProps(newProps)
 	{
 		socket.emit('c2s_Thongbao',{id: data.dataset.id});
 	}
-	componentWillUpdate(nextProps, nextState){
-		console.log("cmponentWillUpdate statusbar");
-	}
+
 }
 render(<Statusbar/>, root);

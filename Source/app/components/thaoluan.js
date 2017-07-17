@@ -191,7 +191,7 @@ export class thaoluan extends React.Component{
 				thoigian: datetime
 
 			};
-			console.log(data);
+			//console.log(data);
 	        $.post("themCauhoi", data, function(){
 	        	$("#add_tieude").val("");
 	        	$("#add_noidung").val("");
@@ -248,10 +248,10 @@ export class thaoluan extends React.Component{
 			id: "all",
 			id_user: "all"
 		}
-		console.log(data1);
+		//console.log(data1);
 		socket.emit('c2s_Thaoluan',data1);
 		socket.on('s2c_Thaoluan', function(data){
-			console.log(data);
+			//console.log(data);
 			var mon1;
 			if(mon[1]=="lichsu")
 				mon1="Lịch sử";

@@ -1,5 +1,4 @@
 import React from 'react';
-import io from 'socket.io-client';
 
 var data = document.querySelector('#maincontent');
 
@@ -37,15 +36,13 @@ export class baithi extends React.Component{
 				<div className="content">
 
 	            	<div className="panel panel-flat">
-						<div className="panel-heading">
-							<h5 className="panel-title">Bài thi</h5>
-							<div className="heading-elements">
-								<ul className="icons-list">
-			                		<li><a data-action="collapse"></a></li>
-			                	</ul>
-		                	</div>
+		            	<div className="text-center">
+							<div className="panel-heading bg-orange-400">
+								<h4 className="panel-title">Bài thi
+								</h4>
+								<small className="display-block">(Chọn phương án đúng nhất cho từng câu hỏi)</small>
+							</div>
 						</div>
-
 	                	<div className="panel-body">
             				<div id="xxx" className="form-group pt-15">
 										
@@ -53,7 +50,7 @@ export class baithi extends React.Component{
 									</div>
 						</div>
 						<div className="text-right">
-							<button data-popup="tooltip" data-toggle="modal" data-target="#confirm" id="nopbai" type="submit" className="btn bg-teal-400">Nộp bài <i className="icon-arrow-right14 position-right"></i></button>
+							<button data-popup="tooltip" data-toggle="modal" data-target="#confirm" id="nopbai" type="submit" className="btn bg-orange-800">Nộp bài <i className="icon-arrow-right14 position-right"></i></button>
 						</div>
 					</div>
 
@@ -125,7 +122,7 @@ export class baithi extends React.Component{
 				diem: (Math.round(parseFloat(socaudung*10/socaude) * 4) / 4).toFixed(2),
 				heso: '2',
 				mon: mon[1],
-				bai: this.props.params.id,
+				bai: 'thi',
 				thoigian: datetime
 			};
 			console.log(data);
@@ -160,15 +157,16 @@ export class baithi extends React.Component{
 
 			for(var i=0;i<data.length;i++){
 				var count=i+1;
-
-				$("#xxx").append('<div>'+
-										'<p class=" text-semibold" style="margin-bottom: 0">'+'Câu '+count+': '+data[i].NOIDUNG+'</p>'+
-										'<div id="cau'+count+'"class="form-group pt-5">'+
-
+				var htmlstring='<div>'+
+									'<p class=" text-semibold" style="margin-bottom: 0">'+'Câu '+count+': '+data[i].NOIDUNG+'</p>';
+										
+				if(data[i].LINK_ANH!=null)
+					htmlstring+='<p style="text-align:center"><img src="/assets/images/cauhoi/'+data[i].LINK_ANH+'.jpg" alt="Hình ảnh câu hỏi" style="width:autopx;height:250px;"/></p>'
+				htmlstring+='<div id="cau'+count+'"class="form-group pt-5">'+
 										'</div>'+
 									'</div>'+
-									'<br/>'
-									);
+									'<br/>';
+				$("#xxx").append(htmlstring);
 
 				var idCauhoi=data[i].ID_BAIHOC;																
 				$.post("/getDapan",{id: data[i].ID},function(data1){

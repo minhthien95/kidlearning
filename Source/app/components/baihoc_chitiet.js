@@ -129,7 +129,9 @@ export class baihoc_chitiet extends React.Component{
 						<div className="modal-content">
 							<div className="modal-header">
 								<button type="button" className="close" data-dismiss="modal">&times;</button>
-								<h6 className="modal-title">Thêm câu hỏi bài kiểm tra</h6>
+								<div className="text-center">
+									<h6 className="modal-title text-semibold">Thêm câu hỏi bài kiểm tra</h6>
+								</div>
 							</div>
 
 							<div className="modal-body">
@@ -158,36 +160,6 @@ export class baihoc_chitiet extends React.Component{
             $("#thembaithi").show();
         }
 
-	    $('#add_video').click(function () {
-	    	if($("#add_tieude").val()==""){
-	    		alert("Bạn chưa nhập tiêu đề sự kiện!");
-				return;
-	    	}
-			if($("#add_thoigian").val()==""){
-				alert("Bạn chưa nhập thời gian của sự kiện!");
-				return;
-			}
-			if($("#add_noidung").val()==""){
-				alert("Bạn chưa nhập nội dung của sự kiện!");
-				return;
-			}
-			var data={
-		        id:  id_user,
-				tieude: $("#add_tieude").val(),
-				thoigian: $("#add_thoigian").val(),
-				noidung: $("#add_noidung").val()
-			};
-			console.log(data);
-	        $.post("themsukien", data, function(){
-	        	$("#add_tieude").val("");
-	        	$("#add_thoigian").val("");
-	        	$("#add_noidung").val("");
-	        	alert("Sự kiện đã được thêm, làm mới trang để xem kết quả");
-	        	$("#formadd").hide();
-	        	//window.location = "#/tuongtac/lichsu";
-            	//Trangcanhan.dispatch(location.getCurrentPath(), null);
-    		});
-	    });
 	    for(var i=1;i<=10;i++)
 	    {
 	    	$("#listcauhoi").append('<div class="form-group">'+
@@ -229,6 +201,7 @@ export class baihoc_chitiet extends React.Component{
 
 	    //them bai tap
 	    $('#xong').click(function () {
+	    	var listtracnghiem=[];
 			for(var i=1;i<=10;i++)
 	    	{
 	    		console.log($("#ra_cau"+i+"_1").is(':checked'))
@@ -264,13 +237,20 @@ export class baihoc_chitiet extends React.Component{
 					da1: da1,
 					da2: da2,
 					da3: da3,
-					da4: da4
+					da4: da4,
+					link_anh: null
 	    		};
-	    		console.log(datax);
-	    		$.post("themTracnghiem",datax,function(){
-	    			alert(" them kiem tra xong");
-	    		});
+	    		listtracnghiem.push(datax);
+	    		// console.log(datax);
+	    		// $.post("themTracnghiem",datax,function(){
+	    		// 	//alert(" them kiem tra xong");
+	    		// });
 	    	}
+	    	console.log("listtracnghiem");
+	    	//console.log(listtracnghiem);
+    		$.post("themTracnghiemKiemtra",{ list: JSON.stringify(listtracnghiem)},function(){
+				window.location.reload(true);
+			});
 	    });
 	    //them bai tap
 
@@ -292,7 +272,7 @@ export class baihoc_chitiet extends React.Component{
 			id: this.props.params.id,
 			id_user: "all"
 		}
-		console.log(data1);
+		//console.log(data1);
 		socket.emit('c2s_Baihoc',data1);
 		socket.on('s2c_Baihoc', function(data){
 			console.log(data);
@@ -302,21 +282,21 @@ export class baihoc_chitiet extends React.Component{
 			that.setState({listbaihoc: data});
 		});
 	}
-	componentWillReceiveProps(newProps)
-	{
-		console.log("componentWillReceiveProps");
-		var mon1;
-		if(newProps.params.mon=="lichsu")
-			mon1="Lịch sử";
-		if(newProps.params.mon=="diali")
-			mon1="Địa lí";
-		var name_link="Bài học "+mon1+" lớp "+newProps.params.lop; 
-		var data1={
-			mon: newProps.params.mon,
-			lop: newProps.params.lop,
-			id: newProps.params.id,
-			id_user: "all"
-		}
-		socket.emit('c2s_Baihoc',data1);
-	}
+	// componentWillReceiveProps(newProps)
+	// {
+	// 	console.log("componentWillReceiveProps");
+	// 	var mon1;
+	// 	if(newProps.params.mon=="lichsu")
+	// 		mon1="Lịch sử";
+	// 	if(newProps.params.mon=="diali")
+	// 		mon1="Địa lí";
+	// 	var name_link="Bài học "+mon1+" lớp "+newProps.params.lop; 
+	// 	var data1={
+	// 		mon: newProps.params.mon,
+	// 		lop: newProps.params.lop,
+	// 		id: newProps.params.id,
+	// 		id_user: "all"
+	// 	}
+	// 	socket.emit('c2s_Baihoc',data1);
+	// }
 }

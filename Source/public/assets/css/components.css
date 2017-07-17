@@ -388,7 +388,7 @@ a.badge,
 .navigation > li > ul li.active > a,
 .navigation > li > ul li.active > a:hover,
 .navigation > li > ul li.active > a:focus {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: #02544c;
   color: #fff;
 }
 .navigation .navigation-header {

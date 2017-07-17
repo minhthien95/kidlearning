@@ -182,7 +182,7 @@ export class baihoc_baiviet extends React.Component{
 				thoigian: datetime
 
 			};
-			console.log(data);
+			//console.log(data);
 	        $.post("themBaiviet", data, function(){
 	        	$("#add_tieude").val("");
 	        	$("#add_noidung").val("");

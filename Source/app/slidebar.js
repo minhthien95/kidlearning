@@ -28,7 +28,7 @@ class Slidebar extends React.Component {
 	constructor(props) {
     super(props);
       this.state = {
-        id_user: "assets/images/user_"+data.dataset.id+".jpg"
+        id_user: "assets/images/user/user_"+data.dataset.id+".jpg"
       };
     }
      	render() {
@@ -38,7 +38,7 @@ class Slidebar extends React.Component {
 					<div id="nguoidung" className="sidebar-user">
 						<div className="category-content">
 							<div className="media">
-								<a id="avatar" href="#trangcanhan/hoatdong" className="media-left"><img src={this.state.id_user} onError={() => {this.setState({id_user : "assets/images/user.jpg"}) }} className="img-circle img-sm" alt=""/></a>
+								<a id="avatar" href="#trangcanhan/hoatdong" className="media-left"><img src={this.state.id_user} onError={() => {this.setState({id_user : "assets/images/user/user.jpg"}) }} className="img-circle img-sm" alt=""/></a>
 								<div className="media-body">
 									<span id="fullname" className="media-heading text-semibold">{data.dataset.username}</span>
 									<div id="type" className="text-size-mini text-muted">
@@ -151,9 +151,10 @@ class Slidebar extends React.Component {
 									<a><i  className="icon-hand"></i> <span>Tương tác</span></a>
 									<ul>
 										<li id="Tuongtac_lichsu"><a  href="#tuongtac/lichsu"><i className="icon-library2"></i> <span>Lịch Sử</span></a></li>
-										<li id="Tuongtac_diali"><a href="#tuongtac/diali" ><i className="icon-earth"></i> <span>Địa Lí</span></a></li>
+										<li id="Tuongtac_diali"><a href="#tuongtac/diali" ><i className="icon-earth"></i> <span>Địa Lí</span></a></li>										
 									</ul>
 								</li>
+								<li id="Trochoi"><a href="#trochoi"><i className="icon-puzzle3"></i> <span>Trò chơi</span></a></li>
 								<li id="Gioithieu"><a href="#gioithieu"><i className="icon-list-unordered"></i> <span>Giới thiệu</span></a></li>
 								{/* /main */}
 							</ul>
@@ -166,73 +167,74 @@ class Slidebar extends React.Component {
   	}
 	componentDidMount()
 	{
-		// console.log("hihi slidebar");
-		// if(data.dataset.lop<6)
-		// 	$("#Lichsu_lop6").addClass("disabled");
-		// if(data.dataset.lop<7)
-		// 	$("#Lichsu_lop7").addClass("disabled");
-		// if(data.dataset.lop<8)
-		// 	$("#Lichsu_lop8").addClass("disabled");
-		// if(data.dataset.lop<9)
-		// 	$("#Lichsu_lop9").addClass("disabled");
-
-		// if(data.dataset.lop<6)
-		// 	$("#Diali_lop6").addClass("disabled");
-		// if(data.dataset.lop<7)
-		// 	$("#Diali_lop7").addClass("disabled");
-		// if(data.dataset.lop<8)
-		// 	$("#Diali_lop8").addClass("disabled");
-		// if(data.dataset.lop<9)
-		// 	$("#Diali_lop9").addClass("disabled");
-
 
 		$("#Trangchu").click(function(){
 			$("li").removeClass("active");
 			$("li").closest("ul").removeAttr( 'style' );
-			$("#Trangchu").addClass("active");
 			$('#Lichsu').children('ul').get(0).style.display='none';
 			$('#Diali').children('ul').get(0).style.display='none';
+			$('#Lichsu').children('ul').children('li').children('ul').get(0).style.display='none';
+			$('#Diali').children('ul').children('li').children('ul').get(0).style.display='none';
 			$('#Hoidap').children('ul').get(0).style.display='none';
 			$('#Tuongtac').children('ul').get(0).style.display='none';
 			$("#nguoidung").removeClass("bg-teal-400");
+			$("#Trangchu").addClass("active");
 		});
 		$("#Gioithieu").click(function(){
 			$("li").removeClass("active");
-			$("#Trangchu").removeClass("active");
-			$("#Gioithieu").addClass("active");
+			$("li").closest("ul").removeAttr( 'style' );
 			$('#Lichsu').children('ul').get(0).style.display='none';
 			$('#Diali').children('ul').get(0).style.display='none';
+			$('#Lichsu').children('ul').children('li').children('ul').get(0).style.display='none';
+			$('#Diali').children('ul').children('li').children('ul').get(0).style.display='none';
 			$('#Hoidap').children('ul').get(0).style.display='none';
 			$('#Tuongtac').children('ul').get(0).style.display='none';
 			$("#nguoidung").removeClass("bg-teal-400");
+			$("#Gioithieu").addClass("active");
+		});
+		$("#Trochoi").click(function(){
+			$("li").removeClass("active");
+			$("li").closest("ul").removeAttr( 'style' );
+			$('#Lichsu').children('ul').get(0).style.display='none';
+			$('#Diali').children('ul').get(0).style.display='none';
+			$('#Lichsu').children('ul').children('li').children('ul').get(0).style.display='none';
+			$('#Diali').children('ul').children('li').children('ul').get(0).style.display='none';
+			$('#Hoidap').children('ul').get(0).style.display='none';
+			$('#Tuongtac').children('ul').get(0).style.display='none';
+			$("#nguoidung").removeClass("bg-teal-400");
+			$("#Trochoi").addClass("active");
 		});
 		$("#Lichsu").click(function(){
 			$("#Trangchu").removeClass("active");
 			$("#Gioithieu").removeClass("active");
+			$("#Trochoi").removeClass("active");
 			$("#nguoidung").removeClass("bg-teal-400");
 		});
 		$("#Diali").click(function(){
 			$("#Trangchu").removeClass("active");
 			$("#Gioithieu").removeClass("active");
+			$("#Trochoi").removeClass("active");
 			$("#nguoidung").removeClass("bg-teal-400");
 		});
 		$("#Hoidap").click(function(){
 			$("#Trangchu").removeClass("active");
 			$("#Gioithieu").removeClass("active");
+			$("#Trochoi").removeClass("active");
 			$("#nguoidung").removeClass("bg-teal-400");
 		});
 		$("#Tuongtac").click(function(){
 			$("#Trangchu").removeClass("active");
 			$("#Gioithieu").removeClass("active");
+			$("#Trochoi").removeClass("active");
 			$("#nguoidung").removeClass("bg-teal-400");
 		});
 		$("#avatar, .icon-cog3").click(function(){
 			$("li").removeClass("active");
 			$("li").closest("ul").removeAttr( 'style' );
-			$("#Trangchu").removeClass("active");
-			$("#Gioithieu").removeClass("active");
 			$('#Lichsu').children('ul').get(0).style.display='none';
 			$('#Diali').children('ul').get(0).style.display='none';
+			$('#Lichsu').children('ul').children('li').children('ul').get(0).style.display='none';
+			$('#Diali').children('ul').children('li').children('ul').get(0).style.display='none';
 			$('#Hoidap').children('ul').get(0).style.display='none';
 			$('#Tuongtac').children('ul').get(0).style.display='none';
 			$("#nguoidung").addClass("bg-teal-400");
@@ -246,6 +248,8 @@ class Slidebar extends React.Component {
 		var urlb=urla[1].split('?');
 		if(urlb[0]=="gioithieu"){
 			$("#Gioithieu").addClass("active");
+		}else if(urlb[0]=="trochoi"){
+			$("#Trochoi").addClass("active");
 		}
 		else if(urla[1]=="lichsu"){
 			console.log("Lich su");
@@ -335,15 +339,6 @@ class Slidebar extends React.Component {
 			$('#Hoidap').children('ul').get(0).style.display='none';
 			$('#Tuongtac').children('ul').get(0).style.display='none';
 		}
-	}
-	shouldComponentUpdate(){
-		return true;
-	}
-	componentWillUpdate(){
-		console.log("newProps");
-	}
-	componentDidUpdate(prevProps, prevState) {
-		console.log("newProps");
 	}
 }
 render(<Slidebar/>, root);

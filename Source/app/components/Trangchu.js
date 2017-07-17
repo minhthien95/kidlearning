@@ -24,7 +24,7 @@ export class Trangchu extends React.Component{
 				<div className="panel panel-flat">
 					{/* SGK */}
 					<div className=" alert alert-success no-border">
-						<h6 className="panel-title ">Bài học<a className="heading-elements-toggle"><i className="icon-more"></i></a></h6>
+						<h6 className="panel-title ">Bài học hiện tại<a className="heading-elements-toggle"><i className="icon-more"></i></a></h6>
 						
 						<div className="heading-elements">
 							<ul className="icons-list">
@@ -34,21 +34,21 @@ export class Trangchu extends React.Component{
 	            	</div>
 
 	            	<div className="panel-body">
-	            	<h7 className="content-group">Bạn có thể học trực tiếp môn <code>Lịch Sử</code> và <code>Địa Lí</code> thông qua trang web của chúng tôi. Các bài học được thiết kế dựa trên Sách Giáo Khoa bám sát với kiến thức trong lớp, các bài học được phân thành ba dạng sách giáo khoa, video, bài viết học thuật.</h7>
+	            	<h7 className="content-group">Bạn có thể học trực tiếp môn <code>Lịch Sử</code> và <code>Địa Lí</code> thông qua trang web của chúng tôi. Các bài học được thiết kế dựa trên Sách Giáo Khoa bám sát với kiến thức trong lớp, các bài học được phân thành ba dạng sách giáo khoa, mindmap, video.</h7>
 	            	</div>
 	            	<div className="row">
 	            		<div className="col-md-3"/>
 	            		<div className="col-md-3">
 							<div className="panel-body text-center">
 								<div className="icon-object border-violet text-violet"><i className="icon-library2"></i></div>
-								<h5 className="text-semibold">Hoc Lịch Sử Online</h5>
+								<h5 className="text-semibold">Môn Lịch Sử</h5>
 								<a href={"#lichsu/lop"+data.dataset.lop+"/baihoc"} className="btn bg-violet">Học ngay</a>
 							</div>
 						</div>
 		            	<div className="col-md-3">
 							<div className="panel-body text-center">
 								<div className="icon-object border-orange text-orange"><i className="icon-earth"></i></div>
-								<h5 className="text-semibold">Học Địa Lí Online</h5>
+								<h5 className="text-semibold">Môn Địa Lí</h5>
 								<a href={"#diali/lop"+data.dataset.lop+"/baihoc"} className="btn bg-orange">Học ngay</a>
 							</div>
 						</div>

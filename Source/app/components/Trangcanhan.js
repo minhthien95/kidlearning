@@ -16,7 +16,7 @@ export class Trangcanhan extends React.Component{
 	constructor(props) {
     	super(props);
       	this.state = {
-        	id_user: "assets/images/user_"+data.dataset.id+".jpg",
+        	id_user: "assets/images/user/user_"+data.dataset.id+".jpg",
         	listCauhoi: []
       	};
     }
@@ -46,7 +46,7 @@ export class Trangcanhan extends React.Component{
 						<div className="navbar-collapse collapse" id="navbar-filter">
 							<ul className="nav navbar-nav">
 								<li className="active"><a id="hoatdong" href="#activity" data-toggle="tab"><i className="icon-menu7 position-left"></i> Hoạt động</a></li>
-								<li><a id="scheduletab" href="#schedule" data-toggle="tab"><i className="icon-calendar3 position-left"></i> Quá trình </a></li>
+								<li><a id="scheduletab" href="#schedule" data-toggle="tab"><i className="icon-calendar3 position-left"></i> Thống kê </a></li>
 								<li><a id="caidat" href="#settings" data-toggle="tab"><i className="icon-cog3 position-left"></i> Cài đặt</a></li>
 								<li><a id="tag_listuser" href="#listuser" data-toggle="tab"><i className="icon-users4 position-left"></i> Quản lý học sinh</a></li>
 								<li><a id="tag_listsup" href="#listsup" data-toggle="tab"><i className=" icon-users2 position-left"></i> Quản lý trợ giảng</a></li>
@@ -85,10 +85,10 @@ export class Trangcanhan extends React.Component{
 
 															<div className="panel panel-flat timeline-content">
 																<div className="panel-heading">
-																	<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/cauhoi"+data1.ID_CAUHOI} className="text-default"><a>{data1.MON=="lichsu" ? (
-																																																					        <a className="text-success">Lịch sử {data1.PHANLOP} - </a>) : (
-																																																					        <a>Địa lí {data1.PHANLOP} - </a>
-																																																				      	)}</a>{data1.TIEUDE}</a></h6>
+																	<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/cauhoi"+data1.ID_CAUHOI} className="text-default">{data1.MON=="lichsu" ? (
+																																																					        <span className="text-success">Lịch sử {data1.PHANLOP} - </span>) : (
+																																																					        <span className="text-primary">Địa lí {data1.PHANLOP} - </span>
+																																																				      	)}{data1.TIEUDE}</a></h6>
 																	<div className="heading-elements">
 																		<span className="heading-text">{data1.to_char}</span>
 																		<ul className="list-inline list-inline-separate heading-text pull-right">
@@ -130,7 +130,7 @@ export class Trangcanhan extends React.Component{
 									<div className="tab-pane fade" id="schedule">
 
 										{/* Ket qua diem */}
-										<div className="row">
+										<div id="hoctapkq" className="row">
 											<div className="col-md-6">
 												<div className="panel panel-flat">
 													<div className="panel-heading">
@@ -169,23 +169,44 @@ export class Trangcanhan extends React.Component{
 											</div>
 										</div>	
 										{/* /available hours */}
+										<div id="bieudokq"  className="row">
+											<div className="col-md-6">
+												<div className="panel panel-flat">
+													<div className="panel-heading">
+														<h5 className="panel-title">Tổng hợp số học sinh đạt điểm môn Lịch Sử</h5>
+														<div className="heading-elements">
+															<ul className="icons-list">
+										                		<li><a data-action="collapse"></a></li>
+										                	</ul>
+									                	</div>
+													</div>
 
-										{/* Calendar */}
-										<div className="panel panel-flat">
-											<div className="panel-heading">
-												<h6 className="panel-title">Điểm</h6>
-												<div className="heading-elements">
-													<ul className="icons-list">
-								                		<li><a data-action="collapse"></a></li>
-								                	</ul>
-							                	</div>
+													<div className="panel-body">
+														<div className="chart-container">
+															<div className="chart has-fixed-height" id="columns_kq_ls"></div>	
+														</div>
+													</div>
+												</div>
 											</div>
+											<div className="col-md-6">
+												<div className="panel panel-flat">
+													<div className="panel-heading">
+														<h5 className="panel-title">Tổng hợp số học sinh đạt điểm môn Địa Lí</h5>
+														<div className="heading-elements">
+															<ul className="icons-list">
+										                		<li><a data-action="collapse"></a></li>
+										                	</ul>
+									                	</div>
+													</div>
 
-											<div className="panel-body">
-												<div className="schedule"></div>
+													<div className="panel-body">
+														<div className="chart-container">
+															<div className="chart has-fixed-height" id="columns_kq_dl"></div>	
+														</div>
+													</div>
+												</div>
 											</div>
 										</div>
-										{/* /calendar */}
 									</div>
 
 									<div className="tab-pane fade" id="settings">
@@ -273,7 +294,7 @@ export class Trangcanhan extends React.Component{
 											{/* User thumbnail */}
 											<div className="thumbnail">
 												<div className="thumb thumb-rounded thumb-slide">
-													<img src={this.state.id_user} onError={() => {this.setState({id_user : "assets/images/user.jpg"}) }} alt=""/>
+													<img src={this.state.id_user} onError={() => {this.setState({id_user : "assets/images/user/user.jpg"}) }} alt=""/>
 													<div className="caption">
 														<span>
 															<a data-popup="tooltip" data-toggle="modal" data-target="#confirm2" className="btn bg-success-400 btn-icon btn-xs" ><i className="icon-plus2"></i></a>
@@ -321,7 +342,7 @@ export class Trangcanhan extends React.Component{
 														<th>Ngày sinh</th>
 														<th>Email</th>
 														<th>Lớp</th>
-														<th>Xoá</th>
+														<th>Chức năng</th>
 													</tr>
 												</thead>
 												<tbody>
@@ -442,6 +463,23 @@ export class Trangcanhan extends React.Component{
 						</div>
 					</div>
 					{/* /confirm */}
+					{/* confirm */}
+					<div id="confirm3" className="modal fade">
+						<div className="modal-dialog modal-xs">
+							<div className="modal-content">
+								<div className="thumbnail no-border no-margin">								
+							    	<div className="caption text-center">
+							    		<h6 className="text-semibold no-margin-top content-group">Bạn có chắc muốn chuyển người dùng này thành loại người dùng 'Giáo Viên'</h6>
+							    		<ul className="list-inline list-inline-condensed no-margin">
+					                    	<li><a className="btn btn-success btn-float" data-dismiss="modal">Đồng ý</a></li>
+					                    	<li><a className="btn btn-danger btn-float" data-dismiss="modal">Huỷ</a></li>
+				                    	</ul>
+							    	</div>
+						    	</div>
+							</div>
+						</div>
+					</div>
+					{/* /confirm */}
 				</div>
 				{/* /content area */}
 			</div>
@@ -449,10 +487,25 @@ export class Trangcanhan extends React.Component{
 	}
 	componentDidMount()
 	{
-		//chuyen tab caidat
+		//chuyen tab
+		console.log("tag "+this.props.params.tab)
 		if(this.props.params.tab=="caidat"){
-			console.log("caidat");
 			$("#caidat").click();
+		}
+		else if(this.props.params.tab=="hoatdong"){
+				$("#hoatdong").click();
+		}
+		else if(this.props.params.tab=="quatrinh"){
+				$("#scheduletab").click();
+		}
+		else if(this.props.params.tab=="quanlyuser"){
+				$("#tag_listuser").click();
+		}
+		else if(this.props.params.tab=="quanlygiaovien"){
+				$("#tag_listsup").click();
+		}
+		else if(this.props.params.tab=="quanlyadmin"){
+				$("#tag_listadmin").click();
 		}
 		var id_user=data.dataset.id;
 		var check=false;
@@ -487,7 +540,7 @@ export class Trangcanhan extends React.Component{
 		//set default value
 		$.get("getUserInfo/"+id_user,function( data ){
 			console.log("lay data");
-			console.log(data);
+			//console.log(data);
 			$("#username").val(data.USERNAME),
 			$("#fullname1").val(data.HOTEN),
 			$("#email").val(data.EMAIL),
@@ -637,7 +690,7 @@ export class Trangcanhan extends React.Component{
 	                min: "Lớp học phải thuộc các lớp 6, 7, 8, 9"
 	            },
 	            'password': {
-	            	required: "Xin nhập mật khẩu hiện tại",
+	            	required: "Xin nhập mật khẩu hiện tại (Mật khẩu mặc định là '0000' cho tài khoản chưa kích hoạt)",
 	                remote: "Mật khẩu chưa đúng"
 	            },
 	            'password1': {
@@ -673,7 +726,7 @@ export class Trangcanhan extends React.Component{
 			            birthday: $("#birthday").val(),
 			            type: "hocsinh"
 					};
-					console.log(data);
+					//console.log(data);
 			        $.post("updateUserInfo", data, function(){
 			        	alert("Đã thay đổi thông tin thành công!");
 			        	window.location = "#/trangcanhan/caidat";
@@ -693,7 +746,7 @@ export class Trangcanhan extends React.Component{
 			            birthday: $("#birthday").val(),
 			            type: "hocsinh"
 					};
-					console.log(data);
+					//console.log(data);
 			        $.post("updateUserInfo", data, function(){
 			        	window.location = "/dangxuat";
 			        	alert("Đã thay đổi mật khẩu. Xin đăng nhập lại!");
@@ -767,8 +820,15 @@ export class Trangcanhan extends React.Component{
                         var tool_bar = '<div class="hidden-sm hidden-xs action-buttons">'+
                                         '<a class="text-danger-400" data-popup="tooltip" data-toggle="modal" data-target="#confirm">'+
                                             '<i class="icon-x"></i>'+
-                                        '</a>'+
-                                    '</div>'
+                                        '</a>';
+                        if(type_user=="admin"){
+                        	tool_bar+='&nbsp;&nbsp;'+
+                                        '<a class="text-success-400" data-popup="tooltip" data-toggle="modal" data-target="#confirm3">'+
+                                            '<i class="icon-arrow-right16"></i>'+
+                                        '</a>';
+                        }
+                                    	
+                        tool_bar+='</div>';
                         return tool_bar;
                         }
                     }
@@ -800,7 +860,7 @@ export class Trangcanhan extends React.Component{
 			        { "mDataProp": "LOP" },
 			        { "render": function(data, type, full, meta){
                         var tool_bar = '<div class="hidden-sm hidden-xs action-buttons">'+
-                                        '<a class="text-danger-400" data-popup="tooltip" data-toggle="modal" data-target="#call">'+
+                                        '<a class="text-danger-400" data-popup="tooltip" data-toggle="modal" data-target="#confirm">'+
                                             '<i class="icon-x"></i>'+
                                         '</a>'+
                                     '</div>'
@@ -888,44 +948,98 @@ export class Trangcanhan extends React.Component{
 	        	return;
 	    	});
 	    });
-
-	    //chart setup
+	    ///chuyen hoc sinh -> giao vien
+	    $('#table_user tbody').on('click', '.icon-arrow-right16', function (e) {
+	        var id = $(this).closest('tr').children('td:first').text();
+	        console.log("chuyen user");
+	        $('#confirm3 li').on('click', '.btn-success', function (e) {
+	        	console.log("xac nhan xoa user");
+	        	$.post("chuyen_user",{id: id},function(){
+	        		window.location.reload(true);
+	        	});
+	        	return;
+	    	});
+	    });
+		//chart setup
 	    var echarts = require('echarts');
-        var datals=[8,7.5,9];
-        var datadl=[8,6.5];
-        var dataxls=['Bài 1', 'Bài 2', 'Bài 3'];
-        var dataxdl=['Bài 1', 'Bài 2'];
-        var datax=[
-                        'LS-Bai 1', 'LS-Bai 2', 'LS-Bai 3', 'LS-Bai 4', 'LS-Bai 5', 'LS-Bai 6', 'LS-Bai 7'
-                    ];
+        // var datals=[8,7.5,9];
+        // var datals6=[4,,8];
+        // var datadl=[8,6.5];
+        // var dataxls=['Bài 1', 'Bài 2', 'Bài 3'];
+        // var dataxdl=['Bài 1', 'Bài 2'];
+        var dataxls=[''];
+        var dataxdl=[''];
+        var datals6=[];
+        var datals7=[];
+        var datals8=[];
+        var datals9=[];
+        var datadl6=[];
+        var datadl7=[];
+        var datadl8=[];
+        var datadl9=[];
+
+        var cdatals6=[];
+        var cdatals7=[];
+        var cdatals8=[];
+        var cdatals9=[];
+        var cdatadl6=[];
+        var cdatadl7=[];
+        var cdatadl8=[];
+        var cdatadl9=[];
+
         var stacked_lines_ls = echarts.init(document.getElementById('stacked_lines_ls'));
         var stacked_lines_dl = echarts.init(document.getElementById('stacked_lines_dl'));
+        var basic_columns_ls = echarts.init(document.getElementById('columns_kq_ls'));
+        var basic_columns_dl = echarts.init(document.getElementById('columns_kq_dl'));
+        if(type_user=="hocsinh"){
+        	$('#bieudokq').hide();
+        }
+        else{
+        	$('#hoctapkq').hide();
+        }
         $.post("layKetqua",{id: id_user},function(dataa){
         	console.log("ket qua ");
         	console.log(dataa);
         	for(var i=0;i<dataa.length;i++){
         		//datay.push(dataa[i].ID_BAIHOC)
+        		
         		if(dataa[i].MON=="lichsu")
         		{
         			dataxls.push("Bài "+dataa[i].ID_BAIHOC);
-        			datals.push(dataa[i].DIEM);
+        			if(dataa[i].LOP=='6')
+        				datals6.push(['Bài '+dataa[i].ID_BAIHOC,dataa[i].DIEM]);
+        			if(dataa[i].LOP=='7')
+        				datals7.push(['Bài '+dataa[i].ID_BAIHOC,dataa[i].DIEM]);
+        			if(dataa[i].LOP=='8')
+        				datals8.push(['Bài '+dataa[i].ID_BAIHOC,dataa[i].DIEM]);
+        			if(dataa[i].LOP=='9')
+        				datals9.push(['Bài '+dataa[i].ID_BAIHOC,dataa[i].DIEM]);
+        			// dataxls.push("Bài "+dataa[i].ID_BAIHOC);
+        			// datals.push(dataa[i].DIEM);
         		}
         		if(dataa[i].MON=="diali")
         		{
-        			dataxdl.push(dataa[i].ID_BAIHOC);
-        			datadl.push(dataa[i].DIEM);
+        			dataxdl.push("Bài "+dataa[i].ID_BAIHOC);
+        			if(dataa[i].LOP=='6')
+        				datadl6.push(['Bài '+dataa[i].ID_BAIHOC,dataa[i].DIEM]);
+        			if(dataa[i].LOP=='7')
+        				datadl7.push(['Bài '+dataa[i].ID_BAIHOC,dataa[i].DIEM]);
+        			if(dataa[i].LOP=='8')
+        				datadl8.push(['Bài '+dataa[i].ID_BAIHOC,dataa[i].DIEM]);
+        			if(dataa[i].LOP=='9')
+        				datadl9.push(['Bài '+dataa[i].ID_BAIHOC,dataa[i].DIEM]);
         		}
         	}
-        	console.log(datals);
+        	console.log(datals6);
 	        stacked_lines_ls.setOption({
 
                 // Setup grid
-                grid: {
-                    x: 40,
-                    x2: 20,
-                    y: 35,
-                    y2: 25
-                },
+                // grid: {
+                //     x: 40,
+                //     x2: 20,
+                //     y: 35,
+                //     y2: 25
+                // },
 
                 // Add tooltip
                 tooltip: {
@@ -934,13 +1048,39 @@ export class Trangcanhan extends React.Component{
 
                 // Add legend
                 legend: {
-                    data: ['Lịch Sử']
+                    data: ['Lịch Sử 6', 'Lịch Sử 7','Lịch Sử 8', 'Lịch Sử 9']
                 },
 
                 // Enable drag recalculate
                 calculable: true,
-
-                // Hirozontal axis
+                // Display toolbox
+                toolbox: {
+                    show: true,
+                    left: '20',
+                    bottom: '20',
+                    feature: {
+                        dataView: {
+                            show: true,
+                            readOnly: false,
+                            title: 'Xem dữ liệu',
+                            lang: ['View chart data', 'Close', 'Update']
+                        },
+                        magicType: {
+                            show: true,
+                            title: {
+                                line: 'Chuyển dạng đường',
+                                bar: 'Chuyển dạng cột',
+                            },
+                            type: ['line', 'bar']
+                        },
+                        saveAsImage: {
+                            show: true,
+                            title: 'Lưu hình',
+                            lang: ['Save']
+                        }
+                    }
+                },
+                // Hirozontal xAxis
                 xAxis: [{
                     type: 'category',
                     boundaryGap: false,
@@ -949,27 +1089,43 @@ export class Trangcanhan extends React.Component{
 
                 // Vertical axis
                 yAxis: [{
-                    type: 'value'
+                    type: 'value',
+                    name: 'Điểm số'
                 }],
 
                 // Add series
                 series: [
                     {
-                        name: 'Lịch Sử',
+                        name: 'Lịch Sử 6',
                         type: 'line',
-                        data: datals
+                        data: datals6
+                    },
+                    {
+                        name: 'Lịch Sử 7',
+                        type: 'line',
+                        data: datals7
+                    },
+                    {
+                        name: 'Lịch Sử 8',
+                        type: 'line',
+                        data: datals8
+                    },
+                    {
+                        name: 'Lịch Sử 9',
+                        type: 'line',
+                        data: datals9
                     }
                 ]
 	       	});
 	       	stacked_lines_dl.setOption({
 
                 // Setup grid
-                grid: {
-                    x: 40,
-                    x2: 20,
-                    y: 35,
-                    y2: 25
-                },
+                // grid: {
+                //     x: 40,
+                //     x2: 20,
+                //     y: 35,
+                //     y2: 25
+                // },
 
                 // Add tooltip
                 tooltip: {
@@ -978,12 +1134,38 @@ export class Trangcanhan extends React.Component{
 
                 // Add legend
                 legend: {
-                    data: ['Địa lí']
+                    data: ['Địa lí 6','Địa lí 7','Địa lí 8','Địa lí 9']
                 },
 
                 // Enable drag recalculate
                 calculable: true,
-
+                // Display toolbox
+                toolbox: {
+                    show: true,
+                    left: '20',
+                    bottom: '20',
+                    feature: {
+                        dataView: {
+                            show: true,
+                            readOnly: false,
+                            title: 'Xem dữ liệu',
+                            lang: ['View chart data', 'Close', 'Update']
+                        },
+                        magicType: {
+                            show: true,
+                            title: {
+                                line: 'Chuyển dạng đường',
+                                bar: 'Chuyển dạng cột',
+                            },
+                            type: ['line', 'bar']
+                        },
+                        saveAsImage: {
+                            show: true,
+                            title: 'Lưu hình',
+                            lang: ['Save']
+                        }
+                    }
+                },
                 // Hirozontal axis
                 xAxis: [{
                     type: 'category',
@@ -993,43 +1175,279 @@ export class Trangcanhan extends React.Component{
 
                 // Vertical axis
                 yAxis: [{
-                    type: 'value'
+                    type: 'value',
+                    name: 'Điểm số'
                 }],
 
                 // Add series
                 series: [
                     {
-                        name: 'Địa lí',
+                        name: 'Địa lí 6',
                         type: 'line',
-                        data: datadl
+                        data: datadl6
+                    },
+                    {
+                        name: 'Địa lí 7',
+                        type: 'line',
+                        data: datadl7
+                    },
+                    {
+                        name: 'Địa lí 8',
+                        type: 'line',
+                        data: datadl8
+                    },
+                    {
+                        name: 'Địa lí 9',
+                        type: 'line',
+                        data: datadl9
                     }
                 ]
 	       	});
- 
 	       	setTimeout(function () {
 	            stacked_lines_ls.resize();
 	            stacked_lines_dl.resize();
 	        }, 2000);
     	    window.onresize = function () {
+	            setTimeout(function () {
+	                stacked_lines_ls.resize();
+	                stacked_lines_dl.resize();
+	            }, 2000);
+	        }
+        });
+        $.post("tonghopKetqua",function(dataa){
+        	console.log("ket qua tong hop");
+        	console.log(dataa);
+
+	 		basic_columns_ls.setOption({
+
+	            // Setup grid
+	            grid: {
+	                x: 40,
+	                x2: 40,
+	                y: 35,
+	                y2: 25
+	            },
+
+	            // Add tooltip
+	            tooltip: {
+	                trigger: 'axis'
+	            },
+
+	            // Add legend
+	            legend: {
+	                data: ['Sử 6', 'Sử 7','Sử 8', 'Sử 9']
+	            },
+
+	            // Enable drag recalculate
+	            calculable: true,
+
+	            // Horizontal axis
+	            xAxis: [{
+	                type: 'category',
+	                data: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+	                name: 'Điểm số'
+	            }],
+
+	            // Vertical axis
+	            yAxis: [{
+	                type: 'value',
+	                name: 'Số học sinh'
+	            }],
+
+	            // Add series
+	            series: [
+	                {
+	                    name: 'Sử 6',
+	                    type: 'bar',
+	                    data: [dataa[0].diemls60, dataa[0].diemls61, dataa[0].diemls62, dataa[0].diemls63, dataa[0].diemls64, dataa[0].diemls65, dataa[0].diemls66, dataa[0].diemls67, dataa[0].diemls68, dataa[0].diemls69, dataa[0].diemls610],
+	                    itemStyle: {
+	                        normal: {
+	                            label: {
+	                                show: true,
+	                                textStyle: {
+	                                    fontWeight: 500
+	                                }
+	                            }
+	                        }
+	                    }
+	                },
+	                {
+	                    name: 'Sử 7',
+	                    type: 'bar',
+	                    data: [dataa[0].diemls70, dataa[0].diemls71, dataa[0].diemls72, dataa[0].diemls73, dataa[0].diemls74, dataa[0].diemls75, dataa[0].diemls76, dataa[0].diemls77, dataa[0].diemls78, dataa[0].diemls79, dataa[0].diemls710],
+	                    itemStyle: {
+	                        normal: {
+	                            label: {
+	                                show: true,
+	                                textStyle: {
+	                                    fontWeight: 500
+	                                }
+	                            }
+	                        }
+	                    }
+	                },
+	                {
+	                    name: 'Sử 8',
+	                    type: 'bar',
+	                    data: [dataa[0].diemls80, dataa[0].diemls81, dataa[0].diemls82, dataa[0].diemls83, dataa[0].diemls84, dataa[0].diemls85, dataa[0].diemls86, dataa[0].diemls87, dataa[0].diemls88, dataa[0].diemls89, dataa[0].diemls810],
+	                    itemStyle: {
+	                        normal: {
+	                            label: {
+	                                show: true,
+	                                textStyle: {
+	                                    fontWeight: 500
+	                                }
+	                            }
+	                        }
+	                    }
+	                },
+	                {
+	                    name: 'Sử 9',
+	                    type: 'bar',
+	                    data: [dataa[0].diemls90, dataa[0].diemls91, dataa[0].diemls92, dataa[0].diemls93, dataa[0].diemls94, dataa[0].diemls95, dataa[0].diemls96, dataa[0].diemls97, dataa[0].diemls98, dataa[0].diemls99, dataa[0].diemls910],
+	                    itemStyle: {
+	                        normal: {
+	                            label: {
+	                                show: true,
+	                                textStyle: {
+	                                    fontWeight: 500
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
+	            ]
+	        });
+	 		basic_columns_dl.setOption({
+
+	            // Setup grid
+	            grid: {
+	                x: 40,
+	                x2: 40,
+	                y: 35,
+	                y2: 25
+	            },
+
+	            // Add tooltip
+	            tooltip: {
+	                trigger: 'axis'
+	            },
+
+	            // Add legend
+	            legend: {
+	                data: ['Địa 6', 'Địa 7','Địa 8', 'Địa 9']
+	            },
+
+	            // Enable drag recalculate
+	            calculable: true,
+
+	            // Horizontal axis
+	            xAxis: [{
+	                type: 'category',
+	                data: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+	                name: 'Điểm số'
+	            }],
+
+	            // Vertical axis
+	            yAxis: [{
+	                type: 'value',
+	                name: 'Số học sinh'
+	            }],
+
+	            // Add series
+	            series: [
+	                {
+	                    name: 'Địa 6',
+	                    type: 'bar',
+	                    data: [dataa[0].diemdl60, dataa[0].diemdl61, dataa[0].diemdl62, dataa[0].diemdl63, dataa[0].diemdl64, dataa[0].diemdl65, dataa[0].diemdl66, dataa[0].diemdl67, dataa[0].diemdl68, dataa[0].diemdl69, dataa[0].diemdl610],
+	                    itemStyle: {
+	                        normal: {
+	                            label: {
+	                                show: true,
+	                                textStyle: {
+	                                    fontWeight: 500
+	                                }
+	                            }
+	                        }
+	                    }
+	                },
+	                {
+	                    name: 'Địa 7',
+	                    type: 'bar',
+	                    data: [dataa[0].diemdl70, dataa[0].diemdl71, dataa[0].diemdl72, dataa[0].diemdl73, dataa[0].diemdl74, dataa[0].diemdl75, dataa[0].diemdl76, dataa[0].diemdl77, dataa[0].diemdl78, dataa[0].diemdl79, dataa[0].diemdl710],
+	                    itemStyle: {
+	                        normal: {
+	                            label: {
+	                                show: true,
+	                                textStyle: {
+	                                    fontWeight: 500
+	                                }
+	                            }
+	                        }
+	                    }
+	                },
+	                {
+	                    name: 'Địa 8',
+	                    type: 'bar',
+	                    data: [dataa[0].diemdl80, dataa[0].diemdl81, dataa[0].diemdl82, dataa[0].diemdl83, dataa[0].diemdl84, dataa[0].diemdl85, dataa[0].diemdl86, dataa[0].diemdl87, dataa[0].diemdl88, dataa[0].diemdl89, dataa[0].diemdl810],
+	                    itemStyle: {
+	                        normal: {
+	                            label: {
+	                                show: true,
+	                                textStyle: {
+	                                    fontWeight: 500
+	                                }
+	                            }
+	                        }
+	                    }
+	                },
+	                {
+	                    name: 'Địa 9',
+	                    type: 'bar',
+	                    data: [dataa[0].diemdl90, dataa[0].diemdl91, dataa[0].diemdl92, dataa[0].diemdl93, dataa[0].diemdl94, dataa[0].diemdl95, dataa[0].diemdl96, dataa[0].diemdl97, dataa[0].diemdl98, dataa[0].diemdl99, dataa[0].diemdl910],
+	                    itemStyle: {
+	                        normal: {
+	                            label: {
+	                                show: true,
+	                                textStyle: {
+	                                    fontWeight: 500
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
+	            ]
+	        });
+	       	setTimeout(function () {
+	            basic_columns_ls.resize();
+	            basic_columns_dl.resize();
+	        }, 2000);
+    	    window.onresize = function () {
             setTimeout(function () {
-                stacked_lines_ls.resize();
-                stacked_lines_dl.resize();
+                basic_columns_ls.resize();
+                basic_columns_dl.resize();
             }, 2000);
         }
         });
-
+        ///
    		$('#scheduletab').on('click', function () {
        		stacked_lines_ls.resize();
             stacked_lines_dl.resize();
+            basic_columns_ls.resize();
+            basic_columns_dl.resize();
        	});
        	$('#scheduletab').hover( function () {
        		stacked_lines_ls.resize();
             stacked_lines_dl.resize();
+            basic_columns_ls.resize();
+            basic_columns_dl.resize();
        	});
 	    window.onresize = function () {
             setTimeout(function () {
                 stacked_lines_ls.resize();
                 stacked_lines_dl.resize();
+                basic_columns_ls.resize();
+            	basic_columns_dl.resize();
             }, 2000);
         }
 	}
@@ -1045,10 +1463,10 @@ export class Trangcanhan extends React.Component{
 			id: "all",
 			id_user: id_user
 		}
-		console.log(data1);
+		//console.log(data1);
 		socket.emit('c2s_Thaoluan',data1);
 		socket.on('s2c_Thaoluan', function(data){
-			console.log(data);
+			//console.log(data);
 			if(data.length==0 && $(".timeline-row").length==0){
 				console.log("chua co bai biet");
 				$("#formCauhoi").children().append(
@@ -1084,5 +1502,18 @@ export class Trangcanhan extends React.Component{
 		else if(newProps.params.tab=="hoatdong"){
 				$("#hoatdong").click();
 		}
+		else if(newProps.params.tab=="quatrinh"){
+				$("#scheduletab").click();
+		}
+		else if(newProps.params.tab=="quanlyuser"){
+				$("#tag_listuser").click();
+		}
+		else if(newProps.params.tab=="quanlygiaovien"){
+				$("#tag_listsup").click();
+		}
+		else if(newProps.params.tab=="quanlyadmin"){
+				$("#tag_listadmin").click();
+		}
+
 	}
 }

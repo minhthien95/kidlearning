@@ -25,8 +25,22 @@ export class tuongtac_lichsu extends React.Component{
 					</div>
 				</div>
 				{/* /page header */}
+				<div className="page-header">
+					{/* Toolbar */}
+					<div className="navbar navbar-default navbar-component navbar-xs">
+						<ul className="nav navbar-nav visible-xs-block">
+							<li className="full-width text-center"><a data-toggle="collapse" data-target="#navbar-filter"><i className="icon-menu7"></i></a></li>
+						</ul>
 
-
+						<div className="navbar-collapse collapse" id="navbar-filter">
+							<ul className="nav navbar-nav">
+								<li className="active"><a href="#quocgia" data-toggle="tab"><i className="icon-history position-left"></i>Dòng thời gian các sự kiện Lịch sử Việt Nam</a></li>
+								<li><a href="#danso" data-toggle="tab"><i className=" icon-chess-king position-left"></i>Triều đại các vị vua trong Lịch sử Việt Nam</a></li>
+							</ul>
+						</div>
+					</div>
+					{/* /toolbar */}
+				</div>
 				{/* Content area */}
 				<div className="content">
 					<div id="formadd" className="panel panel-flat blog-horizontal blog-horizontal-2">
@@ -34,15 +48,25 @@ export class tuongtac_lichsu extends React.Component{
 							<div className="blog-preview">
 								<div className="panel-body">
 									<div className="form-group">
-										<label className="control-label col-lg-2">Thông tin sự kiện</label>
+										<label className="control-label text-semibold">Thông tin sự kiện</label>
 										<div className="col-lg-12">
 											<div className="row">
-												<div className="col-md-3" style={{paddingRight: '0px'}}>
-													<input id="add_thoigian" type="date" placeholder="Thời gian" className="form-control"/>
+												<div className="col-md-6" style={{paddingRight: '0px'}}>
+													<label className="control-label">Thời gian bắt đầu</label>
+													<input id="add_thoigian" type="date" placeholder="Thời gian bắt đầu" className="form-control"/>
 													<span className="help-block"></span>
 												</div>
 
-												<div className="col-md-9" style={{paddingRight: '0px'}}>
+												<div className="col-md-6" style={{paddingRight: '0px'}}>
+													<label className="control-label">Thời gian kết thúc(không bắt buộc)</label>
+													<input id="add_thoigian_end" type="date" placeholder="Thời gian kết thúc" className="form-control"/>
+													<span className="help-block"></span>
+												</div>
+											</div>
+										</div>
+										<div className="col-lg-12">
+											<div className="row">
+												<div className="col-md-12" style={{paddingRight: '0px'}}>
 													<input id="add_tieude" type="text" placeholder="TIêu đề" className="form-control"/>
 													<span className="help-block"></span>
 												</div>
@@ -65,27 +89,24 @@ export class tuongtac_lichsu extends React.Component{
 							</div>
 						</div>
 					</div>
-					<div className="panel panel-flat">
-						<div className="content">
-							<div className="page-title">
-								<h4><span className="text-semibold">Dòng thời gian các sự kiện Lịch sử Việt Nam</span></h4>
-								<a className="heading-elements-toggle"><i className="icon-more"></i></a>
+					<div className="tab-content">
+						<div className="tab-pane fade in active" id="quocgia">
+							<div className="panel panel-flat">
+								<div className="content">
+									<div id="timeline"/>
+									<br/>
+									<div id="noidung"/>
+								</div>
 							</div>
-							<div id="timeline"/>
-							<br/>
-							<div id="noidung"/>
 						</div>
-					</div>
-
-					<div className="panel panel-flat">
-						<div className="content">
-							<div className="page-title">
-								<h4><span className="text-semibold">Triều đại các vị vua trong Lịch sử Việt Nam</span></h4>
-								<a className="heading-elements-toggle"><i className="icon-more"></i></a>
+						<div className="tab-pane fade" id="danso">
+							<div className="panel panel-flat">
+								<div className="content">
+									<div id="timeline1"/>
+									<br/>
+									<div id="noidung1"/>
+								</div>
 							</div>
-							<div id="timeline1"/>
-							<br/>
-							<div id="noidung1"/>
 						</div>
 					</div>
 				</div>
@@ -111,16 +132,16 @@ export class tuongtac_lichsu extends React.Component{
 		var dataset1=[];
 		
 		$.post("dongsukien",function(data){
-			console.log(data);
+			//console.log(data);
 			for(var i=0;i<data.length;i++){
 				if(data[i].END==null){
 					dataset.push({id: data[i].ID, content: data[i].DATE+": "+data[i].TIEUDE, start: data[i].START});
 				}
 				else{
-					dataset1.push({id: data[i].ID, content: data[i].DATE+": "+data[i].TIEUDE, start: data[i].START, end: data[i].END});
+					dataset1.push({id: data[i].ID, content: data[i].DATE_START+"-"+data[i].DATE_END+": "+data[i].TIEUDE, start: data[i].START, end: data[i].END});
 				}
 			}
-			console.log(dataset);
+			//console.log(dataset);
 					  // Create a DataSet (allows two way data-binding)
 			items = new vis.DataSet(dataset);
 			items1 = new vis.DataSet(dataset1);
@@ -155,9 +176,6 @@ export class tuongtac_lichsu extends React.Component{
 			    }
 			};
 			var options1 = {
-			    margin: {
-			      item: 20
-			    },
 			    format: {
 			      minorLabels: {
 			        millisecond:'SSS',
@@ -186,17 +204,15 @@ export class tuongtac_lichsu extends React.Component{
 			// Create a Timeline
 		  	timeline = new vis.Timeline(container, items, options);
   			timeline.on('click', function (properties) {
-			    console.log('click', properties.item);
 			    if(properties.item=='null'){
 			    	$("#noidung").empty();
 
 			    }else{
 				    $.post("laysukien",{id: properties.item},function(data){
-				    	console.log('show ', data);
 				    	$("#noidung").empty();
 				    	$("#noidung").append('<div class="media stack-media-on-mobile">'+
 				            					'<div class="media-body">'+
-													'<h6 class="media-heading text-semibold text-primary-800">'+data[0].DATE+'-'+data[0].TIEUDE+'</a></h6>'+
+													'<h6 class="media-heading text-semibold text-primary-800">'+data[0].DATE+': '+data[0].TIEUDE+'</a></h6>'+
 													data[0].NOIDUNG+
 												'</div>'+
 											'</div>');
@@ -206,17 +222,15 @@ export class tuongtac_lichsu extends React.Component{
 
 			timeline1 = new vis.Timeline(container1, items1, options1);
   			timeline1.on('click', function (properties) {
-			    console.log('click', properties.item);
 			    if(properties.item=='null'){
 			    	$("#noidung").empty();
 
 			    }else{
 				    $.post("laysukien",{id: properties.item},function(data){
-				    	console.log('show ', data);
 				    	$("#noidung1").empty();
 				    	$("#noidung1").append('<div class="media stack-media-on-mobile">'+
 				            					'<div class="media-body">'+
-													'<h6 class="media-heading text-semibold text-primary-800">'+data[0].DATE+'-'+data[0].TIEUDE+'</a></h6>'+
+													'<h6 class="media-heading text-semibold text-primary-800">'+data[0].DATE_START+'-'+data[0].DATE_END+': '+data[0].TIEUDE+'</a></h6>'+
 													data[0].NOIDUNG+
 												'</div>'+
 											'</div>');
@@ -224,69 +238,6 @@ export class tuongtac_lichsu extends React.Component{
 				}
 			});
 		});
-
-		// trieu dai vua
-		// $.post("dongsukien",function(data){
-		// 	console.log(data);
-		// 	for(var i=0;i<data.length;i++){
-		// 		dataset1.push({id: data[i].ID, content: data[i].DATE+": "+data[i].TIEUDE, start: data[i].START});
-		// 	}
-		// 	console.log(dataset1);
-		// 			  // Create a DataSet (allows two way data-binding)
-		// 	items1 = new vis.DataSet(dataset1);
-
-		// 	// Configuration for the Timeline
-		// 	var options = {
-		// 	    margin: {
-		// 	      item: 20
-		// 	    },
-		// 	    format: {
-		// 	      minorLabels: {
-		// 	        millisecond:'SSS',
-		// 	        second:     's',
-		// 	        minute:     'HH:mm',
-		// 	        hour:       'HH:mm',
-		// 	        weekday:    'ddd DD',
-		// 	        day:        'DD',
-		// 	        week:       'w',
-		// 	        month:      'MM',
-		// 	        year:       'YYYY'
-		// 	      },
-		// 	      majorLabels: {
-		// 	        millisecond:'HH:mm:ss',
-		// 	        second:     'DD MM HH:mm',
-		// 	        minute:     'dd DD MM',
-		// 	        hour:       'dd DD MM',
-		// 	        weekday:    'MM YYYY',
-		// 	        day:        'MM YYYY',
-		// 	        week:       'MM YYYY',
-		// 	        month:      'YYYY',
-		// 	        year:       ''
-		// 	      }
-		// 	    }
-		// 	};
-		// 	// Create a Timeline
-		//   	timeline1 = new vis.Timeline(container1, items1, options);
-  // 			timeline1.on('click', function (properties) {
-		// 	    console.log('click', properties.item);
-		// 	    if(properties.item=='null'){
-		// 	    	$("#noidung").empty();
-
-		// 	    }else{
-		// 		    $.post("laysukien",{id: properties.item},function(data){
-		// 		    	console.log('show ', data);
-		// 		    	$("#noidung").empty();
-		// 		    	$("#noidung").append('<div class="media stack-media-on-mobile">'+
-		// 		            					'<div class="media-body">'+
-		// 											'<h6 class="media-heading text-semibold text-primary-800">'+data[0].DATE+'-'+data[0].TIEUDE+'</a></h6>'+
-		// 											data[0].NOIDUNG+
-		// 										'</div>'+
-		// 									'</div>');
-		// 		    })
-		// 		}
-		// 	});
-
-		// });
 
 		if (type_username!="trogiang") {
             $("#thembaihoc").hide();
@@ -322,7 +273,8 @@ export class tuongtac_lichsu extends React.Component{
 		        id:  id_user,
 				tieude: $("#add_tieude").val(),
 				thoigian: $("#add_thoigian").val(),
-				noidung: $("#add_noidung").val()
+				noidung: $("#add_noidung").val(),
+				thoigian_end: $("#add_thoigian_end").val()
 			};
 			console.log(data);
 	        $.post("themsukien", data, function(){
@@ -347,18 +299,6 @@ export class tuongtac_lichsu extends React.Component{
 		// });
 		// // Colorbox Modal
 		// $(".CBmodal").colorbox({inline:true, initialWidth:100, maxWidth:682, initialHeight:100, transition:"elastic",speed:750});
-
-	}
-	componentWillMount()
-	{
-		console.log("componentWillMount");
-		
-		////
-	}
-	componentWillReceiveProps(newProps)
-	{
-		console.log("componentWillReceiveProps");
-		// var that=this;
 
 	}
 }

@@ -7,6 +7,9 @@ var expressSession = require('express-session');
 var passport 	   = require('passport');
 var passportLocal  = require('passport-local');
 var passportHttp   = require('passport-http');
+var passportFacebook = require('passport-facebook');
+var passportTwitter = require('passport-twitter');
+var passportGoogle = require('passport-google-oauth');
 
 var parser         = bodyParser.urlencoded({extended: false});
 
@@ -36,6 +39,9 @@ app.use(passport.session());
 
 server.listen(process.env.PORT || 3000, () => console.log('Server started on port 3000'))
 
+///
+//var urlcallback='http://localhost:3000';
+var urlcallback='http://kid-learning.herokuapp.com';
 //connect to database
 var pg = require('pg');
 var config = {
@@ -103,13 +109,309 @@ function ensureAuthenticated(req,res,next){
 
 passport.use(new passportLocal.Strategy(verifyCredentials));
 passport.use(new passportHttp.BasicStrategy(verifyCredentials));
+passport.use(new passportFacebook.Strategy({
+    clientID: '1886755184926243',
+    clientSecret: 'dfccf327a61c08ea9935109abc1b73e4',
+    callbackURL: urlcallback+'/auth/fb/callback'
+	},
+	function(accessToken, refreshToken, profile, done) {
+		var id;
+		var maxid;
+		var username="'"+profile.id+"'";
+		var fullname="'"+profile.displayName+"'";
+		var password="'"+"0000"+"'";
+		var type="'"+"hocsinh"+"'";
+		var id_login="'"+profile.id+"'";
+		var tokenPW = "'"+ jwt.sign(JSON.parse(JSON.stringify('0000')), 'thiendeptrai') +"'";
+	    pool.connect(function(err, client, donedb) {
+			if(err) {
+		    	return console.error('error fetching client from pool', err);
+			}
+			// var username = req.body.txtusername;
+			// var password = req.body.txtpassword;
+		  	client.query('select * from "USER" where "ID_LOGIN"='+"'"+profile.id+"'", function(err, result) {
+			    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+			    donedb(err);
+			    
+			    if(err) {
+			      return console.error('error running query', err);
+			    }
+			    number=result.rowCount;
+			    if(number==0){
+				  	client.query('SELECT * FROM "USER" order by cast("ID" as int) desc limit 1',
+				  		function(err, result) {
+				  			donedb(err);
+						    if(err) {
+						      return console.error('error running query', err);
+						    }
+						    if(result.rowCount==0)
+						    	id=1;
+						    else{
+						    	maxid=parseInt(result.rows[0].ID);
+						    	id=maxid+1;
+							}
 
+						    maxid="'"+id+"'";
+					    	pool.connect(function(err, client, donedb) {
+								if(err) {
+							    	return console.error('error fetching client from pool', err);
+								}	
+							  	client.query('INSERT INTO "USER" VALUES ('+maxid+','+
+							  												fullname+','+
+							  												null+','+
+							  												type+','+
+							  												6+','+
+							  												username+','+	
+							  												null+','+
+							  												null+','+
+							  												tokenPW+','+
+							  												0+','+
+							  												'1'+','+
+							  												'1'+','+
+							  												id_login+')',
+							  		function(err, result) {
+							  			donedb(err);
+									    if(err) {
+									      return console.error('error running query', err);
+									    }
+									    else{
+									    	console.log("them xong");
+									    	done(null, {username: profile.id, password: tokenPW, lop: "6", type: "hocsinh", id: id});
+									    	return;
+									    }
+							  });
+							});
+				  		}
+				  	);
+			    }
+			   	if(number==1)
+			   	{
+					 done(null, {username: result.rows[0].USERNAME, password: result.rows[0].PASSWORD, lop: result.rows[0].LOP, type: result.rows[0].LOAINGUOIDUNG, id: result.rows[0].ID});
+				};
+		  });
+		});
+	    // console.log("accessToken " + accessToken);
+	    // console.log(refreshToken);
+	    // console.log(profile);
+
+	    // return done(null, {username: "username", password: "password", lop: "result.rows[0].LOP", type: "result.rows[0].LOAINGUOIDUNG", id: "result.rows[0].ID"});
+	})
+);
+passport.use(new passportTwitter.Strategy({
+    consumerKey: '5aKlUudDXXkTbLqb9R3hTSNVg',
+    consumerSecret: '9dscXlTSfPlZKeS4wxQeUOoyvC93VfpyjKgi6ePx1qxmlGNyv1',
+    callbackURL: urlcallback+'/auth/tw/callback'
+	},
+	function(accessToken, refreshToken, profile, done) {
+		var id;
+		var maxid;
+		var username="'"+profile.id+"'";
+		var fullname="'"+profile.displayName+"'";
+		var password="'"+"0000"+"'";
+		var type="'"+"hocsinh"+"'";
+		var id_login="'"+profile.id+"'";
+		var tokenPW = "'"+ jwt.sign(JSON.parse(JSON.stringify('0000')), 'thiendeptrai') +"'";
+	    pool.connect(function(err, client, donedb) {
+			if(err) {
+		    	return console.error('error fetching client from pool', err);
+			}
+			// var username = req.body.txtusername;
+			// var password = req.body.txtpassword;
+		  	client.query('select * from "USER" where "ID_LOGIN"='+"'"+profile.id+"'", function(err, result) {
+			    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+			    donedb(err);
+			    
+			    if(err) {
+			      return console.error('error running query', err);
+			    }
+			    number=result.rowCount;
+			    if(number==0){
+				  	client.query('SELECT * FROM "USER" order by cast("ID" as int) desc limit 1',
+				  		function(err, result) {
+				  			donedb(err);
+						    if(err) {
+						      return console.error('error running query', err);
+						    }
+						    if(result.rowCount==0)
+						    	id=1;
+						    else{
+						    	maxid=parseInt(result.rows[0].ID);
+						    	id=maxid+1;
+							}
+
+						    maxid="'"+id+"'";
+					    	pool.connect(function(err, client, donedb) {
+								if(err) {
+							    	return console.error('error fetching client from pool', err);
+								}	
+							  	client.query('INSERT INTO "USER" VALUES ('+maxid+','+
+							  												fullname+','+
+							  												null+','+
+							  												type+','+
+							  												6+','+
+							  												username+','+	
+							  												null+','+
+							  												null+','+
+							  												tokenPW+','+
+							  												0+','+
+							  												'1'+','+
+							  												'1'+','+
+							  												id_login+')',
+							  		function(err, result) {
+							  			donedb(err);
+									    if(err) {
+									      return console.error('error running query', err);
+									    }
+									    else{
+									    	console.log("them xong");
+									    	done(null, {username: profile.id, password: tokenPW, lop: "6", type: "hocsinh", id: id});
+									    	return;
+									    }
+							  });
+							});
+				  		}
+				  	);
+			    }
+			   	if(number==1)
+			   	{
+					 done(null, {username: result.rows[0].USERNAME, password: result.rows[0].PASSWORD, lop: result.rows[0].LOP, type: result.rows[0].LOAINGUOIDUNG, id: result.rows[0].ID});
+				};
+		  });
+		});
+	})
+);
+passport.use(new passportGoogle.OAuth2Strategy({
+    clientID: '690165654268-1p9ks52ih5g3q9193o76ssg6lbcde3ao.apps.googleusercontent.com',
+    clientSecret: 'jez0paaM5MzAt9cID726MRT9',
+    callbackURL: urlcallback+'/auth/gg/callback'
+	},
+	function(accessToken, refreshToken, profile, done) {
+		var id;
+		var maxid;
+		var username="'"+profile.id+"'";
+		var fullname="'"+profile.displayName+"'";
+		var password="'"+"0000"+"'";
+		var email="'"+profile.emails[0].value+"'";
+		var type="'"+"hocsinh"+"'";
+		var id_login="'"+profile.id+"'";
+		var tokenPW = "'"+ jwt.sign(JSON.parse(JSON.stringify('0000')), 'thiendeptrai') +"'";
+	    pool.connect(function(err, client, donedb) {
+			if(err) {
+		    	return console.error('error fetching client from pool', err);
+			}
+			// var username = req.body.txtusername;
+			// var password = req.body.txtpassword;
+		  	client.query('select * from "USER" where "ID_LOGIN"='+"'"+profile.id+"'", function(err, result) {
+			    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+			    donedb(err);
+			    
+			    if(err) {
+			      return console.error('error running query', err);
+			    }
+			    number=result.rowCount;
+			    if(number==0){
+				  	client.query('SELECT * FROM "USER" order by cast("ID" as int) desc limit 1',
+				  		function(err, result) {
+				  			donedb(err);
+						    if(err) {
+						      return console.error('error running query', err);
+						    }
+						    if(result.rowCount==0)
+						    	id=1;
+						    else{
+						    	maxid=parseInt(result.rows[0].ID);
+						    	id=maxid+1;
+							}
+
+						    maxid="'"+id+"'";
+					    	pool.connect(function(err, client, donedb) {
+								if(err) {
+							    	return console.error('error fetching client from pool', err);
+								}	
+							  	client.query('INSERT INTO "USER" VALUES ('+maxid+','+
+							  												fullname+','+
+							  												null+','+
+							  												type+','+
+							  												6+','+
+							  												username+','+	
+							  												email+','+
+							  												null+','+
+							  												tokenPW+','+
+							  												0+','+
+							  												'1'+','+
+							  												'1'+','+
+							  												id_login+')',
+							  		function(err, result) {
+							  			donedb(err);
+									    if(err) {
+									      return console.error('error running query', err);
+									    }
+									    else{
+									    	console.log("them xong");
+									    	done(null, {username: profile.id, password: tokenPW, lop: "6", type: "hocsinh", id: id});
+									    	return;
+									    }
+							  });
+							});
+				  		}
+				  	);
+			    }
+			   	if(number==1)
+			   	{
+					 done(null, {username: result.rows[0].USERNAME, password: result.rows[0].PASSWORD, lop: result.rows[0].LOP, type: result.rows[0].LOAINGUOIDUNG, id: result.rows[0].ID});
+				};
+		  });
+		});
+	})
+);
 passport.serializeUser(function(user, done) {
+	console.log("serializeUser");
+	console.log(user);
         done(null, user);
 });
 
 passport.deserializeUser(function(user, done) {
    	done(null,user); 
+});
+///dang nhap fb
+app.get('/auth/fb',
+  passport.authenticate('facebook'), function(){
+  	console.log(" vao /auth/fb");
+});
+
+app.get('/auth/fb/callback', 
+  passport.authenticate('facebook', { successRedirect: '/',
+                                   failureRedirect: '/dangnhap' }),
+  function(req, res) {
+  	console.log(" vao /auth/fb/callback");
+    //res.redirect('/');
+});
+
+///dang nhap twitter
+app.get('/auth/tw',
+  passport.authenticate('twitter'), function(){
+  	console.log(" vao /auth/tw");
+});
+
+app.get('/auth/tw/callback', 
+  passport.authenticate('twitter', { successRedirect: '/',
+                                   failureRedirect: '/dangnhap' }),
+  function(req, res) {
+  	console.log(" vao /auth/tw/callback");
+    //res.redirect('/');
+});
+///dang nhap google+
+app.get('/auth/gg',
+  passport.authenticate('google',{ scope : ['profile', 'email'] }), function(){
+  	console.log(" vao /auth/gg");
+});
+
+app.get('/auth/gg/callback', 
+  passport.authenticate('google', { successRedirect: '/',
+                                   failureRedirect: '/dangnhap' }),
+  function(req, res) {
+  	console.log(" vao /auth/gg/callback");
+    //res.redirect('/');
 });
 
 //route
@@ -166,7 +468,7 @@ app.post('/laymatkhau', function (req, res) {
 					  from: 'kidlearning.hcmus@gmail.com',
 					  to: JSON.parse(JSON.stringify(req.body.email)),
 					  subject: '[Kid Learning] Lấy lại mật khẩu ',
-					  text: 'Mật khẩu tài khoản của bạn là: '+decoded+'. \nVui lòng đăng nhập lại tại: http://kid-learning.herokuapp.com.\nNếu bạn không phải là chủ nhân tại khoản này vui lòng bỏ qua tin nhắn này'
+					  text: 'Mật khẩu tài khoản của bạn là: '+decoded+'. \nVui lòng đăng nhập lại tại: http://kid-learning.herokuapp.com.\nNếu bạn không phải là chủ nhân tại khoản này vui lòng bỏ qua tin nhắn này.'
 				};
 
 				transporter.sendMail(mailOptions, function(error, info){
@@ -661,7 +963,7 @@ io.sockets.on('connection', function(socket){
 		    	done(err);
 
 			    if(err) {
-			      return console.error('error running query', Errorr);
+			      return console.error('error running query', err);
 			    }
 			    var data1 = result.rows;
 			   	socket.emit('s2c_Thongbao',data1);
@@ -994,6 +1296,28 @@ app.post("/delete_user", function(req,res){
 	  });
 	});
 });
+///chuyen hoc sinht hanh giao vien
+app.post("/chuyen_user", function(req,res){
+
+	var id="'"+JSON.parse(JSON.stringify(req.body.id))+"'";
+
+	pool.connect(function(err, client, done) {
+	  if(err) {
+	    return console.error('error fetching client from pool', err);
+	  }
+	  client.query('UPDATE "USER" SET "LOAINGUOIDUNG"='+"'"+'trogiang'+"'"+' WHERE "ID"='+id
+  		, function(err, result) {
+	    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+	    done(err);
+
+	    if(err) {
+	      return console.error('error running query', err);
+	    }
+	   	res.end();
+    	return;
+	  });
+	});
+});
 ///get list student/sup
 app.post("/list_user/type:type", function(req,res){
 	var tempDate="'"+"DD-MM-YYYY"+"'";
@@ -1264,6 +1588,39 @@ app.post('/themBaihoc', function(req, res){
 	  	});	
 	});
 });
+//xoa bai hoc
+app.post("/delete_baihoc", function(req,res){
+
+	var id_baihoc="'"+JSON.parse(JSON.stringify(req.body.id_baihoc))+"'";
+
+	pool.connect(function(err, client, done) {
+	  	if(err) {
+	    	return console.error('error fetching client from pool', err);
+	  	}
+	  
+	  	client.query('DELETE FROM "CAUHOI" WHERE "ID"= CONCAT((select cast("MON" as varchar(20)) from "BAIHOC" WHERE "ID"='+id_baihoc+'),(select cast("PHANLOP" as varchar(20)) from "BAIHOC" WHERE "ID"='+id_baihoc+'),(select cast("BAI" as varchar(20)) from "BAIHOC" WHERE "ID"='+id_baihoc+'))'
+  		, function(err, result) {
+	    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+	    done(err);
+
+	    if(err) {
+	      return console.error('error running query', err);
+	    }
+	    client.query('DELETE FROM "BAIHOC" WHERE "ID"='+id_baihoc,
+	  		function(err, result) {
+	  			done(err);
+			    if(err) {
+			      return console.error('error running query', err);
+			    }
+			    else{
+			    	res.end();
+			    	return;
+			    }
+	  	});
+	   	
+	  });
+	});
+});
 /// them video bai hoc moi
 app.post('/themVideo', function(req, res){	
 
@@ -1334,33 +1691,36 @@ app.post('/themVideo', function(req, res){
 app.post("/delete_video", function(req,res){
 
 	var id_video="'"+JSON.parse(JSON.stringify(req.body.id_video))+"'";
-
+	var mon="'"+JSON.parse(JSON.stringify(req.body.mon))+"'";
+	var mon1;
+	if(mon=="lichsu")
+		mon1="ls";
+	else
+		mon1="dl"
+	var id_cauhoi="'"+"v"+mon1+id+"'";
 	pool.connect(function(err, client, done) {
 	  	if(err) {
 	    	return console.error('error fetching client from pool', err);
 	  	}
 	  
-	  	// client.query('DELETE FROM "BINHLUAN" WHERE "ID_CAUHOI"='+id_cauhoi
-  		// , function(err, result) {
-	   //  //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
-	   //  done(err);
-
-	   //  if(err) {
-	   //    return console.error('error running query', err);
-	   //  }
-	    client.query('DELETE FROM "VIDEO" WHERE "ID"='+id_video,
+	   	client.query('DELETE FROM "CAUHOI" WHERE "ID"='+id_cauhoi,
 	  		function(err, result) {
 	  			done(err);
 			    if(err) {
 			      return console.error('error running query', err);
 			    }
-			    else{
-			    	res.end();
-			    	return;
-			    }
+	    	    client.query('DELETE FROM "VIDEO" WHERE "ID"='+id_video,
+			  		function(err, result) {
+			  			done(err);
+					    if(err) {
+					      return console.error('error running query', err);
+					    }
+					    else{
+					    	res.end();
+					    	return;
+					    }
+			  	});
 	  	});
-	   	
-	  	//});
 	});
 });
 /// them bài tap trac nghiem va dapan
@@ -1380,7 +1740,7 @@ app.post('/themTracnghiem', function(req, res){
 	var bai="'"+JSON.parse(JSON.stringify(req.body.bai))+"'";
 	var mon="'"+JSON.parse(JSON.stringify(req.body.mon))+"'";
 	var loai="'"+JSON.parse(JSON.stringify(req.body.loai))+"'";
-
+	var link_anh="'"+JSON.parse(JSON.stringify(req.body.link_anh))+"'";
 	pool.connect(function(err, client, donedb) {
 		if(err) {
 	    	return console.error('error fetching client from pool', err);
@@ -1400,12 +1760,14 @@ app.post('/themTracnghiem', function(req, res){
 				}
 
 			    maxid="'"+id1+"'";
+			    console.log(maxid);
 			  	client.query('INSERT INTO "TRACNGHIEM" VALUES ('+maxid+','+
 			  												bai+','+
 			  												mon+','+
 			  												lop+','+
 			  												noidung+','+
-			  												loai+')',
+			  												loai+','+
+			  												link_anh+')',
 			  		function(err, result) {
 			  			donedb(err);
 					    if(err) {
@@ -1474,6 +1836,227 @@ app.post('/themTracnghiem', function(req, res){
 	  	);
 	});
 });
+/// them bài tap trac nghiem va dapan cho bai kiem tra
+app.post('/themTracnghiemKiemtra', function(req, res){	
+	var obj = JSON.parse(req.body.list);
+
+	console.log(obj.length);
+	var processItems = function(i){
+	  if( i < obj.length ) {
+	  	console.log(i);
+  	    var maxid,maxid1,maxid2,maxid3,maxid4;
+		var noidung="'"+JSON.parse(JSON.stringify(obj[i].noidung))+"'";
+		var cau1="'"+JSON.parse(JSON.stringify(obj[i].cau1))+"'";
+		var cau2="'"+JSON.parse(JSON.stringify(obj[i].cau2))+"'";
+		var cau3="'"+JSON.parse(JSON.stringify(obj[i].cau3))+"'";
+		var cau4="'"+JSON.parse(JSON.stringify(obj[i].cau4))+"'";
+		var da1="'"+JSON.parse(JSON.stringify(obj[i].da1))+"'";
+		var da2="'"+JSON.parse(JSON.stringify(obj[i].da2))+"'";
+		var da3="'"+JSON.parse(JSON.stringify(obj[i].da3))+"'";
+		var da4="'"+JSON.parse(JSON.stringify(obj[i].da4))+"'";
+		var id="'"+JSON.parse(JSON.stringify(obj[i].id))+"'";
+		var lop="'"+JSON.parse(JSON.stringify(obj[i].lop))+"'";
+		var bai="'"+JSON.parse(JSON.stringify(obj[i].bai))+"'";
+		var mon="'"+JSON.parse(JSON.stringify(obj[i].mon))+"'";
+		var loai="'"+JSON.parse(JSON.stringify(obj[i].loai))+"'";
+		var link_anh="'"+JSON.parse(JSON.stringify(obj[i].link_anh))+"'";
+		pool.connect(function(err, client, donedb) {
+			if(err) {
+		    	return console.error('error fetching client from pool', err);
+			}	
+		  	client.query('SELECT * FROM "TRACNGHIEM" order by cast("ID" as int) desc limit 1',
+		  		function(err, result) {
+		  			donedb(err);
+				    if(err) {
+				      return console.error('error running query', err);
+				    }
+
+				   	if(result.rowCount==0)
+				    	id1=1;
+				    else{
+				    	maxid=parseInt(result.rows[0].ID);
+				    	id1=maxid+1;
+					}
+
+				    maxid="'"+id1+"'";
+				    console.log(maxid);
+				  	client.query('INSERT INTO "TRACNGHIEM" VALUES ('+maxid+','+
+				  												bai+','+
+				  												mon+','+
+				  												lop+','+
+				  												noidung+','+
+				  												loai+','+
+				  												link_anh+')',
+				  		function(err, result) {
+				  			donedb(err);
+						    if(err) {
+						      return console.error('error running query', err);
+						    }
+						    else{
+						    	//them dapan
+						    	client.query('SELECT * FROM "DAPAN_TRACNGHIEM" order by cast("ID" as int) desc limit 1',
+						  		function(err, result) {
+						  			donedb(err);
+								    if(err) {
+								      return console.error('error running query', err);
+								    }
+
+								    maxid1=parseInt(result.rows[0].ID);
+								    console.log(maxid1);
+								    var id2=maxid1+1;
+
+								    maxid1="'"+id2+"'";
+								    console.log(maxid1);
+								  	client.query('INSERT INTO "DAPAN_TRACNGHIEM" VALUES ('+maxid1+','+
+								  												maxid+','+
+								  												cau1+','+
+								  												da1+')',function(){return;});
+								  	var id3=id2+1;
+								  	maxid2="'"+id3+"'";
+								  	client.query('INSERT INTO "DAPAN_TRACNGHIEM" VALUES ('+maxid2+','+
+								  												maxid+','+
+								  												cau2+','+
+								  												da2+')',function(){return;});
+								  	var id4=id3+1;
+								  	maxid3="'"+id4+"'";
+								  	client.query('INSERT INTO "DAPAN_TRACNGHIEM" VALUES ('+maxid3+','+
+								  												maxid+','+
+								  												cau3+','+
+								  												da3+')',function(){return;});
+								  	var id5=id4+1;
+								  	maxid4="'"+id5+"'";
+								  	client.query('INSERT INTO "DAPAN_TRACNGHIEM" VALUES ('+maxid4+','+
+								  												maxid+','+
+								  												cau4+','+
+								  												da4+')',function(){return;});
+							  		}
+							  	);
+						    	client.query('UPDATE "BAIHOC" SET "BAITHI" = '+"'"+1+"'"+' WHERE "MON"='+mon+' and "PHANLOP"='+lop+' and "BAI" ='+bai,
+							  		function(err, result) {
+							  			donedb(err);
+									    if(err) {
+									      return console.error('error running query', err);
+									    }
+									    else{
+									    	console.log("them xong");
+						    		    	processItems(i+1);
+									    	return;
+									    }
+							  	});
+						    }
+					  	});
+			  		}
+			  	);
+			});
+	  	}
+	};
+	processItems(0);
+  	res.send(true);
+});
+app.post("/deleteKiemtra", function(req,res){
+
+	var lop="'"+JSON.parse(JSON.stringify(req.body.lop))+"'";
+	var bai="'"+JSON.parse(JSON.stringify(req.body.bai))+"'";
+	var mon="'"+JSON.parse(JSON.stringify(req.body.mon))+"'";
+
+	pool.connect(function(err, client, done) {
+		if(err) {
+		    return console.error('error fetching client from pool', err);
+		}
+	  	client.query('DELETE FROM "DAPAN_TRACNGHIEM" WHERE "ID_TRACNGHIEM" in (select "ID" FROM "TRACNGHIEM" WHERE "MON"='+mon+' and "LOP"='+lop+' and "ID_BAIHOC"='+bai+' and "LOAI"='+"'"+'kiemtra'+"'"+')'
+	  		, function(err, result) {
+		    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+		    done(err);
+
+		    if(err) {
+		      return console.error('error running query1', err);
+		    }
+	    	client.query('DELETE FROM "TRACNGHIEM" WHERE "MON"='+mon+' and "LOP"='+lop+' and "ID_BAIHOC"='+bai+' and "LOAI"='+"'"+'kiemtra'+"'"
+		  		, function(err, result) {
+			    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+			    done(err);
+
+			    if(err) {
+			      return console.error('error running query2', err);
+			    }
+
+			    client.query('UPDATE "BAIHOC" SET "BAITHI" = '+"'"+0+"'"+' WHERE "MON"='+mon+' and "PHANLOP"='+lop+' and "BAI" ='+bai,
+			  		function(err, result) {
+			  			done(err);
+					    if(err) {
+					      return console.error('error running query3', err);
+					    }
+					    else{
+		    		    	res.end();
+					    	return;
+					    }
+			  	});
+			   	
+		  	});
+			   //  client.query('UPDATE "BAIHOC" SET "BAITHI" = '+"'"+0+"'"+' WHERE "MON"='+mon+' and "PHANLOP"='+lop+' and "BAI" ='+bai,
+			  	// 	function(err, result) {
+			  	// 		done(err);
+					 //    if(err) {
+					 //      return console.error('error running query', err);
+					 //    }
+					 //    else{
+		    // 		    	res.end();
+					 //    	return;
+					 //    }
+			  	// });
+	   	
+	  	});
+	});
+});
+/// check xem nguoi dung co hoang thanh het bai kiem tra chua
+app.post("/checkBaithi", function(req,res){
+	var so1, so2;
+	var id="'"+JSON.parse(JSON.stringify(req.body.id))+"'";
+	var mon="'"+JSON.parse(JSON.stringify(req.body.mon))+"'";
+	var lop="'"+JSON.parse(JSON.stringify(req.body.lop))+"'";
+	pool.connect(function(err, client, done) {
+		if(err) {
+		    return console.error('error fetching client from pool', err);
+		}
+	  	client.query('select "ID" FROM "KETQUAHOCTAP" WHERE "MON"='+mon+' and "LOP"='+lop+' and "ID_USER"='+id
+	  		, function(err, result) {
+		    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+		    done(err);
+
+		    if(err) {
+		      return console.error('error running query1', err);
+		    }
+		    so1=result.rowCount;
+	    	client.query('select "ID_BAIHOC" FROM "TRACNGHIEM" WHERE "MON"='+mon+' and "LOP"='+lop+' and  "LOAI"='+"'"+'kiemtra'+"'"+'GROUP BY "ID_BAIHOC"'
+		  		, function(err, result1) {
+			    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+			    done(err);
+			    if(err) {
+			      return console.error('error running query2', err);
+			    }
+			    so2=result1.rowCount;
+			    if(so1==so2)
+			    	res.send(true);
+			    else
+			    	res.send(false);
+				return;
+			   	
+		  	});
+			   //  client.query('UPDATE "BAIHOC" SET "BAITHI" = '+"'"+0+"'"+' WHERE "MON"='+mon+' and "PHANLOP"='+lop+' and "BAI" ='+bai,
+			  	// 	function(err, result) {
+			  	// 		done(err);
+					 //    if(err) {
+					 //      return console.error('error running query', err);
+					 //    }
+					 //    else{
+		    // 		    	res.end();
+					 //    	return;
+					 //    }
+			  	// });
+	   	
+	  	});
+	});
+});
 /// them ket qua hoc tap
 app.post('/themKetquahoctap', function(req, res){	
 
@@ -1490,61 +2073,75 @@ app.post('/themKetquahoctap', function(req, res){
 		if(err) {
 	    	return console.error('error fetching client from pool', err);
 		}	
-	  	client.query('SELECT * FROM "KETQUAHOCTAP" order by cast("ID" as int) desc limit 1',
+		client.query('SELECT * FROM "KETQUAHOCTAP" where "MON"='+mon+' and "LOP"='+lop+' and "ID_BAIHOC"='+bai+' and "ID_USER"='+id_user,
 	  		function(err, result) {
 	  			donedb(err);
 			    if(err) {
 			      return console.error('error running query', err);
 			    }
-
 			    console.log(result.rowCount);
-			    if(result.rowCount==0)
-			    	id=1;
+			    if(result.rowCount!=0){
+			    	res.send(true);
+			    }
 			    else{
-			    	maxid=parseInt(result.rows[0].ID);
-			    	id=maxid+1;
+	    		  	client.query('SELECT * FROM "KETQUAHOCTAP" order by cast("ID" as int) desc limit 1',
+				  		function(err, result) {
+				  			donedb(err);
+						    if(err) {
+						      return console.error('error running query', err);
+						    }
+
+						    console.log(result.rowCount);
+						    if(result.rowCount==0)
+						    	id=1;
+						    else{
+						    	maxid=parseInt(result.rows[0].ID);
+						    	id=maxid+1;
+							}
+						    maxid="'"+id+"'";
+						  	client.query('INSERT INTO "KETQUAHOCTAP" VALUES ('+maxid+','+
+						  												id_user+','+
+						  												mon+','+
+						  												lop+','+
+						  												heso+','+
+						  												diem+','+
+						  												bai+','+
+						  												thoigian+')',
+						  		function(err, result) {
+						  			donedb(err);
+								    if(err) {
+								      return console.error('error running query', err);
+								    }
+								    else{
+								    	res.end();
+						    		   	return;
+								    }
+						  	});
+				  		}
+				  	);
 				}
-			    maxid="'"+id+"'";
-			  	client.query('INSERT INTO "KETQUAHOCTAP" VALUES ('+maxid+','+
-			  												id_user+','+
-			  												mon+','+
-			  												lop+','+
-			  												heso+','+
-			  												diem+','+
-			  												bai+','+
-			  												thoigian+')',
-			  		function(err, result) {
-			  			donedb(err);
-					    if(err) {
-					      return console.error('error running query', err);
-					    }
-					    else{
-					    	res.end();
-			    		   	return;
-					    }
-			  	});
-	  		}
-	  	);
+
+		});
 	});
 });
 
 ///up file
 app.post('/uploadAnh',function(req,res){
-  console.log("xxx "+req.body.file_name);
+
   var file_name=req.body.file_name;
   if(req.files.upfile){
     var file = req.files.upfile,
       name = file.name,
       type = file.mimetype;
-    var uploadpath = __dirname + '/public/assets/images/' + 'user_'+file_name+'.jpg';
+    var uploadpath = __dirname + '/public/assets/images/user/' + 'user_'+file_name+'.jpg';
     file.mv(uploadpath,function(err){
       if(err){
         console.log("File Upload Failed",name,err);
-        res.redirect("/#/trangcanhan");
+        res.redirect("/#/trangcanhan/caidat");
       }
       else {
         console.log("File Uploaded",name);
-        res.redirect("/#/trangcanhan");
+        res.redirect("/#/trangcanhan/caidat");
         zip.unzip({
           source: __dirname + '/uploads/' + name,
           destination: __dirname + '/extracted/'
@@ -1564,7 +2161,42 @@ app.post('/uploadAnh',function(req,res){
     res.end();
   };
 })
-
+///up anh cau hoi
+app.post('/uploadCauhoi',function(req,res){
+	console.log("link anh cau hoi "+req.body.file_name);
+  var file_name=req.body.file_name;
+  if(req.files.upfile){
+    var file = req.files.upfile,
+      name = file.name,
+      type = file.mimetype;
+    var uploadpath = __dirname + '/public/assets/images/cauhoi/' + file_name+'.jpg';
+    file.mv(uploadpath,function(err){
+      if(err){
+        console.log("File Upload Failed",name,err);
+        res.redirect("/#/");
+      }
+      else {
+        console.log("File Uploaded",name);
+        res.redirect("/#/");
+        zip.unzip({
+          source: __dirname + '/uploads/' + name,
+          destination: __dirname + '/extracted/'
+        }).exec({
+          error: function (err) {
+            console.log(err);
+          },
+          success: function () {
+            console.log("extracted successfully");
+          }
+        })
+      }
+    });
+  }
+  else {
+    res.send("No File selected !");
+    res.end();
+  };
+})
 ///up sgk
 app.post('/uploadSGK', function(req, res) {
     console.log(req.files);
@@ -1612,11 +2244,12 @@ app.post('/uploadSGK', function(req, res) {
 app.post('/dongsukien', function(req, res){
 	var tempDate="'"+"YYYY-MM-DD"+"'";
 	var tempDate1="'"+"DD/MM/YYYY"+"'";
+	var tempDate2="'"+"YYYY"+"'";
 	pool.connect(function(err, client, donedb) {
 		if(err) {
 	    	return console.error('error fetching client from pool', err);
 		}
-	  	client.query('select *, to_char("THOIGIAN",'+ tempDate+') as "START", to_char("END",'+ tempDate+') as "END", to_char("THOIGIAN",'+ tempDate1+') as "DATE" from "SUKIEN"', function(err, result) {
+	  	client.query('select *, to_char("THOIGIAN",'+ tempDate+') as "START", to_char("END",'+ tempDate+') as "END", to_char("THOIGIAN",'+ tempDate1+') as "DATE", to_char("THOIGIAN",'+ tempDate2+') as "DATE_START", to_char("END",'+ tempDate2+') as "DATE_END" from "SUKIEN"', function(err, result) {
 		    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
 		    donedb(err);
 		    
@@ -1630,6 +2263,7 @@ app.post('/dongsukien', function(req, res){
 app.post('/themsukien', function(req, res){
 	var id_user="'"+JSON.parse(JSON.stringify(req.body.id))+"'";
 	var thoigian="'"+JSON.parse(JSON.stringify(req.body.thoigian))+"'";
+	var thoigian_end="'"+JSON.parse(JSON.stringify(req.body.thoigian_end))+"'";
 	var tieude="'"+JSON.parse(JSON.stringify(req.body.tieude))+"'";
 	var noidung="'"+JSON.parse(JSON.stringify(req.body.noidung))+"'";
 	pool.connect(function(err, client, donedb) {
@@ -1655,7 +2289,8 @@ app.post('/themsukien', function(req, res){
 			  												tieude+','+
 			  												noidung+','+
 			  												thoigian+','+
-			  												id_user+')',
+			  												id_user+','+
+			  												thoigian_end+')',
 			  		function(err, result) {
 			  			donedb(err);
 					    if(err) {
@@ -1673,13 +2308,14 @@ app.post('/themsukien', function(req, res){
 app.post('/laysukien', function(req, res){
 	var tempDate="'"+"YYYY-MM-DD"+"'";
 	var tempDate1="'"+"DD/MM/YYYY"+"'";
+	var tempDate2="'"+"YYYY"+"'";
 	var id="'"+JSON.parse(JSON.stringify(req.body.id))+"'";
 
 	pool.connect(function(err, client, donedb) {
 		if(err) {
 	    	return console.error('error fetching client from pool', err);
 		}
-	  	client.query('select *, to_char("THOIGIAN",'+ tempDate+') as "START", to_char("THOIGIAN",'+ tempDate1+') as "DATE" from "SUKIEN" where "ID"='+id, function(err, result) {
+	  	client.query('select *, to_char("THOIGIAN",'+ tempDate+') as "START", to_char("THOIGIAN",'+ tempDate1+') as "DATE", to_char("THOIGIAN",'+ tempDate2+') as "DATE_START", to_char("END",'+ tempDate2+') as "DATE_END" from "SUKIEN" where "ID"='+id, function(err, result) {
 		    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
 		    donedb(err);
 		    
@@ -1710,16 +2346,131 @@ app.post('/layKetqua', function(req, res){
 	  	});
 	});
 });
+///lay tong hop ket qua hoc tap
+app.post('/tonghopKetqua', function(req, res){
+	pool.connect(function(err, client, donedb) {
+		if(err) {
+	    	return console.error('error fetching client from pool', err);
+		}
+	  	client.query('SELECT (SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'0'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'6'+"'"+') as "diemls60", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'1'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'6'+"'"+') as "diemls61", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'2'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'6'+"'"+') as "diemls62", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'3'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'6'+"'"+') as "diemls63", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'4'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'6'+"'"+') as "diemls64", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'5'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'6'+"'"+') as "diemls65", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'6'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'6'+"'"+') as "diemls66", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'7'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'6'+"'"+') as "diemls67", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'8'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'6'+"'"+') as "diemls68", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'9'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'6'+"'"+') as "diemls69", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'10'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'6'+"'"+') as "diemls610", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'0'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'7'+"'"+') as "diemls70", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'1'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'7'+"'"+') as "diemls71", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'2'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'7'+"'"+') as "diemls72", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'3'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'7'+"'"+') as "diemls73", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'4'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'7'+"'"+') as "diemls74", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'5'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'7'+"'"+') as "diemls75", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'6'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'7'+"'"+') as "diemls76", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'7'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'7'+"'"+') as "diemls77", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'8'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'7'+"'"+') as "diemls78", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'9'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'7'+"'"+') as "diemls79", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'10'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'7'+"'"+') as "diemls710", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'0'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'8'+"'"+') as "diemls80", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'1'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'8'+"'"+') as "diemls81", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'2'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'8'+"'"+') as "diemls82", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'3'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'8'+"'"+') as "diemls83", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'4'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'8'+"'"+') as "diemls84", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'5'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'8'+"'"+') as "diemls85", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'6'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'8'+"'"+') as "diemls86", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'7'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'8'+"'"+') as "diemls87", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'8'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'8'+"'"+') as "diemls88", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'9'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'8'+"'"+') as "diemls89", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'10'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'8'+"'"+') as "diemls810", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'0'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'9'+"'"+') as "diemls90", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'1'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'9'+"'"+') as "diemls91", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'2'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'9'+"'"+') as "diemls92", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'3'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'9'+"'"+') as "diemls93", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'4'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'9'+"'"+') as "diemls94", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'5'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'9'+"'"+') as "diemls95", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'6'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'9'+"'"+') as "diemls96", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'7'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'9'+"'"+') as "diemls97", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'8'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'9'+"'"+') as "diemls98", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'9'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'9'+"'"+') as "diemls99", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'10'+"'"+' and "MON"='+"'"+'lichsu'+"'"+' and "LOP"='+"'"+'9'+"'"+') as "diemls910", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'0'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'6'+"'"+') as "diemdl60", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'1'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'6'+"'"+') as "diemdl61", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'2'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'6'+"'"+') as "diemdl62", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'3'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'6'+"'"+') as "diemdl63", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'4'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'6'+"'"+') as "diemdl64", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'5'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'6'+"'"+') as "diemdl65", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'6'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'6'+"'"+') as "diemdl66", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'7'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'6'+"'"+') as "diemdl67", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'8'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'6'+"'"+') as "diemdl68", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'9'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'6'+"'"+') as "diemdl69", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'10'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'6'+"'"+') as "diemdl610", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'0'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'7'+"'"+') as "diemdl70", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'1'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'7'+"'"+') as "diemdl71", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'2'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'7'+"'"+') as "diemdl72", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'3'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'7'+"'"+') as "diemdl73", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'4'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'7'+"'"+') as "diemdl74", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'5'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'7'+"'"+') as "diemdl75", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'6'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'7'+"'"+') as "diemdl76", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'7'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'7'+"'"+') as "diemdl77", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'8'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'7'+"'"+') as "diemdl78", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'9'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'7'+"'"+') as "diemdl79", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'10'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'7'+"'"+') as "diemdl710", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'0'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'8'+"'"+') as "diemdl80", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'1'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'8'+"'"+') as "diemdl81", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'2'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'8'+"'"+') as "diemdl82", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'3'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'8'+"'"+') as "diemdl83", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'4'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'8'+"'"+') as "diemdl84", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'5'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'8'+"'"+') as "diemdl85", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'6'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'8'+"'"+') as "diemdl86", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'7'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'8'+"'"+') as "diemdl87", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'8'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'8'+"'"+') as "diemdl88", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'9'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'8'+"'"+') as "diemdl89", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'10'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'8'+"'"+') as "diemdl810", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'0'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'9'+"'"+') as "diemdl90", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'1'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'9'+"'"+') as "diemdl91", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'2'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'9'+"'"+') as "diemdl92", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'3'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'9'+"'"+') as "diemdl93", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'4'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'9'+"'"+') as "diemdl94", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'5'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'9'+"'"+') as "diemdl95", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'6'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'9'+"'"+') as "diemdl96", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'7'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'9'+"'"+') as "diemdl97", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'8'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'9'+"'"+') as "diemdl98", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'9'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'9'+"'"+') as "diemdl99", '+
+	  						'(SELECT COUNT(*) FROM "KETQUAHOCTAP" WHERE "DIEM"::numeric::integer ='+"'"+'10'+"'"+' and "MON"='+"'"+'diali'+"'"+' and "LOP"='+"'"+'9'+"'"+') as "diemdl910" '+
+	  						' FROM "KETQUAHOCTAP"',
+	  	 function(err, result) {
+		    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+		    donedb(err);
+		    
+		    if(err) {
+		      return console.error('error running query', err);
+		    }
+		    res.send(result.rows);
+	  	});
+	});
+});
 //xoa thong bao
 app.post("/delete_thongbao", function(req,res){
 
 	var id="'"+JSON.parse(JSON.stringify(req.body.id))+"'";
-
+	var id_user="'"+JSON.parse(JSON.stringify(req.body.id_user))+"'";
+ 	
+ 	var query="DELETE FROM "+'"'+"THONGBAO"+'"'+" WHERE ";
+	if(JSON.parse(JSON.stringify(req.body.id))!="all"){
+		query=query+'"'+"ID"+'"'+"="+id;
+	}
+	else{
+		query=query+'"'+"ID_USER"+'"'+"="+id_user;
+	}
+	console.log(query);
 	pool.connect(function(err, client, done) {
 	  if(err) {
 	    return console.error('error fetching client from pool', err);
 	  }
-	  client.query('DELETE FROM "THONGBAO" WHERE "ID"='+id
+	  client.query(query
   		, function(err, result) {
 	    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
 	    done(err);

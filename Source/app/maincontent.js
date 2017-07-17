@@ -25,6 +25,7 @@ import {tuongtac_lichsu} from './components/tuongtac_lichsu';
 import {tuongtac_diali} from './components/tuongtac_diali';
 
 import {gioithieu} from './components/gioithieu';
+import {trochoi} from './components/trochoi';
 
 import {baihoc_baiviet} from "./components/baihoc_baiviet";
 import {baihoc_baiviet_chitiet} from './components/baihoc_baiviet_chitiet';
@@ -76,7 +77,8 @@ class MainContent extends React.Component {
 				 	<Route path="tuongtac/lichsu" component={tuongtac_lichsu} />	
 				 	<Route path="tuongtac/diali" component={tuongtac_diali} />	
 
-				 	<Route path="gioithieu" component={gioithieu} />	
+				 	<Route path="gioithieu" component={gioithieu} />
+				 	<Route path="trochoi" component={trochoi} />		
 			 	</div>
 		 	</Router>
 

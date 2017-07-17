@@ -15,7 +15,7 @@ export class cauhoi_chitiet extends React.Component{
 	constructor(props) {
 	    super(props);
 	  	this.state = {
-	  		id_user: "assets/images/user_"+data.dataset.id+".jpg",
+	  		id_user: "assets/images/user/user_"+data.dataset.id+".jpg",
 	        listbinhluan: []
 	    };
     }
@@ -91,7 +91,7 @@ export class cauhoi_chitiet extends React.Component{
 									return (
 										<li key={index1} className="media">
 											<div className="media-left">
-												<a><img id="img_user" src={"assets/images/user_"+data1.ID+".jpg"} onError={(e)=>{e.target.src="assets/images/user.jpg"}} className="img-circle img-sm" alt=""/></a>
+												<a><img id="img_user" src={"assets/images/user/user_"+data1.ID+".jpg"} onError={(e)=>{e.target.src="assets/images/user/user.jpg"}} className="img-circle img-sm" alt=""/></a>
 											</div>
 
 											<div className="media-body">
@@ -172,7 +172,7 @@ export class cauhoi_chitiet extends React.Component{
 				noidung: $("#binhluan_cauhoi").val(),
 				thoigian: datetime
 			};
-			console.log(data);
+			//console.log(data);
 	        $.post("themBinhluan", data, function(){
     			//socket.emit('c2s_Binhluan',{id: id_cauhoi[0]});
 	        	$("#binhluan_cauhoi").val("");
@@ -181,9 +181,6 @@ export class cauhoi_chitiet extends React.Component{
     		});
 		});
 
-		// $('#like').on('click', function (e) {
-		// 	console.log("like");
-		// });
 		$('#up_cauhoi,#down_cauhoi').click(function(){
 		    // var temp_username=data.dataset.username;
 		   	if(temp_username==$("#nguoidang").text())
@@ -192,11 +189,8 @@ export class cauhoi_chitiet extends React.Component{
 		        id_cauhoi: id_cauhoi[0],
 				type: $(this).attr('id')
 			};
-			console.log(data);
+			//console.log(data);
 	        $.post("rate_cauhoi", data, function(){
-	        	// alert("Đã rate cau hoi thành công!");
-	        	//window.location = "#/trangcanhan";
-            	//Trangcanhan.dispatch(location.getCurrentPath(), null);
     		});
 		});
 
@@ -217,7 +211,7 @@ export class cauhoi_chitiet extends React.Component{
 		        id_binhluan: idBinhluanClick,
 		        type: type
 			};
-			console.log(data);
+			//console.log(data);
 	        $.post("rate_binhluan", data, function(){
 	        	
     		});
@@ -247,10 +241,10 @@ export class cauhoi_chitiet extends React.Component{
 			id: id_cauhoi[0],
 			id_user: "all"
 		}
-		console.log(data1);
+		//console.log(data1);
 		socket.emit('c2s_Thaoluan',data1);
 		socket.on('s2c_Thaoluan', function(data){
-			console.log(data);
+			//console.log(data);
 			var mon1;
 			if(mon[1]=="lichsu")
 				mon1="Lịch sử";
@@ -280,7 +274,14 @@ export class cauhoi_chitiet extends React.Component{
 		socket.on('s2c_Binhluan', function(data){
 			that.setState({listbinhluan: data});
 		});
-
+		///
+		function loop(){
+			setTimeout(function () {
+	            socket.emit('c2s_Binhluan',{id: id_cauhoi[0]});
+	            loop();
+	        }, 30000);
+		}
+		loop();
 	}
 	componentWillReceiveProps(newProps)
 	{
@@ -306,19 +307,6 @@ export class cauhoi_chitiet extends React.Component{
 		}
 		socket.emit('c2s_Thaoluan',data1);
 		socket.emit('c2s_Binhluan',{id: id_cauhoi[0]});
-	}
-	componentWillUnmount(){
-		console.log("componentWillUnmount cauhoi_chitiet");
-	}
-	shouldComponentUpdate(nextProps, nextState){
-		return true;
-		console.log("shouldComponentUpdate cauhoi_chitiet");
-	}
-	componentWillUpdate(nextProps, nextState){
-		console.log("cmponentWillUpdate cauhoi_chitiet");
-	}
-	componentDidUpdate(prevProps, prevState){
-		console.log("componentDidUpdate cauhoi_chitiet");
 	}
 	onChange(state) {
 	   	if(this.refs.root) {
