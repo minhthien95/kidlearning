@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Kid Learning</title>
+
+	<!-- Global stylesheets -->
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+	<link href="assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
+	<link href="assets/css/bootstrap.css" rel="stylesheet" type="text/css">
+	<link href="assets/css/core.css" rel="stylesheet" type="text/css">
+	<link href="assets/css/components.css" rel="stylesheet" type="text/css">
+	<link href="assets/css/colors.css" rel="stylesheet" type="text/css">
+	<link rel="icon" href="http://findicons.com/files/icons/1508/sketchcons_x/128/globe.png" type="image/x-icon"/>
+	<!-- /global stylesheets -->
+
+	<!-- Core JS files -->
+	<script type="text/javascript" src="assets/js/plugins/loaders/pace.min.js"></script>
+	<script type="text/javascript" src="assets/js/core/libraries/jquery.min.js"></script>
+	<script type="text/javascript" src="assets/js/core/libraries/bootstrap.min.js"></script>
+	<script type="text/javascript" src="assets/js/plugins/loaders/blockui.min.js"></script>
+	<script type="text/javascript" src="assets/js/plugins/forms/validation/validate.min.js"></script>
+	<!-- /core JS files -->
+
+	<!-- Theme JS files -->
+	<script type="text/javascript" src="assets/js/core/app.js"></script>
+	<!-- /theme JS files -->
+
+</head>
+
+<body class="login-container"  background="assets/images/halong_bg.jpg">
+
+	<!-- Main navbar -->
+	<div class="navbar navbar-inverse">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="/dangnhap"><img src="assets/images/logoo.png" alt=""></a>
+
+			<ul class="nav navbar-nav pull-right visible-xs-block">
+				<li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-tree5"></i></a></li>
+			</ul>
+		</div>
+
+		<div class="navbar-collapse collapse" id="navbar-mobile">
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="https://www.facebook.com/kid.learning.hcmus" target="_blank">
+						<i class="icon-facebook2"></i> <span class="visible-xs-inline-block position-right"> Trang facebook</span>
+					</a>
+				</li>
+
+			</ul>
+		</div>
+	</div>
+	<!-- /main navbar -->
+
+
+	<!-- Page container -->
+	<div class="page-container">
+
+		<!-- Page content -->
+		<div class="page-content">
+
+			<!-- Main content -->
+			<div class="content-wrapper">
+
+				<!-- Content area -->
+				<div class="content">
+					<!-- Password recovery -->
+					<form id="login_form">
+						<div class="panel panel-body login-form">
+							<div class="text-center">
+								<div class="icon-object border-warning text-warning"><i class="icon-spinner11"></i></div>
+								<h5 class="content-group">Lấy lại mật khẩu<small class="display-block">Điền thông tin tài khoản của bạn</small></h5>
+							</div>
+
+							<div class="form-group has-feedback">
+								<input id="username" name="username" type="text" class="form-control" placeholder="Tên đăng nhập của bạn">
+								<div class="form-control-feedback">
+									<i class="icon-user text-muted"></i>
+								</div>
+							</div>
+							<div class="form-group has-feedback">
+								<input id="email" name="email" type="email" class="form-control" placeholder="Email của bạn">
+								<div class="form-control-feedback">
+									<i class="icon-mail5 text-muted"></i>
+								</div>
+							</div>
+
+							<button type="submit" class="btn bg-blue btn-block">Lấy lại mật khẩu <i class="icon-arrow-right14 position-right"></i></button>
+						</div>
+					</form>
+					<!-- /password recovery -->
+
+				</div>
+				<!-- /content area -->
+
+			</div>
+			<!-- /main content -->
+
+		</div>
+		<!-- /page content -->
+
+	</div>
+	<!-- /page container -->
+	
+<script type="text/javascript" >
+	$(document).ready(function(){
+	    jQuery.validator.addMethod("noSpace", function(value, element) { 
+	        return value.indexOf(" ") < 0 && value != ""; 
+	    }, "No space please and don't leave it empty");
+	    $("#login_form").validate({
+	    	errorElement: 'div',
+	        errorClass: 'help-block',
+	        focusInvalid: false,
+	        ignore: "",
+	        rules: {
+	            'username':{
+	                required: true,
+	                noSpace: true,
+	                minlength: 2,
+	                maxlength: 20   
+	            },
+	            'email': {
+	                required: true,
+	                email: true
+	            }
+	        },
+	        messages: {
+	            'username':{
+	                required: "Xin điền tên đăng nhập",
+	                noSpace: "Tên đăng nhập không thể có ký tự khoảng cách",
+	                minlength: "Tên đăng nhập phải nhiều hơn 2 ký tự",
+	                maxlength: "Tên đăng nhập phải ít hơn 20 ký tự"
+	            },
+	            'email': {
+	                required: "Xin nhập địa chỉ email",
+	                email: "Đây không phải là định dạng email"
+	            }
+
+	        },
+	        highlight: function (e) {
+	            $(e).closest('.form-group').removeClass('has-info').addClass('has-error');
+	        },
+
+	        success: function (e) {
+	            $(e).closest('.form-group').removeClass('has-error');//.addClass('has-info');
+	            $(e).remove();
+	        },
+	        submitHandler: function (form) {
+		        var data={
+		        	username: $("#username").val(),
+		        	email: $("#email").val()
+		        };
+		        console.log(data);
+		        $.post("/laymatkhau",data,function(data){
+		        	//console.log(data);
+		        	if(data==false)
+		        	{
+		        		alert("Bạn đã nhập sai tên đăng nhập hoặc email.\nVui lòng thử lại!");
+		        	}else{
+			        	alert("Chúng tôi đã gửi thông tin mật khẩu vào email của bạn.\nVui lòng kiểm tra email và đăng nhập lại!");
+			        	window.location = "/";
+			        }
+		        });
+
+	        }
+	    });
+
+	});
+</script>
+</body>
+</html>

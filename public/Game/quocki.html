@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>GHÉP HÌNH</title>
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="css/image-puzzle.css" rel="stylesheet" />
+    <script src="js/jquery-2.1.1.min.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <script src="js/image-puzzle.js"></script>
+</head>
+<body>
+    <div id="collage">
+        <h2>Quốc kỳ các quốc gia trên thế giới</h2>
+        <hr />
+        <div id="playPanel" style="padding:5px;display:none;">
+            <h3 id="imgTitle"></h3> <hr />
+            <div style="display:inline-block; margin:auto; width:95%; vertical-align:top;">
+                <ul id="sortable" class="sortable"></ul>
+                <div id="actualImageBox">
+                    <div id="stepBox">
+                        <div>Số bước: </div><div class="stepCount">0</div>
+                    </div>
+                    <div id="timeBox">
+                        Thời gian: <span id="timerPanel"></span> giây
+                    </div>
+                    <img id="actualImage" />
+                    <div>Sắp xếp để tạo thành hình hoàn chỉnh</div>
+                    <p id="levelPanel">
+                        <input type="radio" name="level" id="easy" checked="checked" value="3" /> <label for="easy">Dễ</label>
+                        <input type="radio" name="level" id="medium" value="4" /> <label for="medium">Vừa</label>
+                        <input type="radio" name="level" id="hard" value="5" /> <label for="hard">Khó</label>
+                    </p>
+                    <div>
+                        <button id="newPhoto" type="button" class="btn">Chọn ảnh khác</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="gameOver" style="display:none;">
+            <div style="background-color: lightgreen; padding: 5px 10px 20px 10px; text-align: center; ">
+                <h2 style="text-align:center">Kết thúc</h2>
+                Chúc mừng!! <br /> Bạn đã hoàn thành xong bức hình ^^.
+                <br />
+                Số bước: <span class="stepCount">0</span> bước.
+                <br />
+                Thời gian hoàn thành: <span class="timeCount">0</span> giây<br />
+                <div>
+                    <button type="button" onclick="window.location.reload(true);">Chơi lại?</button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            var images = [
+                { src: 'images/quocky/Afghanistan.png', title: 'Afghanistan' },
+                { src: 'images/quocky/Albania.png', title: 'Albania' },
+                { src: 'images/quocky/Algeria.png', title: 'Algeria' },
+                { src: 'images/quocky/Andorra.png', title: 'Andorra' },
+                { src: 'images/quocky/Angola.png', title: 'Angola' },
+                { src: 'images/quocky/Azerbaijan.png', title: 'Azerbaijan' },
+                { src: 'images/quocky/India.png', title: 'Ấn Độ' },
+                { src: 'images/quocky/Antigua_and_Barbuda.png', title: 'Antigua and Barbuda' },
+                { src: 'images/quocky/Armenia.png', title: 'Armenia' },
+                { src: 'images/quocky/Austria.png', title: 'Áo' },
+                { src: 'images/quocky/Egypt.png', title: 'Ai Cập' },
+                { src: 'images/quocky/Saudi_Arabia.png', title: 'Ả rập Sau-đi' },
+                { src: 'images/quocky/the_United_Kingdom.png', title: 'Vương quốc Anh' },
+                { src: 'images/quocky/Brazil.png', title: 'Brazil' },
+                { src: 'images/quocky/Cambodia.png', title: 'Cam-pu-chia' },
+                { src: 'images/quocky/Canada.png', title: 'Canada' },
+                { src: 'images/quocky/Laos.png', title: 'Lào' },
+                { src: 'images/quocky/the_People_s_Republic_of_China.png', title: 'Cộng hòa nhân dân Trung Hoa' }
+            ];
+
+            $(function () {
+                var gridSize = $('#levelPanel :radio:checked').val();
+                imagePuzzle.startGame(images, gridSize);
+                $('#newPhoto').click(function () {
+                    // Take the updated gridSize from UI.
+                    var gridSize = $('#levelPanel :radio:checked').val();  
+
+                    imagePuzzle.startGame(images, gridSize);
+                });
+
+                $('#levelPanel :radio').change(function (e) {
+                    var gridSize = $(this).val();
+                    imagePuzzle.startGame(images, gridSize);
+                });
+            });
+        </script>
+    </div>
+</body>
+</html>
