@@ -44,22 +44,23 @@ server.listen(process.env.PORT || 3000, () => console.log('Server started on por
 var urlcallback='http://kid-learning.herokuapp.com';
 //connect to database
 var pg = require('pg');
-var config = {
-  user: 'postgres', //env var: PGUSER
-  database: 'kidlearning_db', //env var: PGDATABASE
-  password: '1234', //env var: PGPASSWORD
-  host: 'localhost', // Server hosting the postgres database
-  port: 5432, //env var: PGPORT
-  // max: 10, // max number of clients in the pool
-  // idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
-};
 // var config = {
-//   user: 'avcmrazelrvvjs', //env var: PGUSER
-//   database: 'd9q456o7ql21ai', //env var: PGDATABASE
-//   password: '5c08b03aae2e27e8a31984e0708fb572e36d20dc4c551d7f2fb2bd26db9dee69', //env var: PGPASSWORD
-//   host: 'ec2-50-19-219-69.compute-1.amazonaws.com', // Server hosting the postgres database
-//   port: 5432 //env var: PGPORT
+//   user: 'postgres', //env var: PGUSER
+//   database: 'kidlearning_db', //env var: PGDATABASE
+//   password: '1234', //env var: PGPASSWORD
+//   host: 'localhost', // Server hosting the postgres database
+//   port: 5432, //env var: PGPORT
+//   // max: 10, // max number of clients in the pool
+//   // idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
 // };
+var config = {
+  user: 'avcmrazelrvvjs', //env var: PGUSER
+  database: 'd9q456o7ql21ai', //env var: PGDATABASE
+  password: '5c08b03aae2e27e8a31984e0708fb572e36d20dc4c551d7f2fb2bd26db9dee69', //env var: PGPASSWORD
+  host: 'ec2-50-19-219-69.compute-1.amazonaws.com', // Server hosting the postgres database
+  port: 5432 //env var: PGPORT
+  //abc
+};
 var pool = new pg.Pool(config);
 
 ///
@@ -2035,7 +2036,7 @@ app.post("/checkBaithi", function(req,res){
 			      return console.error('error running query2', err);
 			    }
 			    so2=result1.rowCount;
-			    if(so1==so2)
+			    if(so1>=so2)
 			    	res.send(true);
 			    else
 			    	res.send(false);
@@ -2165,6 +2166,7 @@ app.post('/uploadAnh',function(req,res){
 app.post('/uploadCauhoi',function(req,res){
 	console.log("link anh cau hoi "+req.body.file_name);
   var file_name=req.body.file_name;
+  var urlhere=req.body.urlhere;
   if(req.files.upfile){
     var file = req.files.upfile,
       name = file.name,
@@ -2177,7 +2179,7 @@ app.post('/uploadCauhoi',function(req,res){
       }
       else {
         console.log("File Uploaded",name);
-        res.redirect("/#/");
+        res.redirect("/#"+urlhere);
         zip.unzip({
           source: __dirname + '/uploads/' + name,
           destination: __dirname + '/extracted/'

@@ -1,7 +1,11 @@
 import React from 'react';
 import io from 'socket.io-client';
-let socket = io('http://'+window.location.hostname+':3000');
-//let socket = io('http://'+window.location.hostname);
+var urlsocket;
+if(window.location.hostname=="localhost")
+	urlsocket='http://'+window.location.hostname+':3000';
+else
+	urlsocket='http://'+window.location.hostname;
+let socket = io(urlsocket);
 
 var data = document.querySelector('#maincontent');
 var url1,url2;
@@ -967,6 +971,8 @@ export class Trangcanhan extends React.Component{
         // var datadl=[8,6.5];
         // var dataxls=['Bài 1', 'Bài 2', 'Bài 3'];
         // var dataxdl=['Bài 1', 'Bài 2'];
+        var dataxlsfull=[''];
+        var dataxdlfull=[''];
         var dataxls=[''];
         var dataxdl=[''];
         var datals6=[];
@@ -1005,7 +1011,7 @@ export class Trangcanhan extends React.Component{
         		
         		if(dataa[i].MON=="lichsu")
         		{
-        			dataxls.push("Bài "+dataa[i].ID_BAIHOC);
+        			dataxlsfull.push("Bài "+dataa[i].ID_BAIHOC);
         			if(dataa[i].LOP=='6')
         				datals6.push(['Bài '+dataa[i].ID_BAIHOC,dataa[i].DIEM]);
         			if(dataa[i].LOP=='7')
@@ -1019,7 +1025,7 @@ export class Trangcanhan extends React.Component{
         		}
         		if(dataa[i].MON=="diali")
         		{
-        			dataxdl.push("Bài "+dataa[i].ID_BAIHOC);
+        			dataxdlfull.push("Bài "+dataa[i].ID_BAIHOC);
         			if(dataa[i].LOP=='6')
         				datadl6.push(['Bài '+dataa[i].ID_BAIHOC,dataa[i].DIEM]);
         			if(dataa[i].LOP=='7')
@@ -1030,6 +1036,14 @@ export class Trangcanhan extends React.Component{
         				datadl9.push(['Bài '+dataa[i].ID_BAIHOC,dataa[i].DIEM]);
         		}
         	}
+
+		    $.each(dataxlsfull, function(i, e) {
+		        if ($.inArray(e, dataxls) == -1) dataxls.push(e);
+		    });
+			$.each(dataxdlfull, function(i, e) {
+		        if ($.inArray(e, dataxdl) == -1) dataxdl.push(e);
+		    });
+
         	console.log(datals6);
 	        stacked_lines_ls.setOption({
 
@@ -1098,22 +1112,46 @@ export class Trangcanhan extends React.Component{
                     {
                         name: 'Lịch Sử 6',
                         type: 'line',
-                        data: datals6
+                        data: datals6,
+                        markLine: {
+                            data: [{
+                                type: 'average',
+                                name: 'Điểm trung bình'
+                            }]
+                        }
                     },
                     {
                         name: 'Lịch Sử 7',
                         type: 'line',
-                        data: datals7
+                        data: datals7,
+                        markLine: {
+                            data: [{
+                                type: 'average',
+                                name: 'Điểm trung bình'
+                            }]
+                        }
                     },
                     {
                         name: 'Lịch Sử 8',
                         type: 'line',
-                        data: datals8
+                        data: datals8,
+                        markLine: {
+                            data: [{
+                                type: 'average',
+                                name: 'Điểm trung bình'
+                            }]
+                        }
                     },
                     {
                         name: 'Lịch Sử 9',
                         type: 'line',
-                        data: datals9
+                        data: datals9,
+                        markLine: {
+                            data: [{
+                                type: 'average',
+                                name: 'Điểm trung bình'
+                            }]
+                        }
                     }
                 ]
 	       	});
@@ -1184,22 +1222,46 @@ export class Trangcanhan extends React.Component{
                     {
                         name: 'Địa lí 6',
                         type: 'line',
-                        data: datadl6
+                        data: datadl6,
+                        markLine: {
+                            data: [{
+                                type: 'average',
+                                name: 'Điểm trung bình'
+                            }]
+                        }
                     },
                     {
                         name: 'Địa lí 7',
                         type: 'line',
-                        data: datadl7
+                        data: datadl7,
+                        markLine: {
+                            data: [{
+                                type: 'average',
+                                name: 'Điểm trung bình'
+                            }]
+                        }
                     },
                     {
                         name: 'Địa lí 8',
                         type: 'line',
-                        data: datadl8
+                        data: datadl8,
+                        markLine: {
+                            data: [{
+                                type: 'average',
+                                name: 'Điểm trung bình'
+                            }]
+                        }
                     },
                     {
                         name: 'Địa lí 9',
                         type: 'line',
-                        data: datadl9
+                        data: datadl9,
+                        markLine: {
+                            data: [{
+                                type: 'average',
+                                name: 'Điểm trung bình'
+                            }]
+                        }
                     }
                 ]
 	       	});

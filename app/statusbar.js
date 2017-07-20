@@ -1,8 +1,12 @@
 import React from "react";
 import {render} from "react-dom"; 
 import io from 'socket.io-client';
-let socket = io('http://'+window.location.hostname+':3000');
-//let socket = io('http://'+window.location.hostname);
+var urlsocket;
+if(window.location.hostname=="localhost")
+	urlsocket='http://'+window.location.hostname+':3000';
+else
+	urlsocket='http://'+window.location.hostname;
+let socket = io(urlsocket);
 
 var data = document.querySelector('#statusbar');
 var type_user=data.dataset.type;

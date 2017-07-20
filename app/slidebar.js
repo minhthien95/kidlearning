@@ -301,8 +301,26 @@ class Slidebar extends React.Component {
 		$.get("getUserInfo/"+data.dataset.id,function( data ){
 			//console.log(data);
 			var loainguoidung;
-			if(data.LOAINGUOIDUNG=="hocsinh")
+			if(data.LOAINGUOIDUNG=="hocsinh"){
 				loainguoidung="Học sinh - Lớp "+data.LOP;
+				if(data.LOP<6)
+					$("#Lichsu_lop6").addClass("disabled");
+				if(data.LOP<7)
+					$("#Lichsu_lop7").addClass("disabled");
+				if(data.LOP<8)
+					$("#Lichsu_lop8").addClass("disabled");
+				if(data.LOP<9)
+					$("#Lichsu_lop9").addClass("disabled");
+
+				if(data.LOP<6)
+					$("#Diali_lop6").addClass("disabled");
+				if(data.LOP<7)
+					$("#Diali_lop7").addClass("disabled");
+				if(data.LOP<8)
+					$("#Diali_lop8").addClass("disabled");
+				if(data.LOP<9)
+					$("#Diali_lop9").addClass("disabled");
+			}
 			else if(data.LOAINGUOIDUNG=="trogiang")
 					loainguoidung="Giáo viên";
 				else
@@ -310,23 +328,7 @@ class Slidebar extends React.Component {
 			$("#type").append('<i className="icon-pen text-size-small"></i>&nbsp;'+loainguoidung);
 			$("#fullname").text(data.HOTEN);
 
-			if(data.LOP<6)
-				$("#Lichsu_lop6").addClass("disabled");
-			if(data.LOP<7)
-				$("#Lichsu_lop7").addClass("disabled");
-			if(data.LOP<8)
-				$("#Lichsu_lop8").addClass("disabled");
-			if(data.LOP<9)
-				$("#Lichsu_lop9").addClass("disabled");
 
-			if(data.LOP<6)
-				$("#Diali_lop6").addClass("disabled");
-			if(data.LOP<7)
-				$("#Diali_lop7").addClass("disabled");
-			if(data.LOP<8)
-				$("#Diali_lop8").addClass("disabled");
-			if(data.LOP<9)
-				$("#Diali_lop9").addClass("disabled");
 		});
 	}
 	componentWillReceiveProps(newProps){

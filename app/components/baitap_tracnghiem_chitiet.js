@@ -1,7 +1,12 @@
 import React from 'react';
 import io from 'socket.io-client';
-let socket = io('https://'+window.location.hostname+':3000');
-//let socket = io('http://'+window.location.hostname);
+var urlsocket;
+if(window.location.hostname=="localhost")
+	urlsocket='http://'+window.location.hostname+':3000';
+else
+	urlsocket='http://'+window.location.hostname;
+let socket = io(urlsocket);
+
 var data = document.querySelector('#maincontent');
 
 var id_user=data.dataset.id;
@@ -260,24 +265,45 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 		            + currentdate.getSeconds();
 
 		    $(".fileupload").append('<input hidden name="file_name" value="'+datetime+'"/>');
-		    $("#themAnh").click();
-			var data={
-		        id:  id_user,
-		        loai: 'baitap',
-				lop: phanlop,
-				mon: mon,
-		        bai: baihoc,
-				noidung: $("#noidung").val(),
-				cau1: $("#te_cau1").val(),
-				cau2: $("#te_cau2").val(),
-				cau3: $("#te_cau3").val(),
-				cau4: $("#te_cau4").val(),
-				da1: da1,
-				da2: da2,
-				da3: da3,
-				da4: da4,
-				link_anh: datetime
-			};
+
+		    if($(".fileupload").children("input").val()!=""){
+				var data={
+			        id:  id_user,
+			        loai: 'baitap',
+					lop: phanlop,
+					mon: mon,
+			        bai: baihoc,
+					noidung: $("#noidung").val(),
+					cau1: $("#te_cau1").val(),
+					cau2: $("#te_cau2").val(),
+					cau3: $("#te_cau3").val(),
+					cau4: $("#te_cau4").val(),
+					da1: da1,
+					da2: da2,
+					da3: da3,
+					da4: da4,
+					link_anh: datetime
+				};
+			}
+			else{
+				var data={
+			        id:  id_user,
+			        loai: 'baitap',
+					lop: phanlop,
+					mon: mon,
+			        bai: baihoc,
+					noidung: $("#noidung").val(),
+					cau1: $("#te_cau1").val(),
+					cau2: $("#te_cau2").val(),
+					cau3: $("#te_cau3").val(),
+					cau4: $("#te_cau4").val(),
+					da1: da1,
+					da2: da2,
+					da3: da3,
+					da4: da4,
+					link_anh: null
+				};
+			}
 
 	        $.post("themTracnghiem", data, function(data){
 				$("#noidung").val("");
@@ -287,10 +313,14 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 				$("#te_cau4").val("");
 				$("#rd_cau"+check_temp).parent().removeClass();
 				$("#formadd").hide();
+				if($(".fileupload").children("input").val()!=""){
+					$("#themAnh").click();
+				}
+				else{
+					window.location.reload(true);
+				}
 				//alert("Thêm bài tập hoàn tất!\nLàm mới trang để xem kết quả");
-				window.location.reload(true);
-	        	//window.location = window.location.href;
-            	//Trangcanhan.dispatch(location.getCurrentPath(), null);
+				//window.location.reload(true);
     		});
 	    });
 	    //them bai tap
@@ -346,9 +376,13 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 	        	
     		});
 	    });
+	    var urlhere=window.location.href;
+	    urlhere=urlhere.split('#');
+	    console.log("dang quan tam "+ urlhere[1]);
 	    $("#formanh").append('<form class="fileupload" action="uploadCauhoi" method="post" enctype="multipart/form-data">'+
 	    									'<label for="imgInp" class="btn btn-primary btn-block btn-outlined">Thêm ảnh</label>'+
 					                    	'<input style="display:none" type="file" id="imgInp" name="upfile" class="file-styled"/>'+
+					                    	'<input style="display:none" hidden name="urlhere" value="'+urlhere[1]+'"/>'+
 					                    	'<button id="themAnh" hidden type="submit">Đăng ảnh</button>'+
 				                    	'</form>'+
 				                    	'<p style="text-align:center"><img id="blah" src="#" style="display:none"/></p>');
@@ -409,7 +443,7 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 					for(var i=0;i<data.length;i++){
 						var count=i+1;
 
-						if(data[i].LINK_ANH!=null)
+						if(data[i].LINK_ANH!=null && data[i].LINK_ANH!=""  )
 							$("#xxx").append('<h6>Câu '+count+'</h6>'+
 												'<fieldset>'+
 													'<p class="content-group text-semibold">'+data[i].NOIDUNG+'</p>'+
@@ -500,7 +534,7 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 					for(var i=0;i<data.length;i++){
 						var count=i+1;
 
-						if(data[i].LINK_ANH!=null)
+						if(data[i].LINK_ANH!=null && data[i].LINK_ANH!="" )
 							$("#xxx").append('<h6>Câu '+count+'</h6>'+
 												'<fieldset>'+
 													'<p class="content-group text-semibold">'+data[i].NOIDUNG+'</p>'+

@@ -52,6 +52,11 @@
 						<i class="icon-facebook2"></i> <span class="visible-xs-inline-block position-right"> Trang facebook</span>
 					</a>
 				</li>
+				<li>
+					<a data-popup="tooltip" data-toggle="modal" data-target="#confirm">
+						<i class="icon-user-tie"></i> <span class="visible-xs-inline-block position-right"> Liên hệ admin</span>
+					</a>
+				</li>
 			</ul>
 		</div>
 	</div>
@@ -97,27 +102,6 @@
 											</div>
 
 										</div>
-<!-- 										<div class="row">
-											<div class="col-md-6">
-												<label>Họ:</label>
-												<div class="form-group has-feedback">
-													<input id="lastname" name="lastname" type="text" class="form-control" placeholder="Họ và tên đệm" required>
-													<div class="form-control-feedback">
-														<i class="icon-user-check text-muted"></i>
-													</div>
-												</div>
-											</div>
-
-											<div class="col-md-6">
-												<label>Tên:</label>
-												<div class="form-group has-feedback">
-													<input id="firstname" name="firstname" type="text" class="form-control" placeholder="Tên" required>
-													<div class="form-control-feedback">
-														<i class="icon-user-check text-muted"></i>
-													</div>
-												</div>
-											</div>
-										</div> -->
 
 										<div class="row">
 											<div class="col-md-6">
@@ -185,30 +169,6 @@
 											</div>
 										</div>
 
-
-<!-- 										<div class="form-group">
-											<div class="checkbox">
-												<label>
-													<input type="checkbox" class="styled" checked="checked">
-													Send me <a href="#">test account settings</a>
-												</label>
-											</div>
-
-											<div class="checkbox">
-												<label>
-													<input type="checkbox" class="styled" checked="checked">
-													Subscribe to monthly newsletter
-												</label>
-											</div>
-
-											<div class="checkbox">
-												<label>
-													<input type="checkbox" class="styled">
-													Accept <a href="#">terms of service</a>
-												</label>
-											</div>
-										</div> -->
-
 										<div class="text-right">
 											<button type="submit" class="btn btn-link"><a href="dangnhap"><i class="icon-arrow-left13 position-left"></i> Quay lại trang đăng nhập</a></button>
 											<button id="submit" type="submit" class="btn bg-teal-400 btn-labeled btn-labeled-right ml-10"><b><i class="icon-plus3"></i></b><a style="color: white"> Tạo tài khoản mới</a></button>
@@ -219,7 +179,6 @@
 						</div>
 					</form>
 					<!-- /registration form -->
-
 
 				</div>
 				<!-- /content area -->
@@ -232,7 +191,40 @@
 
 	</div>
 	<!-- /page container -->
-	
+		<!-- {/* confirm */} -->
+	<div id="confirm" class="modal fade">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close " data-dismiss="modal">&times;</button>
+					<h6 class="modal-title">Liên hệ với chúng tôi</h6>
+				</div>
+
+				<div class="modal-body">
+					<div  class="panel-body">
+						<div class="row">
+							<div class="col-lg-6">
+								<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3771.5589691242003!2d106.68039831027157!3d10.763143934428191!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x43900f1d4539a3d!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBLaG9hIGjhu41jIFThu7Egbmhpw6puIFRQSENN!5e0!3m2!1svi!2s!4v1498100090396" width="400" height="400" frameBorder="0" style={{border:"0"}} allowFullScreen></iframe>
+							</div>
+							<div class="col-lg-6">
+								<div class="media-body">
+									<h6 class="media-heading"><a href="http://www.hcmus.edu.vn" target="_blank">Trường Đại Học Khoa Học Tự Nhiên Thành Phố Hồ Chí Minh</a></h6>
+		                    		<br/>
+		                    		<ul class="list-inline list-inline-separate mb-5">
+		                    			<li><i class="icon-location4 position-left"></i> 227 Nguyễn Văn Cừ, Nguyễn Văn Cừ, Quận 5, Hồ Chí Minh, Việt Nam</li>
+		                    			<li><i class="icon-mail5 position-left"></i> minhthien1995@gmail.com - thanhgiang.hcmus@gmail.com</li>
+		                    			<li><i class="icon-phone2 position-left"></i> +84 167 965 1768 (Thiện) - +84 937 245 440 (Giang)</li>
+		                    			<li><a href="https://www.facebook.com/kid.learning.hcmus" target="_blank"><i class=" icon-facebook2 position-left"></i> Fanpage Facebook</a></li>
+		                    		</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- {/* /confirm */} -->
 <script src="trangdangky.js"></script>
 </body>
 </html>
