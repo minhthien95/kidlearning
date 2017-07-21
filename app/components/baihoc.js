@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 //let socket = io('http://kid-learning.herokuapp.com:3000'||'https://kid-learning.herokuapp.com:3000' || 'http://localhost:3000');
 //let socket = io('http://'+window.location.hostname+':3000');
 //let socket = io('http://'+window.location.hostname);
-//console.log('http://'+window.location.hostname);
+console.log('http://'+window.location.hostname);
 var urlsocket;
 if(window.location.hostname=="localhost")
 	urlsocket='http://'+window.location.hostname+':3000';
