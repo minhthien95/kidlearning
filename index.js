@@ -44,23 +44,22 @@ server.listen(process.env.PORT || 3000, () => console.log('Server started on por
 var urlcallback='http://kid-learning.herokuapp.com';
 //connect to database
 var pg = require('pg');
-// var config = {
-//   user: 'postgres', //env var: PGUSER
-//   database: 'kidlearning_db', //env var: PGDATABASE
-//   password: '1234', //env var: PGPASSWORD
-//   host: 'localhost', // Server hosting the postgres database
-//   port: 5432, //env var: PGPORT
-//   // max: 10, // max number of clients in the pool
-//   // idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
-// };
 var config = {
-  user: 'avcmrazelrvvjs', //env var: PGUSER
-  database: 'd9q456o7ql21ai', //env var: PGDATABASE
-  password: '5c08b03aae2e27e8a31984e0708fb572e36d20dc4c551d7f2fb2bd26db9dee69', //env var: PGPASSWORD
-  host: 'ec2-50-19-219-69.compute-1.amazonaws.com', // Server hosting the postgres database
-  port: 5432 //env var: PGPORT
-  //abc
+  user: 'postgres', //env var: PGUSER
+  database: 'kidlearning_db_online', //env var: PGDATABASE
+  password: '1234', //env var: PGPASSWORD
+  host: 'localhost', // Server hosting the postgres database
+  port: 5432, //env var: PGPORT
+  max: 20, // max number of clients in the pool
+  idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
 };
+// var config = {
+//   user: 'avcmrazelrvvjs', //env var: PGUSER
+//   database: 'd9q456o7ql21ai', //env var: PGDATABASE
+//   password: '5c08b03aae2e27e8a31984e0708fb572e36d20dc4c551d7f2fb2bd26db9dee69', //env var: PGPASSWORD
+//   host: 'ec2-50-19-219-69.compute-1.amazonaws.com', // Server hosting the postgres database
+//   port: 5432 //env var: PGPORT
+// };
 var pool = new pg.Pool(config);
 
 ///
@@ -352,7 +351,7 @@ passport.use(new passportGoogle.OAuth2Strategy({
 									    	done(null, {username: profile.id, password: tokenPW, lop: "6", type: "hocsinh", id: id});
 									    	return;
 									    }
-							  });
+							  	});
 							});
 				  		}
 				  	);
@@ -1366,7 +1365,25 @@ app.post("/:mon/lop:lop/baihoc_tip", function(req,res){
 	  });
 	});
 })
+///get bai hoc tip :mon :lop
+app.post("/laytenbaihoc", function(req,res){
+	var mon ="'"+JSON.parse(JSON.stringify(req.body.mon))+"'";
+	var lop ="'"+JSON.parse(JSON.stringify(req.body.lop))+"'";
+	var bai ="'"+JSON.parse(JSON.stringify(req.body.bai))+"'";
+	pool.connect(function(err, client, done) { 
+	  	client.query('select * from "BAIHOC" WHERE  "MON"='+mon+' and "PHANLOP"='+lop+' and "BAI"='+bai
+  		, function(err, result) {
+	    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+	    done(err);
 
+	    if(err) {
+	      return console.error('error running query', err);
+	    }
+	    console.log(result.rows)
+	   	res.send(result.rows);
+	  });
+	});
+})
 ///get bai hoc video :mon :lop :bai
 app.post("/:mon/lop:lop/baihoc_video/:bai", function(req,res){
 	var tempDate="'"+"HH24:MI DD-MM-YYYY"+"'";
@@ -1425,7 +1442,7 @@ app.post("/:mon/lop:lop/baitap_tracnghiem_chitiet_cauhoi/:id", function(req,res)
 	  	if(err) {
 	    	return console.error('error fetching client from pool', err);
 	  	}	  
-	  	client.query('select *,"TRACNGHIEM"."ID" as "ID_TRACNGHIEM" from "TRACNGHIEM","BAIHOC" WHERE "ID_BAIHOC"='+id+' and "ID_BAIHOC"="BAIHOC"."ID" and "LOAI"='+loai
+	  	client.query('select *,"TRACNGHIEM"."ID" as "ID_TRACNGHIEM" from "TRACNGHIEM","BAIHOC" WHERE "ID_BAIHOC"='+id+' and "ID_BAIHOC"="BAIHOC"."ID" and "TRACNGHIEM"."MON"='+mon+' and "TRACNGHIEM"."LOP"='+lop+' and "TRACNGHIEM"."LOAI"='+loai+' ORDER BY RANDOM() LIMIT 10'
   		, function(err, result) {
 	    //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
 	    done(err);
@@ -2058,7 +2075,32 @@ app.post("/checkBaithi", function(req,res){
 	  	});
 	});
 });
-/// them ket qua hoc tap
+// function diemtrungbinh(mon,lop,id_user) {
+// 	pool.connect(function(err, client, donedb) {
+// 		donedb(err);
+// 		if(err) {
+// 	    	return console.error('error fetching client from pool', err);
+// 		}	
+// 		client.query('SELECT * FROM "KETQUAHOCTAP" where "MON"='+mon+' and "LOP"='+lop+' and "ID_USER"='+id_user,
+// 	  	function(err, result) {
+// 	  		var i=0;
+// 	  		var dtb=0.0;
+// 	  		function tinhtong(){
+// 	  			var temp=parseFloat(result.rows[i].DIEM)*parseInt(result.rows[i].HESO);
+// 	  			console.log(temp);
+// 	  			dtb+=temp;
+// 	  			i++;
+// 	  			if(i<result.rowCount)
+// 	  				tinhtong();
+// 	  		}
+// 	  		tinhtong();
+// 	  		dtb=dtb/(i+2);
+// 	  		console.log("diem trung binh "+dtb);
+// 	  		return dtb;
+// 	  	});
+// 	});
+// };
+// /// them ket qua hoc tap
 app.post('/themKetquahoctap', function(req, res){	
 
 	var maxid;
@@ -2082,7 +2124,7 @@ app.post('/themKetquahoctap', function(req, res){
 			    }
 			    console.log(result.rowCount);
 			    if(result.rowCount!=0){
-			    	res.send(true);
+			    	res.send({"text": "dalam"});
 			    }
 			    else{
 	    		  	client.query('SELECT * FROM "KETQUAHOCTAP" order by cast("ID" as int) desc limit 1',
@@ -2112,6 +2154,82 @@ app.post('/themKetquahoctap', function(req, res){
 						  			donedb(err);
 								    if(err) {
 								      return console.error('error running query', err);
+								    }
+								    if(bai=="'thi'"){
+								    	console.log("vao bai thi");
+								    	client.query('SELECT * FROM "KETQUAHOCTAP" where "MON"='+mon+' and "LOP"='+lop+' and "ID_USER"='+id_user,
+									  	function(err, result) {
+									  		var i=0;
+									  		var dtb=0.0;
+									  		function tinhtong(){
+									  			var temp=parseFloat(result.rows[i].DIEM)*parseInt(result.rows[i].HESO);
+									  			console.log(temp);
+									  			dtb+=temp;
+									  			i++;
+									  			if(i<result.rowCount)
+									  				tinhtong();
+									  		}
+									  		tinhtong();
+									  		dtb=dtb/(i+2);
+									  		console.log("diem trung binh "+dtb);
+									  		
+									  		if(dtb<5){//dtb <5 thi hoc lại
+									    		console.log("khong qua mon, học lại");
+									    		client.query('DELETE FROM "KETQUAHOCTAP" WHERE "MON"='+mon+' and "LOP"='+lop+' and "ID_USER"='+id_user,
+										  		function(err, result) {
+										  			donedb(err);
+												    if(err) {
+												      return console.error('error running query', err);
+												    }
+												    res.send({"text": "hoclai", "dtb": dtb});
+												});
+									    	}
+									    	if(dtb>=5){//danh dau là da qua mon
+									    		console.log("da qua môn");
+									    		client.query('Select * from "USER" WHERE "ID"='+id_user,
+										  		function(err, result) {
+										  			donedb(err);
+												    if(err) {
+												      return console.error('error running query', err);
+												    }
+												
+												    if((result.rows[0].BAI_LICHSU=='999' && result.rows[0].LOP<9) || (result.rows[0].BAI_DIALI=='999' && result.rows[0].LOP<9)){//neu mon kia da qua ròi thi qua lop khac
+												    	console.log("mon kia da qua, qua lop khac");
+												    	client.query('UPDATE "USER" set "LOP"=(cast((Select "LOP" FROM "USER" where "ID"='+id_user+') as int)+1) ,"BAI_LICHSU"='+"'"+1+"'"+', "BAI_DIALI"='+"'"+1+"'"+' WHERE "ID"='+id_user,
+												  		function(err, result) {
+												  			donedb(err);
+														    if(err) {
+														      return console.error('error running query', err);
+														    }
+														    res.send({"text": "qualop", "dtb": dtb})
+														});
+												    }
+												    else{//neu mon kia chua qua
+												    	console.log("mon kia chua qua,danh dau 1 mon 999");
+												    	if(mon=="'lichsu'"){
+													    	client.query('UPDATE "USER" set "BAI_LICHSU"='+"'"+999+"'"+' WHERE "ID"='+id_user,
+													  		function(err, result) {
+													  			donedb(err);
+															    if(err) {
+															      return console.error('error running query', err);
+															    }
+															    res.send({"text": "hientai", "dtb": dtb});
+															});
+														}
+														else{
+															client.query('UPDATE "USER" set "BAI_DIALI"='+"'"+999+"'"+' WHERE "ID"='+id_user,
+													  		function(err, result) {
+													  			donedb(err);
+															    if(err) {
+															      return console.error('error running query', err);
+															    }
+															    res.send({"text": "hientai", "dtb": dtb});
+															});
+														}
+												    }
+												});
+									    	}
+										});
 								    }
 								    else{
 								    	res.end();
@@ -2175,7 +2293,7 @@ app.post('/uploadCauhoi',function(req,res){
     file.mv(uploadpath,function(err){
       if(err){
         console.log("File Upload Failed",name,err);
-        res.redirect("/#/");
+        res.redirect("/#"+urlhere);
       }
       else {
         console.log("File Uploaded",name);
@@ -2217,12 +2335,12 @@ app.post('/uploadSGK', function(req, res) {
             } else {
               if (extension !== 'zip') {
                 console.log("Invalid file type. Cannot upload");
-                res.send('This file is not a .zip file')
+                res.send('File không phải định dạng .zip. Hãy thử lại!')
               }
               else {
                 console.log("File Uploaded : ", name);
                 
-                res.redirect("/");
+                res.send('File Sách giáo khoa đã được đăng thành công!')
                 zip.unzip({
                     source: __dirname + '/uploads/' + name,
                     destination: __dirname +'/public/sgk/'
@@ -2238,7 +2356,7 @@ app.post('/uploadSGK', function(req, res) {
             }
         });
     } else {
-        res.send("No File selected !");
+        res.send("Chưa chọn file!");
         res.end();
     };
 })

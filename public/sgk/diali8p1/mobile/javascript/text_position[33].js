@@ -1,0 +1,1 @@
+﻿positionForPages[33]={page:33,positions:[{word:"Nam Á có các kiểu cảnh quan: rừng nhiệt đới ẩm, xavan, hoang mạc và cảnh quan ",left:0.150039,top:0.091203,width:0.705028,height:0.018114},{word:"núi cao. ",left:0.150039,top:0.110142,width:0.072543,height:0.018115}]};

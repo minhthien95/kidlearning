@@ -11,10 +11,14 @@ var temp_username=data.dataset.username;
 var type_username=data.dataset.type;
 
 var socaude;
+var demnguoc;
+var timeout;
 export class baikiemtra extends React.Component{
 	constructor(props) {
     super(props);
       this.state = {
+      	phut: 0,
+      	giay: 0,
         listdapan: []
       };
     }
@@ -34,8 +38,13 @@ export class baikiemtra extends React.Component{
 				{/* /page header */}
 
 				{/* Content area */}
-				<div className="content">
-
+				<div id="doixuly"/>
+				<div id="contentBaitap" className="content">
+					<ul className="fab-menu fab-menu-absolute fab-menu-top-right" data-fab-toggle="hover" id="fab-menu-affixed-demo-right">
+						<h5 className="form-control bg-primary-800">
+						&nbsp;Thời gian làm bài còn: {this.state.phut} phút {this.state.giay} giây&nbsp;
+						</h5>
+					</ul>
 	            	<div className="panel panel-flat">
 						<div className="panel-heading">
 							<div className="text-center">
@@ -60,7 +69,7 @@ export class baikiemtra extends React.Component{
 							</div>
 						</div>
 						<div className="text-right">
-							<button data-popup="tooltip" data-toggle="modal" data-target="#confirm" id="nopbai" type="submit" className="btn bg-orange-800">Nộp bài <i className="icon-arrow-right14 position-right"></i></button>
+							<button  id="nopbai" type="submit" className="btn bg-orange-800">Nộp bài <i className="icon-arrow-right14 position-right"></i></button>
 						</div>
 					</div>
 
@@ -104,6 +113,9 @@ export class baikiemtra extends React.Component{
 	}
 	componentDidMount(){
 
+		$("#doixuly").append('<center class="text-bold"><i class="icon-spinner2 spinner"/> &nbsp;Đang xử lý...</center>');
+		$("#contentBaitap").hide();
+
 		var that=this;
 		var url1=window.location.href;
 		url1=url1.split('#');
@@ -126,49 +138,113 @@ export class baikiemtra extends React.Component{
 
 		//show dap an
 		$('#nopbai').click(function (event){
-			var socaudung=0;
-			for(var i=1;i<=socaude;i++){
-				var temtem3='input[name='+i+']';
-				var iddapan=$(temtem3).closest('.checked').children().attr("id");
-				if(iddapan=='1')
-					socaudung++;
-				//var iddapan=$("span").closest('.checked').children().attr("id");
-	       }
-			
-	        //console.log("xet ket qua "+socaudung);
+			if(timeout==true){
+				$('#nopbai').attr("data-popup","tooltip" );
+				$('#nopbai').attr("data-toggle","modal" );
+				$('#nopbai').attr("data-target","#confirm" );
+				var socaudung=0;
+				clearInterval(demnguoc);
+				$("#fab-menu-affixed-demo-right").children().remove();
 
-			var currentdate = new Date();
-			var datetime =currentdate.getFullYear() + "-"
-			    + (currentdate.getMonth()+1)  + "-" 
-			    + currentdate.getDate() +" "
-			    + currentdate.getHours() + ":"  
-			    + currentdate.getMinutes() + ":" 
-			    + currentdate.getSeconds();
-			var data={
-		        id:  id_user,
-		        lop: phanlop[0],
-				diem: (Math.round(parseFloat(socaudung*10/socaude) * 4) / 4).toFixed(2),
-				heso: '1',
-				mon: mon[1],
-				bai: bai,
-				thoigian: datetime
-			};
-			console.log(data);
-	        $.post("themKetquahoctap", data, function(data1){
-	        	if(data1==true)
-	        	{
-	        		$('#hienkq').text("Bạn đã hoàn thành bài thi với số điểm: "+(Math.round(parseFloat(socaudung*10/socaude) * 4) / 4).toFixed(2)+" điểm. Tuy nhiên bài kiểm tra này bạn đã làm trước đó nên kết quả không được ghi nhận thêm" );
-			        socaudung=0;
-			        $('#nopbai').hide();
-				    $("div").closest("#uniform-1").parent().parent().addClass("alpha-info no-border");
-	        	}
-	        	else{
-			        $('#hienkq').text("Bạn đã hoàn thành bài thi với số điểm: "+(Math.round(parseFloat(socaudung*10/socaude) * 4) / 4).toFixed(2)+" điểm" );
-			        socaudung=0;
-			        $('#nopbai').hide();
-				    $("div").closest("#uniform-1").parent().parent().addClass("alpha-info no-border");
-				}
-    		});
+				for(var i=1;i<=socaude;i++){
+					var temtem3='input[name='+i+']';
+					var iddapan=$(temtem3).closest('.checked').children().attr("id");
+					if(iddapan=='1')
+						socaudung++;
+					//var iddapan=$("span").closest('.checked').children().attr("id");
+		       	}
+				
+		        //console.log("xet ket qua "+socaudung);
+
+				var currentdate = new Date();
+				var datetime =currentdate.getFullYear() + "-"
+				    + (currentdate.getMonth()+1)  + "-" 
+				    + currentdate.getDate() +" "
+				    + currentdate.getHours() + ":"  
+				    + currentdate.getMinutes() + ":" 
+				    + currentdate.getSeconds();
+				var data={
+			        id:  id_user,
+			        lop: phanlop[0],
+					diem: (Math.round(parseFloat(socaudung*10/socaude) * 4) / 4).toFixed(2),
+					heso: '1',
+					mon: mon[1],
+					bai: bai,
+					thoigian: datetime
+				};
+				console.log(data);
+		        $.post("themKetquahoctap", data, function(data1){
+		        	$("#fab-menu-affixed-demo-right").append('<h5 class="form-control bg-danger-600">&nbsp;Bạn đạt được: '+(Math.round(parseFloat(socaudung*10/socaude) * 4) / 4).toFixed(2)+' điểm&nbsp;</h5>');
+		        	if(data1.text=="dalam")
+		        	{
+		        		$('#hienkq').text("Bạn đã hoàn thành bài kiểm tra với số điểm: "+(Math.round(parseFloat(socaudung*10/socaude) * 4) / 4).toFixed(2)+" điểm. Tuy nhiên bài kiểm tra này bạn đã làm trước đó nên kết quả không được ghi nhận thêm" );
+				        socaudung=0;
+				        $('#nopbai').hide();
+					    $("div").closest("#uniform-1").parent().parent().addClass("alpha-info no-border");
+		        	}
+		        	else{
+				        $('#hienkq').text("Bạn đã hoàn thành bài kiểm tra với số điểm: "+(Math.round(parseFloat(socaudung*10/socaude) * 4) / 4).toFixed(2)+" điểm" );
+				        socaudung=0;
+				        $('#nopbai').hide();
+					    $("div").closest("#uniform-1").parent().parent().addClass("alpha-info no-border");
+					}
+	    		});
+			}
+			else{
+			    var r = confirm("Bạn có chắc muốn nộp bài!");
+			    if (r == true) {
+					$('#nopbai').attr("data-popup","tooltip" );
+					$('#nopbai').attr("data-toggle","modal" );
+					$('#nopbai').attr("data-target","#confirm" );
+					var socaudung=0;
+					clearInterval(demnguoc);
+					$("#fab-menu-affixed-demo-right").children().remove();
+
+					for(var i=1;i<=socaude;i++){
+						var temtem3='input[name='+i+']';
+						var iddapan=$(temtem3).closest('.checked').children().attr("id");
+						if(iddapan=='1')
+							socaudung++;
+						//var iddapan=$("span").closest('.checked').children().attr("id");
+			       	}
+					
+			        //console.log("xet ket qua "+socaudung);
+
+					var currentdate = new Date();
+					var datetime =currentdate.getFullYear() + "-"
+					    + (currentdate.getMonth()+1)  + "-" 
+					    + currentdate.getDate() +" "
+					    + currentdate.getHours() + ":"  
+					    + currentdate.getMinutes() + ":" 
+					    + currentdate.getSeconds();
+					var data={
+				        id:  id_user,
+				        lop: phanlop[0],
+						diem: (Math.round(parseFloat(socaudung*10/socaude) * 4) / 4).toFixed(2),
+						heso: '1',
+						mon: mon[1],
+						bai: bai,
+						thoigian: datetime
+					};
+					console.log(data);
+			        $.post("themKetquahoctap", data, function(data1){
+			        	$("#fab-menu-affixed-demo-right").append('<h5 class="form-control bg-danger-600">&nbsp;Bạn đạt được: '+(Math.round(parseFloat(socaudung*10/socaude) * 4) / 4).toFixed(2)+' điểm&nbsp;</h5>');
+			        	if(data1.text=="dalam")
+			        	{
+			        		$('#hienkq').text("Bạn đã hoàn thành bài kiểm tra với số điểm: "+(Math.round(parseFloat(socaudung*10/socaude) * 4) / 4).toFixed(2)+" điểm. Tuy nhiên bài kiểm tra này bạn đã làm trước đó nên kết quả không được ghi nhận thêm" );
+					        socaudung=0;
+					        $('#nopbai').hide();
+						    $("div").closest("#uniform-1").parent().parent().addClass("alpha-info no-border");
+			        	}
+			        	else{
+					        $('#hienkq').text("Bạn đã hoàn thành bài kiểm tra với số điểm: "+(Math.round(parseFloat(socaudung*10/socaude) * 4) / 4).toFixed(2)+" điểm" );
+					        socaudung=0;
+					        $('#nopbai').hide();
+						    $("div").closest("#uniform-1").parent().parent().addClass("alpha-info no-border");
+						}
+		    		});
+			    }
+			}
 		});
 		
 		$('#delete_kiemtra').click(function (event){
@@ -179,13 +255,36 @@ export class baikiemtra extends React.Component{
 			};
 			$('#confirm2 li').on('click', '.btn-success', function (e) {
 				$.post("deleteKiemtra", data, function(data1){
-					window.location.reload(true);
+					var linkreload=window.location.href;
+					var linkreload2 = linkreload.replace("baikiemtra", "baihoc_chitiet");
+					window.location.href =linkreload2;
 				});
 	    	});
 		});
+
+		///////////////////////xu ly thoi gian/////////////////
+		$(window).scroll(function() {
+	        if($(window).scrollTop() + $(window).height() > $(document).height() - 40) {
+	            $('.fab-menu-bottom-left, .fab-menu-bottom-right').addClass('reached-bottom');
+	        }
+	        else {
+	            $('.fab-menu-bottom-left, .fab-menu-bottom-right').removeClass('reached-bottom');
+	        }
+	    });
+	    // Affix
+	    var nar1=$('#fab-menu-affixed-demo-right')
+	    var conn=nar1.offset().top - 20
+	    // Right alignment
+	    $('#fab-menu-affixed-demo-right').affix({
+
+	        offset: {
+	            top: conn
+	        }
+	    });
 	}
 	componentWillMount(){
 		console.log("componentWillMount");
+		var that=this;
 		var ketqua=[];
 		var count1=1;
 		$.post("/"+this.props.params.mon+"/lop"+this.props.params.lop+"/baitap_tracnghiem_chitiet_cauhoi/"+this.props.params.id,{loai: "kiemtra"}, function(data){
@@ -203,8 +302,9 @@ export class baikiemtra extends React.Component{
 				});
 				return;
 			}
-
-			for(var i=0;i<data.length;i++){
+			var i=0;
+			function looploop(){
+			//for(var i=0;i<data.length;i++){
 				var count=i+1;
 
 				$("#xxx").append('<div>'+
@@ -237,12 +337,39 @@ export class baikiemtra extends React.Component{
 												);
 					}
 					count1++;
-					// Default initialization Radió
-					$(".styled, .multiselect-container input").uniform({
-					    radioClass: 'choice'
-					});
+					i++;
+					if(i<data.length)
+						looploop();
+					else{
+						// Default initialization Radió
+						$(".styled, .multiselect-container input").uniform({
+						    radioClass: 'choice'
+						});
+						$(".icon-spinner2").parent().remove();
+						$("#contentBaitap").show();
+
+						var time=15*60;
+					    var tmp=time;
+						demnguoc=setInterval(function(){
+							var c=tmp--, m=(c/60)>>0,s=(c-m*60)+'';
+							that.setState((state) => ({phut : m}));
+							that.setState((state) => ({giay : s}));
+							if(tmp==-1){
+								console.log("hetgio");
+								that.setState((state) => ({phut : 0}));
+								that.setState((state) => ({giay : 0}));
+								clearInterval(demnguoc);
+								$("#fab-menu-affixed-demo-right").children().remove();
+								alert("Bạn đã hết thời gian làm bài!");
+								timeout=true;
+								$("#nopbai").click();
+								
+							}
+						},1000);
+					}
 				});
 			};
+			looploop();
 			//console.log(ketqua);
 		});
 		

@@ -49,10 +49,10 @@ export class gioithieu extends React.Component{
 									
 								    	<div className="caption text-center">
 								    		<h6 className="text-semibold no-margin">Ths. Trương Phước Lộc <small className="display-block">Giáo viên hướng dẫn</small></h6>
-							    			<ul className="icons-list mt-15">
-						                    	<li><a href="https://plus.google.com/" target="_blank" data-popup="tooltip" title="Google+" data-container="body"><i className=" icon-google-plus2"></i></a></li>
-						                    	<li><a href="https://www.facebook.com/trphloc" target="_blank" data-popup="tooltip" title="Facebook" data-container="body"><i className="icon-facebook2"></i></a></li>
-						                    	<li><a href="https://github.com/" target="_blank" data-popup="tooltip" title="Github" data-container="body"><i className="icon-github"></i></a></li>
+							    			<ul className="icons-list mt-15 text-muted">
+						                    	<li><a  data-popup="tooltip" title="Google+" data-container="body"><i className=" icon-google-plus2"></i></a></li>
+						                    	<li><a  data-popup="tooltip" title="Facebook" data-container="body"><i className="icon-facebook2"></i></a></li>
+						                    	<li><a  data-popup="tooltip" title="Github" data-container="body"><i className="icon-github"></i></a></li>
 					                    	</ul>
 								    	</div>
 							    	</div>
@@ -65,10 +65,10 @@ export class gioithieu extends React.Component{
 									
 								    	<div className="caption text-center">
 								    		<h6 className="text-semibold no-margin">GV. Nguyễn Đức Huy <small className="display-block">Giáo viên hướng dẫn</small></h6>
-							    			<ul className="icons-list mt-15">
-						                    	<li><a href="https://plus.google.com/" target="_blank" data-popup="tooltip" title="Google+" data-container="body"><i className=" icon-google-plus2"></i></a></li>
-						                    	<li><a href="https://www.facebook.com/huycbd" target="_blank" data-popup="tooltip" title="Facebook" data-container="body"><i className="icon-facebook2"></i></a></li>
-						                    	<li><a href="https://github.com/" target="_blank" data-popup="tooltip" title="Github" data-container="body"><i className="icon-github"></i></a></li>
+							    			<ul className="icons-list mt-15 text-muted">
+						                    	<li><a  data-popup="tooltip" title="Google+" data-container="body"><i className=" icon-google-plus2"></i></a></li>
+						                    	<li><a  data-popup="tooltip" title="Facebook" data-container="body"><i className="icon-facebook2"></i></a></li>
+						                    	<li><a  data-popup="tooltip" title="Github" data-container="body"><i className="icon-github"></i></a></li>
 					                    	</ul>
 								    	</div>
 							    	</div>

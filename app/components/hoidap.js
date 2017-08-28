@@ -147,7 +147,6 @@ export class hoidap extends React.Component{
 											</div>
 
 											<p>{data1.NOIDUNG}</p>
-											<a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/cauhoi"+data1.ID_CAUHOI} >[...]</a>
 										</div>
 									</div>
 
@@ -260,6 +259,7 @@ export class hoidap extends React.Component{
     		});
 	    });
 	    $('#formCauhoi').on('click', '.text-success,.text-danger,.text-danger-400', function (e) {
+	    	var thatt=this;
 	        var usernameClick = $(this).attr('id');
 	        var type = $(this).parent().attr('id');
 	        var id_cauhoi1=$(this).attr('name');
@@ -280,8 +280,26 @@ export class hoidap extends React.Component{
 			        id_cauhoi: $(this).parent().attr('name'),
 			        type: type
 				};
+				var xyz=$(thatt).parent().parent();
+
+				if(xyz.children(".text-muted").text()==0 && type=="down_cauhoi"){
+					console.log("co vao dau")
+					xyz.children().children(".text-danger").hide();
+					return;
+				}
 		        $.post("rate_cauhoi", data, function(){
-		        	return;
+		        	if(type=="up_cauhoi"){
+		        		xyz.children().children(".text-grey-300").addClass("text-danger");
+		        		xyz.children().children(".text-grey-300").removeClass("text-grey-300");
+		        		xyz.children().children(".text-success").addClass("text-grey-300");
+		        		xyz.children().children(".text-success").removeClass("text-success");
+		        	}
+		        	else{
+		        		xyz.children().children(".text-grey-300").addClass("text-success");
+		        		xyz.children().children(".text-grey-300").removeClass("text-grey-300");
+		        		xyz.children().children(".text-danger").addClass("text-grey-300");
+		        		xyz.children().children(".text-danger").removeClass("text-danger");
+		        	}
 	    		});
 		    }
 	    });

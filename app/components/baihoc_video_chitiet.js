@@ -178,6 +178,7 @@ export class baihoc_video_chitiet extends React.Component{
     		});
 		});
 	    $('#formBinhluan').on('click', '.text-success,.text-danger,.text-danger-400', function (e) {
+	    	var thatt=this;
 	        var usernameClick = $(this).parent().attr('id');
 	        var idBinhluanClick = $(this).parent().attr('name');
 	        var type = $(this).attr('class');
@@ -196,7 +197,19 @@ export class baihoc_video_chitiet extends React.Component{
 			};
 			//console.log(data);
 	        $.post("rate_binhluan", data, function(){
-	        	
+	        	var xyz=$(thatt).parent().parent();
+	        	if(type=="icon-arrow-up22 text-success"){
+	        		xyz.children().children(".text-grey-300").addClass("text-danger");
+	        		xyz.children().children(".text-grey-300").removeClass("text-grey-300");
+	        		xyz.children().children(".text-success").addClass("text-grey-300");
+	        		xyz.children().children(".text-success").removeClass("text-success");
+	        	}
+	        	else{
+	        		xyz.children().children(".text-grey-300").addClass("text-success");
+	        		xyz.children().children(".text-grey-300").removeClass("text-grey-300");
+	        		xyz.children().children(".text-danger").addClass("text-grey-300");
+	        		xyz.children().children(".text-danger").removeClass("text-danger");
+	        	}
     		});
 	    });
 

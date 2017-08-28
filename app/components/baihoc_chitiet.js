@@ -17,7 +17,8 @@ export class baihoc_chitiet extends React.Component{
 	constructor(props) {
     super(props);
       this.state = {
-        listbaihoc: []
+        listbaihoc: [],
+        socau: 5
       };
     }
 	render(){
@@ -138,7 +139,16 @@ export class baihoc_chitiet extends React.Component{
 									<h6 className="modal-title text-semibold">Thêm câu hỏi bài kiểm tra</h6>
 								</div>
 							</div>
-
+							<div className="form-group">
+								<div className="col-lg-5">
+									<div className="input-group">
+										<input id="socauhoi" type="number" min="0" max="20" className="form-control" placeholder="Số câu hỏi"/>
+										<span className="input-group-btn">
+											<button id="chonsocau" className="btn btn-default" type="button">Xác nhận</button>
+										</span>
+									</div>
+								</div>
+							</div>
 							<div className="modal-body">
 								<div id="listcauhoi" className="panel-body">
 									
@@ -163,51 +173,102 @@ export class baihoc_chitiet extends React.Component{
         }
         if (type_username=="admin") {
             $("#thembaithi").show();
-        }
-
-	    for(var i=1;i<=10;i++)
-	    {
-	    	$("#listcauhoi").append('<div class="form-group">'+
-										'<h4 class="text-semibold">Câu hỏi '+i+':</h4>'+
-										'<div style={{paddingRight: "0px"}}>'+
-											'<input id="noidung'+i+'" type="text" placeholder="Nhập câu hỏi..." class="form-control"/>'+
-											'<span class="help-block"></span>'+
-										'</div>'+
-									'</div>'+
-									'<div class="form-group">'+
-										'<label class="text-semibold">Câu trả lời:</label>'+
-										'<div class="input-group">'+
-											'<span class="input-group-addon">'+
-												'<input id="ra_cau'+i+'_1" name="addon-radio-'+i+'"  type="radio" class="styled"/>'+
-											'</span>'+
-											'<input id="te_cau'+i+'_1" type="text" class="form-control" placeholder="Câu trả lời 1"/>'+
-										'</div>'+
-										'<div class="input-group">'+
-											'<span class="input-group-addon">'+
-												'<input id="ra_cau'+i+'_2" name="addon-radio-'+i+'"  type="radio" class="styled" />'+
-											'</span>'+
-											'<input  id="te_cau'+i+'_2" type="text" class="form-control" placeholder="Câu trả lời 2"/>'+
-										'</div>'+
-										'<div class="input-group">'+
-											'<span class="input-group-addon">'+
-												'<input id="ra_cau'+i+'_3" name="addon-radio-'+i+'"  type="radio" class="styled"/>'+
-											'</span>'+
-											'<input  id="te_cau'+i+'_3" type="text" class="form-control" placeholder="Câu trả lời 3"/>'+
-										'</div>'+
-										'<div class="input-group">'+
-											'<span class="input-group-addon">'+
-												'<input id="ra_cau'+i+'_4" name="addon-radio-'+i+'" type="radio" class="styled"/>'+
-											'</span>'+
-											'<input  id="te_cau'+i+'_4" type="text" class="form-control" placeholder="Câu trả lời 4"/>'+
-										'</div>'+
-									'</div>'+
-									'<hr/>');
-	    }
+        } 
+        var socau=0;
+        $('#xong').hide();
+        $("#chonsocau").on("click", function(){
+        	console.log($("#socauhoi").val());
+        	if($("#socauhoi").val()<-1 || $("#socauhoi").val() >30)
+        		alert("Số câu hỏi quá nhỏ hoặc quá lớn!");
+        	else{
+        		$('#xong').show();
+        		that.setState({socau : $("#socauhoi").val()})
+        		console.log(that.state.socau);
+        		socau=that.state.socau;
+        		$("#listcauhoi").children().remove();
+        		for(var i=1;i<=socau;i++)
+			    {
+			    	$("#listcauhoi").append('<div class="form-group">'+
+												'<h4 class="text-semibold">Câu hỏi '+i+':</h4>'+
+												'<div style={{paddingRight: "0px"}}>'+
+													'<input id="noidung'+i+'" type="text" placeholder="Nhập câu hỏi..." class="form-control"/>'+
+													'<span class="help-block"></span>'+
+												'</div>'+
+											'</div>'+
+											'<div class="form-group">'+
+												'<label class="text-semibold">Câu trả lời:</label>'+
+												'<div class="input-group">'+
+													'<span class="input-group-addon">'+
+														'<input id="ra_cau'+i+'_1" name="addon-radio-'+i+'"  type="radio" class="styled"/>'+
+													'</span>'+
+													'<input id="te_cau'+i+'_1" type="text" class="form-control" placeholder="Câu trả lời 1"/>'+
+												'</div>'+
+												'<div class="input-group">'+
+													'<span class="input-group-addon">'+
+														'<input id="ra_cau'+i+'_2" name="addon-radio-'+i+'"  type="radio" class="styled" />'+
+													'</span>'+
+													'<input  id="te_cau'+i+'_2" type="text" class="form-control" placeholder="Câu trả lời 2"/>'+
+												'</div>'+
+												'<div class="input-group">'+
+													'<span class="input-group-addon">'+
+														'<input id="ra_cau'+i+'_3" name="addon-radio-'+i+'"  type="radio" class="styled"/>'+
+													'</span>'+
+													'<input  id="te_cau'+i+'_3" type="text" class="form-control" placeholder="Câu trả lời 3"/>'+
+												'</div>'+
+												'<div class="input-group">'+
+													'<span class="input-group-addon">'+
+														'<input id="ra_cau'+i+'_4" name="addon-radio-'+i+'" type="radio" class="styled"/>'+
+													'</span>'+
+													'<input  id="te_cau'+i+'_4" type="text" class="form-control" placeholder="Câu trả lời 4"/>'+
+												'</div>'+
+											'</div>'+
+											'<hr/>');
+			    }
+        	}
+        })
+	    // for(var i=1;i<=socau;i++)
+	    // {
+	    // 	$("#listcauhoi").append('<div class="form-group">'+
+					// 					'<h4 class="text-semibold">Câu hỏi '+i+':</h4>'+
+					// 					'<div style={{paddingRight: "0px"}}>'+
+					// 						'<input id="noidung'+i+'" type="text" placeholder="Nhập câu hỏi..." class="form-control"/>'+
+					// 						'<span class="help-block"></span>'+
+					// 					'</div>'+
+					// 				'</div>'+
+					// 				'<div class="form-group">'+
+					// 					'<label class="text-semibold">Câu trả lời:</label>'+
+					// 					'<div class="input-group">'+
+					// 						'<span class="input-group-addon">'+
+					// 							'<input id="ra_cau'+i+'_1" name="addon-radio-'+i+'"  type="radio" class="styled"/>'+
+					// 						'</span>'+
+					// 						'<input id="te_cau'+i+'_1" type="text" class="form-control" placeholder="Câu trả lời 1"/>'+
+					// 					'</div>'+
+					// 					'<div class="input-group">'+
+					// 						'<span class="input-group-addon">'+
+					// 							'<input id="ra_cau'+i+'_2" name="addon-radio-'+i+'"  type="radio" class="styled" />'+
+					// 						'</span>'+
+					// 						'<input  id="te_cau'+i+'_2" type="text" class="form-control" placeholder="Câu trả lời 2"/>'+
+					// 					'</div>'+
+					// 					'<div class="input-group">'+
+					// 						'<span class="input-group-addon">'+
+					// 							'<input id="ra_cau'+i+'_3" name="addon-radio-'+i+'"  type="radio" class="styled"/>'+
+					// 						'</span>'+
+					// 						'<input  id="te_cau'+i+'_3" type="text" class="form-control" placeholder="Câu trả lời 3"/>'+
+					// 					'</div>'+
+					// 					'<div class="input-group">'+
+					// 						'<span class="input-group-addon">'+
+					// 							'<input id="ra_cau'+i+'_4" name="addon-radio-'+i+'" type="radio" class="styled"/>'+
+					// 						'</span>'+
+					// 						'<input  id="te_cau'+i+'_4" type="text" class="form-control" placeholder="Câu trả lời 4"/>'+
+					// 					'</div>'+
+					// 				'</div>'+
+					// 				'<hr/>');
+	    // }
 
 	    //them bai tap
 	    $('#xong').click(function () {
 	    	var listtracnghiem=[];
-			for(var i=1;i<=10;i++)
+			for(var i=1;i<=socau;i++)
 	    	{
 	    		console.log($("#ra_cau"+i+"_1").is(':checked'))
 				var check_temp;
@@ -243,7 +304,7 @@ export class baihoc_chitiet extends React.Component{
 					da2: da2,
 					da3: da3,
 					da4: da4,
-					link_anh: null
+					link_anh: ''
 	    		};
 	    		listtracnghiem.push(datax);
 	    		// console.log(datax);

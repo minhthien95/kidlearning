@@ -193,12 +193,26 @@ export class cauhoi_chitiet extends React.Component{
 		        id_cauhoi: id_cauhoi[0],
 				type: $(this).attr('id')
 			};
+			var checktype=$(this).attr('id');
+			if($("#danhgia").text()=='0' && checktype=="down_cauhoi"){
+				$("#down_cauhoi").hide();
+				return;
+			}
 			//console.log(data);
 	        $.post("rate_cauhoi", data, function(){
+	        	if(checktype=="up_cauhoi"){
+	        		$("#up_cauhoi").hide();
+	        		$("#down_cauhoi").show();
+	        	}
+	        	else{
+	        		$("#down_cauhoi").hide();
+	        		$("#up_cauhoi").show();
+	        	}
     		});
 		});
 
 	    $('#formBinhluan').on('click', '.text-success,.text-danger,.text-danger-400', function (e) {
+	    	var thatt=this;
 	        var usernameClick = $(this).parent().attr('id');
 	        var idBinhluanClick = $(this).parent().attr('name');
 	        var type = $(this).attr('class');
@@ -217,6 +231,19 @@ export class cauhoi_chitiet extends React.Component{
 			};
 			//console.log(data);
 	        $.post("rate_binhluan", data, function(){
+	        	var xyz=$(thatt).parent().parent();
+	        	if(type=="icon-arrow-up22 text-success"){
+	        		xyz.children().children(".text-grey-300").addClass("text-danger");
+	        		xyz.children().children(".text-grey-300").removeClass("text-grey-300");
+	        		xyz.children().children(".text-success").addClass("text-grey-300");
+	        		xyz.children().children(".text-success").removeClass("text-success");
+	        	}
+	        	else{
+	        		xyz.children().children(".text-grey-300").addClass("text-success");
+	        		xyz.children().children(".text-grey-300").removeClass("text-grey-300");
+	        		xyz.children().children(".text-danger").addClass("text-grey-300");
+	        		xyz.children().children(".text-danger").removeClass("text-danger");
+	        	}
 	        	
     		});
 	    });

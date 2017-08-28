@@ -1,0 +1,1 @@
+﻿positionForPages[21]={page:21,positions:[{word:"Em hãy tìm trên hình 26.1 các mỏ chính ở nước ta được nêu trong bảng 26.1. ",left:0.150039,top:0.846758,width:0.663850,height:0.018115}]};

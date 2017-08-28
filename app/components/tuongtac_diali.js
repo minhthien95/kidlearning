@@ -34,6 +34,8 @@ export class tuongtac_diali extends React.Component{
 								<li className="active"><a href="#quocgia" data-toggle="tab"><i className="icon-sphere3 position-left"></i>Bản đồ các quốc gia trên thế giới</a></li>
 								<li><a href="#danso" data-toggle="tab"><i className="icon-people position-left"></i>Bản đồ dân số các quốc gia trên thế giới(2010)</a></li>
 								<li><a href="#chauluc" data-toggle="tab"><i className="icon-earth position-left"></i>Bản đồ các châu lục trên trên thế giới</a></li>
+								<li><a href="#danso_vn" data-toggle="tab"><i className="icon-earth position-left"></i>Bản đồ các tỉnh thành Việt Nam</a></li>
+							
 							</ul>
 						</div>
 					</div>
@@ -58,6 +60,11 @@ export class tuongtac_diali extends React.Component{
 								<iframe id="content3"  width="100%" height="450" allowFullScreen frameBorder="0"/>
 							</div>
 						</div>
+						<div className="tab-pane fade" id="danso_vn">
+							<div className="panel panel-flat">
+								<iframe id="content4"  width="100%" height="800" scrolling="no" frameBorder="0"/>
+							</div>
+						</div>
 					</div>
 				</div>
 				{/* /content area */}
@@ -71,6 +78,7 @@ export class tuongtac_diali extends React.Component{
 		$("#content1").attr("src", "map/bandothegioi-quocgia.html");
 		$("#content2").attr("src", "map/bandothegioi-danso.html");
 		$("#content3").attr("src", "interactiveGlobe/index.html");
+		$("#content4").attr("src", "Vietnam%20map/index.html");
 		 // Initialize lightbox
 	    $('[data-popup=lightbox]').fancybox({
 	        padding: 3

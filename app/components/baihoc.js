@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 //let socket = io('http://kid-learning.herokuapp.com:3000'||'https://kid-learning.herokuapp.com:3000' || 'http://localhost:3000');
 //let socket = io('http://'+window.location.hostname+':3000');
 //let socket = io('http://'+window.location.hostname);
-console.log('http://'+window.location.hostname);
+//console.log('http://'+window.location.hostname);
 var urlsocket;
 if(window.location.hostname=="localhost")
 	urlsocket='http://'+window.location.hostname+':3000';
@@ -102,7 +102,7 @@ export class baihoc extends React.Component{
 															<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_chitiet/"+data1.BAI} className="text-default"><span className="text-primary">Bài {data1.BAI}:</span> {data1.TIEUDE}</a></h6>
 															<div className="heading-elements">
 																<span className="heading-text">{data1.USERNAME} - {data1.to_char}</span>
-											                	{data1.USERNAME==data.dataset.username ? (
+											                	{data1.USERNAME==data.dataset.username || data.dataset.type=="admin" ? (
 															        <ul className="list-inline list-inline-separate heading-text pull-right">
 																		<li><a id={data1.ID_TACGIA} name={data1.ID_BAIHOC} className="text-danger-400" data-popup="tooltip" data-toggle="modal" data-target="#confirm"><i className="icon-cross2 position-right"/></a></li>
 																	</ul>) : (
@@ -144,7 +144,7 @@ export class baihoc extends React.Component{
 															<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_chitiet/"+data1.BAI} className="text-default"><span className="text-primary">Bài {data1.BAI}:</span>  {data1.TIEUDE}</a></h6>
 															<div className="heading-elements">
 																<span className="heading-text">{data1.USERNAME} - {data1.to_char}</span>
-																{data1.USERNAME==data.dataset.username ? (
+																{data1.USERNAME==data.dataset.username || data.dataset.type=="admin" ? (
 															        <ul className="list-inline list-inline-separate heading-text pull-right">
 																		<li><a id={data1.ID_TACGIA} name={data1.ID_BAIHOC} className="text-danger-400" data-popup="tooltip" data-toggle="modal" data-target="#confirm"><i className="icon-cross2 position-right"/></a></li>
 																	</ul>) : (
@@ -204,7 +204,7 @@ export class baihoc extends React.Component{
 															<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_chitiet/"+data1.BAI} className="text-default"><span className="text-primary">Bài {data1.BAI}:</span>  {data1.TIEUDE}</a></h6>
 															<div className="heading-elements">
 																<span className="heading-text">{data1.USERNAME} - {data1.to_char}</span>
-																{data1.USERNAME==data.dataset.username ? (
+																{data1.USERNAME==data.dataset.username || data.dataset.type=="admin" ? (
 															        <ul className="list-inline list-inline-separate heading-text pull-right">
 																		<li><a id={data1.ID_TACGIA} name={data1.ID_BAIHOC} className="text-danger-400" data-popup="tooltip" data-toggle="modal" data-target="#confirm"><i className="icon-cross2 position-right"/></a></li>
 																	</ul>) : (
@@ -244,7 +244,7 @@ export class baihoc extends React.Component{
 															<h6 className="panel-title text-semibold no-margin"><a href={"#"+data1.MON+"/lop"+data1.PHANLOP+"/baihoc_chitiet/"+data1.BAI} className="text-default"><span className="text-primary">Bài {data1.BAI}:</span>  {data1.TIEUDE}</a></h6>
 															<div className="heading-elements">
 																<span className="heading-text">{data1.USERNAME} - {data1.to_char}</span>
-																{data1.USERNAME==data.dataset.username ? (
+																{data1.USERNAME==data.dataset.username || data.dataset.type=="admin" ? (
 															        <ul className="list-inline list-inline-separate heading-text pull-right">
 																		<li><a id={data1.ID_TACGIA} name={data1.ID_BAIHOC} className="text-danger-400" data-popup="tooltip" data-toggle="modal" data-target="#confirm"><i className="icon-cross2 position-right"/></a></li>
 																	</ul>) : (
@@ -424,42 +424,6 @@ export class baihoc extends React.Component{
 	        	return;
 	    	});
 	    });
-	    var datax={
-	        id:  id_user,
-			lop: phanlop[0],
-			mon: mon[1]
-		};
-	    $.post("checkBaithi", datax, function(data){
-	    	if(data==true || type_username!="hocsinh"){
-	    		$("#checkBaithi").append('<div class="timeline-icon">'+
-										'<div class="bg-orange">'+
-											'<i class="icon-graduation2"></i>'+
-										'</div>'+
-									'</div>'+
-									'<div class="panel panel-flat timeline-content">'+
-										'<div class="panel-heading">'+
-											'<h6 class="panel-title text-semibold no-margin"><a href="#'+that.props.params.mon+'/lop'+that.props.params.lop+'/baithi/thi" className="text-default"><span class="text-primary">Bài thi:</span>  Bài thi cuối môn</a></h6>'+
-										'</div>'+
-										'<div class="panel-body">'+
-
-										'</div>'+
-									'</div>');
-	    	}
-	    	else
-	    		$("#checkBaithi").append('<div class="timeline-icon">'+
-										'<div class="bg-grey-300">'+
-											'<i class="icon-graduation2"></i>'+
-										'</div>'+
-									'</div>'+
-									'<div class="panel panel-flat timeline-content">'+
-										'<div class="panel-heading">'+
-											'<h6 class="panel-title text-semibold no-margin"><a class="text-grey"><span className="text-primary">Bài thi:</span>  Bài thi cuối môn</a></h6>'+
-										'</div>'+
-										'<div class="panel-body">'+
-
-										'</div>'+
-									'</div>');
-	    });
 	}
 	componentWillMount(){
 		console.log("componentWillMount");
@@ -495,7 +459,7 @@ export class baihoc extends React.Component{
 			id: "all",
 			id_user: "all"
 		}
-		console.log(data1);
+		//console.log(data1);
 
 		socket.emit('c2s_Baihoc',data1);
 		socket.on('s2c_Baihoc', function(data){
@@ -510,6 +474,44 @@ export class baihoc extends React.Component{
 			$("#link_pre").text(name_link);
 
 			that.setState({listbaihoc: data});
+
+		    $("#checkBaithi").children().remove();
+		    var datax={
+		        id:  id_user,
+				lop: phanlop[0],
+				mon: mon[1]
+			};
+		    $.post("checkBaithi", datax, function(data){
+		    	if(data==true || type_username!="hocsinh"){
+		    		$("#checkBaithi").append('<div class="timeline-icon">'+
+											'<div class="bg-orange">'+
+												'<i class="icon-graduation2"></i>'+
+											'</div>'+
+										'</div>'+
+										'<div class="panel panel-flat timeline-content">'+
+											'<div class="panel-heading">'+
+												'<h6 class="panel-title text-semibold no-margin"><a href="#'+that.props.params.mon+'/lop'+that.props.params.lop+'/baithi/thi" className="text-default"><span class="text-primary">Bài thi:</span>  Bài thi cuối môn</a></h6>'+
+											'</div>'+
+											'<div class="panel-body">'+
+
+											'</div>'+
+										'</div>');
+		    	}
+		    	else
+		    		$("#checkBaithi").append('<div class="timeline-icon">'+
+											'<div class="bg-grey-300">'+
+												'<i class="icon-graduation2"></i>'+
+											'</div>'+
+										'</div>'+
+										'<div class="panel panel-flat timeline-content">'+
+											'<div class="panel-heading">'+
+												'<h6 class="panel-title text-semibold no-margin"><a class="text-grey"><span className="text-primary">Bài thi:</span>  Bài thi cuối môn</a></h6>'+
+											'</div>'+
+											'<div class="panel-body">'+
+
+											'</div>'+
+										'</div>');
+		    });
 		});
 		////
 	}

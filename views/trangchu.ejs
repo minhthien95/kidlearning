@@ -35,9 +35,7 @@
 	<script type="text/javascript" src="assets/js/core/app.js"></script>
 	<script type="text/javascript" src="assets/js/plugins/ui/nicescroll.min.js"></script>
 	<script type="text/javascript" src="assets/js/pages/layout_fixed_native.js"></script>
-	<!-- <script type="text/javascript" src="assets/js/pages/dashboard.js"></script> -->
-	<!-- /theme JS files -->
-		<!-- Theme JS files -->
+
 	<script type="text/javascript" src="assets/js/core/libraries/jquery_ui/widgets.min.js"></script>
 	<script type="text/javascript" src="assets/js/plugins/tables/datatables/datatables.min.js"></script>
 	<script type="text/javascript" src="assets/js/plugins/tables/datatables/extensions/natural_sort.js"></script>
@@ -45,6 +43,8 @@
 	<script type="text/javascript" src="assets/js/plugins/forms/wizards/steps.min.js"></script>
 	<script type="text/javascript" src="assets/js/plugins/forms/styling/uniform.min.js"></script>
 	<script type="text/javascript" src="assets/js/plugins/media/fancybox.min.js"></script>
+	<script type="text/javascript" src="assets/js/plugins/ui/fab.min.js"></script>
+	<script type="text/javascript" src="assets/js/plugins/ui/prism.min.js"></script>
 	<!-- /theme JS files -->
 
 	<link rel="stylesheet" href="timeliner-master/css/timeliner.css" type="text/css" media="screen">
@@ -55,9 +55,21 @@
 
 	<script src="timeline/vis.js"></script>
   	<link href="timeline/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
+
+
 </head>
 
 <body class="navbar-top">
+<!-- 	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+	  ga('create', 'UA-104079489-1', 'auto');
+	  ga('send', 'pageview');
+
+	</script> -->
 	<!-- Main navbar -->
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div id="statusbar" data-username=<%= user.username%> data-lop=<%= user.lop%> data-type=<%= user.type%> data-id=<%= user.id%>></div>

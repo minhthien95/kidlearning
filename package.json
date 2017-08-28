@@ -26,6 +26,7 @@
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
+    "react-ga": "^2.2.0",
     "react-router": "^2.8.1",
     "react-router-dom": "^4.1.1",
     "serve-static": "^1.12.3",
@@ -42,6 +43,6 @@
   "scripts": {
     "start": "node index.js",
     "dev": "webpack -d --watch",
-    "build": "webpack -p"
+    "build:prod": "webpack -p"
   }
 }

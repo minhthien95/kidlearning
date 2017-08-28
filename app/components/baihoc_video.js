@@ -25,6 +25,7 @@ export class baihoc_video extends React.Component{
 					<div className="breadcrumb-line">
 						<ul className="breadcrumb">
 							<li><a href="#"><i className="icon-home2 position-left"></i> Trang chủ</a></li>
+							<li ><a id="link_pre_all" ></a></li>
 							<li ><a id="link_pre" ></a></li>
 							<li className="active" id="link_pre1" ></li>
 						</ul>
@@ -34,7 +35,6 @@ export class baihoc_video extends React.Component{
 					</div>
 				</div>
 				{/* /page header */}
-
 
 				{/* Content area */}
 				<div className="content">
@@ -175,7 +175,7 @@ export class baihoc_video extends React.Component{
 				mon: mon[1],
 				thoigian: datetime
 			};
-			console.log(data);
+			//console.log(data);
 	        $.post("themVideo", data, function(){
 	        	$("#add_tieude").val("");
 	        	$("#add_noidung").val("");
@@ -210,10 +210,19 @@ export class baihoc_video extends React.Component{
 			mon1="Lịch sử";
 		if(this.props.params.mon=="diali")
 			mon1="Địa lí";
-		var name_link="Bài học "+mon1+" lớp "+this.props.params.lop+" bài "+this.props.params.bai; 
-		var link_pre="#"+this.props.params.mon+"/lop"+this.props.params.lop+"/baihoc_chitiet/"+this.props.params.bai;
-		var name_link1="Bài học video";
-		
+		$.post("laytenbaihoc",{mon: that.props.params.mon,lop:that.props.params.lop,bai:that.props.params.bai},function(data){
+			var name_link_all="Bài học "+mon1+" lớp "+that.props.params.lop; 
+			var link_pre_all="#"+that.props.params.mon+"/lop"+that.props.params.lop+"/baihoc";
+			$("#link_pre_all").text(name_link_all);
+			$('#link_pre_all').attr('href', link_pre_all);
+
+			var name_link="Bài "+that.props.params.bai+": "+data[0].TIEUDE; 
+			var link_pre="#"+that.props.params.mon+"/lop"+that.props.params.lop+"/baihoc_chitiet/"+that.props.params.bai;
+			var name_link1="Bài học video";
+			$("#link_pre").text(name_link);
+			$('#link_pre').attr('href', link_pre);
+			$("#link_pre1").text(name_link1);
+		})
 			    // Table setup
 	    // ------------------------------
 
@@ -244,11 +253,6 @@ export class baihoc_video extends React.Component{
 	    var userTable;
 		$.post("/"+this.props.params.mon+"/lop"+this.props.params.lop+"/baihoc_video/"+this.props.params.bai, function(data){
 			// Basic datatable
-			console.log("lay du lieu baihoc_tip 1");
-			console.log(data);
-			$("#link_pre").text(name_link);
-			$('#link_pre').attr('href', link_pre);
-			$("#link_pre1").text(name_link1);
 		    userTable=$('.datatable-basic').DataTable({
 		    	bAutoWidth: false,
 		    	"aaData": data,
@@ -266,7 +270,7 @@ export class baihoc_video extends React.Component{
 			        { "mDataProp": "TIEUDE" },
 			        { "mDataProp": "NOIDUNG" },
 			        { "mRender": function(data1, type, full, meta){
-			        	console.log(full);
+			        	//console.log(full);
                         var tool_bar = '<div class="media-left">'+
 											'<div class="thumb">'+
 												'<a href="#/'+full.MON+'/lop'+full.PHANLOP+'/baihoc_video_chitiet/'+full.ID_BAIHOC+'/'+full.ID_VIDEO+'">'+

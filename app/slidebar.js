@@ -6,25 +6,7 @@ var data = document.querySelector('#slidebar');
 var root = window.document.getElementById("slidebar");
 
 class Slidebar extends React.Component {
-	// constructor(props) {
- //    super(props);
- //      this.state = {
- //        username: "abc"
- //      };
- //    }
-	// componentWillMount(){
-	// 	var that=this;
-	// 	$.post("/trangchu", function(data){
-	// 		//that.setState({noidung: data})
-	// 		that.setState({username: data});
-	// 		console.log(data);
-	// 	})
-	// }
-	// componentWillMount(){
-	// 	console.log("hihi slidebar");
-	// 	//if(data.dataset.username==8)
-	// 		$("#Lichsu_lop8").addClass("disabled");
-	// }
+
 	constructor(props) {
     super(props);
       this.state = {

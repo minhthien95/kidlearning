@@ -1,0 +1,1 @@
+﻿positionForPages[1]={page:1,positions:[{word:"Phần hai ",left:0.725261,top:0.091835,width:0.133873,height:0.030695},{word:"ĐỊA LÍ VIỆT NAM ",left:0.150039,top:0.126207,width:0.326905,height:0.033546}]};

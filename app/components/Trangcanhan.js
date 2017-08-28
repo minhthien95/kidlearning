@@ -373,7 +373,6 @@ export class Trangcanhan extends React.Component{
 														<th>Họ tên</th>
 														<th>Ngày sinh</th>
 														<th>Email</th>
-														<th>Lớp</th>
 														<th>Xoá</th>
 													</tr>
 												</thead>
@@ -733,7 +732,7 @@ export class Trangcanhan extends React.Component{
 					//console.log(data);
 			        $.post("updateUserInfo", data, function(){
 			        	alert("Đã thay đổi thông tin thành công!");
-			        	window.location = "#/trangcanhan/caidat";
+			        	window.location.reload(true);
 	                	//Trangcanhan.dispatch(location.getCurrentPath(), null);
             		});
 	        	}
@@ -852,8 +851,7 @@ export class Trangcanhan extends React.Component{
                     {"aTargets": [ 2 ], "bSortable": true },
                     {"aTargets": [ 3 ], "bSortable": true },    
                     {"aTargets": [ 4 ], "bSortable": true },
-                    {"aTargets": [ 5 ], "bSortable": true },
-                    {"aTargets": [ 6 ], "bSortable": false }
+                    {"aTargets": [ 5 ], "bSortable": false }
                 ],
 		        "aoColumns": [
 			        { "mDataProp": "ID" },
@@ -861,7 +859,6 @@ export class Trangcanhan extends React.Component{
 			        { "mDataProp": "HOTEN" },
 			        { "mDataProp": "to_char" },
 			        { "mDataProp": "EMAIL" },
-			        { "mDataProp": "LOP" },
 			        { "render": function(data, type, full, meta){
                         var tool_bar = '<div class="hidden-sm hidden-xs action-buttons">'+
                                         '<a class="text-danger-400" data-popup="tooltip" data-toggle="modal" data-target="#confirm">'+

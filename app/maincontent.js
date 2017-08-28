@@ -38,10 +38,20 @@ import {baitap_tuluan} from "./components/baitap_tuluan";
 import {baitap_tracnghiem_chitiet} from "./components/baitap_tracnghiem_chitiet";
 import {baitap_tuluan_chitiet} from "./components/baitap_tuluan_chitiet";
 
+
+import ReactGA from 'react-ga';
+ReactGA.initialize('UA-104079489-1');
+
 class MainContent extends React.Component {
   	render(){
+    	function fireTracking() {
+		    //ReactGA.pageview(window.location.hash);
+		    const page = window.location.hash;
+		    ReactGA.set({ page });
+		    ReactGA.pageview(page);
+		}
 	    return (
-	    	<Router history={hashHistory}>
+	    	<Router onUpdate={fireTracking} history={hashHistory}>
 		    	<div>
 				  	<Route path="/" component={Trangchu}/>
 				  	<Route path="Trangcanhan/:tab" component={Trangcanhan}/>

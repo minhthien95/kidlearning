@@ -1,0 +1,1 @@
+﻿positionForPages[46]={page:46,positions:[{word:"Bảng 34.1. Hệ thống các sông lớn ở Việt Nam ",left:0.150039,top:0.091657,width:0.414193,height:0.018115}]};

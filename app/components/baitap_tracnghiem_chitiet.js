@@ -29,6 +29,7 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 					<div className="breadcrumb-line">
 						<ul className="breadcrumb">
 							<li><a href="#"><i className="icon-home2 position-left"></i> Trang chủ</a></li>
+							<li ><a id="link_pre_all" ></a></li>
 							<li ><a id="link_pre" ></a></li>
 							<li className="active" >Bài tập trắc nghiệm</li>
 						</ul>
@@ -89,8 +90,8 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 					</div>
 				</div>	
 				{/* Content area */}
-				<div className="content">
-
+				<div id="doixuly"/>
+				<div id="contentBaitap" className="content">
 					{/*Basic setup */}
 		            <div className="panel panel-white">
 						<div className="panel-heading">
@@ -177,13 +178,24 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 		var that=this;
 		var id_cauhoi=this.props.params.mon+this.props.params.lop+this.props.params.id;
 		var mon1;
+
+		$("#doixuly").append('<center class="text-bold"><i class="icon-spinner2 spinner"/> &nbsp;Đang xử lý...</center>');
 		if(this.props.params.mon=="lichsu")
 			mon1="Lịch sử";
 		if(this.props.params.mon=="diali")
 			mon1="Địa lí";
-		var name_link="Bài học "+mon1+" lớp "+this.props.params.lop+" bài "+this.props.params.bai; 
-		var link_pre="#"+this.props.params.mon+"/lop"+this.props.params.lop+"/baihoc_chitiet/"+this.props.params.id;
 
+		$.post("laytenbaihoc",{mon: that.props.params.mon,lop:that.props.params.lop,bai:that.props.params.bai},function(data){
+			var name_link_all="Bài học "+mon1+" lớp "+that.props.params.lop; 
+			var link_pre_all="#"+that.props.params.mon+"/lop"+that.props.params.lop+"/baihoc";
+			$("#link_pre_all").text(name_link_all);
+			$('#link_pre_all').attr('href', link_pre_all);
+
+			var name_link="Bài "+that.props.params.bai+": "+data[0].TIEUDE; 
+			var link_pre="#"+that.props.params.mon+"/lop"+that.props.params.lop+"/baihoc_chitiet/"+that.props.params.bai;
+			$("#link_pre").text(name_link);
+			$('#link_pre').attr('href', link_pre);
+		})
 		mon=this.props.params.mon;
 		phanlop=this.props.params.lop;
 		baihoc=this.props.params.id;
@@ -301,7 +313,7 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 					da2: da2,
 					da3: da3,
 					da4: da4,
-					link_anh: null
+					link_anh: ''
 				};
 			}
 
@@ -327,8 +339,6 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 
 
 		$("#baitap_binhluan").hide();
-		$("#link_pre").text(name_link);
-		$('#link_pre').attr('href', link_pre);
 		///binh luan
 		$('#gui_binhluan').click(function (event){
 			var currentdate = new Date(); 
@@ -355,6 +365,7 @@ export class baitap_tracnghiem_chitiet extends React.Component{
     		});
 		});
 	    $('#formBinhluan').on('click', '.text-success,.text-danger,.text-danger-400', function (e) {
+	    	var thatt=this;
 	        var usernameClick = $(this).parent().attr('id');
 	        var idBinhluanClick = $(this).parent().attr('name');
 	        var type = $(this).attr('class');
@@ -373,7 +384,19 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 			};
 			//console.log(data);
 	        $.post("rate_binhluan", data, function(){
-	        	
+	        	var xyz=$(thatt).parent().parent();
+	        	if(type=="icon-arrow-up22 text-success"){
+	        		xyz.children().children(".text-grey-300").addClass("text-danger");
+	        		xyz.children().children(".text-grey-300").removeClass("text-grey-300");
+	        		xyz.children().children(".text-success").addClass("text-grey-300");
+	        		xyz.children().children(".text-success").removeClass("text-success");
+	        	}
+	        	else{
+	        		xyz.children().children(".text-grey-300").addClass("text-success");
+	        		xyz.children().children(".text-grey-300").removeClass("text-grey-300");
+	        		xyz.children().children(".text-danger").addClass("text-grey-300");
+	        		xyz.children().children(".text-danger").removeClass("text-danger");
+	        	}
     		});
 	    });
 	    var urlhere=window.location.href;
@@ -404,6 +427,7 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 	    $("#imgInp").change(function(){
 	        readURL(this);
 	    });
+	    $("#contentBaitap").hide();
 	}
 	componentWillMount(){
 		var that=this;
@@ -411,7 +435,7 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 		var ht_bai;
 
 		var id_cauhoi=this.props.params.mon+this.props.params.lop+this.props.params.id;
-
+		
 		var count1=1;
 		$.post("/"+this.props.params.mon+"/lop"+this.props.params.lop+"/baitap_tracnghiem_chitiet_cauhoi/"+this.props.params.id,{loai: "baitap"}, function(data){
 			console.log("lay trac nghiem");
@@ -420,27 +444,29 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 			if(data.length==0)
 			{
 				console.log("chua co bai tap");
-				$("#xxx").append('<center class="text-bold">Chưa có bài tập nào!.</center>'
-								);
+				$(".icon-spinner2").parent().remove();
+				$("#contentBaitap").show();
+				$("#xxx").append('<center class="text-bold">Chưa có bài tập nào!.</center>');
 				// Default initialization Radió
 				$(".styled, .multiselect-container input").uniform({
 				    radioClass: 'choice'
 				});
 				return;
 			}
-			$.get("getUserInfo/"+id_user,function( data1 ){
+			$.get("getUserInfo/"+id_user,function( data2 ){
 				console.log("lay data");
 			
-				ht_lop=data1.LOP;
+				ht_lop=data2.LOP;
 				if(that.props.params.mon=="lichsu")
-					ht_bai=data1.BAI_LICHSU;
+					ht_bai=data2.BAI_LICHSU;
 				else
-					ht_bai=data1.BAI_DIALI;
+					ht_bai=data2.BAI_DIALI;
 				
 				//hoc qua bai hoc roi
 				if(that.props.params.lop<ht_lop || (that.props.params.lop==ht_lop && data[0].BAI<ht_bai)){
 					$("#baitap_binhluan").show();
-					for(var i=0;i<data.length;i++){
+					var i=0;
+					function looploop(){
 						var count=i+1;
 
 						if(data[i].LINK_ANH!=null && data[i].LINK_ANH!=""  )
@@ -462,7 +488,7 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 													'</div>'+
 												'</fieldset>'
 												);
-						var idCauhoi=data[i].ID_BAIHOC;																
+																
 						$.post("/getDapan",{id: data[i].ID_TRACNGHIEM},function(data1){
 							//console.log(data1);
 							for(var j=0;j<data1.length;j++)
@@ -486,52 +512,62 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 								}
 							}
 							count1++;
-							// Default initialization Radió
-							$(".styled, .multiselect-container input").uniform({
-							    radioClass: 'choice'
-							});
+							i++;
+							
+							
+							if(i<data.length)
+								looploop();
+							else{
+								$(".steps-basic").steps({
+							        headerTag: "h6",
+							        bodyTag: "fieldset",
+							        startIndex: data.length-1,
+							        transitionEffect: "fade",	
+							        titleTemplate: '<span class="number">#index#</span> #title#',
+							        labels: {
+							            finish: 'Xong',
+							            previous: 'Quay lại',
+							            next: 'Tiếp theo'
+							        },
+							        onStepChanging: function (event, currentIndex, newIndex) {
+							        	console.log("onStepChanging");
+							        	var test=currentIndex+1;
+							        	var temtem3='input[name='+test+']';
+
+							        	var iddapan=$(temtem3).closest('.checked').children().attr("id");
+							        	if(iddapan=="1"){
+							        		return true;
+							        	}
+							        },
+							        onFinishing: function (event, currentIndex) {
+							            var test=currentIndex+1;
+							        	var temtem3='input[name='+test+']';
+							        	var iddapan=$(temtem3).closest('.checked').children().attr("id");
+							        	
+							        	if(iddapan=="1"){
+							        		return true;
+							        	}
+							        },
+							        onFinished: function (event, currentIndex) {
+							        	alert("Bạn đã hoàn thành bài tập");
+						        		$("#baitap_binhluan").show();
+							            
+							        }
+							    });
+							    // Default initialization Radió
+								$(".styled, .multiselect-container input").uniform({
+								    radioClass: 'choice'
+								});
+								$(".icon-spinner2").parent().remove();
+								$("#contentBaitap").show();
+							}
 						});
 					}
-					// Basic wizard setup
-				    $(".steps-basic").steps({
-				        headerTag: "h6",
-				        bodyTag: "fieldset",
-				        startIndex: data.length-1,
-				        transitionEffect: "fade",	
-				        titleTemplate: '<span class="number">#index#</span> #title#',
-				        labels: {
-				            finish: 'Xong',
-				            previous: 'Quay lại',
-				            next: 'Tiếp theo'
-				        },
-				        onStepChanging: function (event, currentIndex, newIndex) {
-				        	console.log("onStepChanging");
-				        	var test=currentIndex+1;
-				        	var temtem3='input[name='+test+']';
-
-				        	var iddapan=$(temtem3).closest('.checked').children().attr("id");
-				        	if(iddapan=="1"){
-				        		return true;
-				        	}
-				        },
-				        onFinishing: function (event, currentIndex) {
-				            var test=currentIndex+1;
-				        	var temtem3='input[name='+test+']';
-				        	var iddapan=$(temtem3).closest('.checked').children().attr("id");
-				        	
-				        	if(iddapan=="1"){
-				        		return true;
-				        	}
-				        },
-				        onFinished: function (event, currentIndex) {
-				        	alert("Bạn đã hoàn thành bài tập");
-			        		$("#baitap_binhluan").show();
-				            
-				        }
-				    });
+					looploop();
 				}
 				else{
-					for(var i=0;i<data.length;i++){
+					i=0;
+					function looploop1(){
 						var count=i+1;
 
 						if(data[i].LINK_ANH!=null && data[i].LINK_ANH!="" )
@@ -553,7 +589,7 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 													'</div>'+
 												'</fieldset>'
 												);
-						var idCauhoi=data[i].ID_BAIHOC;																
+																					
 						$.post("/getDapan",{id: data[i].ID_TRACNGHIEM},function(data1){
 
 							for(var j=0;j<data1.length;j++)
@@ -569,52 +605,62 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 								
 							}
 							count1++;
-							// Default initialization Radió
-							$(".styled, .multiselect-container input").uniform({
-							    radioClass: 'choice'
-							});
+							i++;
+							
+							if(i<data.length)
+								looploop1();
+							else{
+								// Basic wizard setup
+							    $(".steps-basic").steps({
+							        headerTag: "h6",
+							        bodyTag: "fieldset",
+							        transitionEffect: "fade",	
+							        titleTemplate: '<span class="number">#index#</span> #title#',
+							        labels: {
+							            finish: 'Xong',
+							            previous: 'Quay lại',
+							            next: 'Tiếp theo'
+							        },
+							        onStepChanging: function (event, currentIndex, newIndex) {
+							        	console.log("onStepChanging");
+							        	var test=currentIndex+1;
+							        	var temtem3='input[name='+test+']';
+
+							        	var iddapan=$(temtem3).closest('.checked').children().attr("id");
+							        	
+							        	if(iddapan=="1"){
+							        		return true;
+							        	}
+							        },
+							        onFinishing: function (event, currentIndex) {
+							            var test=currentIndex+1;
+							        	var temtem3='input[name='+test+']';
+
+							        	var iddapan=$(temtem3).closest('.checked').children().attr("id");
+							        	
+							        	if(iddapan=="1"){
+							        		return true;
+							        	}
+							        },
+							        onFinished: function (event, currentIndex) {
+							        	$.post("/quaBai",{id_user: id_user,mon: that.props.params.mon});
+							        	alert("Bạn đã hoà thành bài tập và qua bài học");
+
+						        		$("#baitap_binhluan").show();
+							            
+							        }
+							    });
+							    // Default initialization Radió
+								$(".styled, .multiselect-container input").uniform({
+								    radioClass: 'choice'
+								});
+								$(".icon-spinner2").parent().remove();
+								$("#contentBaitap").show();
+							}
 						});
 					}
-					// Basic wizard setup
-				    $(".steps-basic").steps({
-				        headerTag: "h6",
-				        bodyTag: "fieldset",
-				        transitionEffect: "fade",	
-				        titleTemplate: '<span class="number">#index#</span> #title#',
-				        labels: {
-				            finish: 'Xong',
-				            previous: 'Quay lại',
-				            next: 'Tiếp theo'
-				        },
-				        onStepChanging: function (event, currentIndex, newIndex) {
-				        	console.log("onStepChanging");
-				        	var test=currentIndex+1;
-				        	var temtem3='input[name='+test+']';
-
-				        	var iddapan=$(temtem3).closest('.checked').children().attr("id");
-				        	
-				        	if(iddapan=="1"){
-				        		return true;
-				        	}
-				        },
-				        onFinishing: function (event, currentIndex) {
-				            var test=currentIndex+1;
-				        	var temtem3='input[name='+test+']';
-
-				        	var iddapan=$(temtem3).closest('.checked').children().attr("id");
-				        	
-				        	if(iddapan=="1"){
-				        		return true;
-				        	}
-				        },
-				        onFinished: function (event, currentIndex) {
-				        	$.post("/quaBai",{id_user: id_user,mon: that.props.params.mon});
-				        	alert("Bạn đã hoà thành bài tập và qua bài học");
-
-			        		$("#baitap_binhluan").show();
-				            
-				        }
-				    });
+					looploop1();
+					
 				}
 			});
 		    //lay binh luan
@@ -637,9 +683,5 @@ export class baitap_tracnghiem_chitiet extends React.Component{
 	   	if(this.refs.root) {
 	     	this.setState(state);
 	    }
-	}
-	componentWillReceiveProps(newProps)
-	{
-		
 	}
 }

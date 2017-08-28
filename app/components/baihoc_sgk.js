@@ -31,6 +31,7 @@ export class baihoc_sgk extends React.Component{
 					<div className="breadcrumb-line">
 						<ul className="breadcrumb">
 							<li><a href="#"><i className="icon-home2 position-left"></i> Trang chủ</a></li>
+							<li ><a id="link_pre_all" ></a></li>
 							<li ><a id="link_pre" ></a></li>
 							<li className="active" id="link_pre1" ></li>
 						</ul>
@@ -58,7 +59,7 @@ export class baihoc_sgk extends React.Component{
 	}
 	componentDidMount(){
 		setTimeout(this.renderFrameContent, 0);
-
+		var that=this;
 		var url1=window.location.href;
 		url1=url1.split('#');
 		var mon=url1[1].split('/');
@@ -83,7 +84,25 @@ export class baihoc_sgk extends React.Component{
 					$("#contentSGK").attr("src", "sgk/"+this.props.params.mon+this.props.params.lop+"p2/index.html#p="+parseInt(this.props.params.trang-77));
 				}
 			}
-		}else{
+		}else if(this.props.params.lop==8){
+			if(this.props.params.mon=="diali"){
+				if(this.props.params.trang<=76 || this.props.params.trang=="null"){
+					$("#contentSGK").attr("src", "sgk/"+this.props.params.mon+this.props.params.lop+"p1/index.html#p="+parseInt(this.props.params.trang-2));
+				}else{
+					$("#contentSGK").attr("src", "sgk/"+this.props.params.mon+this.props.params.lop+"p2/index.html#p="+parseInt(this.props.params.trang-76));
+				}
+			}
+			else{
+				if(this.props.params.trang<=74 || this.props.params.trang=="null"){
+					$("#contentSGK").attr("src", "sgk/"+this.props.params.mon+this.props.params.lop+"p1/index.html#p="+parseInt(parseInt(this.props.params.trang)+1));
+				}else{
+					$("#contentSGK").attr("src", "sgk/"+this.props.params.mon+this.props.params.lop+"p2/index.html#p="+parseInt(parseInt(this.props.params.trang)-74));
+				}
+			}
+		}else if(this.props.params.lop==9){
+			$("#contentSGK").contents().find("body").append('Sách giáo khoa này sẽ được cập nhật trong thời gian tới!');
+		}
+		else{
 			$("#contentSGK").attr("src", "sgk/"+this.props.params.mon+this.props.params.lop+"/index.html#p="+this.props.params.trang);
 		}
 		//<iframe width="100%" height="650" allowFullScreen
@@ -98,16 +117,23 @@ export class baihoc_sgk extends React.Component{
 				mon1="Lịch sử";
 		if(mon[1]=="diali")
 			mon1="Địa lí";
-		if(this.props.params.bai=='0'){
-			var name_link="Bài học "+mon1+" lớp "+this.props.params.lop; 
-			var link_pre="#"+this.props.params.mon+"/lop"+this.props.params.lop+"/baihoc";
-		}else{
-			var name_link="Bài học "+mon1+" lớp "+this.props.params.lop+" bài "+this.props.params.bai; 
-			var link_pre="#"+this.props.params.mon+"/lop"+this.props.params.lop+"/baihoc_chitiet/"+this.props.params.bai;
-		}
-		var name_link1="Sách giáo khoa";
-		$("#link_pre").text(name_link);
-		$('#link_pre').attr('href', link_pre);
-		$("#link_pre1").text(name_link1);
+		$.post("laytenbaihoc",{mon: mon[1],lop:that.props.params.lop,bai:that.props.params.bai},function(data){
+			var name_link_all="Bài học "+mon1+" lớp "+that.props.params.lop; 
+			var link_pre_all="#"+that.props.params.mon+"/lop"+that.props.params.lop+"/baihoc";
+			$("#link_pre_all").text(name_link_all);
+			$('#link_pre_all').attr('href', link_pre_all);
+
+			if(that.props.params.bai=='0'){
+				var name_link="Bài học "+mon1+" lớp "+that.props.params.lop; 
+				var link_pre="#"+that.props.params.mon+"/lop"+that.props.params.lop+"/baihoc";
+			}else{
+				var name_link="Bài "+that.props.params.bai+": "+data[0].TIEUDE; 
+				var link_pre="#"+that.props.params.mon+"/lop"+that.props.params.lop+"/baihoc_chitiet/"+that.props.params.bai;
+			}
+			var name_link1="Sách giáo khoa";
+			$("#link_pre").text(name_link);
+			$('#link_pre').attr('href', link_pre);
+			$("#link_pre1").text(name_link1);
+		})
 	}
 }

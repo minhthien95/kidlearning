@@ -91,10 +91,9 @@ class Statusbar extends React.Component {
 						</li>
 
 						<li className="dropdown dropdown-user">
-							<a className="dropdown-toggle" data-toggle="dropdown">
+							<a id="username_show" className="dropdown-toggle" data-toggle="dropdown">
 								<img src={this.state.id_user} onError={() => {this.setState({id_user : "assets/images/user/user.jpg"}) }} alt=""/>
-								<span>{data.dataset.username}</span>
-								<i className="caret"></i>
+			
 							</a>
 
 							<ul className="dropdown-menu dropdown-menu-right"> 
@@ -127,6 +126,12 @@ class Statusbar extends React.Component {
   			$('.glyphicon-bell').parent().attr('aria-expanded',false);
   			$.post("delete_thongbao",{id: "all",id_user: data.dataset.id});
   		});
+
+  		$.get("getUserInfo/"+data.dataset.id,function( data ){
+  			console.log("data");
+			console.log(data);
+			$("#username_show").append('<span>'+data.USERNAME+'</span><i class="caret"></i>');
+		});
   	}
   	componentWillMount()
 	{
