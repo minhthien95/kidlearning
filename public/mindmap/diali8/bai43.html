@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <link href="http://cdn.syncfusion.com/15.1.0.41/js/web/flat-azure/ej.web.all.min.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="../src/main.css">  
+        <script type="text/javascript" src="http://cdn.syncfusion.com/js/assets/external/jquery-1.10.2.min.js"></script>
+        <script src="http://cdn.syncfusion.com/js/assets/external/jquery.easing.1.3.min.js"></script>
+        <script src="http://cdn.syncfusion.com/js/assets/external/jsrender.min.js"></script>
+        <script src="http://cdn.syncfusion.com/15.1.0.41/js/web/ej.web.all.min.js "></script>
+    </head>
+
+    <body>
+        <script type="text/javascript">
+            objects = [{
+                "id": "M43",
+                "text": "Miền Nam Trung Bộ và Nam Bộ",
+                "type": "root",
+                "fill": "rgb(252, 105, 0)",
+                "branches": [{
+                    "id": "br1",
+                    "text": "Vị trí và phạm vi lãnh thổ:",
+                    "type": "right",
+                    "fill": "rgb(252, 105, 240)",
+                    "branches": [{
+                        "id": "subbr100",
+                        "text": "Từ Đà Nẵng vào tới Cà Mau có diện tích rộng lớn.",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    }]
+                },{
+                    "id": "br1",
+                    "text": "Một miền nhiệt đới gió mùa nóng quanh năm, có mùa khô sâu sắc.",
+                    "type": "right",
+                    "fill": "rgb(252, 105, 240)",
+                    "branches": [{
+                        "id": "subbr100",
+                        "text": "Miền có khí hậu nóng quanh năm",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Nhiệt độ TB năm 250 – 270C",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Mùa khô kéo dài 6 tháng dễ gây ra hạn hán và cháy rừng",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Có gió tín phong đông bắc khô nóng và gió mùa tây nam nóng ẩm thổi thường xuyên",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    }]
+                },{
+                    "id": "br1",
+                    "text": "Trường sơn Nam hùng vĩ và đồng bằng Nam Bộ rộng lớn",
+                    "type": "right",
+                    "fill": "rgb(252, 105, 240)",
+                    "branches": [{
+                        "id": "subbr100",
+                        "text": "Trường sơn Nam là khu vực núi cao nguyên rộng lớn được hình thành trên nền cổ KonTum…",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Nhiều đỉnh núi cao trên 2000m.",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Các cao nguyên xếp tầng phủ badan. ",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Đồng bằng Nam Bộ rộng lớn. ",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    }]
+                },{
+                    "id": "br1",
+                    "text": "Tài nguyên phong phú và tập trung, dễ khai thác",
+                    "type": "right",
+                    "fill": "rgb(252, 105, 240)",
+                    "branches": [{
+                        "id": "subbr100",
+                        "text": "Các tài nguyên có quy mô lớn, chiếm tỉ trọng cao so với cả nước: diện tích, đất phù sa, đất đỏ badan, rừng, trữ lượng dầu khí, quặng bôxít.",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Để phát triển kinh tế bền vững, cần chú trọng bảo vệ môi trường rừng, biển, đất và các hệ sinh thái tự nhiên.",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    }]
+                }]
+            }];
+        </script>
+        
+        <div class="content-container-fluid">
+            <div class="row">
+                <div class="cols-sample-area">
+                    <div id="diagram"></div>
+                </div>
+            </div>
+        </div>
+        <div id="palette">
+            <table id="colorpalette"></table>
+        </div>
+
+        <script id="svgTemplate" type="text/x-jsrender">
+            <g>
+                <line x1="0" x2="{{:width}}" y1="{{:height}}" y2="{{:height}}" stroke="black" stroke-thickness="1"></line>
+                <rect x="0" y="0" name="{{:name}}" width="{{:width}}" height="{{:height}}" fill="transparent" stroke="none"></rect>
+            </g>
+        </script>
+
+        <script type="text/javascript" src="../src/main.js"></script>
+    </body>
+</html>

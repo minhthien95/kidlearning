@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <link href="http://cdn.syncfusion.com/15.1.0.41/js/web/flat-azure/ej.web.all.min.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="../src/main.css">  
+        <script type="text/javascript" src="http://cdn.syncfusion.com/js/assets/external/jquery-1.10.2.min.js"></script>
+        <script src="http://cdn.syncfusion.com/js/assets/external/jquery.easing.1.3.min.js"></script>
+        <script src="http://cdn.syncfusion.com/js/assets/external/jsrender.min.js"></script>
+        <script src="http://cdn.syncfusion.com/15.1.0.41/js/web/ej.web.all.min.js "></script>
+    </head>
+
+    <body>
+        <script type="text/javascript">
+            objects = [{
+                "id": "M15",
+                "text": "ĐẶC ĐIỂM DÂN CƯ, XÃ HỘI ĐÔNG NAM Á",
+                "type": "root",
+                "fill": "rgb(252, 105, 0)",
+                "branches": [{
+                    "id": "br1",
+                    "text": "Đặc điểm dân cư",
+                    "type": "right",
+                    "fill": "rgb(252, 105, 240)",
+                    "branches": [{
+                        "id": "subbr1",
+                        "text": "Đông Nam Á có nhiều dân tộc thuộc chủng tộc Môn-gô-lô-it và Ô-xtra-lô-it",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr1",
+                        "text": "Dân cư đông đúc, dân số trẻ chiếm số đông nên vừa là nơi có nguồn lao động dồi dào vừa là một thị trường tiêu thụ lớn",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    }]
+                },{
+                    "id": "br1",
+                    "text": "Đặc điểm xã hội",
+                    "type": "right",
+                    "fill": "rgb(252, 105, 240)",
+                    "branches": [{
+                        "id": "subbr1",
+                        "text": "Các nước Đông Nam Á có nhiều nét tương đồng như: cùng dùng gạo làm lương thực chính, dùng trâu bò làm sức kéo",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "nhưng cũng có những nét khác biệt trong phong tục tập quán, tín ngưỡng",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Có nét tương đồng và sự đa dạng trong văn hóa từng dân tộc",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Có cùng lịch sử đấu tranh giải phóng giành độc lập dân tộc",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    }]
+                }]
+            }];
+        </script>
+        
+        <div class="content-container-fluid">
+            <div class="row">
+                <div class="cols-sample-area">
+                    <div id="diagram"></div>
+                </div>
+            </div>
+        </div>
+        <div id="palette">
+            <table id="colorpalette"></table>
+        </div>
+
+        <script id="svgTemplate" type="text/x-jsrender">
+            <g>
+                <line x1="0" x2="{{:width}}" y1="{{:height}}" y2="{{:height}}" stroke="black" stroke-thickness="1"></line>
+                <rect x="0" y="0" name="{{:name}}" width="{{:width}}" height="{{:height}}" fill="transparent" stroke="none"></rect>
+            </g>
+        </script>
+
+        <script type="text/javascript" src="../src/main.js"></script>
+    </body>
+</html>

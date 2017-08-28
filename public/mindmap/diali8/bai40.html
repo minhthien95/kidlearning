@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <link href="http://cdn.syncfusion.com/15.1.0.41/js/web/flat-azure/ej.web.all.min.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="../src/main.css">  
+        <script type="text/javascript" src="http://cdn.syncfusion.com/js/assets/external/jquery-1.10.2.min.js"></script>
+        <script src="http://cdn.syncfusion.com/js/assets/external/jquery.easing.1.3.min.js"></script>
+        <script src="http://cdn.syncfusion.com/js/assets/external/jsrender.min.js"></script>
+        <script src="http://cdn.syncfusion.com/15.1.0.41/js/web/ej.web.all.min.js "></script>
+    </head>
+
+    <body>
+        <script type="text/javascript">
+            objects = [{
+                "id": "M25",
+                "text": "xxx",
+                "type": "root",
+                "fill": "rgb(252, 105, 0)",
+                "branches": [{
+                    "id": "br1",
+                    "text": "yyy",
+                    "type": "right",
+                    "fill": "rgb(252, 105, 240)",
+                    "branches": [{
+                        "id": "subbr100",
+                        "text": "Diện tích, giới hạn",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": [{
+                            "id": "subbr3",
+                            "text": "zzzz",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        },{
+                            "id": "subbr3",
+                            "text": "zzzz",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        }]
+                    }]
+                },{
+                    "id": "br1",
+                    "text": "yyy",
+                    "type": "right",
+                    "fill": "rgb(252, 105, 240)",
+                    "branches": [{
+                        "id": "subbr100",
+                        "text": "Diện tích, giới hạn",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": [{
+                            "id": "subbr3",
+                            "text": "zzzz",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        },{
+                            "id": "subbr3",
+                            "text": "zzzz",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        }]
+                    }]
+                }]
+            }];
+        </script>
+        
+        <div class="content-container-fluid">
+            <div class="row">
+                <div class="cols-sample-area">
+                    <div id="diagram"></div>
+                </div>
+            </div>
+        </div>
+        <div id="palette">
+            <table id="colorpalette"></table>
+        </div>
+
+        <script id="svgTemplate" type="text/x-jsrender">
+            <g>
+                <line x1="0" x2="{{:width}}" y1="{{:height}}" y2="{{:height}}" stroke="black" stroke-thickness="1"></line>
+                <rect x="0" y="0" name="{{:name}}" width="{{:width}}" height="{{:height}}" fill="transparent" stroke="none"></rect>
+            </g>
+        </script>
+
+        <script type="text/javascript" src="../src/main.js"></script>
+    </body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <link href="http://cdn.syncfusion.com/15.1.0.41/js/web/flat-azure/ej.web.all.min.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="../src/main.css">  
+        <script type="text/javascript" src="http://cdn.syncfusion.com/js/assets/external/jquery-1.10.2.min.js"></script>
+        <script src="http://cdn.syncfusion.com/js/assets/external/jquery.easing.1.3.min.js"></script>
+        <script src="http://cdn.syncfusion.com/js/assets/external/jsrender.min.js"></script>
+        <script src="http://cdn.syncfusion.com/15.1.0.41/js/web/ej.web.all.min.js "></script>
+    </head>
+
+    <body>
+        <script type="text/javascript">
+            objects = [{
+                "id": "M26",
+                "text": "Đặc điểm tài nguyên khoáng sản Việt Nam",
+                "type": "root",
+                "fill": "rgb(252, 105, 0)",
+                "branches": [{
+                    "id": "br1",
+                    "text": "Việt Nam là nước giàu tài nguyên khoáng sản ",
+                    "type": "right",
+                    "fill": "rgb(252, 105, 240)",
+                    "branches": [{
+                        "id": "subbr100",
+                        "text": "Nước ta có nguồn khoáng sản phong phú về loại hình, đa dạng về chủng loại",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Có khoảng 5000 điểm quặng và tụ khoáng của gần 60 loại khoáng sản khác nhau",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Phần lớn các mỏ có trữ lượng vừa và nhỏ. Một số mỏ có trữ lượng lớn: Than, dầu mỏ, khí đốt, sắt, bôxít, apatít, crôm, thiếc, đất hiếm và đá vôi",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    }]
+                },{
+                    "id": "br1",
+                    "text": "Sự hình thành các vùng mỏ chính ở nước ta",
+                    "type": "right",
+                    "fill": "rgb(252, 105, 240)",
+                    "branches": []
+                },{
+                    "id": "br1",
+                    "text": "Vấn đề khai thác và bảo vệ tài nguyên khoáng sản",
+                    "type": "right",
+                    "fill": "rgb(252, 105, 240)",
+                    "branches": [{
+                        "id": "subbr100",
+                        "text": "Khoáng sản là loại tài nguyên không thể phục hồi.",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Hiện nay, một số khoáng sản của nước ta có nguy cơ bị cạn kiệt và sử dụng còn lãng phí",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Thay thế các nguồn năng lượng khác sẽ góp phần bảo vệ tài nguyên và giảm thiểu biến đổi khí hậu",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Sử dụng tiết kiệm và có hiệu quả nguồn tài nguyên khoáng sản",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    }]
+                }]
+            }];
+        </script>
+        
+        <div class="content-container-fluid">
+            <div class="row">
+                <div class="cols-sample-area">
+                    <div id="diagram"></div>
+                </div>
+            </div>
+        </div>
+        <div id="palette">
+            <table id="colorpalette"></table>
+        </div>
+
+        <script id="svgTemplate" type="text/x-jsrender">
+            <g>
+                <line x1="0" x2="{{:width}}" y1="{{:height}}" y2="{{:height}}" stroke="black" stroke-thickness="1"></line>
+                <rect x="0" y="0" name="{{:name}}" width="{{:width}}" height="{{:height}}" fill="transparent" stroke="none"></rect>
+            </g>
+        </script>
+
+        <script type="text/javascript" src="../src/main.js"></script>
+    </body>
+</html>

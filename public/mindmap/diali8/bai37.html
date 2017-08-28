@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <link href="http://cdn.syncfusion.com/15.1.0.41/js/web/flat-azure/ej.web.all.min.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="../src/main.css">  
+        <script type="text/javascript" src="http://cdn.syncfusion.com/js/assets/external/jquery-1.10.2.min.js"></script>
+        <script src="http://cdn.syncfusion.com/js/assets/external/jquery.easing.1.3.min.js"></script>
+        <script src="http://cdn.syncfusion.com/js/assets/external/jsrender.min.js"></script>
+        <script src="http://cdn.syncfusion.com/15.1.0.41/js/web/ej.web.all.min.js "></script>
+    </head>
+
+    <body>
+        <script type="text/javascript">
+            objects = [{
+                "id": "M37",
+                "text": "Đặc điểm sinh vật Việt Nam",
+                "type": "root",
+                "fill": "rgb(252, 105, 0)",
+                "branches": [{
+                    "id": "br1",
+                    "text": "Đặc điểm chung",
+                    "type": "right",
+                    "fill": "rgb(252, 105, 240)",
+                    "branches": [{
+                        "id": "subbr100",
+                        "text": "Sinh vật phong phú và đa dạng.",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": [{
+                            "id": "subbr3",
+                            "text": "Đa dạng về thành phần loài và gen di truyền (đặc hữu)",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        },{
+                            "id": "subbr3",
+                            "text": "Đa dạng về kiểu hệ sinh thái (tổng hợp thể cây con)",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        },{
+                            "id": "subbr3",
+                            "text": "Đa dạng về công dụng và sản phẩm (lấy dầu, gỗ, nhựa, dược liệu,..)",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        }]
+                    },{
+                        "id": "subbr100",
+                        "text": "- Nguyên nhân: Do điều kiện sống cần và đủ cho sinh vật khá thuận lợi",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Do tác động của con người, nhiều hệ sinh thái tự nhiên (rừng, biển ven bờ) bị tàn phá, biến đổi và suy giảm về chất lượng và số lượng.",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    }]
+                },{
+                    "id": "br1",
+                    "text": "Sự giàu có về thành phần loài sinh vật ",
+                    "type": "right",
+                    "fill": "rgb(252, 105, 240)",
+                    "branches": [{
+                        "id": "subbr100",
+                        "text": "Nước ta xấp xỉ 36.000 loài sinh vật, bản địa 50% ",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": [{
+                            "id": "subbr3",
+                            "text": "Thực vật: 14.600 loài.",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        },{
+                            "id": "subbr3",
+                            "text": "Động vật: 11.200 loài và phân loài",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        }]
+                    },{
+                        "id": "subbr100",
+                        "text": "Loài quý hiếm:",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": [{
+                            "id": "subbr3",
+                            "text": "Thực vật: 350 loài",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        },{
+                            "id": "subbr3",
+                            "text": "Động vật: 365 loài",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        }]
+                    }]
+                },{
+                    "id": "br1",
+                    "text": "Sự đa dạng về hệ sinh thái ",
+                    "type": "right",
+                    "fill": "rgb(252, 105, 240)",
+                    "branches": [{
+                        "id": "subbr100",
+                        "text": "Hệ sinh thái vùng đất triều bãi cửa sông, ven biển phát triển rừng ngập mặn, rộng hơn ba trăm nghìn hecta, chạy suốt chiều dài bờ biển và ven các hải đảo",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Vùng đồi núi cao phát triển hệ sinh thái rừng nhiệt đới gió mùa",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Các khu bảo tồn thiên nhiên và vườn quốc gia",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Hệ sinh thái nông nghiệp ",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": [{
+                            "id": "subbr3",
+                            "text": "Hệ sinh thái nông nghiệp do con người tạo ra và duy trì để lấy lương thực, thực phẩm và các sản phẩm cần thiết khác cho đời sống",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        },{
+                            "id": "subbr3",
+                            "text": "Các hệ sinh thái nông - lâm nghiệp như đồng ruộng, vườn làng, ao hồ thuỷ sản hoặc rừng trồng cây lấy gỗ, rừng trồng cây công nghiệp ngày càng mở rộng, lấn át các hệ sinh thái tự nhiên",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        }]
+                    }]
+                }]
+            }];
+        </script>
+        
+        <div class="content-container-fluid">
+            <div class="row">
+                <div class="cols-sample-area">
+                    <div id="diagram"></div>
+                </div>
+            </div>
+        </div>
+        <div id="palette">
+            <table id="colorpalette"></table>
+        </div>
+
+        <script id="svgTemplate" type="text/x-jsrender">
+            <g>
+                <line x1="0" x2="{{:width}}" y1="{{:height}}" y2="{{:height}}" stroke="black" stroke-thickness="1"></line>
+                <rect x="0" y="0" name="{{:name}}" width="{{:width}}" height="{{:height}}" fill="transparent" stroke="none"></rect>
+            </g>
+        </script>
+
+        <script type="text/javascript" src="../src/main.js"></script>
+    </body>
+</html>

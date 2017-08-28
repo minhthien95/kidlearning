@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <link href="http://cdn.syncfusion.com/15.1.0.41/js/web/flat-azure/ej.web.all.min.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="../src/main.css">  
+        <script type="text/javascript" src="http://cdn.syncfusion.com/js/assets/external/jquery-1.10.2.min.js"></script>
+        <script src="http://cdn.syncfusion.com/js/assets/external/jquery.easing.1.3.min.js"></script>
+        <script src="http://cdn.syncfusion.com/js/assets/external/jsrender.min.js"></script>
+        <script src="http://cdn.syncfusion.com/15.1.0.41/js/web/ej.web.all.min.js "></script>
+    </head>
+
+    <body>
+        <script type="text/javascript">
+            objects = [{
+                "id": "M38",
+                "text": "Bảo vệ tài nguyên sinh vật Việt Nam",
+                "type": "root",
+                "fill": "rgb(252, 105, 0)",
+                "branches": [{
+                    "id": "br1",
+                    "text": "Giá trị của tài nguyên sinh vật",
+                    "type": "right",
+                    "fill": "rgb(252, 105, 240)",
+                    "branches": [{
+                        "id": "subbr100",
+                        "text": "Sinh vật nước ta là một nguồn tài nguyên to lớn, có khả năng phục hồi và phát triển, có giá trị về nhiều mặt đối với đời sống chúng ta",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "br1",
+                        "text": "Giá trị của tài nguyên sinh vật",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": [{
+                            "id": "subbr100",
+                            "text": "Giá trị kinh tế của các loài động vật cũng rất lớn. Động vật cho nhiều sản phẩm để làm thức ăn, làm thuốc và làm đẹp cho con người",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        }]
+                    }]
+                },{
+                    "id": "br1",
+                    "text": "Bảo vệ tài nguyên rừng ",
+                    "type": "right",
+                    "fill": "rgb(252, 105, 240)",
+                    "branches": [{
+                        "id": "subbr100",
+                        "text": "Thực trạng",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": [{
+                            "id": "subbr3",
+                            "text": "Do tác động của con người, nhiều hệ sinh thái tự nhiên bị tàn phá, biến đổi và suy giảm rõ rệt.",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        },{
+                            "id": "subbr3",
+                            "text": "Diện tích rừng ngày càng suy giảm, hiện chỉ còn 35−38% diện tích đất tự nhiên. Điều này gây tác động xấu tới môi trường",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        },{
+                            "id": "subbr3",
+                            "text": "3/4 diện tích là đồi núi, mưa tập trung theo mùa với cường độ lớn nên mất rừng sẽ làm tăng quá trình xói mòn đất ở miền núi, lũ lụt ở đồng bằng",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        },{
+                            "id": "subbr3",
+                            "text": "Mất rừng sẽ làm giảm sự đa dạng sinh học, một số loài động, thực vật sẽ tuyệt chủng",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        }]
+                    },{
+                        "id": "subbr100",
+                        "text": "Nguyên nhân",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": [{
+                            "id": "subbr3",
+                            "text": "Chiến tranh",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        },{
+                            "id": "subbr3",
+                            "text": "Cháy rừng",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        },{
+                            "id": "subbr3",
+                            "text": "Chặt phá",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        }]
+                    },{
+                        "id": "subbr100",
+                        "text": "Bảo vệ tài nguyên động vật",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": [{
+                            "id": "subbr3",
+                            "text": "Có khoảng 365 loài động vật cần được bảo vệ khỏi nguy cơ bị tuyệt chủng. Không chỉ trên đất liền mà nguồn lợi hải sản cũng giảm sút do việc đánh bắt gần bờ và bằng những phương tiện có tính huỷ diệt.",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        }]
+                    }]
+                }]
+            }];
+        </script>
+        
+        <div class="content-container-fluid">
+            <div class="row">
+                <div class="cols-sample-area">
+                    <div id="diagram"></div>
+                </div>
+            </div>
+        </div>
+        <div id="palette">
+            <table id="colorpalette"></table>
+        </div>
+
+        <script id="svgTemplate" type="text/x-jsrender">
+            <g>
+                <line x1="0" x2="{{:width}}" y1="{{:height}}" y2="{{:height}}" stroke="black" stroke-thickness="1"></line>
+                <rect x="0" y="0" name="{{:name}}" width="{{:width}}" height="{{:height}}" fill="transparent" stroke="none"></rect>
+            </g>
+        </script>
+
+        <script type="text/javascript" src="../src/main.js"></script>
+    </body>
+</html>

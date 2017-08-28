@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <link href="http://cdn.syncfusion.com/15.1.0.41/js/web/flat-azure/ej.web.all.min.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="../src/main.css">  
+        <script type="text/javascript" src="http://cdn.syncfusion.com/js/assets/external/jquery-1.10.2.min.js"></script>
+        <script src="http://cdn.syncfusion.com/js/assets/external/jquery.easing.1.3.min.js"></script>
+        <script src="http://cdn.syncfusion.com/js/assets/external/jsrender.min.js"></script>
+        <script src="http://cdn.syncfusion.com/15.1.0.41/js/web/ej.web.all.min.js "></script>
+    </head>
+
+    <body>
+        <script type="text/javascript">
+            objects = [{
+                "id": "M28",
+                "text": "Đặc điểm địa hình Việt Nam",
+                "type": "root",
+                "fill": "rgb(252, 105, 0)",
+                "branches": [{
+                    "id": "br1",
+                    "text": "Đồi núi là bộ phận quan trọng nhất của cấu trúc địa hình Việt Nam",
+                    "type": "right",
+                    "fill": "rgb(252, 105, 240)",
+                    "branches": [{
+                        "id": "subbr100",
+                        "text": "Đồi núi chiếm 3/4 diện tích lãnh thổ, chủ yếu là đồi núi thấp. Địa hình thấp dưới 1000m chiếm tới 85%. Núi cao trên 2000m chỉ chiếm 1%.",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Đồng bằng chiếm 1/4 diện tích lãnh thổ, đồng bằng lớn: Đồng bằng sông Hồng; Đồng bằng sông Cửu Long",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    }]
+                },{
+                    "id": "br1",
+                    "text": "Địa hình nước ta được Tân kiến tạo nâng lên và tạo thành nhiều bậc kế tiếp nhau ",
+                    "type": "right",
+                    "fill": "rgb(252, 105, 240)",
+                    "branches": [{
+                        "id": "subbr100",
+                        "text": "Địa hình nước ta do giai đoạn Cổ kiến tạo và Tân kiến tạo dựng lên",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Địa hình phân thành nhiều bậc kế tiếp nhau",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Hướng nghiêng của địa hình là h­ướng Tây Bắc - Đông Nam",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Địa hình nước ta có 2 hướng chủ yếu",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": [{
+                            "id": "subbr3",
+                            "text": "Hướng Tây Bắc - Đông Nam",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        },{
+                            "id": "subbr3",
+                            "text": "Hướng vòng cung",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        }]
+                    }]
+                },{
+                    "id": "br1",
+                    "text": "Địa hình nước ta mang tính chất nhiệt đới gió mùa và chịu tác động mạnh mẽ của con người",
+                    "type": "right",
+                    "fill": "rgb(252, 105, 240)",
+                    "branches": [{
+                        "id": "subbr100",
+                        "text": "Địa hình luôn biến đổi do tác động mạnh mẽ của môi trường nhiệt đới gió mùa ẩm và do sự khai phá của con người",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Trong môi trường nóng ẩm, đất đá bị phong hoá mạnh mẽ. Lượng mưa lớn và tập trung theo mùa đã nhanh chóng xói mòn, cắt xẻ, xâm thực các khối núi lớn.",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Trên bề mặt địa hình thường có rừng cây rậm rạp che phủ. Dưới rừng là lớp đất và vỏ phong hoá dày, vụn bở",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr100",
+                        "text": "Các dạng địa hình nhân tạo: công trình kiến trúc đô thị, hầm mỏ, giao thông, đê, đập, kênh rạch, hồ chứa nước,...",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    }]
+                }]
+            }];
+        </script>
+        
+        <div class="content-container-fluid">
+            <div class="row">
+                <div class="cols-sample-area">
+                    <div id="diagram"></div>
+                </div>
+            </div>
+        </div>
+        <div id="palette">
+            <table id="colorpalette"></table>
+        </div>
+
+        <script id="svgTemplate" type="text/x-jsrender">
+            <g>
+                <line x1="0" x2="{{:width}}" y1="{{:height}}" y2="{{:height}}" stroke="black" stroke-thickness="1"></line>
+                <rect x="0" y="0" name="{{:name}}" width="{{:width}}" height="{{:height}}" fill="transparent" stroke="none"></rect>
+            </g>
+        </script>
+
+        <script type="text/javascript" src="../src/main.js"></script>
+    </body>
+</html>

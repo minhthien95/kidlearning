@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <link href="http://cdn.syncfusion.com/15.1.0.41/js/web/flat-azure/ej.web.all.min.css" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="../src/main.css">  
+        <script type="text/javascript" src="http://cdn.syncfusion.com/js/assets/external/jquery-1.10.2.min.js"></script>
+        <script src="http://cdn.syncfusion.com/js/assets/external/jquery.easing.1.3.min.js"></script>
+        <script src="http://cdn.syncfusion.com/js/assets/external/jsrender.min.js"></script>
+        <script src="http://cdn.syncfusion.com/15.1.0.41/js/web/ej.web.all.min.js "></script>
+    </head>
+
+    <body>
+        <script type="text/javascript">
+            objects = [{
+                "id": "M7",
+                "text": "Đặc điểm phát triển kinh tế - xã hội các nước châu Á",
+                "type": "root",
+                "fill": "rgb(252, 105, 0)",
+                "branches": [{
+                    "id": "br1",
+                    "text": "Vài nét về lịch sử phát triển của các Châu Á",
+                    "type": "left",
+                    "fill": "rgb(252, 105, 240)",
+                    "branches": [{
+                        "id": "subbr1",
+                        "text": "Thời Cổ đại và Trung đại",
+                        "type": "left",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": [{
+                            "id": "subbr100",
+                            "text": "Một số nước Châu Á có trình độ phát triển cao: Trung Quốc, Ấn Độ… tạo nhiều sản phẩm xuất khẩu nổi tiếng",
+                            "type": "left",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        }]
+                    },{
+                        "id": "subbr1",
+                        "text": "Từ thế kỉ XVI đến XIX",
+                        "type": "left",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": [{
+                            "id": "subbr100",
+                            "text": "Do chế độ thực dân phong kiến kìm hãm nên kinh tế chậm phát triển,&nbsp;kinh tế Châu Á rơi vào tình trạng chậm phát triển kéo dài",
+                            "type": "left",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        },{
+                            "id": "subbr100",
+                            "text": "Riêng Nhật Bản nhờ cải cách Minh Trị → Kinh tế phát triển sớm nhất",
+                            "type": "left",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        }]
+                    }]
+                }, {
+                    "id": "br2",
+                    "text": "Đặc điểm phát triển kinh tế-xã hội của các nước và vùng lãnh thổ châu Á hiện nay",
+                    "type": "right",
+                    "fill": "rgb(252, 105, 240)",
+                    "branches": [{
+                        "id": "subbr3",
+                        "text": "Sau chiến tranh thế giới thứ 2, nền kinh tế các nước ở châu Á có sự chuyển biến mạnh mẽ theo hướng công nghiệp hóa, hiện đại hóa",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr3",
+                        "text": "Trình độ phát triển kinh tế giữa các nước và các vùng lãnh thổ không đồng đều, chia làm 4 nhóm nước",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": []
+                    },{
+                        "id": "subbr3",
+                        "text": "Các nước có mức thu nhập cao",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": [{
+                            "id": "subbr3",
+                            "text": "Nhật Bản, Cô-oét,.. chiếm tỉ lệ nhỏ: có nền kinh tế phát triển cao hoặc nhờ vào nguồn dầu mỏ",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        }]
+                    },{
+                        "id": "subbr3",
+                        "text": "Các nước có mức thu nhập trung bình trên",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": [{
+                            "id": "subbr3",
+                            "text": "Hàn Quốc, Ma-lai-xi-a: có mức độ công nghiệp hóa khá cao và nhanh&nbsp; → Có tỉ trọng nông nghiệp trong cơ cấu GDP nhỏ",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        }]
+                    },{
+                        "id": "subbr3",
+                        "text": "Các nước có mức thu nhập trung bình dưới",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": [{
+                            "id": "subbr3",
+                            "text": "Trung Quốc, Xi-ri: có tốc độ công nghiệp hóa nhanh.",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        }]
+                    },{
+                        "id": "subbr3",
+                        "text": "Các nước có mức thu nhập thấp",
+                        "type": "right",
+                        "fill": "rgb(30, 30, 113)",
+                        "branches": [{
+                            "id": "subbr3",
+                            "text": "Lào, Việt Nam…, chiếm tỉ lệ cao nhất. → Có tỉ trọng nông nghiệp trong cơ cấu GDP lớn",
+                            "type": "right",
+                            "fill": "rgb(0, 212, 1)",
+                            "branches": []
+                        }]
+                    }]
+                }]
+            }];
+        </script>
+        
+        <div class="content-container-fluid">
+            <div class="row">
+                <div class="cols-sample-area">
+                    <div id="diagram"></div>
+                </div>
+            </div>
+        </div>
+        <div id="palette">
+            <table id="colorpalette"></table>
+        </div>
+
+        <script id="svgTemplate" type="text/x-jsrender">
+            <g>
+                <line x1="0" x2="{{:width}}" y1="{{:height}}" y2="{{:height}}" stroke="black" stroke-thickness="1"></line>
+                <rect x="0" y="0" name="{{:name}}" width="{{:width}}" height="{{:height}}" fill="transparent" stroke="none"></rect>
+            </g>
+        </script>
+
+        <script type="text/javascript" src="../src/main.js"></script>
+    </body>
+</html>
